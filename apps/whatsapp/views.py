@@ -92,7 +92,7 @@ class TwilioWebhook(View):
                 request=request,
                 to_number=from_raw,
                 name=sender_name,
-                gym_name=gym_obj.name if gym_obj else "ONEXIVA",
+                gym_name=gym_obj.name if gym_obj else "OneX-Fitness",
                 gym_contact_number=gym_obj.phone if gym_obj else None
             )
             
@@ -119,7 +119,7 @@ class SendEnquiryConfirmationAPI(View):
                 request=request,
                 to_number=phone_number,
                 name=name,
-                gym_name="ONEXIVA",
+                gym_name="OneX-Fitness",
                 gym_contact_number=None
             )
             
@@ -146,7 +146,7 @@ class SendTestMessage(View):
             data = json.loads(request.body)
             
             phone_number = data.get('phone_number')
-            message = data.get('message', 'Test message from ONEXIVA GYM')
+            message = data.get('message', 'Test message from OneX-Fitness GYM')
             
             if not phone_number:
                 return JsonResponse({'error': 'Phone number required'}, status=400)

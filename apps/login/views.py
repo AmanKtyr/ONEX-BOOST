@@ -241,7 +241,7 @@ def user_login(request):
             if hasattr(user, 'trainer_profile'):
                 trainer = user.trainer_profile
                 request.session['gym_id'] = trainer.gym.id if trainer.gym else None
-                request.session['gym_name'] = trainer.gym.name if trainer.gym else 'ONEXIVAym'
+                request.session['gym_name'] = trainer.gym.name if trainer.gym else 'OneX-Fitnessym'
                 request.session['gym_logo'] = trainer.gym.logo.url if trainer.gym and trainer.gym.logo else None
                 request.session['role'] = 'trainer'
                 request.session['trainer_id'] = trainer.id
@@ -250,7 +250,7 @@ def user_login(request):
             if hasattr(user, 'member_profile'):
                 member = user.member_profile
                 request.session['gym_id'] = member.gym.id if member.gym else None
-                request.session['gym_name'] = member.gym.name if member.gym else 'ONEXIVAym'
+                request.session['gym_name'] = member.gym.name if member.gym else 'OneX-Fitnessym'
                 request.session['gym_logo'] = member.gym.logo.url if member.gym and member.gym.logo else None
                 request.session['role'] = 'member'
                 request.session['member_id'] = member.id

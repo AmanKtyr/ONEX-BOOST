@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ONEXIVA | Powering Smarter Fitness Businesses{% endblock %}</title>
+    <title>{% block title %}OneX-Fitness | Powering Smarter Fitness Businesses by HELYONEX{% endblock %}</title>
 
     {# ── Core SEO ── #}
     {% block seo %}
-    <meta name="description" content="ONEXIVA is India's leading gym management software. Manage memberships, billing, attendance, trainer workflows, follow-ups, and operations from one powerful platform. Powering Smarter Fitness Businesses.">
-    <meta name="keywords" content="ONEXIVA, gym management software India, fitness studio software, gym billing software, gym CRM, member management system, gym attendance tracking, personal trainer software, fitness business software, gym membership management">
-    <meta name="author" content="ONEXIVA by HELYONEX">
+    <meta name="description" content="OneX-Fitness by HELYONEX is India's leading gym management software. Manage memberships, billing, attendance, trainer workflows, follow-ups, and operations from one powerful platform.">
+    <meta name="keywords" content="OneX-Fitness, HELYONEX, gym management software India, fitness studio software, gym billing software, gym CRM, member management system, gym attendance tracking, personal trainer software, fitness business software">
+    <meta name="author" content="OneX-Fitness by HELYONEX">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="revisit-after" content="7 days">
     <meta name="language" content="English">
@@ -20,17 +20,17 @@
 
     {# ── Canonical ── #}
     {% block canonical %}
-    <link rel="canonical" href="https://onexiva.com/">
+    <link rel="canonical" href="https://onex-fitness.com/">
     {% endblock %}
 
     {# ── Open Graph ── #}
     {% block og_tags %}
-    <meta property="og:site_name" content="ONEXIVA">
+    <meta property="og:site_name" content="OneX-Fitness">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://onexiva.com/">
-    <meta property="og:title" content="ONEXIVA | Powering Smarter Fitness Businesses">
-    <meta property="og:description" content="Run your gym smarter. ONEXIVA manages memberships, billing, attendance, trainers, and follow-ups from one premium platform.">
-    <meta property="og:image" content="{% static 'images/onexiva-logo.png' %}">
+    <meta property="og:url" content="https://onex-fitness.com/">
+    <meta property="og:title" content="OneX-Fitness | Powering Smarter Fitness Businesses">
+    <meta property="og:description" content="Run your gym smarter. OneX-Fitness by HELYONEX manages memberships, billing, attendance, trainers, and follow-ups from one premium platform.">
+    <meta property="og:image" content="{% static 'images/ONEX-FITNESS-Logo.png' %}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_IN">
@@ -39,10 +39,10 @@
     {# ── Twitter Card ── #}
     {% block twitter_tags %}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@ONEXIVA">
-    <meta name="twitter:title" content="ONEXIVA | Gym Management Software">
-    <meta name="twitter:description" content="India's premium gym management platform — memberships, billing, attendance, trainers & more.">
-    <meta name="twitter:image" content="{% static 'images/onexiva-logo.png' %}">
+    <meta name="twitter:site" content="@OneXFitness">
+    <meta name="twitter:title" content="OneX-Fitness | Gym Management Software">
+    <meta name="twitter:description" content="India's premium gym management platform by HELYONEX — memberships, billing, attendance, trainers & more.">
+    <meta name="twitter:image" content="{% static 'images/ONEX-FITNESS-Logo.png' %}">
     {% endblock %}
 
     {# ── Schema.org — Organisation ── #}
@@ -50,21 +50,21 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "ONEXIVA",
-      "url": "https://onexiva.com",
-      "logo": "https://onexiva.com/static/images/onexiva-logo.png",
-      "description": "ONEXIVA is India's premium gym management software for memberships, billing, attendance, and trainer workflows.",
+      "name": "OneX-Fitness",
+      "url": "https://onex-fitness.com",
+      "logo": "https://onex-fitness.com/static/images/ONEX-FITNESS-Logo.png",
+      "description": "OneX-Fitness is India's premium gym management software by HELYONEX for memberships, billing, attendance, and trainer workflows.",
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "HELYONEX"
+      },
       "foundingLocation": "Lucknow, Uttar Pradesh, India",
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": "+91-63923-48731",
         "contactType": "customer support",
         "availableLanguage": ["English", "Hindi"]
-      },
-      "sameAs": [
-        "https://www.instagram.com/onexiva",
-        "https://www.facebook.com/onexiva"
-      ]
+      }
     }
     </script>
 
@@ -131,7 +131,7 @@
     <header class="site-header">
         <div class="brand-container site-header-inner">
             <a href="{% url 'index' %}" class="site-logo">
-                <img src="{% static 'images/onexiva-logo.png' %}" alt="ONEXIVA logo" style="max-height: 48px; width: auto; object-fit: contain;">
+                <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="OneX-Fitness logo" style="max-height: 48px; width: auto; object-fit: contain;">
             </a>
 
             <nav class="hidden lg:flex items-center gap-7">
@@ -164,7 +164,7 @@
         <div class="mobile-panel min-h-full w-80 p-6 shadow-2xl">
             <div class="flex items-center justify-between gap-3 mb-8">
                 <a href="{% url 'index' %}" class="site-logo">
-                    <img src="{% static 'images/onexiva-logo.png' %}" alt="ONEXIVA logo">
+                    <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="OneX-Fitness logo" style="max-height: 40px; width: auto; object-fit: contain;">
                 </a>
                 <label for="mobile-drawer" class="btn btn-ghost btn-circle">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -195,16 +195,20 @@
             <div class="grid gap-10 md:grid-cols-12 md:gap-8">
                 
                 <div class="md:col-span-4 lg:col-span-5">
-                    <a href="{% url 'index' %}" class="site-logo text-white mb-5 inline-flex">
-                        <img src="{% static 'images/onexiva-logo.png' %}" alt="ONEXIVA logo" class="h-8 w-auto" style="max-height: 40px; width: auto; object-fit: contain;">
+                    <a href="{% url 'index' %}" class="site-logo text-white mb-3 inline-flex">
+                        <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="OneX-Fitness logo" class="h-10 w-auto" style="max-height: 44px; width: auto; object-fit: contain;">
                     </a>
+                    <div class="flex items-center gap-2 mb-3">
+                        <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" class="w-5 h-5 rounded-full object-cover">
+                        <span class="text-xs uppercase tracking-wider text-blue-400 font-semibold">A HELYONEX Product</span>
+                    </div>
                     <p class="text-gray-400 leading-relaxed text-sm md:pr-8">
-                        ONEXIVA gives gym owners one clean system for memberships, billing, attendance, staff workflows, follow-ups, and member experience. Powering Smarter Fitness Businesses.
+                        OneX-Fitness gives gym owners one unified, clean system for memberships, billing, attendance, staff workflows, follow-ups, and member experience.
                     </p> 
                     <div class="flex items-center gap-4 mt-6">
-                        <a href="https://www.instagram.com/onexiva" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://www.facebook.com/onexiva" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="https://wa.me/916392348731?text=Hello%20ONEXIVA%2C%20I%20want%20to%20book%20a%20demo." class="social-icon" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/OneX-Fitness" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/OneX-Fitness" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://wa.me/916392348731?text=Hello%20OneX-Fitness%2C%20I%20want%20to%20book%20a%20demo." class="social-icon" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
                     </div>
                 </div>
 
@@ -232,9 +236,7 @@
                     <div>
                         <h3 class="font-bold text-base mb-4 tracking-wide">Support</h3>
                         <div class="grid gap-3 text-sm">
-                            <a href="mailto:bhattsquare1@gmail.com" class="footer-link">bhattsquare1@gmail.com</a>
-                            <a href="mailto:info@bhattsquare.com" class="footer-link">info@bhattsquare.com</a>
-                            <a href="tel:+919205983996" class="footer-link">+91 92059 83996</a>
+                            <a href="mailto:support@helyonex.com" class="footer-link">support@helyonex.com</a>
                             <a href="tel:+916392348731" class="footer-link">+91 63923 48731</a>
                             <a href="{% url 'refund_policy' %}" class="footer-link">Refund Policy</a>
                         </div>
@@ -243,8 +245,9 @@
             </div>
 
             <div class="mt-12 pt-6 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-                <p class="text-center sm:text-left">
-                    &copy; {% now "Y" %} ONEXIVA. A HELYONEX Product. All rights reserved.
+                <p class="text-center sm:text-left flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" class="w-4 h-4 rounded-full object-cover">
+                    <span>&copy; {% now "Y" %} <strong>OneX-Fitness</strong>. A <strong>HELYONEX</strong> Product. All rights reserved.</span>
                     <a href="{% url 'superadmin_login' %}" aria-label="Super admin" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-shield-halved"></i>
                     </a> 
@@ -258,7 +261,7 @@
         </div>
     </footer>
 
-    <a href="https://wa.me/916392348731?text=Hello%20ONEXIVA%2C%20I%20want%20to%20book%20a%20demo." class="floating-action" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" style=" background-color: #25D366 !important;">
+    <a href="https://wa.me/916392348731?text=Hello%20OneX-Fitness%2C%20I%20want%20to%20book%20a%20demo." class="floating-action" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" style=" background-color: #25D366 !important;">
         <i class="fa-brands fa-whatsapp text-xl"></i>
         <span>Chat with us</span>
     </a>

@@ -1,4 +1,4 @@
-# ONEXIVA - Gym Management Software
+# OneX-Fitness - Gym Management Software
 
 **Powering Smarter Fitness Businesses. A HELYONEX Product.**
 

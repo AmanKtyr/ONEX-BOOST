@@ -1,5 +1,5 @@
 """
-ONEXIVAEnterprise Outbound Email & SMTP Gateway Service.
+OneX-FitnessEnterprise Outbound Email & SMTP Gateway Service.
 Handles dynamic SMTP connection resolution from SystemSetting,
 responsive HTML email dispatching, and automated notifications for
 Gym onboarding, Admin credentials, and Password recovery.
@@ -26,7 +26,7 @@ def get_smtp_gateway_config():
     port = setting.smtp_port or 587
     user = (setting.smtp_user or '').strip()
     password = setting.smtp_password or ''
-    from_email = (setting.smtp_from_email or '').strip() or user or getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@onexiva.com')
+    from_email = (setting.smtp_from_email or '').strip() or user or getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@OneX-Fitness.com')
     use_tls = bool(setting.smtp_use_tls)
     use_ssl = bool(setting.smtp_use_ssl)
 
@@ -41,7 +41,7 @@ def get_smtp_gateway_config():
         'use_tls': use_tls,
         'use_ssl': use_ssl,
         'is_configured': is_configured,
-        'platform_name': setting.platform_name or 'ONEXIVA',
+        'platform_name': setting.platform_name or 'OneX-Fitness',
         'support_email': setting.support_email or from_email,
         'support_phone': setting.support_phone or '',
         'website_url': setting.website_url or 'http://127.0.0.1:8000',
@@ -147,13 +147,13 @@ def send_system_email(subject, template_name, context, recipient_list, request=N
 
 def send_gym_welcome_email(gym, request=None):
     """
-    Dispatched when a new Gym facility is added to the ONEXIVA platform.
+    Dispatched when a new Gym facility is added to the OneX-Fitness platform.
     """
     if not gym or not gym.email:
         logger.info(f"[EmailGateway] Gym '{gym}' has no contact email; skipping welcome email.")
         return False, "Gym does not have a registered contact email."
 
-    subject = f"Welcome to ONEXIVA – {gym.name} is Ready!"
+    subject = f"Welcome to OneX-Fitness – {gym.name} is Ready!"
     context = {
         'gym': gym,
         'email_title': subject,

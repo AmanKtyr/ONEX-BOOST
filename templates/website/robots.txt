@@ -1,5 +1,5 @@
 # =============================================
-# robots.txt for ONEXIVA— fitstack.nextgenapplication.com
+# robots.txt for OneX-Fitness
 # Generated: 2026-04-27
 # =============================================
 
@@ -54,4 +54,4 @@ Crawl-delay: 10
 # =============================================
 # Sitemap location
 # =============================================
-Sitemap: https://fitstack.nextgenapplication.com/sitemap.xml
+Sitemap: https://onexfitness.helyonex.com/sitemap.xml

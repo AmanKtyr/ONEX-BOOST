@@ -56,7 +56,7 @@ def add_new_enquiry(request):
                         request=request,
                         to_number=enquiry.mobile_number,
                         name=enquiry.name,
-                        gym_name=gym.name if gym else "ONEXIVA Gym Management",
+                        gym_name=gym.name if gym else "OneX-Fitness Gym Management",
                         gym_contact_number=gym.phone if gym else "N/A",
                         gym_logo_url=logo_url
                     )

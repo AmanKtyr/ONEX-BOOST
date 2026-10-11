@@ -1,5 +1,5 @@
 """
-Enterprise-grade Backup & Disaster Recovery Service for ONEXIVASaaS.
+Enterprise-grade Backup & Disaster Recovery Service for OneX-FitnessSaaS.
 Handles Full Project, Single Gym Tenant, and Media Backups & Restorations.
 """
 

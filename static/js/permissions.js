@@ -1,5 +1,5 @@
 /**
- * ONEXIVAGYM Management Software
+ * OneX-FitnessGYM Management Software
  * Role-Based Permissions & Sub-Admin Matrix Controller
  * 
  * Provides:

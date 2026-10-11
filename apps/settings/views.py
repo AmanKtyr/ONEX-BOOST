@@ -152,7 +152,7 @@ def request_plan_upgrade(request):
     if not clean_phone.startswith('91') and len(clean_phone) == 10:
         clean_phone = '91' + clean_phone
     wa_text = (
-        f"Hello ONEXIVA Team, I want to upgrade the SaaS subscription plan for our gym *{gym.name}* (ID: {gym.gym_id}).\n"
+        f"Hello OneX-Fitness Team, I want to upgrade the SaaS subscription plan for our gym *{gym.name}* (ID: {gym.gym_id}).\n"
         f"Current Plan: *{curr_name}*\n"
         f"Requested Plan: *{target_plan_name}*\n"
         f"Contact: {contact_phone}\n"

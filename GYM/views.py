@@ -12,13 +12,16 @@ def help_view(request):
             return redirect('trainer_portal:dashboard')
     gym = getattr(request, 'gym', None)
     
-    superadmin_phone = "+91 92059 83996"
-    superadmin_email = "bhattsquare1@gmail.com"
+    from apps.superadmin.models import SystemSetting
+    sys_setting = SystemSetting.get_settings()
+    superadmin_phone = sys_setting.support_phone or "+91 63923 48731"
+    superadmin_email = sys_setting.support_email or "support@helyonex.com"
     
     context = {
         'gym': gym,
         'superadmin_phone': superadmin_phone,
         'superadmin_email': superadmin_email,
+        'system_setting': sys_setting,
     }
     return render(request, 'help.html', context)
 

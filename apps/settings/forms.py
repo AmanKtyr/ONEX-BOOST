@@ -19,7 +19,7 @@ class PaymentSettingForm(forms.ModelForm):
         if 'bank_name' in self.fields:
             self.fields['bank_name'].widget.attrs['placeholder'] = 'e.g. HDFC Bank, State Bank of India'
         if 'account_holder_name' in self.fields:
-            self.fields['account_holder_name'].widget.attrs['placeholder'] = 'e.g. ONEXIVA Fitness Hub / John Doe'
+            self.fields['account_holder_name'].widget.attrs['placeholder'] = 'e.g. OneX-Fitness Fitness Hub / John Doe'
         if 'account_number' in self.fields:
             self.fields['account_number'].widget.attrs['placeholder'] = 'e.g. 50100234567890'
         if 'ifsc_code' in self.fields:

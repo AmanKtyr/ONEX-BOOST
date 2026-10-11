@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}PT Invoice #{{ pt_invoice.id }} - {{ system_setting.platform_name|default:"ONEXIVA" }} GYM{% endblock title %}
+{% block title %}PT Invoice #{{ pt_invoice.id }} - {{ system_setting.platform_name|default:"OneX-Fitness" }} GYM{% endblock title %}
 
 {% block extra_css %}
 <style>
@@ -298,7 +298,7 @@
                     {% if pt_invoice.comment %}
                         <div class="small text-muted"><strong>Notes:</strong> {{ pt_invoice.comment }}</div>
                     {% endif %}
-                    <div class="small text-muted mt-2">Computer generated personal training tax receipt issued by {{ system_setting.platform_name|default:"ONEXIVA" }}.</div>
+                    <div class="small text-muted mt-2">Computer generated personal training tax receipt issued by {{ system_setting.platform_name|default:"OneX-Fitness" }}.</div>
                 </div>
 
                 <div class="col-md-5 text-md-right mt-3 mt-md-0">

@@ -33,11 +33,11 @@ BASE_URL = os.environ.get('BASE_URL', 'https://fitstack.nextgenapplication.com')
 
 # Safely split hosts and origins (removes accidental spaces)
 
-ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', 'onexiva.com,fitstack.nextgenapplication.com,127.0.0.1,localhost').split(',') if h.strip()]
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', 'OneX-Fitness.com,fitstack.nextgenapplication.com,127.0.0.1,localhost').split(',') if h.strip()]
 for default_host in ['localhost', '127.0.0.1', 'testserver']:
     if default_host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(default_host)
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://onexiva.com,https://fitstack.nextgenapplication.com,https://fitness.nextgenapplication.com').split(',')
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://OneX-Fitness.com,https://fitstack.nextgenapplication.com,https://fitness.nextgenapplication.com').split(',')
 
 # HTTPS Security - Conditional based on DEBUG
 if DEBUG:

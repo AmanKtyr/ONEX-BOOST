@@ -115,16 +115,13 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <div class="sidebar-company-info text-center py-3">
     <a href="{% url 'superadmin:dashboard' %}" class="d-inline-block text-decoration-none">
-      {% if system_setting and system_setting.platform_logo %}
-        <img src="{{ system_setting.platform_logo.url }}" alt="{{ system_setting.platform_name|default:'Logo' }}" class="img-fluid rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: contain; border: 3px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.15); background: #ffffff; padding: 6px;">
-      {% elif system_setting and system_setting.platform_favicon %}
-        <img src="{{ system_setting.platform_favicon.url }}" alt="{{ system_setting.platform_name|default:'Logo' }}" class="img-fluid rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: contain; border: 3px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.15); background: #ffffff; padding: 6px;">
-      {% else %}
-        <img src="{% static 'images/favicon.png' %}" alt="Logo" class="img-fluid rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: contain; border: 3px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.15); background: #ffffff; padding: 6px;">
-      {% endif %}
+      <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="{{ system_setting.platform_name|default:'OneX-Fitness' }}" class="img-fluid mb-2" style="max-height: 48px; max-width: 170px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));">
     </a>
-    <h5 class="text-white font-weight-bold mb-1">{{ system_setting.platform_name|default:"ONEXIVA" }}</h5>
-    <p class="company-slogan small text-white-50 mb-0">{{ system_setting.tagline|default:"Powering Smarter Fitness Businesses" }}</p>
+    <h5 class="text-white font-weight-bold mb-0" style="font-size: 1.05rem; letter-spacing: 0.3px;">{{ system_setting.platform_name|default:"OneX-Fitness" }}</h5>
+    <div class="d-inline-flex align-items-center mt-1 px-2 py-0.5 rounded-pill" style="background: rgba(255,255,255,0.12);">
+      <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" style="width: 14px; height: 14px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+      <span class="text-white small" style="font-size: 10.5px; font-weight: 600; letter-spacing: 0.4px;">HELYONEX PRODUCT</span>
+    </div>
   </div>
 
   <ul class="nav">
@@ -264,6 +261,13 @@
             <i class="mdi mdi-logout"></i> Sign Out
           </a>
         </div>
+      </div>
+    </li>
+
+    <li class="nav-item mt-3 mb-2 text-center">
+      <div class="px-3 py-2 d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.08); border-radius: 8px; margin: 0 10px;">
+        <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" style="width: 18px; height: 18px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
+        <span class="text-white-50" style="font-size: 11px; letter-spacing: 0.5px;">Powered by <strong class="text-white">HELYONEX</strong></span>
       </div>
     </li>
   </ul>

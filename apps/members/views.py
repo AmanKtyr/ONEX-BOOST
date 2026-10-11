@@ -97,7 +97,7 @@ def add_new_member(request):
                     'mobile': member.mobile_number,
                     'email': member.email or '',
                     'password': raw_password,
-                    'gym_name': gym.name if gym else 'ONEXIVA Gym',
+                    'gym_name': gym.name if gym else 'OneX-Fitness Gym',
                     'login_url': request.build_absolute_uri('/login/'),
                 }
 
@@ -930,7 +930,7 @@ def reset_member_password(request, member_id):
     user, raw_pwd = member.create_or_update_user_account(raw_password=custom_pwd)
     
     login_url = request.build_absolute_uri('/login/')
-    share_text = f"*ONEXIVA Gym Password Reset*\n\nHi {member.name},\nYour account password has been reset successfully.\n\n• *Username / ID:* {member.member_id}\n• *Mobile:* {member.mobile_number}\n• *New Password:* {raw_pwd}\n• *Login URL:* {login_url}\n\nYou can log in using your Mobile Number or Username."
+    share_text = f"*OneX-Fitness Gym Password Reset*\n\nHi {member.name},\nYour account password has been reset successfully.\n\n• *Username / ID:* {member.member_id}\n• *Mobile:* {member.mobile_number}\n• *New Password:* {raw_pwd}\n• *Login URL:* {login_url}\n\nYou can log in using your Mobile Number or Username."
     
     return JsonResponse({
         'status': 'success',

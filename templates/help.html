@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Help Center & System Guide - ONEXIVA GYM Management{% endblock %}
+{% block title %}Help Center & System Guide - OneX-Fitness GYM Management{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -424,7 +424,7 @@
 
   <!-- Clean Top Search Header -->
   <div class="help-hero-card text-center">
-    <h2 class="help-hero-title mb-1">ONEXIVA Help Center & System Guide</h2>
+    <h2 class="help-hero-title mb-1">OneX-Fitness Help Center & System Guide</h2>
     <p class="help-hero-subtitle">
       Comprehensive documentation of every page, URL route, operational pipeline, and permission flow across your gym management software.
     </p>
@@ -527,24 +527,25 @@
               <i class="mdi mdi-phone" style="font-size: 14px;"></i>
             </div>
             <div style="min-width: 0; flex: 1;">
-              <span class="d-block font-weight-bold text-dark text-truncate">{{ superadmin_phone|default:'+91 92059 83996' }}</span>
+              <span class="d-block font-weight-bold text-dark text-truncate">{{ superadmin_phone|default:'+91 63923 48731' }}</span>
             </div>
           </a>
 
-          <a href="mailto:{{ superadmin_email|default:'bhattsquare1@gmail.com' }}" 
+          <a href="mailto:{{ superadmin_email|default:'support@helyonex.com' }}" 
              class="d-flex align-items-center p-2 mb-2 bg-white rounded border text-decoration-none text-dark" 
              style="font-size: 0.74rem; transition: border-color 0.15s ease;"
-             title="{{ superadmin_email|default:'bhattsquare1@gmail.com' }}">
+             title="{{ superadmin_email|default:'support@helyonex.com' }}">
             <div class="rounded bg-primary text-white d-flex align-items-center justify-content-center mr-2 me-2" style="width: 28px; height: 28px; min-width: 28px;">
               <i class="mdi mdi-email" style="font-size: 14px;"></i>
             </div>
             <div style="min-width: 0; flex: 1;">
-              <span class="d-block font-weight-bold text-dark text-truncate" style="font-size: 0.72rem;">{{ superadmin_email|default:'bhattsquare1@gmail.com' }}</span>
+              <span class="d-block font-weight-bold text-dark text-truncate" style="font-size: 0.72rem;">{{ superadmin_email|default:'support@helyonex.com' }}</span>
             </div>
           </a>
 
-          <div class="text-center mt-2 pt-2 border-top">
-            <span class="text-muted" style="font-size: 0.72rem;">ONEXIVA System v3.6.14</span>
+          <div class="text-center mt-2 pt-2 border-top d-flex align-items-center justify-content-center gap-1">
+            <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" style="width: 14px; height: 14px; border-radius: 50%; object-fit: cover; margin-right: 4px;">
+            <span class="text-muted" style="font-size: 0.72rem;">OneX-Fitness by HELYONEX</span>
           </div>
         </div>
 
@@ -580,7 +581,7 @@
               <h5 class="font-weight-bold text-dark mb-1">
                 <i class="mdi mdi-rocket-launch-outline text-primary mr-1"></i> Complete Gym Operational Lifecycle & System Map
               </h5>
-              <small class="text-muted">How ONEXIVA connects leads, admissions, payments, QR check-ins, PT coaching, and financials.</small>
+              <small class="text-muted">How OneX-Fitness connects leads, admissions, payments, QR check-ins, PT coaching, and financials.</small>
             </div>
             <a href="{% url 'dashboard' %}" class="btn btn-primary btn-sm font-weight-bold">
               <i class="mdi mdi-view-dashboard mr-1"></i> Open Dashboard
@@ -1257,7 +1258,7 @@
                 </button>
                 <div id="qatt1" class="collapse" data-bs-parent="#accAtt" data-parent="#accAtt">
                   <div class="faq-content">
-                    <p class="mb-2">A static QR code can be photographed and shared over WhatsApp, allowing members to check in from home. ONEXIVA eliminates this via two security layers:</p>
+                    <p class="mb-2">A static QR code can be photographed and shared over WhatsApp, allowing members to check in from home. OneX-Fitness eliminates this via two security layers:</p>
                     <ol class="mb-0 pl-3">
                       <li><strong>Dynamic Auto-Refresh:</strong> The desk QR code refreshes periodically.</li>
                       <li><strong>4-Digit PIN Authentication:</strong> Each member must enter their secret 4-digit security PIN upon scanning to confirm physical identity.</li>

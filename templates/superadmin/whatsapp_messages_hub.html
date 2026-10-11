@@ -1,7 +1,7 @@
 {% extends 'superadmin/base.html' %}
 {% load static %}
 
-{% block title %}WhatsApp Console & Message Hub | ONEXIVA Superadmin{% endblock title %}
+{% block title %}WhatsApp Console & Message Hub | OneX-Fitness Superadmin{% endblock title %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
@@ -683,7 +683,7 @@
                     <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('lead')">Lead Followup</button>
                     <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('due')">Payment Reminder</button>
                     <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('expiry')">Membership Renewal</button>
-                    <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('demo')">ONEXIVA Demo Walkthrough</button>
+                    <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('demo')">OneX-Fitness Demo Walkthrough</button>
                     <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('support')">Support Greeting</button>
                 </div>
 
@@ -817,7 +817,7 @@
                                         <i class="mdi mdi-domain text-primary mr-1"></i>{{ log.gym.name }}
                                     </div>
                                 {% else %}
-                                    <span class="text-muted small">ONEXIVA Platform</span>
+                                    <span class="text-muted small">OneX-Fitness Platform</span>
                                 {% endif %}
                                 <span class="badge-soft badge-soft-secondary mt-1" style="font-size: 0.68rem; padding: 2px 6px;">
                                     {{ log.get_message_type_display }}
@@ -1065,7 +1065,7 @@
                         <div class="d-flex flex-wrap">
                             <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1" onclick="insertModalTemplate('lead')">Lead Inquiry Followup</button>
                             <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1" onclick="insertModalTemplate('renewal')">Subscription Renewal</button>
-                            <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1" onclick="insertModalTemplate('demo')">ONEXIVA Demo Link</button>
+                            <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1" onclick="insertModalTemplate('demo')">OneX-Fitness Demo Link</button>
                         </div>
                     </div>
 
@@ -1213,7 +1213,7 @@
             var avatarClass = 'wa-avatar';
             if (c.recipient_type && c.recipient_type.toLowerCase().indexOf('lead') !== -1) {
                 avatarClass += ' wa-avatar-lead';
-            } else if (c.gym_name && c.gym_name !== 'ONEXIVA Platform') {
+            } else if (c.gym_name && c.gym_name !== 'OneX-Fitness Platform') {
                 avatarClass += ' wa-avatar-gym';
             }
 
@@ -1308,7 +1308,7 @@
         document.getElementById('activeContactType').innerText = contact.recipient_type || 'Contact';
 
         var detailsText = `${contact.phone}`;
-        if (contact.gym_name && contact.gym_name !== 'ONEXIVA Platform') {
+        if (contact.gym_name && contact.gym_name !== 'OneX-Fitness Platform') {
             detailsText += ` • ${contact.gym_name}`;
         }
         document.getElementById('activeContactDetails').innerText = detailsText;
@@ -1537,15 +1537,15 @@
         var input = document.getElementById('composerInput');
 
         if (type === 'lead') {
-            input.value = `Hello ${name}, thank you for reaching out to ONEXIVA! When is a good time for a quick 5-minute walkthrough of our gym management system?`;
+            input.value = `Hello ${name}, thank you for reaching out to OneX-Fitness! When is a good time for a quick 5-minute walkthrough of our gym management system?`;
         } else if (type === 'due') {
             input.value = `Dear ${name}, this is a gentle payment reminder regarding your pending membership balance. Kindly clear the dues or reach out to us if you need any assistance.`;
         } else if (type === 'expiry') {
             input.value = `Hello ${name}, your fitness membership plan is due for renewal soon. Renew today to enjoy uninterrupted access to workouts and personalized training!`;
         } else if (type === 'demo') {
-            input.value = `Hi ${name}! Check out the ONEXIVA live software demo at https://fitstack.com - discover automatic billing, member attendance, and WhatsApp automation.`;
+            input.value = `Hi ${name}! Check out the OneX-Fitness live software demo at https://fitstack.com - discover automatic billing, member attendance, and WhatsApp automation.`;
         } else if (type === 'support') {
-            input.value = `Hello ${name}, ONEXIVASupport here! How may we assist you today?`;
+            input.value = `Hello ${name}, OneX-FitnessSupport here! How may we assist you today?`;
         }
 
         input.focus();
@@ -1566,11 +1566,11 @@
         var name = document.getElementById('modalRecipientName').value || 'Customer';
         var textarea = document.getElementById('modalMessageContent');
         if (type === 'lead') {
-            textarea.value = `Hello ${name}, thank you for contacting ONEXIVA! We noticed your inquiry regarding our gym software platform. When would be a good time for a quick walkthrough demo?`;
+            textarea.value = `Hello ${name}, thank you for contacting OneX-Fitness! We noticed your inquiry regarding our gym software platform. When would be a good time for a quick walkthrough demo?`;
         } else if (type === 'renewal') {
-            textarea.value = `Hello ${name}, greetings from ONEXIVA! This is a friendly reminder regarding your platform subscription plan renewal. Please let us know if you need assistance with payment or upgrades.`;
+            textarea.value = `Hello ${name}, greetings from OneX-Fitness! This is a friendly reminder regarding your platform subscription plan renewal. Please let us know if you need assistance with payment or upgrades.`;
         } else if (type === 'demo') {
-            textarea.value = `Hi ${name}! Check out ONEXIVA live demo at: https://fitstack.com. Discover automated billing, WhatsApp reminders, and member portal tools!`;
+            textarea.value = `Hi ${name}! Check out OneX-Fitness live demo at: https://fitstack.com. Discover automated billing, WhatsApp reminders, and member portal tools!`;
         }
     }
 

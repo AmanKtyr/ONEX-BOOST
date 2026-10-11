@@ -1464,7 +1464,7 @@ def whatsapp_messages_hub(request):
                 recipient_phone=clean_p or inq.phone,
                 recipient_type='Website Lead',
                 message_type='lead',
-                message_content=f"Hello {inq.first_name}! Thank you for your inquiry about '{inq.get_inquiry_type_display()}'. How can the ONEXIVA platform assist your fitness business today?",
+                message_content=f"Hello {inq.first_name}! Thank you for your inquiry about '{inq.get_inquiry_type_display()}'. How can the OneX-Fitness platform assist your fitness business today?",
                 status=status,
                 error_message=err,
                 provider='twilio',
@@ -1665,7 +1665,7 @@ def whatsapp_conversations_api(request):
                 'clean_digits': key,
                 'name': log.recipient_name or raw_phone,
                 'recipient_type': log.recipient_type or 'Contact',
-                'gym_name': log.gym.name if log.gym else 'ONEXIVA Platform',
+                'gym_name': log.gym.name if log.gym else 'OneX-Fitness Platform',
                 'gym_id': log.gym.id if log.gym else None,
                 'last_message': log.message_content or '',
                 'last_time': log.created_at.strftime('%I:%M %p'),
@@ -1720,7 +1720,7 @@ def whatsapp_thread_api(request, phone):
         'phone': phone,
         'clean_phone': latest_log.clean_phone if latest_log else digits,
         'recipient_type': latest_log.recipient_type if latest_log else 'Contact',
-        'gym_name': latest_log.gym.name if (latest_log and latest_log.gym) else 'ONEXIVA Platform',
+        'gym_name': latest_log.gym.name if (latest_log and latest_log.gym) else 'OneX-Fitness Platform',
         'gym_id': latest_log.gym.id if (latest_log and latest_log.gym) else None,
         'direct_chat_url': latest_log.direct_chat_url if latest_log else f"https://wa.me/{digits}",
     }
@@ -1887,10 +1887,10 @@ def system_settings_view(request):
                     use_ssl=use_ssl,
                     timeout=12,
                 )
-                platform_name = setting.platform_name or 'ONEXIVA'
+                platform_name = setting.platform_name or 'OneX-Fitness'
                 timestamp_str = timezone.now().strftime('%d %b %Y, %I:%M:%S %p')
                 subject = f"[{platform_name}] SMTP Gateway Test Verification"
-                text_body = f"Hello,\n\nThis is a verification test from {platform_name}.\nYour Outbound Email & SMTP Gateway has been successfully configured and connected.\n\nDispatched at: {timestamp_str}\nHost: {host}:{port}\nSender: {from_email}\n\nONEXIVA SaaS Platform"
+                text_body = f"Hello,\n\nThis is a verification test from {platform_name}.\nYour Outbound Email & SMTP Gateway has been successfully configured and connected.\n\nDispatched at: {timestamp_str}\nHost: {host}:{port}\nSender: {from_email}\n\nOneX-Fitness SaaS Platform"
 
                 html_body = f"""
                 <div style="max-width:600px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid #e2e8f0;font-family:sans-serif;">

@@ -83,7 +83,7 @@ def add_trainer(request):
                     'mobile': trainer.phone or '',
                     'email': trainer.email or '',
                     'password': raw_password,
-                    'gym_name': gym.name if gym else 'ONEXIVA Gym',
+                    'gym_name': gym.name if gym else 'OneX-Fitness Gym',
                     'login_url': request.build_absolute_uri('/login/'),
                 }
 
@@ -283,7 +283,7 @@ def reset_trainer_password(request, trainer_id):
     user, raw_pwd = trainer.create_or_update_user_account(raw_password=custom_pwd)
     
     login_url = request.build_absolute_uri('/login/')
-    share_text = f"*ONEXIVA Gym Password Reset*\n\nHi {trainer.name},\nYour trainer account password has been reset successfully.\n\n• *Username / ID:* {trainer.trainer_id}\n• *Mobile:* {trainer.phone or 'N/A'}\n• *New Password:* {raw_pwd}\n• *Login URL:* {login_url}\n\nYou can log in using your Mobile Number or Username."
+    share_text = f"*OneX-Fitness Gym Password Reset*\n\nHi {trainer.name},\nYour trainer account password has been reset successfully.\n\n• *Username / ID:* {trainer.trainer_id}\n• *Mobile:* {trainer.phone or 'N/A'}\n• *New Password:* {raw_pwd}\n• *Login URL:* {login_url}\n\nYou can log in using your Mobile Number or Username."
     
     return JsonResponse({
         'status': 'success',

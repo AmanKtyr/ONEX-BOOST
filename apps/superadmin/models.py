@@ -256,12 +256,12 @@ class NotificationUserStatus(models.Model):
 
 class SystemSetting(models.Model):
     # Platform Identity
-    platform_name = models.CharField(max_length=150, default="ONEXIVA")
+    platform_name = models.CharField(max_length=150, default="OneX-Fitness")
     tagline = models.CharField(max_length=255, default="Powering Smarter Fitness Businesses", blank=True)
-    company_name = models.CharField(max_length=200, default="ONEXIVA (A HELYONEX Product)", blank=True)
-    support_email = models.EmailField(default="support@onexiva.com", blank=True)
+    company_name = models.CharField(max_length=200, default="OneX-Fitness (A HELYONEX Product)", blank=True)
+    support_email = models.EmailField(default="support@helyonex.com", blank=True)
     support_phone = models.CharField(max_length=30, default="+91 88875 58415", blank=True)
-    website_url = models.URLField(default="https://onexiva.com", blank=True)
+    website_url = models.URLField(default="https://OneX-Fitness.com", blank=True)
     currency_symbol = models.CharField(max_length=10, default="₹")
     currency_code = models.CharField(max_length=10, default="INR")
     timezone = models.CharField(max_length=50, default="Asia/Kolkata")
@@ -275,7 +275,7 @@ class SystemSetting(models.Model):
     allow_public_registration = models.BooleanField(default=True, help_text="Allow new gyms to self-register from public portal")
     global_whatsapp_master = models.BooleanField(default=True, help_text="Master kill-switch for automated WhatsApp notifications")
     maintenance_mode = models.BooleanField(default=False, help_text="Enable system-wide maintenance mode")
-    maintenance_message = models.TextField(default="ONEXIVA is currently undergoing scheduled maintenance. We'll be back shortly!", blank=True)
+    maintenance_message = models.TextField(default="OneX-Fitness is currently undergoing scheduled maintenance. We'll be back shortly!", blank=True)
 
     # Email / SMTP Settings
     smtp_host = models.CharField(max_length=255, blank=True, null=True, help_text="e.g. smtp.gmail.com")
@@ -368,4 +368,4 @@ class SaaSUpgradeRequest(models.Model):
     def __str__(self):
         plan_name = self.target_plan.name if self.target_plan else 'Custom Upgrade'
         return f"{self.gym.name} - Request: {plan_name} ({self.get_status_display()})"
-
+

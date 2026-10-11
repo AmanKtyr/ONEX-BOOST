@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ system_setting.platform_name|default:"ONEXIVA" }} GYM Management Software - Login</title>
+  <title>{{ system_setting.platform_name|default:"OneX-Fitness" }} GYM Management Software - Login</title>
   <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}" />
   <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}" />
   <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}" />
@@ -207,7 +207,7 @@
       font-weight: 500;
     }
 
-    /* Role Badge Buttons (Styled to Match ONEXIVATheme) */
+    /* Role Badge Buttons (Styled to Match OneX-FitnessTheme) */
     .account-role-btn {
       display: inline-flex;
       align-items: center;
@@ -263,11 +263,17 @@
         <div class="row flex-grow">
           <div class="col-11 col-sm-8 col-md-6 col-lg-4 mx-auto">
             <div class="auth-form-light text-left p-4 p-sm-5">
-              <div class="brand-logo text-center">
-                <img src="{% static 'images/onexiva-logo.png' %}" alt="ONEXIVA" class="logo-img" style="max-height: 75px; width: auto; object-fit: contain;">
+              <div class="brand-logo text-center mb-3">
+                <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="OneX-Fitness" class="logo-img" style="max-height: 70px; width: auto; object-fit: contain;">
+                <div class="d-flex align-items-center justify-content-center mt-2">
+                  <div class="d-inline-flex align-items-center px-2.5 py-1 rounded-pill" style="background: #f1f5f9; border: 1px solid #e2e8f0;">
+                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" style="width: 16px; height: 16px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
+                    <span style="font-size: 11px; font-weight: 600; color: #475569; letter-spacing: 0.5px;">A HELYONEX PRODUCT</span>
+                  </div>
+                </div>
               </div>
               <h4 class="text-center font-weight-bold">Welcome Back !</h4>
-              <h6 class="font-weight-light text-center">Sign in to continue to {{ system_setting.platform_name|default:"ONEXIVA" }}.</h6>
+              <h6 class="font-weight-light text-center text-muted">Sign in to continue to {{ system_setting.platform_name|default:"OneX-Fitness" }}.</h6>
               {% if messages %}
                 <div class="alert alert-danger" role="alert">
                   {% for message in messages %}
@@ -350,6 +356,12 @@
                 </div>
                 <div class="text-center mt-4">
                   <a href="/" class="btn btn-back-web btn-block py-2">Back to Website</a>
+                </div>
+                <div class="text-center mt-4 pt-3" style="border-top: 1px solid #edf2f7;">
+                  <span class="text-muted small d-inline-flex align-items-center">
+                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" style="width: 14px; height: 14px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
+                    Powered by <strong class="text-dark ml-1 mr-1">HELYONEX</strong> &bull; &copy; {% now "Y" %}
+                  </span>
                 </div>
               </form>
             </div>

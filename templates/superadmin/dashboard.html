@@ -1,7 +1,7 @@
 {% extends 'superadmin/base.html' %}
 {% load static humanize %}
 
-{% block title %}Super Admin Dashboard | {{ system_setting.platform_name|default:"ONEXIVA" }}{% endblock %}
+{% block title %}Super Admin Dashboard | {{ system_setting.platform_name|default:"OneX-Fitness" }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
@@ -396,7 +396,7 @@
                 <small class="text-muted">{{ inq.created_at|date:"d M, H:i" }}</small>
                 <div class="action-buttons-wrap">
                   <a href="tel:{{ inq.phone }}" class="btn-icon-action" title="Call"><i class="fas fa-phone text-primary"></i></a>
-                  <a href="https://wa.me/91{{ inq.phone }}?text=Hello%20{{ inq.first_name }},%20greetings%20from%20ONEXIVA!" target="_blank" class="btn-icon-action" title="WhatsApp"><i class="fab fa-whatsapp text-success"></i></a>
+                  <a href="https://wa.me/91{{ inq.phone }}?text=Hello%20{{ inq.first_name }},%20greetings%20from%20OneX-Fitness!" target="_blank" class="btn-icon-action" title="WhatsApp"><i class="fab fa-whatsapp text-success"></i></a>
                 </div>
               </div>
             </li>

@@ -135,7 +135,7 @@
       <img src="{{ gym.logo.url }}" alt="Logo" class="img-fluid rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
 
     {% else %}
-      <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="img-fluid rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="img-fluid rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
     {% endif %}
   
     <h5 class="text-white font-weight-bold mb-1">{{ gym.name|default:'GYM Name' }}</h5>
@@ -481,6 +481,13 @@
             <i class="mdi mdi-logout"></i> Sign Out
           </a>
         </div>
+      </div>
+    </li>
+
+    <li class="nav-item mt-3 mb-2 text-center">
+      <div class="px-3 py-2 d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.08); border-radius: 8px; margin: 0 10px;">
+        <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" style="width: 18px; height: 18px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
+        <span class="text-white-50" style="font-size: 11px; letter-spacing: 0.5px;">Powered by <strong class="text-white">HELYONEX</strong></span>
       </div>
     </li>
 

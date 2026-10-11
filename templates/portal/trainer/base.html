@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>{% block title %}Trainer Portal - {{ gym.name|default:'ONEXIVA Gym' }}{% endblock %}</title>
+  <title>{% block title %}Trainer Portal - {{ gym.name|default:'OneX-Fitness Gym' }}{% endblock %}</title>
 
   <!-- Google Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -179,7 +179,7 @@
             <img src="{{ gym.logo.url }}" alt="{{ gym.name }}" class="portal-brand-logo mr-2">
           {% else %}
             <div class="d-inline-flex align-items-center font-weight-bold text-primary mr-2" style="font-size: 1.25rem;">
-              <i class="fas fa-dumbbell mr-1"></i> {{ gym.name|default:'ONEXIVA Gym' }}
+              <i class="fas fa-dumbbell mr-1"></i> {{ gym.name|default:'OneX-Fitness Gym' }}
             </div>
           {% endif %}
         </a>
@@ -236,7 +236,7 @@
         <i class="fas fa-tools mr-3 text-warning" style="font-size: 1.25rem;"></i>
         <div>
           <div class="font-weight-bold" style="font-size: 0.88rem;">Platform Maintenance Active</div>
-          <div class="small" style="color: #b45309;">{{ system_setting.maintenance_message|default:"ONEXIVA is currently undergoing scheduled platform maintenance. Some operations may be temporarily restricted." }}</div>
+          <div class="small" style="color: #b45309;">{{ system_setting.maintenance_message|default:"OneX-Fitness is currently undergoing scheduled platform maintenance. Some operations may be temporarily restricted." }}</div>
         </div>
       </div>
       {% endif %}

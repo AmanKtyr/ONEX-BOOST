@@ -91,17 +91,11 @@
       <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
         <div class="auth-form-light text-start p-4 p-md-5 p-lg-5 login-container shadow-lg">
           <div class="brand-logo mb-3 text-center">
-            <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="{{ system_setting.platform_name|default:'OneX-Fitness Logo' }}" class="img-fluid" style="max-height: 70px; width: auto; object-fit: contain;">
-            <div class="d-flex align-items-center justify-content-center mt-2">
-              <div class="d-inline-flex align-items-center px-2.5 py-1 rounded-pill" style="background: #f1f5f9; border: 1px solid #e2e8f0;">
-                <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" style="width: 16px; height: 16px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
-                <span style="font-size: 11px; font-weight: 600; color: #475569; letter-spacing: 0.5px;">A HELYONEX PRODUCT</span>
-              </div>
-            </div>
+            <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="{{ system_setting.platform_name|default:'OneX-Fitness' }}" class="img-fluid" style="max-height: 52px; width: auto; object-fit: contain;">
           </div>
           
-          <h4 class="fw-bold mb-2">Hello! Let's get started</h4>
-          <h6 class="fw-light mb-4 text-muted">Sign in to continue as Super Admin</h6>
+          <h4 class="fw-bold mb-1 text-center">Super Admin Portal</h4>
+          <h6 class="fw-light mb-4 text-muted text-center" style="font-size: 0.88rem;">Sign in to continue to {{ system_setting.platform_name|default:"OneX-Fitness" }}</h6>
           
           {% if messages %}
           <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">

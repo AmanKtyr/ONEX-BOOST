@@ -20,141 +20,200 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #0b1120;
     }
     .content-wrapper {
-      background: radial-gradient(circle at 50% 25%, rgba(30, 64, 175, 0.35) 0%, rgba(15, 23, 42, 0.88) 80%), url('{% static "images/login-bg.png" %}');
+      background: radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.28) 0%, rgba(11, 17, 32, 0.92) 75%), url('{% static "images/login-bg.png" %}');
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
       background-attachment: fixed;
       min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
     }
-    .auth-form-light {
-      background: rgba(15, 23, 42, 0.75) !important;
-      backdrop-filter: blur(28px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    .auth-form-card {
+      background: rgba(15, 23, 42, 0.78) !important;
+      backdrop-filter: blur(24px) saturate(190%) !important;
+      -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.14) !important;
       border-radius: 24px !important;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 35px rgba(37, 99, 235, 0.18) !important;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75), 0 0 40px rgba(59, 130, 246, 0.16) !important;
       color: #ffffff;
-      padding: 2.25rem !important;
+      padding: 2.5rem 2.25rem !important;
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
     }
     .logo-badge-wrap {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       background: #ffffff;
-      padding: 8px 18px;
-      border-radius: 14px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.9);
+      padding: 10px 24px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.95);
       transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
     .logo-badge-wrap:hover {
       transform: translateY(-2px);
-      box-shadow: 0 14px 28px -4px rgba(0, 0, 0, 0.45), 0 0 0 1px #ffffff;
+      box-shadow: 0 14px 30px -4px rgba(0, 0, 0, 0.55), 0 0 0 1px #ffffff;
     }
     .logo-badge-wrap .logo-img {
       max-height: 48px;
-      max-width: 210px;
+      max-width: 220px;
       width: auto;
       object-fit: contain;
-      margin-bottom: 0 !important;
+      display: block;
+      margin: 0 !important;
     }
-    .auth-form-light h3 {
+    .auth-title {
       color: #ffffff !important;
       font-weight: 700;
-      letter-spacing: -0.02em;
+      font-size: 1.55rem;
+      letter-spacing: -0.025em;
+      margin-top: 1rem;
+      margin-bottom: 0.25rem;
     }
-    .auth-form-light .auth-subtitle {
+    .auth-subtitle {
       color: #94a3b8 !important;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
+      font-weight: 400;
+      margin-bottom: 1.75rem;
     }
     .login-label {
       color: #e2e8f0 !important;
       font-weight: 600 !important;
       font-size: 0.85rem !important;
       letter-spacing: 0.01em;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.5rem;
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .login-label i {
       color: #60a5fa;
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
-    .form-control {
+    .form-control,
+    .form-control-lg {
       background: rgba(255, 255, 255, 0.07) !important;
       border: 1px solid rgba(255, 255, 255, 0.16) !important;
       color: #ffffff !important;
-      font-weight: 500;
+      font-weight: 500 !important;
       border-radius: 12px !important;
       padding: 0.75rem 1rem !important;
       font-size: 0.94rem !important;
-      height: 48px;
+      height: 48px !important;
+      line-height: 1.5 !important;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .form-control:focus {
+    .form-control:focus,
+    .form-control-lg:focus {
       background: rgba(255, 255, 255, 0.12) !important;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35) !important;
       border-color: #3b82f6 !important;
       color: #ffffff !important;
     }
     .form-control::placeholder {
       color: #64748b !important;
+      opacity: 0.8;
     }
-    .input-group .form-control {
-      border-top-right-radius: 0 !important;
-      border-bottom-right-radius: 0 !important;
+
+    /* Override browser autofill light background */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #131c31 inset !important;
+      -webkit-text-fill-color: #ffffff !important;
+      caret-color: #ffffff !important;
+      border-color: rgba(255, 255, 255, 0.18) !important;
+      transition: background-color 5000s ease-in-out 0s;
     }
-    .input-group-text {
-      background: rgba(255, 255, 255, 0.07) !important;
-      border: 1px solid rgba(255, 255, 255, 0.16) !important;
-      border-left: none !important;
-      color: #94a3b8 !important;
-      border-top-right-radius: 12px !important;
-      border-bottom-right-radius: 12px !important;
-      padding: 0 14px !important;
-      transition: color 0.2s ease, background 0.2s ease;
+
+    /* Password Input with Embedded Eye Icon */
+    .password-input-group {
+      position: relative;
+      display: flex;
+      width: 100%;
     }
-    .input-group-text:hover {
-      color: #ffffff !important;
-      background: rgba(255, 255, 255, 0.12) !important;
+    .password-input-group .form-control {
+      padding-right: 48px !important;
+      border-radius: 12px !important;
     }
+    .password-toggle-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 48px;
+      width: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      z-index: 5;
+      font-size: 1.05rem;
+      transition: color 0.2s ease;
+      outline: none;
+    }
+    .password-toggle-btn:hover {
+      color: #ffffff;
+    }
+    .password-toggle-btn:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
     .auth-form-btn {
       background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      border: 1px solid rgba(255, 255, 255, 0.22) !important;
       border-radius: 12px !important;
       font-weight: 700 !important;
       font-size: 0.95rem !important;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       height: 48px;
       color: #ffffff !important;
-      box-shadow: 0 4px 18px rgba(37, 99, 235, 0.42) !important;
-      transition: all 0.25s ease;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45) !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
     }
     .auth-form-btn:hover {
       background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.6) !important;
+      box-shadow: 0 10px 26px rgba(37, 99, 235, 0.6) !important;
       color: #ffffff !important;
     }
+    .auth-form-btn:active {
+      transform: translateY(0);
+    }
+
     .form-check-label {
       color: #cbd5e1 !important;
       font-weight: 500;
-      font-size: 0.85rem;
+      font-size: 0.86rem;
+      cursor: pointer;
+      user-select: none;
     }
     .form-check-input {
       accent-color: #3b82f6;
       width: 16px;
       height: 16px;
       margin-top: 3px;
+      cursor: pointer;
     }
     .auth-link {
       color: #60a5fa !important;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       text-decoration: none;
       transition: color 0.2s;
     }
@@ -162,10 +221,11 @@
       color: #93c5fd !important;
       text-decoration: underline;
     }
+
     .btn-back-web {
-      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important;
       color: #e2e8f0 !important;
-      background: rgba(255, 255, 255, 0.06) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
       backdrop-filter: blur(8px);
       font-weight: 600 !important;
       font-size: 0.88rem !important;
@@ -174,18 +234,43 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 6px;
+      text-decoration: none;
       transition: all 0.2s ease;
     }
     .btn-back-web:hover {
-      background: rgba(255, 255, 255, 0.14) !important;
+      background: rgba(255, 255, 255, 0.12) !important;
       color: #ffffff !important;
-      border-color: rgba(255, 255, 255, 0.35) !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
       transform: translateY(-1px);
     }
-    .logo-img {
-      max-width: 250px;
-      height: auto;
-      margin-bottom: 1.5rem;
+
+    .auth-footer-brand {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 1.1rem;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .auth-footer-brand span {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-footer-brand .helyonex-logo {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .auth-footer-brand .helyonex-brand {
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin: 0 4px;
     }
 
     /* Multiple Accounts Alert */
@@ -317,116 +402,117 @@
 
 <body >
   <div class="container-scroller">
-    <div class="container-fluid page-body-wrapper full-page-wrapper">
-      <div class="content-wrapper d-flex align-items-center auth">
-        <div class="row flex-grow">
-          <div class="col-11 col-sm-8 col-md-6 col-lg-4 mx-auto">
-            <div class="auth-form-light text-left p-4 p-sm-5">
-              <div class="brand-logo text-center mb-3">
-                <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="OneX-Fitness" class="logo-img" style="max-height: 70px; width: auto; object-fit: contain;">
-                <div class="d-flex align-items-center justify-content-center mt-2">
-                  <div class="d-inline-flex align-items-center px-2.5 py-1 rounded-pill" style="background: #f1f5f9; border: 1px solid #e2e8f0;">
-                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" style="width: 16px; height: 16px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
-                    <span style="font-size: 11px; font-weight: 600; color: #475569; letter-spacing: 0.5px;">A HELYONEX PRODUCT</span>
-                  </div>
-                </div>
+    <div class="container-fluid page-body-wrapper full-page-wrapper p-0">
+      <div class="content-wrapper">
+        <div class="auth-form-card">
+          <div class="brand-logo text-center mb-3">
+            <div class="logo-badge-wrap">
+              <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="OneX-Fitness" class="logo-img">
+            </div>
+          </div>
+          <h2 class="text-center auth-title">Welcome Back!</h2>
+          <p class="text-center auth-subtitle">Sign in to continue to {{ system_setting.platform_name|default:"OneX-Fitness" }}</p>
+
+          {% if messages %}
+            <div class="alert alert-danger" role="alert" style="border-radius: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; font-size: 0.88rem;">
+              {% for message in messages %}
+                {{ message }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% if has_multiple_accounts %}
+            <div class="multiple-accounts-alert" role="alert">
+              <div class="alert-title">
+                <i class="mdi mdi-account-multiple-outline" style="font-size: 1.25rem;"></i>
+                <span>Multiple Accounts Found</span>
               </div>
-              <h4 class="text-center font-weight-bold">Welcome Back !</h4>
-              <h6 class="font-weight-light text-center text-muted">Sign in to continue to {{ system_setting.platform_name|default:"OneX-Fitness" }}.</h6>
-              {% if messages %}
-                <div class="alert alert-danger" role="alert">
-                  {% for message in messages %}
-                    {{ message }}
-                  {% endfor %}
-                </div>
-              {% endif %}
-              {% if has_multiple_accounts %}
-                <div class="multiple-accounts-alert" role="alert">
-                  <div class="alert-title">
-                    <i class="mdi mdi-account-multiple-outline" style="font-size: 1.25rem;"></i>
-                    <span>Multiple Accounts Found</span>
-                  </div>
-                  <p>The mobile number <strong>{{ entered_identifier }}</strong> is associated with multiple accounts. Please select your account below to proceed:</p>
-                </div>
-              {% endif %}
+              <p>The mobile number <strong>{{ entered_identifier }}</strong> is associated with multiple accounts. Please select your account below to proceed:</p>
+            </div>
+          {% endif %}
 
-              <form class="pt-2" id="login-form" method="post">
-                {% csrf_token %}
-                
-                <div class="form-group mb-3">
-                  <label for="identifier" class="login-label">Login Identifier</label>
-                  <input type="text" class="form-control form-control-lg" id="identifier" name="identifier" 
-                         value="{{ entered_identifier|default:'' }}" 
-                         placeholder="Mobile, Email, or Username" required>
-                </div>
+          <form id="login-form" method="post">
+            {% csrf_token %}
+            
+            <div class="form-group mb-3">
+              <label for="identifier" class="login-label">
+                <i class="mdi mdi-account-circle-outline"></i> Login Identifier
+              </label>
+              <input type="text" class="form-control" id="identifier" name="identifier" 
+                     value="{{ entered_identifier|default:'' }}" 
+                     placeholder="Mobile, Email, or Username" required autocomplete="username">
+            </div>
 
-                {% if has_multiple_accounts %}
-                <div class="form-group mb-3">
-                  <label class="login-label">Select Your Account</label>
-                  <div class="account-select-group">
-                    {% for acc in multiple_candidates %}
-                    <label class="account-select-card {% if forloop.first %}selected{% endif %}" onclick="selectAccount('{{ acc.username }}')">
-                      <div class="d-flex align-items-center">
-                        <input type="radio" name="selected_username" value="{{ acc.username }}" id="acc_{{ forloop.counter }}" {% if forloop.first %}checked{% endif %}>
-                        <div>
-                          <div class="account-name-text">{{ acc.name }}</div>
-                          <div class="account-extra-text">{{ acc.extra|default:acc.username }}</div>
-                        </div>
-                      </div>
-                      <span class="account-role-btn role-{{ acc.account_type|lower|slugify }}">
-                        {% if acc.account_type|lower == 'member' %}
-                          <i class="mdi mdi-account"></i>
-                        {% elif acc.account_type|lower == 'trainer' %}
-                          <i class="mdi mdi-dumbbell"></i>
-                        {% elif 'admin' in acc.account_type|lower %}
-                          <i class="mdi mdi-shield-crown-outline"></i>
-                        {% else %}
-                          <i class="mdi mdi-shield-account"></i>
-                        {% endif %}
-                        {{ acc.account_type }}
-                      </span>
-                    </label>
-                    {% endfor %}
-                  </div>
-                </div>
-                {% endif %}
-
-                <div class="form-group mb-3">
-                  <label for="password" class="login-label">Password</label>
-                  <div class="input-group">
-                    <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Password" required>
-                    <div class="input-group-append">
-                        <span class="input-group-text" id="toggle-password" style="cursor: pointer;">
-                            <i class="fa fa-eye" aria-hidden="true"></i>
-                        </span>
+            {% if has_multiple_accounts %}
+            <div class="form-group mb-3">
+              <label class="login-label">
+                <i class="mdi mdi-account-switch-outline"></i> Select Your Account
+              </label>
+              <div class="account-select-group">
+                {% for acc in multiple_candidates %}
+                <label class="account-select-card {% if forloop.first %}selected{% endif %}" onclick="selectAccount('{{ acc.username }}')">
+                  <div class="d-flex align-items-center">
+                    <input type="radio" name="selected_username" value="{{ acc.username }}" id="acc_{{ forloop.counter }}" {% if forloop.first %}checked{% endif %}>
+                    <div>
+                      <div class="account-name-text">{{ acc.name }}</div>
+                      <div class="account-extra-text">{{ acc.extra|default:acc.username }}</div>
                     </div>
                   </div>
-                </div>
-
-                <div class="mt-4">
-                  <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn shadow-sm" type="submit">SIGN IN</button>
-                </div>
-                <div class="my-3 d-flex justify-content-between align-items-center">
-                  <div class="form-check m-0">
-                    <label class="form-check-label">
-                      <input type="checkbox" class="form-check-input"> Keep me signed in </label>
-                  </div>
-                  <a href="#" class="auth-link" id="forgot-password-link">Forgot password?</a>
-                </div>
-                <div class="text-center mt-4">
-                  <a href="/" class="btn btn-back-web btn-block py-2">Back to Website</a>
-                </div>
-                <div class="text-center mt-4 pt-3" style="border-top: 1px solid #edf2f7;">
-                  <span class="text-muted small d-inline-flex align-items-center">
-                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" style="width: 14px; height: 14px; border-radius: 50%; object-fit: cover; margin-right: 6px;">
-                    Powered by <strong class="text-dark ml-1 mr-1">HELYONEX</strong> &bull; &copy; {% now "Y" %}
+                  <span class="account-role-btn role-{{ acc.account_type|lower|slugify }}">
+                    {% if acc.account_type|lower == 'member' %}
+                      <i class="mdi mdi-account"></i>
+                    {% elif acc.account_type|lower == 'trainer' %}
+                      <i class="mdi mdi-dumbbell"></i>
+                    {% elif 'admin' in acc.account_type|lower %}
+                      <i class="mdi mdi-shield-crown-outline"></i>
+                    {% else %}
+                      <i class="mdi mdi-shield-account"></i>
+                    {% endif %}
+                    {{ acc.account_type }}
                   </span>
-                </div>
-              </form>
+                </label>
+                {% endfor %}
+              </div>
             </div>
-              
+            {% endif %}
 
-          </div>
+            <div class="form-group mb-3">
+              <label for="password" class="login-label">
+                <i class="mdi mdi-lock-outline"></i> Password
+              </label>
+              <div class="password-input-group">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                <button class="password-toggle-btn" type="button" id="toggle-password" aria-label="Toggle password visibility">
+                  <i class="fa fa-eye" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <button class="btn btn-block auth-form-btn w-100" type="submit">SIGN IN</button>
+            </div>
+
+            <div class="my-3 d-flex justify-content-between align-items-center">
+              <div class="form-check m-0 d-flex align-items-center">
+                <input type="checkbox" class="form-check-input me-2" id="rememberMe">
+                <label class="form-check-label mb-0" for="rememberMe">Keep me signed in</label>
+              </div>
+              <a href="#" class="auth-link" id="forgot-password-link">Forgot password?</a>
+            </div>
+
+            <div class="mt-3">
+              <a href="/" class="btn-back-web">
+                <i class="mdi mdi-arrow-left"></i> Back to Website
+              </a>
+            </div>
+
+            <div class="auth-footer-brand">
+              <span>
+                <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" class="helyonex-logo">
+                <span>Powered by <strong class="helyonex-brand">HELYONEX</strong> &bull; &copy; {% now "Y" %}</span>
+              </span>
+            </div>
+          </form>
         </div>
       </div>
     </div>

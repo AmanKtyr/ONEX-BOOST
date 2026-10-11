@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Trash - Expenses{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'expenses' %}" class="text-decoration-none">
+                <i class="mdi mdi-cash-multiple mdi-18px"></i> Expenses
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <i class="mdi mdi-trash-can-outline mdi-18px"></i> Trash
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Trash - Expenses</h4>
+            <a href="{% url 'expenses' %}" class="btn btn-light btn-sm">
+                <i class="mdi mdi-arrow-left"></i> Back to Expenses
+            </a>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for expense in expenses %}
+                        <tr>
+                            <td data-label="#">{{ forloop.counter }}</td>
+                            <td data-label="Date">{{ expense.date }}</td>
+                            <td data-label="Category">
+                                <span class="badge bg-dark text-white">{{ expense.get_category_display }}</span>
+                            </td>
+                            <td data-label="Amount">₹ {{ expense.amount }}</td>
+                            <td data-label="Description" >
+                                {{ expense.description|default:"-" }}
+                            </td>
+                            <td data-label="Actions">
+                                <a href="{% url 'expense_restore' expense.pk %}" 
+                                   class="btn btn-sm btn-success"
+                                   onclick="return confirm('Restore this expense?');">
+                                    <i class="mdi mdi-restore"></i>
+                                </a>
+                                <a href="{% url 'expense_delete_permanent' expense.pk %}" 
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Permanently DELETE this expense? This cannot be undone.');">
+                                    <i class="mdi mdi-delete-forever"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <i class="mdi mdi-trash-can-outline mdi-48px text-muted d-block mb-3"></i>
+                                <h5>Trash is empty</h5>
+                                <p class="text-muted">No deleted expenses found.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="mt-4">
+                {% include 'includes/pagination.html' with page_obj=page_obj %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

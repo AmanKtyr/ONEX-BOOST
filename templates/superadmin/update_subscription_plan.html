@@ -1,0 +1,871 @@
+{% extends 'superadmin/base.html' %}
+{% load static %}
+
+{% block title %}Update Subscription Plan | ONEXIVASuperadmin{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<style>
+    /* Executive SaaS Plan Styling */
+    .plan-builder-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    .plan-builder-card .card-header-clean {
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .plan-builder-card .card-header-clean h5 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+    }
+    .plan-builder-card .card-header-clean h5 i {
+        margin-right: 0.5rem;
+        font-size: 1.25rem;
+    }
+    .form-section-body {
+        padding: 1.25rem;
+    }
+    .field-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.4rem;
+        display: block;
+    }
+    .field-hint {
+        font-size: 0.75rem;
+        color: #64748b;
+        margin-top: 0.25rem;
+    }
+    .quota-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+    .quota-box:focus-within {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        background: #ffffff;
+    }
+    .quota-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        margin-bottom: 0.5rem;
+    }
+    .quick-preset-chip {
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        background: #e2e8f0;
+        color: #334155;
+        cursor: pointer;
+        display: inline-block;
+        margin-right: 0.25rem;
+        margin-top: 0.35rem;
+        border: none;
+        transition: all 0.15s ease;
+    }
+    .quick-preset-chip:hover {
+        background: #3b82f6;
+        color: #ffffff;
+    }
+    /* Module Feature Toggle Card */
+    .module-toggle-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.85rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        transition: all 0.2s ease;
+    }
+    .module-toggle-card:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+    }
+    .module-info {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        margin-right: 1rem;
+    }
+    .module-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        margin-right: 0.85rem;
+        flex-shrink: 0;
+    }
+    .module-title {
+        font-weight: 600;
+        font-size: 0.88rem;
+        color: #1e293b;
+        margin-bottom: 0.1rem;
+    }
+    .module-desc {
+        font-size: 0.75rem;
+        color: #64748b;
+        line-height: 1.25;
+        margin: 0;
+    }
+
+    /* Live Preview Card */
+    .preview-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 85px;
+    }
+    .plan-preview-card {
+        border-radius: 14px;
+        border: 2px solid #e2e8f0;
+        background: #ffffff;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .plan-preview-header {
+        padding: 1.5rem 1.25rem 1rem;
+        text-align: center;
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: #ffffff;
+        position: relative;
+    }
+    .plan-preview-header.theme-emerald {
+        background: linear-gradient(135deg, #065f46 0%, #10b981 100%);
+    }
+    .plan-preview-header.theme-purple {
+        background: linear-gradient(135deg, #581c87 0%, #8b5cf6 100%);
+    }
+    .plan-preview-header.theme-amber {
+        background: linear-gradient(135deg, #78350f 0%, #f59e0b 100%);
+    }
+    .plan-preview-header.theme-dark {
+        background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+    }
+    .popular-ribbon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #f59e0b;
+        color: #ffffff;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+    .plan-preview-price {
+        font-size: 2.25rem;
+        font-weight: 800;
+        line-height: 1;
+        margin: 0.75rem 0 0.25rem;
+    }
+    .plan-preview-body {
+        padding: 1.25rem;
+    }
+    .preview-quota-pill {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.45rem 0.65rem;
+        background: #f8fafc;
+        border-radius: 6px;
+        margin-bottom: 0.4rem;
+        font-size: 0.8rem;
+    }
+    .preview-quota-pill span.quota-val {
+        font-weight: 700;
+        color: #0f172a;
+    }
+    .preview-feature-item {
+        font-size: 0.8rem;
+        color: #334155;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.4rem;
+    }
+    .preview-feature-item i.active {
+        color: #10b981;
+        margin-right: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .preview-feature-item i.inactive {
+        color: #cbd5e1;
+        margin-right: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .preview-feature-item.disabled-feat {
+        color: #94a3b8;
+        text-decoration: line-through;
+    }
+</style>
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'superadmin:subscription_plan_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-package-variant-closed mdi-18px"></i> Subscription Plans
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-pencil-circle-outline mdi-18px"></i> Edit Plan: {{ plan.name }}
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div>
+            <h3 class="font-weight-bold text-dark mb-1">Update SaaS Subscription Plan</h3>
+            <p class="text-muted small mb-0">Modify pricing, capacity limits, and enabled modules for <strong>{{ plan.name }}</strong>.</p>
+        </div>
+        <div class="mt-2 mt-md-0">
+            <a href="{% url 'superadmin:subscription_plan_list' %}" class="btn btn-outline-secondary btn-sm mr-2 shadow-xs">
+                <i class="mdi mdi-arrow-left mr-1"></i> Back to Plans
+            </a>
+            <a href="{% url 'superadmin:assign_subscription' %}?plan_id={{ plan.id }}" class="btn btn-success btn-sm shadow-xs font-weight-bold">
+                <i class="mdi mdi-tag-plus mr-1"></i> Assign to Gym
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-xs" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" id="planBuilderForm">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Left Column: Settings & Configuration (8 cols) -->
+            <div class="col-lg-8">
+                
+                <!-- CARD 1: Plan Commercials & Identity -->
+                <div class="plan-builder-card">
+                    <div class="card-header-clean">
+                        <h5><i class="mdi mdi-tag-text-outline text-primary"></i> 1. Plan Identity & Commercials</h5>
+                        <span class="badge badge-primary font-weight-normal px-2 py-1">Basic Settings</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="row">
+                            <div class="col-md-7 mb-3">
+                                <label for="id_name" class="field-label">Plan Name <span class="text-danger">*</span></label>
+                                {{ form.name }}
+                                <div class="field-hint">Display name shown to gyms (e.g. Starter Studio, Growth Pro, Enterprise).</div>
+                                {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-5 mb-3">
+                                <label for="id_plan_tier" class="field-label">Plan Tier / Category <span class="text-danger">*</span></label>
+                                {{ form.plan_tier }}
+                                {% if form.plan_tier.errors %}<div class="text-danger small mt-1">{{ form.plan_tier.errors.0 }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_tagline" class="field-label">Tagline / Subtitle</label>
+                            {{ form.tagline }}
+                            <div class="field-hint">One-sentence value proposition shown on cards and subscriber invoices.</div>
+                            {% if form.tagline.errors %}<div class="text-danger small mt-1">{{ form.tagline.errors.0 }}</div>{% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="id_price" class="field-label">Price (₹) <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light font-weight-bold">₹</span>
+                                    </div>
+                                    {{ form.price }}
+                                </div>
+                                {% if form.price.errors %}<div class="text-danger small mt-1">{{ form.price.errors.0 }}</div>{% endif %}
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="id_duration_months" class="field-label">Billing Cycle (Months) <span class="text-danger">*</span></label>
+                                {{ form.duration_months }}
+                                <div class="mt-1">
+                                    <button type="button" class="quick-preset-chip" onclick="setDuration(1)">1 M</button>
+                                    <button type="button" class="quick-preset-chip" onclick="setDuration(3)">3 M</button>
+                                    <button type="button" class="quick-preset-chip" onclick="setDuration(6)">6 M</button>
+                                    <button type="button" class="quick-preset-chip" onclick="setDuration(12)">1 Year</button>
+                                </div>
+                                {% if form.duration_months.errors %}<div class="text-danger small mt-1">{{ form.duration_months.errors.0 }}</div>{% endif %}
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="id_color_theme" class="field-label">Color Theme</label>
+                                {{ form.color_theme }}
+                                <div class="field-hint">Visual styling for the card banner.</div>
+                                {% if form.color_theme.errors %}<div class="text-danger small mt-1">{{ form.color_theme.errors.0 }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row pt-2 border-top">
+                            <div class="col-md-6 mb-2">
+                                <div class="custom-control custom-switch">
+                                    {{ form.is_popular }}
+                                    <label class="custom-control-label font-weight-semibold text-dark" for="id_is_popular">
+                                        Highlight as "Most Popular / Recommended"
+                                    </label>
+                                </div>
+                                <div class="field-hint ml-4">Displays an attractive featured badge on the plan.</div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="custom-control custom-switch">
+                                    {{ form.is_active }}
+                                    <label class="custom-control-label font-weight-semibold text-dark" for="id_is_active">
+                                        Plan Active & Selectable
+                                    </label>
+                                </div>
+                                <div class="field-hint ml-4">Disable to temporarily hide this plan from new gym assignments.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: Subscriber Quota Limitations (Industry SaaS Quotas) -->
+                <div class="plan-builder-card">
+                    <div class="card-header-clean bg-light">
+                        <h5><i class="mdi mdi-gauge text-warning"></i> 2. Platform Capacity Limitations (Subscriber Quotas)</h5>
+                        <span class="badge badge-warning text-dark font-weight-bold px-2 py-1">Quota Enforcement</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="alert alert-info py-2 px-3 mb-3 d-flex align-items-center shadow-xs" style="font-size: 0.83rem;">
+                            <i class="mdi mdi-information-outline mdi-18px mr-2"></i>
+                            <div>Enter numeric limits for gyms on this plan. <strong>Enter 0 for Unlimited quota</strong>.</div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Quota 1: Max Members -->
+                            <div class="col-md-4 mb-3">
+                                <div class="quota-box">
+                                    <div class="quota-icon bg-primary text-white shadow-xs">
+                                        <i class="mdi mdi-account-group"></i>
+                                    </div>
+                                    <label for="id_max_members" class="field-label mb-1">Max Active Members</label>
+                                    {{ form.max_members }}
+                                    <div class="mt-2">
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_members', 50)">50</button>
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_members', 100)">100</button>
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_members', 250)">250</button>
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_members', 500)">500</button>
+                                        <button type="button" class="quick-preset-chip text-primary font-weight-bold" onclick="setQuota('id_max_members', 0)">Unlimited</button>
+                                    </div>
+                                    {% if form.max_members.errors %}<div class="text-danger small mt-1">{{ form.max_members.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Quota 2: Max Trainers -->
+                            <div class="col-md-4 mb-3">
+                                <div class="quota-box">
+                                    <div class="quota-icon bg-success text-white shadow-xs">
+                                        <i class="mdi mdi-dumbbell"></i>
+                                    </div>
+                                    <label for="id_max_trainers" class="field-label mb-1">Max Trainers & Coaches</label>
+                                    {{ form.max_trainers }}
+                                    <div class="mt-2">
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_trainers', 2)">2</button>
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_trainers', 5)">5</button>
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_trainers', 10)">10</button>
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_trainers', 20)">20</button>
+                                        <button type="button" class="quick-preset-chip text-success font-weight-bold" onclick="setQuota('id_max_trainers', 0)">Unlimited</button>
+                                    </div>
+                                    {% if form.max_trainers.errors %}<div class="text-danger small mt-1">{{ form.max_trainers.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Quota 3: Max Admins -->
+                            <div class="col-md-4 mb-3">
+                                <div class="quota-box">
+                                    <div class="quota-icon bg-info text-white shadow-xs">
+                                        <i class="mdi mdi-shield-account"></i>
+                                    </div>
+                                    <label for="id_max_admins" class="field-label mb-1">Max Admin Accounts</label>
+                                    {{ form.max_admins }}
+                                    <div class="mt-2">
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_admins', 1)">1</button>
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_admins', 2)">2</button>
+                                        <button type="button" class="quick-preset-chip" onclick="setQuota('id_max_admins', 5)">5</button>
+                                        <button type="button" class="quick-preset-chip text-info font-weight-bold" onclick="setQuota('id_max_admins', 0)">Unlimited</button>
+                                    </div>
+                                    {% if form.max_admins.errors %}<div class="text-danger small mt-1">{{ form.max_admins.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: SaaS Module Entitlements (Feature Matrix) -->
+                <div class="plan-builder-card">
+                    <div class="card-header-clean bg-light">
+                        <h5><i class="mdi mdi-view-grid-plus text-success"></i> 3. Module & Feature Entitlements</h5>
+                        <span class="badge badge-success font-weight-normal px-2 py-1">Feature Matrix</span>
+                    </div>
+                    <div class="form-section-body">
+                        <p class="small text-muted mb-3">Toggle which software modules and capabilities are unlocked for gyms subscribing to this plan.</p>
+
+                        <div class="row">
+                            <!-- Feature 1: WhatsApp -->
+                            <div class="col-md-6">
+                                <div class="module-toggle-card">
+                                    <div class="module-info">
+                                        <div class="module-icon-wrap bg-light text-success border">
+                                            <i class="mdi mdi-whatsapp"></i>
+                                        </div>
+                                        <div>
+                                            <div class="module-title">WhatsApp Automation</div>
+                                            <p class="module-desc">Automated dues reminders, invoice PDFs & payment receipts.</p>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        {{ form.has_whatsapp_support }}
+                                        <label class="custom-control-label" for="id_has_whatsapp_support"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Feature 2: Attendance -->
+                            <div class="col-md-6">
+                                <div class="module-toggle-card">
+                                    <div class="module-info">
+                                        <div class="module-icon-wrap bg-light text-primary border">
+                                            <i class="mdi mdi-qrcode-scan"></i>
+                                        </div>
+                                        <div>
+                                            <div class="module-title">QR & Biometric Attendance</div>
+                                            <p class="module-desc">Contactless QR code check-in & biometric attendance logs.</p>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        {{ form.has_biometric_attendance }}
+                                        <label class="custom-control-label" for="id_has_biometric_attendance"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Feature 3: Invoicing & Dues -->
+                            <div class="col-md-6">
+                                <div class="module-toggle-card">
+                                    <div class="module-info">
+                                        <div class="module-icon-wrap bg-light text-info border">
+                                            <i class="mdi mdi-receipt"></i>
+                                        </div>
+                                        <div>
+                                            <div class="module-title">Invoicing & Dues Tracker</div>
+                                            <p class="module-desc">Tax invoices, partial payments, follow-up dates & history.</p>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        {{ form.has_billing_invoicing }}
+                                        <label class="custom-control-label" for="id_has_billing_invoicing"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Feature 4: Lead CRM -->
+                            <div class="col-md-6">
+                                <div class="module-toggle-card">
+                                    <div class="module-info">
+                                        <div class="module-icon-wrap bg-light text-warning border">
+                                            <i class="mdi mdi-account-convert"></i>
+                                        </div>
+                                        <div>
+                                            <div class="module-title">Inquiry & Lead CRM</div>
+                                            <p class="module-desc">Walk-in visitors, trial management & lead conversion tracking.</p>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        {{ form.has_crm_leads }}
+                                        <label class="custom-control-label" for="id_has_crm_leads"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Feature 5: Reports & Analytics -->
+                            <div class="col-md-6">
+                                <div class="module-toggle-card">
+                                    <div class="module-info">
+                                        <div class="module-icon-wrap bg-light text-danger border">
+                                            <i class="mdi mdi-chart-bar"></i>
+                                        </div>
+                                        <div>
+                                            <div class="module-title">Business Reports & Analytics</div>
+                                            <p class="module-desc">Revenue reports, collection trends & growth metrics.</p>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        {{ form.has_reports_analytics }}
+                                        <label class="custom-control-label" for="id_has_reports_analytics"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Feature 6: Expense Management -->
+                            <div class="col-md-6">
+                                <div class="module-toggle-card">
+                                    <div class="module-info">
+                                        <div class="module-icon-wrap bg-light text-secondary border">
+                                            <i class="mdi mdi-cash-multiple"></i>
+                                        </div>
+                                        <div>
+                                            <div class="module-title">Expense & Cost Ledger</div>
+                                            <p class="module-desc">Track utility bills, maintenance, salaries & profit margins.</p>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        {{ form.has_expense_management }}
+                                        <label class="custom-control-label" for="id_has_expense_management"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Feature 7: Inventory Management -->
+                            <div class="col-md-6">
+                                <div class="module-toggle-card">
+                                    <div class="module-info">
+                                        <div class="module-icon-wrap bg-light text-dark border">
+                                            <i class="mdi mdi-package-variant"></i>
+                                        </div>
+                                        <div>
+                                            <div class="module-title">Equipment & Inventory</div>
+                                            <p class="module-desc">Gym asset tracking, supplements stock & maintenance logs.</p>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        {{ form.has_inventory_management }}
+                                        <label class="custom-control-label" for="id_has_inventory_management"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Feature 8: Trainer Salaries -->
+                            <div class="col-md-6">
+                                <div class="module-toggle-card">
+                                    <div class="module-info">
+                                        <div class="module-icon-wrap bg-light text-primary border">
+                                            <i class="mdi mdi-account-cash"></i>
+                                        </div>
+                                        <div>
+                                            <div class="module-title">Trainer Payroll & Salary</div>
+                                            <p class="module-desc">Calculate monthly trainer salary, commissions & deductions.</p>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        {{ form.has_staff_salary }}
+                                        <label class="custom-control-label" for="id_has_staff_salary"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Feature 9: Diet & Workout Plans -->
+                            <div class="col-12">
+                                <div class="module-toggle-card">
+                                    <div class="module-info">
+                                        <div class="module-icon-wrap bg-light text-success border">
+                                            <i class="mdi mdi-food-apple"></i>
+                                        </div>
+                                        <div>
+                                            <div class="module-title">Diet & Workout Plan Generator</div>
+                                            <p class="module-desc">Create customizable meal plans, calorie targets, and exercise routines for members.</p>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        {{ form.has_diet_workout }}
+                                        <label class="custom-control-label" for="id_has_diet_workout"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 4: Marketing Highlights / Bullet Perks -->
+                <div class="plan-builder-card">
+                    <div class="card-header-clean bg-light">
+                        <h5><i class="mdi mdi-format-list-bulleted text-info"></i> 4. Marketing Perks & Highlights</h5>
+                        <span class="badge badge-light border text-muted font-weight-normal px-2 py-1">Pricing Table Copy</span>
+                    </div>
+                    <div class="form-section-body">
+                        <label for="id_features" class="field-label">Custom Highlights (one per line)</label>
+                        {{ form.features }}
+                        <div class="field-hint">These bullets will be showcased on pricing comparison tables and subscriber proposals.</div>
+                        {% if form.features.errors %}<div class="text-danger small mt-1">{{ form.features.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Form Submit Action Bar -->
+                <div class="d-flex justify-content-between align-items-center mb-5 pb-3">
+                    <a href="{% url 'superadmin:subscription_plan_list' %}" class="btn btn-outline-secondary px-4">
+                        <i class="mdi mdi-close mr-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-lg px-5 font-weight-bold shadow-sm">
+                        <i class="mdi mdi-content-save mr-1"></i> Save Changes
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Interactive Live Preview (4 cols) -->
+            <div class="col-lg-4">
+                <div class="preview-sticky">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h6 class="font-weight-bold text-dark mb-0"><i class="mdi mdi-eye mr-1 text-primary"></i> Live Plan Card Preview</h6>
+                        <span class="badge badge-light border text-muted font-weight-normal">Real-time</span>
+                    </div>
+
+                    <div class="plan-preview-card" id="planPreviewCard">
+                        <div class="plan-preview-header" id="previewHeader">
+                            <span class="popular-ribbon" id="previewPopularBadge" style="display: none;">Most Popular</span>
+                            <div class="text-uppercase small font-weight-bold tracking-wide" id="previewTier">GROWTH TIER</div>
+                            <h4 class="font-weight-bold mb-0 text-white" id="previewName">{{ plan.name|default:"Plan Name" }}</h4>
+                            <p class="small text-white-50 mb-0 mt-1" id="previewTagline">{{ plan.tagline|default:"Plan subtitle and value proposition" }}</p>
+                            <div class="plan-preview-price">
+                                <span style="font-size: 1.5rem; font-weight: 600;">₹</span><span id="previewPrice">{{ plan.price|default:"0" }}</span>
+                                <span style="font-size: 0.85rem; font-weight: normal; opacity: 0.8;">/<span id="previewDuration">{{ plan.duration_months|default:"1" }} mo</span></span>
+                            </div>
+                        </div>
+
+                        <div class="plan-preview-body">
+                            <!-- Quota limits box -->
+                            <div class="mb-3">
+                                <div class="text-uppercase text-muted font-weight-bold mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">Subscriber Capacity</div>
+                                <div class="preview-quota-pill">
+                                    <span><i class="mdi mdi-account-group text-primary mr-1"></i> Member Limit</span>
+                                    <span class="quota-val" id="previewMemberLimit">{{ plan.max_members_display }}</span>
+                                </div>
+                                <div class="preview-quota-pill">
+                                    <span><i class="mdi mdi-dumbbell text-success mr-1"></i> Trainer Limit</span>
+                                    <span class="quota-val" id="previewTrainerLimit">{{ plan.max_trainers_display }}</span>
+                                </div>
+                                <div class="preview-quota-pill">
+                                    <span><i class="mdi mdi-shield-account text-info mr-1"></i> Admin Accounts</span>
+                                    <span class="quota-val" id="previewAdminLimit">{{ plan.max_admins_display }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Modules checklist -->
+                            <div class="mb-3">
+                                <div class="text-uppercase text-muted font-weight-bold mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">Module Entitlements</div>
+                                <div class="preview-feature-item" id="prevFeatWhatsapp">
+                                    <i class="mdi mdi-check-circle active"></i> WhatsApp Automated Invoicing
+                                </div>
+                                <div class="preview-feature-item" id="prevFeatAttendance">
+                                    <i class="mdi mdi-check-circle active"></i> QR / Biometric Attendance
+                                </div>
+                                <div class="preview-feature-item" id="prevFeatBilling">
+                                    <i class="mdi mdi-check-circle active"></i> Invoicing & Dues Tracker
+                                </div>
+                                <div class="preview-feature-item" id="prevFeatCRM">
+                                    <i class="mdi mdi-check-circle active"></i> Lead CRM & Inquiries
+                                </div>
+                                <div class="preview-feature-item" id="prevFeatReports">
+                                    <i class="mdi mdi-check-circle active"></i> Financial & Business Reports
+                                </div>
+                                <div class="preview-feature-item" id="prevFeatExpenses">
+                                    <i class="mdi mdi-check-circle active"></i> Expense Management
+                                </div>
+                                <div class="preview-feature-item" id="prevFeatInventory">
+                                    <i class="mdi mdi-check-circle active"></i> Inventory & Assets
+                                </div>
+                                <div class="preview-feature-item" id="prevFeatSalary">
+                                    <i class="mdi mdi-check-circle active"></i> Trainer Payroll
+                                </div>
+                                <div class="preview-feature-item" id="prevFeatDiet">
+                                    <i class="mdi mdi-check-circle active"></i> Diet & Workout Plans
+                                </div>
+                            </div>
+
+                            <a href="{% url 'superadmin:assign_subscription' %}?plan_id={{ plan.id }}" class="btn btn-primary btn-block font-weight-bold py-2 shadow-xs">
+                                Assign to Gym
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const nameInput = document.getElementById("id_name");
+    const tierSelect = document.getElementById("id_plan_tier");
+    const taglineInput = document.getElementById("id_tagline");
+    const priceInput = document.getElementById("id_price");
+    const durationInput = document.getElementById("id_duration_months");
+    const themeSelect = document.getElementById("id_color_theme");
+    const popularSwitch = document.getElementById("id_is_popular");
+
+    const maxMembersInput = document.getElementById("id_max_members");
+    const maxTrainersInput = document.getElementById("id_max_trainers");
+    const maxAdminsInput = document.getElementById("id_max_admins");
+
+    // Preview elements
+    const previewName = document.getElementById("previewName");
+    const previewTier = document.getElementById("previewTier");
+    const previewTagline = document.getElementById("previewTagline");
+    const previewPrice = document.getElementById("previewPrice");
+    const previewDuration = document.getElementById("previewDuration");
+    const previewHeader = document.getElementById("previewHeader");
+    const previewPopularBadge = document.getElementById("previewPopularBadge");
+
+    const previewMemberLimit = document.getElementById("previewMemberLimit");
+    const previewTrainerLimit = document.getElementById("previewTrainerLimit");
+    const previewAdminLimit = document.getElementById("previewAdminLimit");
+
+    function updateLivePreview() {
+        if (previewName && nameInput) {
+            previewName.textContent = nameInput.value.trim() || "Plan Name";
+        }
+        if (previewTier && tierSelect) {
+            const selectedText = tierSelect.options[tierSelect.selectedIndex]?.text || "Standard Tier";
+            previewTier.textContent = selectedText.toUpperCase();
+        }
+        if (previewTagline && taglineInput) {
+            previewTagline.textContent = taglineInput.value.trim() || "Plan subtitle and value proposition";
+        }
+        if (previewPrice && priceInput) {
+            const val = parseFloat(priceInput.value);
+            previewPrice.textContent = isNaN(val) ? "0" : val.toLocaleString("en-IN");
+        }
+        if (previewDuration && durationInput) {
+            const months = parseInt(durationInput.value) || 1;
+            previewDuration.textContent = months === 1 ? "1 mo" : `${months} mos`;
+        }
+        if (previewPopularBadge && popularSwitch) {
+            previewPopularBadge.style.display = popularSwitch.checked ? "inline-block" : "none";
+        }
+
+        // Color theme
+        if (previewHeader && themeSelect) {
+            previewHeader.className = "plan-preview-header theme-" + themeSelect.value;
+        }
+
+        // Quotas
+        if (previewMemberLimit && maxMembersInput) {
+            const m = parseInt(maxMembersInput.value);
+            previewMemberLimit.textContent = (!m || m <= 0) ? "Unlimited" : `${m} Members`;
+        }
+        if (previewTrainerLimit && maxTrainersInput) {
+            const t = parseInt(maxTrainersInput.value);
+            previewTrainerLimit.textContent = (!t || t <= 0) ? "Unlimited" : `${t} Trainers`;
+        }
+        if (previewAdminLimit && maxAdminsInput) {
+            const a = parseInt(maxAdminsInput.value);
+            previewAdminLimit.textContent = (!a || a <= 0) ? "Unlimited" : `${a} Admins`;
+        }
+
+        // Module switches
+        updateModuleCheck("id_has_whatsapp_support", "prevFeatWhatsapp", "WhatsApp Automated Invoicing");
+        updateModuleCheck("id_has_biometric_attendance", "prevFeatAttendance", "QR / Biometric Attendance");
+        updateModuleCheck("id_has_billing_invoicing", "prevFeatBilling", "Invoicing & Dues Tracker");
+        updateModuleCheck("id_has_crm_leads", "prevFeatCRM", "Lead CRM & Inquiries");
+        updateModuleCheck("id_has_reports_analytics", "prevFeatReports", "Financial & Business Reports");
+        updateModuleCheck("id_has_expense_management", "prevFeatExpenses", "Expense Management");
+        updateModuleCheck("id_has_inventory_management", "prevFeatInventory", "Inventory & Assets");
+        updateModuleCheck("id_has_staff_salary", "prevFeatSalary", "Trainer Payroll");
+        updateModuleCheck("id_has_diet_workout", "prevFeatDiet", "Diet & Workout Plans");
+    }
+
+    function updateModuleCheck(checkboxId, previewId, labelText) {
+        const checkbox = document.getElementById(checkboxId);
+        const previewItem = document.getElementById(previewId);
+        if (!checkbox || !previewItem) return;
+
+        if (checkbox.checked) {
+            previewItem.className = "preview-feature-item";
+            previewItem.innerHTML = `<i class="mdi mdi-check-circle active"></i> ${labelText}`;
+        } else {
+            previewItem.className = "preview-feature-item disabled-feat";
+            previewItem.innerHTML = `<i class="mdi mdi-close-circle inactive"></i> ${labelText}`;
+        }
+    }
+
+    // Attach listeners
+    const inputsToWatch = [
+        nameInput, tierSelect, taglineInput, priceInput, durationInput, themeSelect, popularSwitch,
+        maxMembersInput, maxTrainersInput, maxAdminsInput,
+        document.getElementById("id_has_whatsapp_support"),
+        document.getElementById("id_has_biometric_attendance"),
+        document.getElementById("id_has_billing_invoicing"),
+        document.getElementById("id_has_crm_leads"),
+        document.getElementById("id_has_reports_analytics"),
+        document.getElementById("id_has_expense_management"),
+        document.getElementById("id_has_inventory_management"),
+        document.getElementById("id_has_staff_salary"),
+        document.getElementById("id_has_diet_workout")
+    ];
+
+    inputsToWatch.forEach(input => {
+        if (input) {
+            input.addEventListener("input", updateLivePreview);
+            input.addEventListener("change", updateLivePreview);
+        }
+    });
+
+    updateLivePreview();
+});
+
+// Helper preset setters
+function setDuration(months) {
+    const input = document.getElementById("id_duration_months");
+    if (input) {
+        input.value = months;
+        input.dispatchEvent(new Event("change"));
+    }
+}
+
+function setQuota(inputId, value) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        input.value = value;
+        input.dispatchEvent(new Event("change"));
+    }
+}
+</script>
+{% endblock %}

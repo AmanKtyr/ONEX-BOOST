@@ -1,0 +1,389 @@
+<!-- Slide-Over Responsive Notification Drawer -->
+<div id="notificationDrawerOverlay" class="notif-drawer-backdrop" onclick="closeNotificationDrawer()"></div>
+
+<div id="notificationDrawer" class="notif-drawer-panel" aria-hidden="true">
+  <!-- Drawer Header -->
+  <div class="notif-drawer-header">
+    <div class="d-flex align-items-center">
+      <div class="notif-header-icon-box mr-2.5" style="margin-right: 10px;">
+        <i class="mdi mdi-bell-ring-outline text-primary"></i>
+      </div>
+      <div>
+        <h5 class="mb-0 font-weight-bold text-dark" style="font-size: 15px; line-height: 1.2;">Notifications</h5>
+        <small class="text-muted" style="font-size: 11px;">Announcements & updates</small>
+      </div>
+      {% if unread_notifications_count > 0 %}
+        <span class="badge badge-pill ml-2 px-2 py-0.5" style="background-color: #dc2626; color: #ffffff; font-size: 10.5px; font-weight: 700;">{{ unread_notifications_count }} new</span>
+      {% endif %}
+    </div>
+    <div class="d-flex align-items-center">
+      {% if unread_notifications_count > 0 %}
+        <button type="button" class="btn btn-sm btn-link text-muted p-0 mr-3" onclick="markAllNotificationsReadFromDrawer()" style="font-size: 11.5px; text-decoration: none;">
+          <i class="mdi mdi-check-all mr-1"></i>Mark all read
+        </button>
+      {% endif %}
+      <button type="button" class="notif-drawer-close" onclick="closeNotificationDrawer()" aria-label="Close notification drawer">
+        <i class="mdi mdi-close"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Drawer Body -->
+  <div class="notif-drawer-body">
+    {% if recent_notifications %}
+      {% for n in recent_notifications %}
+        <a href="{% if n.action_url %}{{ n.action_url }}{% else %}{% url 'notifications:inbox' %}{% endif %}"
+           class="notif-drawer-card {% if not n.is_read %}notif-unread{% endif %}">
+          <!-- Icon Badge -->
+          <div class="notif-card-icon-wrap">
+            {% if n.notification_type == 'danger' %}
+              <div class="notif-badge-icon badge-danger-soft">
+                <i class="mdi mdi-alert-circle"></i>
+              </div>
+            {% elif n.notification_type == 'warning' %}
+              <div class="notif-badge-icon badge-warning-soft">
+                <i class="mdi mdi-alert"></i>
+              </div>
+            {% elif n.notification_type == 'success' %}
+              <div class="notif-badge-icon badge-success-soft">
+                <i class="mdi mdi-check-circle"></i>
+              </div>
+            {% else %}
+              <div class="notif-badge-icon badge-info-soft">
+                <i class="mdi mdi-information"></i>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Content -->
+          <div class="notif-card-content">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <h6 class="notif-card-title mb-0">{{ n.title }}</h6>
+              {% if not n.is_read %}
+                <span class="notif-new-dot" title="Unread"></span>
+              {% endif %}
+            </div>
+            <p class="notif-card-msg mb-1.5">{{ n.message }}</p>
+            <div class="d-flex align-items-center justify-content-between">
+              <span class="notif-card-time">
+                <i class="mdi mdi-clock-outline mr-1"></i>{{ n.created_at|timesince }} ago
+              </span>
+              {% if n.action_label %}
+                <span class="notif-action-tag">
+                  {{ n.action_label }} &rarr;
+                </span>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    {% else %}
+      <div class="notif-empty-state">
+        <div class="notif-empty-icon-wrap">
+          <i class="mdi mdi-bell-sleep-outline"></i>
+        </div>
+        <h6 class="font-weight-bold text-dark mb-1">No Notifications Yet</h6>
+        <p class="small text-muted mb-0">You're all caught up! Important notices will appear here.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Drawer Footer -->
+  <div class="notif-drawer-footer">
+    <a href="{% url 'notifications:inbox' %}" class="btn btn-primary btn-block btn-sm py-2 font-weight-bold d-flex align-items-center justify-content-center" style="border-radius: 8px; text-decoration: none;">
+      <i class="mdi mdi-tray-full mr-1.5"></i> Open Full Notification Inbox
+    </a>
+  </div>
+</div>
+
+<style>
+/* Scoped Slide-Over Notification Drawer */
+.notif-drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 9990;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+.notif-drawer-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.notif-drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  max-width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: #ffffff;
+  z-index: 9991;
+  box-shadow: -10px 0 35px rgba(15, 23, 42, 0.16);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.notif-drawer-panel.active {
+  transform: translateX(0);
+}
+
+.notif-drawer-header {
+  padding: 16px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.notif-header-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #f0f9ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  flex-shrink: 0;
+}
+
+.notif-drawer-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  outline: none;
+}
+.notif-drawer-close:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.notif-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notif-drawer-card {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+  position: relative;
+}
+.notif-drawer-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  border-color: #cbd5e1;
+}
+.notif-drawer-card.notif-unread {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.notif-card-icon-wrap {
+  margin-right: 12px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.notif-badge-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.badge-danger-soft { background: #fee2e2; color: #dc2626; }
+.badge-warning-soft { background: #fef3c7; color: #d97706; }
+.badge-success-soft { background: #dcfce7; color: #16a34a; }
+.badge-info-soft { background: #e0f2fe; color: #0284c7; }
+
+.notif-card-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.notif-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.3;
+}
+.notif-card-msg {
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.notif-card-time {
+  font-size: 10.5px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+.notif-action-tag {
+  font-size: 10.5px;
+  color: #2563eb;
+  font-weight: 600;
+}
+.notif-new-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #16a34a;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+.notif-empty-state {
+  padding: 48px 24px;
+  text-align: center;
+  margin: auto;
+}
+.notif-empty-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin: 0 auto 12px;
+}
+
+.notif-drawer-footer {
+  padding: 14px 18px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+@media (max-width: 576px) {
+  .notif-drawer-panel {
+    width: 100vw;
+  }
+}
+</style>
+
+<script>
+/* ── Notification Drawer ─────────────────────────────────────────────────── */
+
+/**
+ * Force-close the drawer and restore body scroll.
+ * Called on every page load / bfcache restore to prevent the drawer
+ * from appearing open when navigating between pages.
+ */
+function _forceCloseDrawer() {
+  var drawer   = document.getElementById('notificationDrawer');
+  var backdrop = document.getElementById('notificationDrawerOverlay');
+  if (drawer)   { drawer.classList.remove('active');   drawer.setAttribute('aria-hidden', 'true'); }
+  if (backdrop) { backdrop.classList.remove('active'); }
+  document.body.style.overflow = '';
+}
+
+function openNotificationDrawer() {
+  var drawer   = document.getElementById('notificationDrawer');
+  var backdrop = document.getElementById('notificationDrawerOverlay');
+  if (drawer)   { drawer.classList.add('active');   drawer.setAttribute('aria-hidden', 'false'); }
+  if (backdrop) { backdrop.classList.add('active'); }
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNotificationDrawer() {
+  _forceCloseDrawer();
+}
+
+function markAllNotificationsReadFromDrawer() {
+  fetch('/notifications/mark-all-read/', {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': '{{ csrf_token }}',
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.status === 'success') {
+      var badge = document.querySelector('#notificationDrawer .badge');
+      if (badge) badge.remove();
+      var dot = document.getElementById('navNotifCountDot');
+      if (dot) dot.remove();
+      document.querySelectorAll('#notificationDrawer .notif-unread').forEach(function(el) {
+        el.classList.remove('notif-unread');
+      });
+      document.querySelectorAll('#notificationDrawer .notif-new-dot').forEach(function(el) {
+        el.remove();
+      });
+    }
+  });
+}
+
+/* Close on Escape key */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closeNotificationDrawer(); }
+});
+
+/* ── Page-navigation safety net ────────────────────────────────────────── */
+
+/*
+ * 1. pagehide – fires when the user navigates AWAY from the page.
+ *    Reset body overflow so the next page doesn't inherit a locked scroll.
+ */
+window.addEventListener('pagehide', function() {
+  document.body.style.overflow = '';
+});
+
+/*
+ * 2. pageshow – fires both on first load AND when the browser restores
+ *    a page from the back/forward cache (bfcache). persisted=true means
+ *    the page came from cache, so we must re-close the drawer.
+ */
+window.addEventListener('pageshow', function(e) {
+  _forceCloseDrawer();
+});
+
+/*
+ * 3. DOMContentLoaded safety – closes the drawer before the user sees
+ *    anything, in case the browser painted it open for any reason.
+ */
+document.addEventListener('DOMContentLoaded', function() {
+  _forceCloseDrawer();
+});
+</script>

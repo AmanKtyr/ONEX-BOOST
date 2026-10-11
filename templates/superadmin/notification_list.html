@@ -1,0 +1,362 @@
+{% extends 'superadmin/base.html' %}
+{% load static %}
+
+{% block title %}Broadcast Notifications & Popups - ONEXIVASuperadmin{% endblock %}
+
+{% block content %}
+<div class="content-wrapper p-3 p-md-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div>
+            <h3 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-bullhorn text-primary mr-2"></i>Platform Notifications & Popups
+            </h3>
+            <p class="text-muted small mb-0">Broadcast announcements, system alerts, and popup notices to gyms, staff, and members.</p>
+        </div>
+        <div class="mt-3 mt-md-0">
+            <a href="{% url 'superadmin:create_notification' %}" class="btn btn-primary btn-sm px-3 py-2 font-weight-bold shadow-sm">
+                <i class="mdi mdi-plus-circle mr-1"></i> Compose New Notification
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters & Search -->
+    <div class="card border-0 shadow-sm rounded-lg mb-4">
+        <div class="card-body p-3">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12 mb-3 mb-lg-0">
+                    <div class="d-flex flex-wrap align-items-center">
+                        <a href="?status=all{% if q %}&q={{ q }}{% endif %}{% if created_by_filter %}&created_by={{ created_by_filter }}{% endif %}" class="btn btn-sm mr-2 mb-1 {% if status_filter == 'all' %}btn-primary font-weight-bold shadow-sm{% else %}btn-outline-secondary{% endif %}">
+                            All Notifications
+                        </a>
+                        <a href="?status=active{% if q %}&q={{ q }}{% endif %}{% if created_by_filter %}&created_by={{ created_by_filter }}{% endif %}" class="btn btn-sm mr-2 mb-1 {% if status_filter == 'active' %}btn-success font-weight-bold shadow-sm{% else %}btn-outline-success{% endif %}">
+                            Active
+                        </a>
+                        <a href="?status=popups{% if q %}&q={{ q }}{% endif %}{% if created_by_filter %}&created_by={{ created_by_filter }}{% endif %}" class="btn btn-sm mr-2 mb-1 {% if status_filter == 'popups' %}btn-info font-weight-bold shadow-sm{% else %}btn-outline-info{% endif %}">
+                            <i class="mdi mdi-window-maximize mr-1"></i> Interactive Popups
+                        </a>
+                        <a href="?status=inactive{% if q %}&q={{ q }}{% endif %}{% if created_by_filter %}&created_by={{ created_by_filter }}{% endif %}" class="btn btn-sm mr-2 mb-1 {% if status_filter == 'inactive' %}btn-dark font-weight-bold shadow-sm{% else %}btn-outline-dark{% endif %}">
+                            Inactive / Expired
+                        </a>
+                        <!-- Quick Filter: Created by Superadmin -->
+                        <a href="?status={{ status_filter }}{% if created_by_filter != 'superadmin' and created_by_filter != 'me' %}&created_by=superadmin{% endif %}{% if q %}&q={{ q }}{% endif %}" 
+                           class="btn btn-sm mb-1 {% if created_by_filter == 'superadmin' or created_by_filter == 'me' %}btn-dark font-weight-bold shadow-sm text-white{% else %}btn-outline-dark{% endif %}"
+                           title="Show all notifications created by Superadmin">
+                            <i class="mdi mdi-shield-crown mr-1 text-warning"></i> Created by Superadmin ({{ superadmin_notifications_count }})
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <form method="get" class="d-flex flex-wrap flex-sm-nowrap gap-2">
+                        <input type="hidden" name="status" value="{{ status_filter }}">
+
+                        <!-- Created By / Author Filter Dropdown -->
+                        <div class="mr-sm-2 mb-2 mb-sm-0" style="min-width: 220px;">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-white border-right-0 text-muted">
+                                        <i class="mdi mdi-account-filter"></i>
+                                    </span>
+                                </div>
+                                <select name="created_by" class="form-control form-control-sm custom-select border-left-0" onchange="this.form.submit()" title="Filter by creator">
+                                    <option value="">All Notifications (All Sources)</option>
+                                    <option value="superadmin" {% if created_by_filter == 'superadmin' or created_by_filter == 'me' %}selected{% endif %}>
+                                        Created by Superadmin ({{ superadmin_notifications_count }})
+                                    </option>
+                                    {% if system_notifications_count > 0 %}
+                                    <option value="system" {% if created_by_filter == 'system' %}selected{% endif %}>
+                                        System Generated ({{ system_notifications_count }})
+                                    </option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Search Box -->
+                        <div class="input-group input-group-sm flex-grow-1">
+                            <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search title, message, admin...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit" title="Search">
+                                    <i class="mdi mdi-magnify"></i>
+                                </button>
+                                {% if q or created_by_filter %}
+                                    <a href="?status={{ status_filter }}" class="btn btn-outline-secondary" title="Reset Filters">Clear</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% if created_by_filter %}
+                <div class="mt-2 pt-2 border-top d-flex align-items-center small">
+                    <span class="text-muted mr-2">Active Filter:</span>
+                    {% if created_by_filter == 'superadmin' or created_by_filter == 'me' %}
+                        <span class="badge badge-dark px-2 py-1 font-weight-bold d-inline-flex align-items-center">
+                            <i class="mdi mdi-shield-crown text-warning mr-1"></i> Created by Superadmin
+                            <a href="?status={{ status_filter }}{% if q %}&q={{ q }}{% endif %}" class="text-white ml-2 text-decoration-none" title="Remove filter">&times;</a>
+                        </span>
+                    {% elif created_by_filter == 'system' %}
+                        <span class="badge badge-info px-2 py-1 font-weight-bold d-inline-flex align-items-center">
+                            <i class="mdi mdi-robot mr-1"></i> System Generated
+                            <a href="?status={{ status_filter }}{% if q %}&q={{ q }}{% endif %}" class="text-white ml-2 text-decoration-none" title="Remove filter">&times;</a>
+                        </span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Notifications Table -->
+    <div class="card border-0 shadow-sm rounded-lg">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="py-3 px-3">Notification</th>
+                            <th class="py-3">Type</th>
+                            <th class="py-3">Target Audience</th>
+                            <th class="py-3">Created By</th>
+                            <th class="py-3 text-center">Popup</th>
+                            <th class="py-3 text-center">Engagement</th>
+                            <th class="py-3 text-center">Status</th>
+                            <th class="py-3 text-right pr-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for n in notifications %}
+                        <tr>
+                            <td class="px-3 py-3" style="max-width: 300px;">
+                                <div class="font-weight-bold text-dark mb-1 d-flex align-items-center">
+                                    <span>{{ n.title }}</span>
+                                    {% if n.image %}
+                                        <a href="{{ n.image.url }}" target="_blank" class="badge badge-light border text-primary ml-2 font-weight-normal" data-toggle="tooltip" title="View attached banner image">
+                                            <i class="mdi mdi-image-outline mr-1"></i>Image
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="text-muted small text-truncate" style="max-width: 280px;">{{ n.message }}</div>
+                                <div class="text-muted" style="font-size: 11px; margin-top: 4px;">
+                                    <i class="mdi mdi-clock-outline mr-1"></i>{{ n.created_at|date:"d M Y, h:i A" }}
+                                    {% if n.expires_at %}
+                                        | <span class="text-warning"><i class="mdi mdi-timer-sand mr-1"></i>Expires: {{ n.expires_at|date:"d M Y" }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if n.notification_type == 'info' %}
+                                    <span class="badge badge-info px-2 py-1"><i class="mdi mdi-information-outline mr-1"></i>Info</span>
+                                {% elif n.notification_type == 'success' %}
+                                    <span class="badge badge-success px-2 py-1"><i class="mdi mdi-check-circle-outline mr-1"></i>Update</span>
+                                {% elif n.notification_type == 'warning' %}
+                                    <span class="badge badge-warning px-2 py-1"><i class="mdi mdi-alert-outline mr-1"></i>Warning</span>
+                                {% elif n.notification_type == 'danger' %}
+                                    <span class="badge badge-danger px-2 py-1"><i class="mdi mdi-alert-circle mr-1"></i>Critical</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="small font-weight-bold text-dark">
+                                    {% if n.target_type == 'all' %}
+                                        <i class="mdi mdi-earth text-primary mr-1"></i>All Platform Users
+                                    {% elif n.target_type == 'all_gyms' %}
+                                        <i class="mdi mdi-office-building text-info mr-1"></i>All Gym Admins & Staff
+                                    {% elif n.target_type == 'all_members' %}
+                                        <i class="mdi mdi-account-group text-success mr-1"></i>All Gym Members
+                                    {% elif n.target_type == 'specific_gym' %}
+                                        <i class="mdi mdi-domain text-warning mr-1"></i>Gym: {{ n.target_gym.name|default:"Selected Gym" }}
+                                    {% elif n.target_type == 'specific_gym_staff' %}
+                                        <i class="mdi mdi-account-tie text-info mr-1"></i>Staff: {{ n.target_gym.name|default:"Selected Gym" }}
+                                    {% elif n.target_type == 'specific_gym_members' %}
+                                        <i class="mdi mdi-account-multiple text-success mr-1"></i>Members: {{ n.target_gym.name|default:"Selected Gym" }}
+                                    {% elif n.target_type == 'specific_user' %}
+                                        <i class="mdi mdi-account text-dark mr-1"></i>User: {{ n.target_user.username|default:"Direct" }}
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <!-- Created By Column -->
+                            <td>
+                                {% if n.created_by %}
+                                    <span class="font-weight-bold text-dark d-block" style="font-size: 0.85rem;" title="Superadmin account: {{ n.created_by.get_full_name|default:n.created_by.username }}">
+                                        Superadmin
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-light text-muted border px-2 py-1" style="font-size: 0.72rem;">
+                                        System
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if n.show_popup %}
+                                    <span class="badge badge-primary px-2 py-1" data-toggle="tooltip" title="Interactive Popup Enabled">
+                                        <i class="mdi mdi-window-restore mr-1"></i>Popup
+                                    </span>
+                                    <div class="mt-1" style="font-size: 11px;">
+                                        {% if n.popup_frequency == 'every_login' %}
+                                            <span class="text-primary font-weight-bold" title="Shows once per user login session until expired"><i class="mdi mdi-repeat mr-1"></i>Every Login</span>
+                                        {% elif n.popup_frequency == 'fixed_count' %}
+                                            <span class="text-muted"><i class="mdi mdi-counter mr-1"></i>{{ n.max_popup_views }}x views</span>
+                                        {% elif n.popup_frequency == 'until_expired' %}
+                                            <span class="text-warning font-weight-bold"><i class="mdi mdi-infinity mr-1"></i>Always</span>
+                                        {% else %}
+                                            <span class="text-muted">Once</span>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <span class="badge badge-light text-muted border px-2 py-1">Bell only</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="small">
+                                    <span class="font-weight-bold text-primary">{{ n.read_count|default:0 }}</span> <span class="text-muted">reads</span>
+                                    {% if n.show_popup %}
+                                        <br><span class="font-weight-bold text-success">{{ n.popup_ack_count|default:0 }}</span> <span class="text-muted">dismissals</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {% if n.is_active %}
+                                    {% if n.expires_at and n.expires_at < now %}
+                                        <span class="badge badge-secondary px-2 py-1">Expired</span>
+                                    {% else %}
+                                        <span class="badge badge-success px-2 py-1">Live</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge badge-secondary px-2 py-1">Paused</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-right pr-3">
+                                <div class="d-inline-flex gap-1">
+                                    <!-- Preview Popup -->
+                                    <button type="button" class="btn btn-sm btn-outline-info" onclick="previewNotification('{{ n.title|escapejs }}', '{{ n.message|escapejs }}', '{{ n.notification_type }}', '{{ n.action_label|default:''|escapejs }}', '{{ n.action_url|default:''|escapejs }}', '{% if n.image %}{{ n.image.url|escapejs }}{% endif %}')" data-toggle="tooltip" title="Preview Popup Modal">
+                                        <i class="mdi mdi-eye"></i>
+                                    </button>
+                                    <!-- Toggle Active -->
+                                    <a href="{% url 'superadmin:toggle_notification_status' n.id %}" class="btn btn-sm {% if n.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}" data-toggle="tooltip" title="{% if n.is_active %}Pause Notification{% else %}Activate Notification{% endif %}">
+                                        <i class="mdi {% if n.is_active %}mdi-pause{% else %}mdi-play{% endif %}"></i>
+                                    </a>
+                                    <!-- Delete -->
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDeleteNotification('{% url 'superadmin:delete_notification' n.id %}', '{{ n.title|escapejs }}')" data-toggle="tooltip" title="Delete">
+                                        <i class="mdi mdi-delete-outline"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="mdi mdi-bullhorn-outline d-block text-muted mb-2" style="font-size: 48px;"></i>
+                                <h6 class="font-weight-bold">No Notifications Found</h6>
+                                <p class="small mb-3">Broadcast platform-wide announcements and interactive popups anytime.</p>
+                                <a href="{% url 'superadmin:create_notification' %}" class="btn btn-primary btn-sm px-3">
+                                    <i class="mdi mdi-plus mr-1"></i> Compose Notification
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if notifications.has_other_pages %}
+            <div class="card-footer bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted">Showing Page {{ notifications.number }} of {{ notifications.paginator.num_pages }}</span>
+                <ul class="pagination pagination-sm mb-0">
+                    {% if notifications.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ notifications.previous_page_number }}&status={{ status_filter }}&q={{ q }}{% if created_by_filter %}&created_by={{ created_by_filter }}{% endif %}">Previous</a></li>
+                    {% endif %}
+                    {% for p in notifications.paginator.page_range %}
+                        {% if p == notifications.number %}
+                            <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+                        {% elif p > notifications.number|add:'-3' and p < notifications.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ p }}&status={{ status_filter }}&q={{ q }}{% if created_by_filter %}&created_by={{ created_by_filter }}{% endif %}">{{ p }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if notifications.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ notifications.next_page_number }}&status={{ status_filter }}&q={{ q }}{% if created_by_filter %}&created_by={{ created_by_filter }}{% endif %}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function previewNotification(title, message, type, actionLabel, actionUrl, imageUrl) {
+    const iconMap = {
+        'info': 'info',
+        'success': 'success',
+        'warning': 'warning',
+        'danger': 'error'
+    };
+    const confirmBtnColorMap = {
+        'info': '#0284c7',
+        'success': '#10b981',
+        'warning': '#f59e0b',
+        'danger': '#dc2626'
+    };
+
+    let footerHtml = '';
+    if (actionLabel && actionUrl) {
+        footerHtml = `<a href="${actionUrl}" target="_blank" class="btn btn-primary btn-sm px-3 py-1 font-weight-bold"><i class="mdi mdi-open-in-new mr-1"></i>${actionLabel}</a>`;
+    }
+
+    let modalHtml = '';
+    if (imageUrl) {
+        modalHtml += `<div class="mb-3 text-center"><img src="${imageUrl}" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: 100%; object-fit: cover;"></div>`;
+    }
+    modalHtml += `<div class="text-muted text-left" style="font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${message}</div>`;
+
+    Swal.fire({
+        title: title,
+        html: modalHtml,
+        icon: iconMap[type] || 'info',
+        confirmButtonText: 'I Understand / Dismiss',
+        confirmButtonColor: confirmBtnColorMap[type] || '#2563eb',
+        footer: footerHtml || undefined,
+        customClass: {
+            popup: 'border-radius-12 shadow-lg'
+        }
+    });
+}
+
+function confirmDeleteNotification(url, title) {
+    Swal.fire({
+        title: 'Delete Notification?',
+        html: `Are you sure you want to permanently delete <strong>${title}</strong>?<br><small class="text-danger">This will remove the announcement and all recipient tracking.</small>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: data.message,
+                        timer: 1200,
+                        showConfirmButton: false
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Error', 'Unable to delete notification.', 'error');
+                }
+            })
+            .catch(err => Swal.fire('Error', 'Network error: ' + err, 'error'));
+        }
+    });
+}
+</script>
+{% endblock %}

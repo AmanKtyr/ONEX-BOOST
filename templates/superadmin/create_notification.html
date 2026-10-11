@@ -1,0 +1,418 @@
+{% extends 'superadmin/base.html' %}
+{% load static %}
+
+{% block title %}Compose Broadcast Notification - ONEXIVASuperadmin{% endblock %}
+
+{% block content %}
+<div class="content-wrapper p-3 p-md-4">
+    <!-- Breadcrumb & Header -->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb p-0 bg-transparent mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'superadmin:dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'superadmin:notification_list' %}">Notifications</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Compose</li>
+            </ol>
+        </nav>
+        <h3 class="font-weight-bold text-dark mb-1">
+            <i class="mdi mdi-bullhorn text-primary mr-2"></i>Compose Broadcast Notification
+        </h3>
+        <p class="text-muted small mb-0">Publish announcements, alerts, or popup messages targeted across your gym ecosystem.</p>
+    </div>
+
+    <div class="row">
+        <!-- Form Column -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-lg mb-4">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="font-weight-bold text-dark mb-0">
+                        <i class="mdi mdi-email-send-outline text-primary mr-2"></i>Notification Details
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="notificationForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Title -->
+                        <div class="form-group mb-3">
+                            <label class="font-weight-bold small text-dark">Notification Title <span class="text-danger">*</span></label>
+                            <input type="text" name="title" id="notif_title" class="form-control" placeholder="e.g. Scheduled System Maintenance on Sunday" required maxlength="255">
+                        </div>
+
+                        <!-- Notification Type -->
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold small text-dark">Notification Type & Urgency <span class="text-danger">*</span></label>
+                            <div class="row">
+                                <div class="col-6 col-md-3 mb-2">
+                                    <label class="border rounded p-2 text-center d-block cursor-pointer notif-type-card active" style="border-color: #0284c7 !important; background-color: #f0f9ff;">
+                                        <input type="radio" name="notification_type" value="info" checked class="d-none">
+                                        <i class="mdi mdi-information-outline text-info d-block mb-1" style="font-size: 24px;"></i>
+                                        <span class="small font-weight-bold text-dark">Information</span>
+                                    </label>
+                                </div>
+                                <div class="col-6 col-md-3 mb-2">
+                                    <label class="border rounded p-2 text-center d-block cursor-pointer notif-type-card">
+                                        <input type="radio" name="notification_type" value="success" class="d-none">
+                                        <i class="mdi mdi-check-circle-outline text-success d-block mb-1" style="font-size: 24px;"></i>
+                                        <span class="small font-weight-bold text-dark">Update</span>
+                                    </label>
+                                </div>
+                                <div class="col-6 col-md-3 mb-2">
+                                    <label class="border rounded p-2 text-center d-block cursor-pointer notif-type-card">
+                                        <input type="radio" name="notification_type" value="warning" class="d-none">
+                                        <i class="mdi mdi-alert-outline text-warning d-block mb-1" style="font-size: 24px;"></i>
+                                        <span class="small font-weight-bold text-dark">Warning</span>
+                                    </label>
+                                </div>
+                                <div class="col-6 col-md-3 mb-2">
+                                    <label class="border rounded p-2 text-center d-block cursor-pointer notif-type-card">
+                                        <input type="radio" name="notification_type" value="danger" class="d-none">
+                                        <i class="mdi mdi-alert-circle text-danger d-block mb-1" style="font-size: 24px;"></i>
+                                        <span class="small font-weight-bold text-dark">Critical Alert</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Message Body -->
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold small text-dark">Message Body <span class="text-danger">*</span></label>
+                            <textarea name="message" id="notif_message" class="form-control" rows="5" placeholder="Write the full announcement message here..." required></textarea>
+                        </div>
+
+                        <!-- Image / Banner Attachment (Optional) -->
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold small text-dark d-flex justify-content-between align-items-center">
+                                <span><i class="mdi mdi-image-outline text-primary mr-1"></i>Banner / Announcement Image <span class="badge badge-light text-muted font-weight-normal border">Optional</span></span>
+                                <span class="small text-muted">JPG, PNG, WebP up to 5MB</span>
+                            </label>
+                            <div class="custom-file mb-2">
+                                <input type="file" class="custom-file-input" id="notif_image" name="image" accept="image/*" onchange="handleImageSelected(this)">
+                                <label class="custom-file-label text-truncate" for="notif_image" id="notif_image_label">Choose image file...</label>
+                            </div>
+                            <!-- Image Live Preview -->
+                            <div id="imagePreviewContainer" class="d-none mt-2 p-2 border rounded bg-light text-center position-relative" style="max-width: 400px;">
+                                <img id="imagePreview" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 180px; object-fit: contain;">
+                                <button type="button" class="btn btn-sm btn-danger position-absolute" style="top: 8px; right: 8px;" onclick="clearSelectedImage()" title="Remove image">
+                                    <i class="mdi mdi-close"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Audience Targeting Section -->
+                        <div class="border rounded p-3 mb-4 bg-light">
+                            <h6 class="font-weight-bold text-dark mb-3">
+                                <i class="mdi mdi-account-group text-primary mr-1"></i>Target Audience
+                            </h6>
+
+                            <div class="form-group mb-3">
+                                <label class="small font-weight-bold text-muted">Who should receive this?</label>
+                                <select name="target_type" id="target_type" class="form-control font-weight-bold" onchange="handleTargetChange()">
+                                    <option value="all" selected>All Users (Broadcast to Every Gym, Staff & Member)</option>
+                                    <option value="all_gyms">All Gym Admins & Staff Only</option>
+                                    <option value="all_members">All Gym Members Across Entire Platform</option>
+                                    <option value="specific_gym">Specific Gym (Everyone at selected gym)</option>
+                                    <option value="specific_gym_staff">Specific Gym Staff Only</option>
+                                    <option value="specific_gym_members">Specific Gym Members Only</option>
+                                    <option value="specific_user">Specific Individual User / Member</option>
+                                </select>
+                            </div>
+
+                            <!-- Target Gym Dropdown (Shown conditionally) -->
+                            <div class="form-group mb-3 d-none" id="gymSelectorContainer">
+                                <label class="small font-weight-bold text-dark">Select Gym <span class="text-danger">*</span></label>
+                                <select name="target_gym" id="target_gym" class="form-control" onchange="fetchAudienceEstimate()">
+                                    <option value="">-- Choose Gym --</option>
+                                    {% for g in gyms %}
+                                        <option value="{{ g.id }}">{{ g.name }} (#{{ g.gym_id }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Target User Dropdown (Shown conditionally) -->
+                            <div class="form-group mb-3 d-none" id="userSelectorContainer">
+                                <label class="small font-weight-bold text-dark">Select User <span class="text-danger">*</span></label>
+                                <select name="target_user" id="target_user" class="form-control" onchange="fetchAudienceEstimate()">
+                                    <option value="">-- Choose User --</option>
+                                    {% for u in users %}
+                                        <option value="{{ u.id }}">{{ u.username }} ({{ u.first_name }} {{ u.last_name }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Live Audience Estimator Badge -->
+                            <div class="p-2 rounded bg-white border d-flex align-items-center justify-content-between" id="audienceEstimator">
+                                <div class="d-flex align-items-center">
+                                    <i class="mdi mdi-account-check text-success mr-2 font-size-18"></i>
+                                    <span class="small font-weight-bold text-dark" id="audienceDesc">Calculating estimated audience...</span>
+                                </div>
+                                <span class="badge badge-primary px-2 py-1 font-weight-bold" id="audienceTotalBadge">~0</span>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Popup Options -->
+                        <div class="border rounded p-3 mb-4 bg-white shadow-sm">
+                            <div class="custom-control custom-switch mb-2">
+                                <input type="checkbox" class="custom-control-input" id="show_popup" name="show_popup" checked onchange="togglePopupOptions()">
+                                <label class="custom-control-label font-weight-bold text-dark cursor-pointer" for="show_popup">
+                                    <i class="mdi mdi-window-maximize text-primary mr-1"></i>Show as Interactive Popup Announcement
+                                </label>
+                            </div>
+                            <p class="small text-muted mb-3 pl-4">
+                                When enabled, recipients will see an interactive modal on their screen when navigating their portal or dashboard.
+                            </p>
+
+                            <div id="popupDetailsContainer" class="pl-4">
+                                <div class="row">
+                                    <div class="col-md-7 mb-3">
+                                        <label class="small font-weight-bold text-dark mb-1">
+                                            <i class="mdi mdi-repeat mr-1 text-primary"></i>Display Frequency
+                                        </label>
+                                        <select name="popup_frequency" id="popup_frequency" class="form-control form-control-sm" onchange="handleFrequencyChange()">
+                                            <option value="every_login" selected>On Every Login (Once per session until expired)</option>
+                                            <option value="once">Once Only (Dismiss permanently after first view)</option>
+                                            <option value="fixed_count">Impression Cap (Show up to set number of times)</option>
+                                            <option value="until_expired">Persistent (Show on every page visit until expired)</option>
+                                        </select>
+                                        <small class="text-muted" id="freq_help_text">Displays popup once per user login session until the announcement expires.</small>
+                                    </div>
+                                    <div class="col-md-5 mb-3 d-none" id="maxViewsContainer">
+                                        <label class="small font-weight-bold text-dark mb-1">Max Impression Limit</label>
+                                        <input type="number" name="max_popup_views" id="max_popup_views" class="form-control form-control-sm" value="3" min="1" max="100">
+                                        <small class="text-muted">Maximum lifetime views per user.</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-check mb-2">
+                                    <input type="checkbox" class="form-check-input" id="is_dismissible" name="is_dismissible" checked>
+                                    <label class="form-check-label small font-weight-bold text-muted cursor-pointer" for="is_dismissible">
+                                        Allow user to dismiss without taking action
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Optional Call-to-Action Button & Expiration -->
+                        <div class="card border mb-4">
+                            <div class="card-header bg-white py-2 font-weight-bold small text-muted">
+                                <i class="mdi mdi-link-variant mr-1"></i>Action Button & Schedule (Optional)
+                            </div>
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="small font-weight-bold text-muted">Button Label</label>
+                                        <input type="text" name="action_label" id="notif_action_label" class="form-control form-control-sm" placeholder="e.g. View Invoice, Learn More">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="small font-weight-bold text-muted">Button Link / URL</label>
+                                        <input type="text" name="action_url" id="notif_action_url" class="form-control form-control-sm" placeholder="e.g. /billing/ or https://...">
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="small font-weight-bold text-muted">Expiration Date & Time (Optional)</label>
+                                        <input type="datetime-local" name="expires_at" class="form-control form-control-sm">
+                                        <small class="text-muted">Notifications will automatically hide once expired.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                            <button type="button" class="btn btn-outline-info font-weight-bold" onclick="previewCurrentNotification()">
+                                <i class="mdi mdi-eye mr-1"></i> Preview Popup
+                            </button>
+                            <div>
+                                <a href="{% url 'superadmin:notification_list' %}" class="btn btn-light mr-2">Cancel</a>
+                                <button type="submit" class="btn btn-primary px-4 font-weight-bold">
+                                    <i class="mdi mdi-send mr-1"></i> Broadcast Notification
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Tips Column -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-lg mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h6 class="font-weight-bold mb-0"><i class="mdi mdi-lightbulb-on-outline mr-1"></i>Best Practices</h6>
+                </div>
+                <div class="card-body p-3 small text-muted">
+                    <p class="mb-3">
+                        <strong class="text-dark d-block mb-1">Popups vs Bell:</strong>
+                        Popups interrupt the recipient's screen once to ensure critical messages are seen. Use popups for urgent notices, maintenance, or policy updates.
+                    </p>
+                    <p class="mb-3">
+                        <strong class="text-dark d-block mb-1">Audience Targeting:</strong>
+                        Ensure you select the right target audience so gym members don't receive internal gym management announcements.
+                    </p>
+                    <p class="mb-0">
+                        <strong class="text-dark d-block mb-1">Preview before sending:</strong>
+                        Click <em>Preview Popup</em> anytime to see the exact dialog recipients will experience.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Handle radio card styling
+document.querySelectorAll('.notif-type-card').forEach(card => {
+    card.addEventListener('click', function() {
+        document.querySelectorAll('.notif-type-card').forEach(c => {
+            c.classList.remove('active');
+            c.style.borderColor = '#ebedf2';
+            c.style.backgroundColor = '#fff';
+        });
+        this.classList.add('active');
+        this.style.borderColor = '#0284c7';
+        this.style.backgroundColor = '#f0f9ff';
+        this.querySelector('input').checked = true;
+    });
+});
+
+function handleTargetChange() {
+    const val = document.getElementById('target_type').value;
+    const gymContainer = document.getElementById('gymSelectorContainer');
+    const userContainer = document.getElementById('userSelectorContainer');
+
+    if (val.startsWith('specific_gym')) {
+        gymContainer.classList.remove('d-none');
+        userContainer.classList.add('d-none');
+    } else if (val === 'specific_user') {
+        userContainer.classList.remove('d-none');
+        gymContainer.classList.add('d-none');
+    } else {
+        gymContainer.classList.add('d-none');
+        userContainer.classList.add('d-none');
+    }
+    fetchAudienceEstimate();
+}
+
+function fetchAudienceEstimate() {
+    const targetType = document.getElementById('target_type').value;
+    const gymId = document.getElementById('target_gym').value;
+    const userId = document.getElementById('target_user').value;
+
+    let url = "{% url 'superadmin:estimate_audience_api' %}?target_type=" + targetType;
+    if (gymId) url += "&target_gym_id=" + gymId;
+    if (userId) url += "&target_user_id=" + userId;
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            document.getElementById('audienceDesc').innerText = data.data.description || "Audience calculated";
+            document.getElementById('audienceTotalBadge').innerText = "~" + data.data.total;
+        }
+    })
+    .catch(() => {
+        document.getElementById('audienceDesc').innerText = "Live estimate available";
+    });
+}
+
+function handleFrequencyChange() {
+    const freq = document.getElementById('popup_frequency').value;
+    const maxContainer = document.getElementById('maxViewsContainer');
+    const helpText = document.getElementById('freq_help_text');
+
+    if (freq === 'fixed_count') {
+        maxContainer.classList.remove('d-none');
+        helpText.innerText = "Displays popup across user visits up to the specified impression limit.";
+    } else {
+        maxContainer.classList.add('d-none');
+        if (freq === 'every_login') {
+            helpText.innerText = "Displays popup once per user login session until the announcement expires.";
+        } else if (freq === 'once') {
+            helpText.innerText = "Displays popup once and permanently dismisses after first interaction.";
+        } else if (freq === 'until_expired') {
+            helpText.innerText = "Displays popup on every page navigation until the announcement expires.";
+        }
+    }
+}
+
+let uploadedImageDataUrl = null;
+
+function handleImageSelected(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        document.getElementById('notif_image_label').innerText = file.name;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            uploadedImageDataUrl = e.target.result;
+            const imgEl = document.getElementById('imagePreview');
+            imgEl.src = e.target.result;
+            document.getElementById('imagePreviewContainer').classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function clearSelectedImage() {
+    const input = document.getElementById('notif_image');
+    input.value = '';
+    uploadedImageDataUrl = null;
+    document.getElementById('notif_image_label').innerText = 'Choose image file...';
+    document.getElementById('imagePreviewContainer').classList.add('d-none');
+    document.getElementById('imagePreview').src = '#';
+}
+
+function togglePopupOptions() {
+    const isChecked = document.getElementById('show_popup').checked;
+    document.getElementById('popupDetailsContainer').style.display = isChecked ? 'block' : 'none';
+}
+
+function previewCurrentNotification() {
+    const title = document.getElementById('notif_title').value.trim() || 'Notification Title Preview';
+    const message = document.getElementById('notif_message').value.trim() || 'This is how your announcement message body will look inside the popup.';
+    const selectedType = document.querySelector('input[name="notification_type"]:checked').value;
+    const actionLabel = document.getElementById('notif_action_label').value.trim();
+    const actionUrl = document.getElementById('notif_action_url').value.trim();
+
+    const iconMap = {
+        'info': 'info',
+        'success': 'success',
+        'warning': 'warning',
+        'danger': 'error'
+    };
+    const confirmBtnColorMap = {
+        'info': '#0284c7',
+        'success': '#10b981',
+        'warning': '#f59e0b',
+        'danger': '#dc2626'
+    };
+
+    let footerHtml = '';
+    if (actionLabel && actionUrl) {
+        footerHtml = `<a href="${actionUrl}" target="_blank" class="btn btn-primary btn-sm px-3 py-1 font-weight-bold"><i class="mdi mdi-open-in-new mr-1"></i>${actionLabel}</a>`;
+    }
+
+    let modalHtml = '';
+    if (uploadedImageDataUrl) {
+        modalHtml += `<div class="mb-3 text-center"><img src="${uploadedImageDataUrl}" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: 100%; object-fit: cover;"></div>`;
+    }
+    modalHtml += `<div class="text-muted text-left" style="font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${message}</div>`;
+
+    Swal.fire({
+        title: title,
+        html: modalHtml,
+        icon: iconMap[selectedType] || 'info',
+        confirmButtonText: 'I Understand / Dismiss',
+        confirmButtonColor: confirmBtnColorMap[selectedType] || '#2563eb',
+        footer: footerHtml || undefined,
+        customClass: {
+            popup: 'border-radius-12 shadow-lg'
+        }
+    });
+}
+
+// Initial estimate fetch on page load
+document.addEventListener('DOMContentLoaded', function() {
+    fetchAudienceEstimate();
+});
+</script>
+{% endblock %}

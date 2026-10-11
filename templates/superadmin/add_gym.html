@@ -1,0 +1,624 @@
+{% extends 'superadmin/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} | ONEXIVASuperadmin{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}?v=3.7">
+
+<style>
+  /* Modern Form & Card Styling */
+  .gym-form-card {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .gym-form-header {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    padding: 1.25rem 1.75rem;
+    border: none;
+  }
+
+  .header-icon-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 22px;
+    margin-right: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .form-section-fieldset {
+    background: #ffffff;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px;
+    padding: 1.5rem !important;
+    margin-bottom: 1.75rem;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .form-section-fieldset:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+
+  .form-section-legend {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1e40af;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 30px;
+    padding: 0.35rem 1rem !important;
+    width: auto !important;
+    float: none;
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .form-label {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #334155;
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+
+  .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  .helper-text {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+
+  /* Setting Toggle Cards */
+  .setting-toggle-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    transition: all 0.2s ease;
+  }
+
+  .setting-toggle-box:hover {
+    border-color: #cbd5e1;
+    background: #f1f5f9;
+  }
+
+  .logo-preview-card {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+    border: 2px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .logo-preview-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none">
+        <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="{% url 'superadmin:gym_list' %}" class="text-decoration-none">
+        <i class="mdi mdi-domain mdi-18px"></i> All Gyms
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <i class="mdi mdi-plus-circle-outline mdi-18px"></i> {{ page_title }}
+    </li>
+  </ol>
+</nav>
+
+<div class="col-lg-12 px-0 mb-4">
+  <div class="card gym-form-card">
+    
+    <!-- Modern Elevated Card Header -->
+    <div class="card-header gym-form-header text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+      <div class="d-flex align-items-center mb-2 mb-md-0">
+        <div class="header-icon-badge">
+          <i class="mdi mdi-office-building"></i>
+        </div>
+        <div>
+          <h4 class="mb-0 font-weight-bold text-white">{{ page_title }}</h4>
+          <p class="mb-0 text-white-50" style="font-size: 13px;">Configure branch details, address coordinates, contact channels, and billing preferences.</p>
+        </div>
+      </div>
+      <a href="{% url 'superadmin:gym_list' %}" class="btn btn-light btn-sm font-weight-bold text-primary shadow-sm rounded-pill px-3 py-1.5 d-flex align-items-center">
+        <i class="mdi mdi-arrow-left mr-1"></i> Back to Gyms
+      </a>
+    </div>
+
+    <div class="card-body p-4">
+      <form method="post" enctype="multipart/form-data" id="addGymForm" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+            <div class="d-flex align-items-center">
+              <i class="mdi mdi-alert-circle mr-2" style="font-size: 20px;"></i>
+              <div>
+                {% for error in form.non_field_errors %}
+                  <p class="mb-0">{{ error }}</p>
+                {% endfor %}
+              </div>
+            </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endif %}
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <!-- 1. Basic & Location Information -->
+        <fieldset class="form-section-fieldset">
+          <legend class="form-section-legend">
+            <i class="mdi mdi-domain"></i> Basic & Location Details
+          </legend>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="{{ form.name.id_for_label }}">
+                <span>Gym Name <span class="text-danger">*</span></span>
+              </label>
+              {{ form.name }}
+              {% if form.name.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.name.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="{{ form.slogan.id_for_label }}">
+                <span>Slogan / Motto</span>
+              </label>
+              {{ form.slogan }}
+              {% if form.slogan.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.slogan.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8 mb-3">
+              <label class="form-label" for="{{ form.address.id_for_label }}">
+                <span>Street Address <span class="text-danger">*</span></span>
+              </label>
+              {{ form.address }}
+              {% if form.address.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.address.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label" for="{{ form.area.id_for_label }}">
+                <span>Area / Landmark</span>
+              </label>
+              {{ form.area }}
+              {% if form.area.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.area.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label" for="{{ form.pincode.id_for_label }}">
+                <span>Pincode <span class="text-danger">*</span></span>
+                <span class="badge badge-pill badge-info" style="font-size: 10px; font-weight: 600;">Auto-detects</span>
+              </label>
+              {{ form.pincode }}
+              <div class="helper-text"><i class="mdi mdi-flash text-warning mr-1"></i>City & State auto-fill after 6 digits.</div>
+              {% if form.pincode.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.pincode.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label" for="{{ form.city.id_for_label }}">
+                <span>City <span class="text-danger">*</span></span>
+              </label>
+              {{ form.city }}
+              {% if form.city.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.city.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label" for="{{ form.state.id_for_label }}">
+                <span>State <span class="text-danger">*</span></span>
+              </label>
+              {{ form.state }}
+              {% if form.state.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.state.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 2. Contact Channels -->
+        <fieldset class="form-section-fieldset">
+          <legend class="form-section-legend">
+            <i class="mdi mdi-phone-in-talk"></i> Contact Channels
+          </legend>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="{{ form.phone.id_for_label }}">
+                <span>Primary Mobile Number <span class="text-danger">*</span></span>
+              </label>
+              {{ form.phone }}
+              {% if form.phone.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.phone.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="{{ form.landline.id_for_label }}">
+                <span>Landline / Alternate Phone</span>
+              </label>
+              {{ form.landline }}
+              {% if form.landline.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.landline.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="{{ form.email.id_for_label }}">
+                <span>Official Email <span class="text-danger">*</span></span>
+              </label>
+              {{ form.email }}
+              {% if form.email.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.email.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="{{ form.website.id_for_label }}">
+                <span>Official Website</span>
+              </label>
+              {{ form.website }}
+              {% if form.website.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.website.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 3. GST & Security Configuration -->
+        <fieldset class="form-section-fieldset">
+          <legend class="form-section-legend">
+            <i class="mdi mdi-receipt-text-outline"></i> GST & Security Settings
+          </legend>
+
+          <!-- GST Toggle Banner -->
+          <div class="setting-toggle-box mb-3">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <h6 class="font-weight-bold mb-1 text-dark d-flex align-items-center">
+                  <i class="mdi mdi-file-percent-outline text-primary mr-2" style="font-size: 18px;"></i>
+                  Enable GST Billing
+                </h6>
+                <p class="text-muted small mb-0">Charge and print Goods & Services Tax (GST) breakdown on member receipts and invoices.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                {{ form.gst_enabled }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic GST Fields -->
+          <div class="row" id="gst-fields-group" style="display: none;">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="{{ form.gst_rate.id_for_label }}">
+                <span>GST Rate (%) <span class="text-danger">*</span></span>
+              </label>
+              {{ form.gst_rate }}
+              {% if form.gst_rate.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.gst_rate.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="{{ form.gst_number.id_for_label }}">
+                <span>GST Identification Number (GSTIN) <span class="text-danger">*</span></span>
+              </label>
+              {{ form.gst_number }}
+              {% if form.gst_number.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.gst_number.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Attendance PIN Toggle -->
+          <div class="setting-toggle-box mt-3">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <h6 class="font-weight-bold mb-1 text-dark d-flex align-items-center">
+                  <i class="mdi mdi-lock-outline text-success mr-2" style="font-size: 18px;"></i>
+                  Require Attendance PIN / Code
+                </h6>
+                <p class="text-muted small mb-0">Enforce 4-digit security code entry whenever members or trainers record attendance.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                {{ form.attendance_code_required }}
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 4. Brand Assets & Notes -->
+        <fieldset class="form-section-fieldset">
+          <legend class="form-section-legend">
+            <i class="mdi mdi-shield-account-outline"></i> Brand Assets & System Info
+          </legend>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label" for="{{ form.gym_id_prefix.id_for_label }}">
+                <span>Gym ID Prefix</span>
+              </label>
+              {{ form.gym_id_prefix }}
+              <div class="helper-text">Prefix used for member and invoice numbering (e.g., FIT-).</div>
+              {% if form.gym_id_prefix.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.gym_id_prefix.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-8 mb-3">
+              <label class="form-label" for="{{ form.logo.id_for_label }}">
+                <span>Gym Logo</span>
+              </label>
+              
+              <div class="d-flex align-items-start gap-3">
+                <!-- Preview Thumbnail Box -->
+                <div class="logo-preview-card mr-3 flex-shrink-0" id="logoPreviewCard">
+                  {% if form.instance.logo %}
+                    <img id="logoPreviewImg" src="{{ form.instance.logo.url }}" alt="Gym Logo">
+                  {% else %}
+                    <img id="logoPreviewImg" src="{% static 'images/favicon.png' %}" alt="Placeholder" style="opacity: 0.4;">
+                  {% endif %}
+                </div>
+
+                <div class="flex-grow-1">
+                  <div class="input-group">
+                    <div class="custom-file">
+                      {{ form.logo }}
+                      <label class="custom-file-label text-truncate" for="{{ form.logo.id_for_label }}" id="logoFileLabel">
+                        {% if form.instance.logo %}Change logo image{% else %}Choose logo file{% endif %}
+                      </label>
+                    </div>
+                  </div>
+                  <div class="helper-text mt-1">Recommended square format (PNG, JPG) up to 2MB. Minimum 200x200px.</div>
+                  {% if form.logo.errors %}
+                    <div class="invalid-feedback d-block">
+                      {% for error in form.logo.errors %}
+                        <small>{{ error }}</small>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 mb-0">
+              <label class="form-label" for="{{ form.note.id_for_label }}">
+                <span>Administrative Notes</span>
+              </label>
+              {{ form.note }}
+              <div class="helper-text">Internal notes regarding onboarding agreements, contacts, or special arrangements.</div>
+              {% if form.note.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.note.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Form Action Footer Bar -->
+        <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4 pt-3 border-top">
+          <a href="{% url 'superadmin:gym_list' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-semibold mr-sm-2 mb-2 mb-sm-0">
+            <i class="mdi mdi-close mr-1"></i> Cancel
+          </a>
+          <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill font-weight-bold shadow-sm" id="submitBtn">
+            <i class="mdi mdi-check-circle-outline mr-1"></i> {{ button_text }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Pincode Auto-fetch
+    const pincodeInput = document.getElementById('{{ form.pincode.id_for_label }}');
+    const cityInput = document.getElementById('{{ form.city.id_for_label }}');
+    const stateInput = document.getElementById('{{ form.state.id_for_label }}');
+
+    if (pincodeInput) {
+        pincodeInput.addEventListener('blur', function () {
+            const pincode = this.value.trim();
+            if (pincode.length === 6) {
+                fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length > 0) {
+                            const postOffice = data[0].PostOffice[0];
+                            if (cityInput && !cityInput.value) cityInput.value = postOffice.District;
+                            if (stateInput && !stateInput.value) stateInput.value = postOffice.State;
+                        }
+                    })
+                    .catch(error => console.error('Error fetching postal data:', error));
+            }
+        });
+    }
+
+    // 2. GST Fields Toggle
+    const gstEnabledCheckbox = document.getElementById('id_gst_enabled');
+    const gstFieldsGroup = document.getElementById('gst-fields-group');
+
+    function toggleGstFields() {
+        if (!gstEnabledCheckbox || !gstFieldsGroup) return;
+        if (gstEnabledCheckbox.checked) {
+            gstFieldsGroup.style.display = 'flex';
+        } else {
+            gstFieldsGroup.style.display = 'none';
+        }
+    }
+
+    if (gstEnabledCheckbox) {
+        toggleGstFields();
+        gstEnabledCheckbox.addEventListener('change', toggleGstFields);
+    }
+
+    // 3. Logo Live Preview & File Validation
+    const logoInput = document.getElementById('{{ form.logo.id_for_label }}');
+    const logoPreviewImg = document.getElementById('logoPreviewImg');
+    const logoFileLabel = document.getElementById('logoFileLabel');
+
+    if (logoInput) {
+        logoInput.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'File Too Large',
+                            text: 'Logo image must be smaller than 2MB.'
+                        });
+                    } else {
+                        alert('Logo image must be smaller than 2MB.');
+                    }
+                    this.value = '';
+                    if (logoFileLabel) logoFileLabel.textContent = 'Choose logo file';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (logoPreviewImg) {
+                        logoPreviewImg.src = e.target.result;
+                        logoPreviewImg.style.opacity = '1';
+                    }
+                };
+                reader.readAsDataURL(file);
+                if (logoFileLabel) logoFileLabel.textContent = file.name;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

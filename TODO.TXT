@@ -1,0 +1,39 @@
+.\.venv\Scripts\Activate.ps1
+
+
+python manage.py collectstatic
+
+sudo systemctl restart gunicorn
+
+# or
+sudo systemctl restart nginx
+
+source venv/bin/activate
+
+python3 manage.py makemigrations
+python3 manage.py migrate
+sudo systemctl restart gymproject
+
+ls -l /etc/nginx/sites-available/
+
+sudo nano /etc/nginx/sites-available/gymproject
+
+
+
+sudo systemctl restart gymproject
+
+
+
+
+sp
+Aman 
+Admi      
+
+Aman2
+Admin@#12
+
+
+
+#007bff
+
+#993117

@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-calendar-multiple-check mdi-18px"></i>All Events Registrations
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">All Event Registrations</h4>
+        </div>
+                <div class="card-body">
+                    <form method="GET" action="{% url 'events:all_event_registrations' %}" class="form-inline mb-3">
+                        
+                        <div class="form-group mr-3">
+                            <label for="event" class="mr-2">Event</label>
+                            <select name="event" id="event" class="form-control" onchange="this.form.submit()">
+                                <option value="">All</option>
+                                {% for event in events %}
+                                    <option value="{{ event.id }}" {% if event.id|stringformat:"s" == event_filter %}selected{% endif %}>{{ event.event_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group mr-3">
+                            <label for="payment_status" class="mr-2">Payment Status</label>
+                            <select name="payment_status" id="payment_status" class="form-control" onchange="this.form.submit()">
+                                <option value="">All</option>
+                                {% for status in payment_statuses %}
+                                    <option value="{{ status }}" {% if status == payment_status_filter %}selected{% endif %}>{{ status }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <a href="{% url 'events:all_event_registrations' %}" class="btn btn-secondary ml-2">Clear</a>
+                    </form>
+
+                     <div class="table-responsive">
+                <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                                    <th class="font-weight-semibold py-2">#</th>
+                                    <th class="font-weight-semibold py-2">Event</th>
+                                    <th class="font-weight-semibold py-2">Participant Name</th>
+                                    <th class="font-weight-semibold py-2">Email</th>
+                                    <th class="font-weight-semibold py-2">Mobile Number</th>
+                                    <th class="font-weight-semibold py-2">Registration Date</th>
+                                    <th class="font-weight-semibold py-2">Payment Status</th>
+                                    <th class="font-weight-semibold py-2">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for registration in registrations %}
+                                <tr>
+                                       <td data-label="SR. No.">{{ forloop.counter}}</td>
+                                    <td data-label="Event">{{ registration.event.event_name }}</td>
+                                    <td data-label="Participant Name">{{ registration.full_name }}</td>
+                                    <td data-label="Email">{{ registration.email }}</td>
+                                    <td data-label="Mobile Number">{{ registration.mobile_number }}</td>
+                                    <td data-label="Registration Date">{{ registration.registered_at|date:"d-m-Y H:i" }}</td>
+                                    <td data-label="Payment Status">
+                                        {% if registration.event.fee_amount %}
+                                            <span class="badge {% if registration.payment_status == 'Pending' %}badge-warning{% elif registration.payment_status == 'Successful' %}badge-success{% else %}badge-danger{% endif %}">
+                                                {{ registration.payment_status }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-info">Free</span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="Action">
+                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#registrationModal-{{ registration.id }}">
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+{% for registration in registrations %}
+<div class="modal fade" id="registrationModal-{{ registration.id }}" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel-{{ registration.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registrationModalLabel-{{ registration.id }}">Registration Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="registration-details-container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="section">
+                                <h6 class="section-title">Personal Information</h6>
+                                <dl class="row">
+                                    <dt class="col-sm-5">Event</dt>
+                                    <dd class="col-sm-7">{{ registration.event.event_name }}</dd>
+
+                                    <dt class="col-sm-5">Participant Name</dt>
+                                    <dd class="col-sm-7">{{ registration.full_name }}</dd>
+
+                                    <dt class="col-sm-5">Mobile Number</dt>
+                                    <dd class="col-sm-7">{{ registration.mobile_number }}</dd>
+
+                                    <dt class="col-sm-5">Email</dt>
+                                    <dd class="col-sm-7">{{ registration.email }}</dd>
+
+                                    <dt class="col-sm-5">Gender</dt>
+                                    <dd class="col-sm-7">{{ registration.gender }}</dd>
+
+                                    <dt class="col-sm-5">Date of Birth</dt>
+                                    <dd class="col-sm-7">{{ registration.dob|date:"d-m-Y" }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="section">
+                                <h6 class="section-title">Fitness and Health</h6>
+                                <dl class="row">
+                                    <dt class="col-sm-5">Gym Member</dt>
+                                    <dd class="col-sm-7">{{ registration.is_gym_member }}</dd>
+
+                                    {% if registration.is_gym_member == 'Yes' %}
+                                    <dt class="col-sm-5">Current Gym Name</dt>
+                                    <dd class="col-sm-7">{{ registration.current_gym_name }}</dd>
+                                    {% endif %}
+
+                                    <dt class="col-sm-5">Fitness Level</dt>
+                                    <dd class="col-sm-7">{{ registration.fitness_level }}</dd>
+
+                                    <dt class="col-sm-5">Years of Training</dt>
+                                    <dd class="col-sm-7">{{ registration.years_of_training }}</dd>
+
+                                    <dt class="col-sm-5">Medical Conditions</dt>
+                                    <dd class="col-sm-7">{{ registration.medical_conditions }}</dd>
+
+                                    <dt class="col-sm-5">Injuries</dt>
+                                    <dd class="col-sm-7">{{ registration.injuries }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="section">
+                                <h6 class="section-title">Emergency Contact</h6>
+                                <dl class="row">
+                                    <dt class="col-sm-5">Contact Name</dt>
+                                    <dd class="col-sm-7">{{ registration.emergency_contact_name }}</dd>
+
+                                    <dt class="col-sm-5">Contact Number</dt>
+                                    <dd class="col-sm-7">{{ registration.emergency_contact_number }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            {% if registration.event.fee_amount %}
+                            <div class="section">
+                                <h6 class="section-title">Payment Details</h6>
+                                <dl class="row">
+                                    <dt class="col-sm-5">Payment Method</dt>
+                                    <dd class="col-sm-7">{{ registration.payment_method }}</dd>
+
+                                    <dt class="col-sm-5">Transaction ID</dt>
+                                    <dd class="col-sm-7">{{ registration.transaction_id }}</dd>
+
+                                    <dt class="col-sm-5">Payment Amount</dt>
+                                    <dd class="col-sm-7">{{ registration.payment_amount }}</dd>
+
+                                    <dt class="col-sm-5">Payment Status</dt>
+                                    <dd class="col-sm-7">{{ registration.payment_status }}</dd>
+
+                                    {% if registration.payment_screenshot %}
+                                    <dt class="col-sm-5">Screenshot</dt>
+                                    <dd class="col-sm-7">
+                                        <a href="{{ registration.payment_screenshot.url }}" target="_blank">
+                                            <img src="{{ registration.payment_screenshot.url }}" alt="Payment Screenshot" class="img-fluid" style="max-height: 100px; border-radius: 5px;">
+                                        </a>
+                                    </dd>
+                                    {% endif %}
+                                </dl>
+                            </div>
+                            {% else %}
+                            <div class="section">
+                                <h6 class="section-title">Payment Details</h6>
+                                <div class="alert alert-info">
+                                    This is a free event.
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                {% if registration.event.fee_amount %}
+                <form action="{% url 'events:update_payment_status' registration.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="status" value="Successful" class="btn btn-success">Mark as Successful</button>
+                    <button type="submit" name="status" value="Failed" class="btn btn-danger">Mark as Failed</button>
+                </form>
+                {% endif %}
+                <div>
+                    {% comment %} <button type="button" class="btn btn-info" onclick="window.print()"><i class="fas fa-print"></i> Print</button> {% endcomment %}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endfor %}
+
+<style>
+    .section {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .section-title {
+        font-weight: bold;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #333;
+        padding-bottom: 5px;
+    }
+</style>
+{% endblock %}

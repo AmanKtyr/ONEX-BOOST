@@ -1,0 +1,1420 @@
+<!-- ONEXIVAGYM Dashboard - Modern Executive UI -->
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block extra_css %}
+<style>
+  /* Page specific fine-tuning */
+  .attendance-donut-container {
+    position: relative;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .attendance-donut-center {
+    position: absolute;
+    text-align: center;
+    pointer-events: none;
+  }
+  .attendance-donut-number {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .attendance-donut-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  /* Initials Avatar generator helper */
+  .avatar-initials {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-responsive::-webkit-scrollbar {
+    height: 4px;
+  }
+  .table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+
+  /* Executive SaaS Quota Card & Widget - Exact KPI Card Aesthetic */
+  .saas-quota-card {
+    padding: 1.25rem 1.45rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .saas-card-title {
+    font-size: clamp(1.15rem, 1.4vw, 1.4rem);
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-bottom: 0.35rem;
+  }
+  .saas-card-desc {
+    font-size: 0.86rem;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 0.95rem;
+    max-width: 980px;
+  }
+  .saas-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+  }
+  .btn-kpi-upgrade {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 0.45rem 1.25rem;
+    border-radius: 9999px;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border: none;
+  }
+  .btn-kpi-upgrade-danger {
+    background: #be123c;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(190, 18, 60, 0.25);
+  }
+  .btn-kpi-upgrade-danger:hover {
+    background: #9f1239;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(190, 18, 60, 0.35);
+    color: #ffffff !important;
+  }
+  .btn-kpi-upgrade-warning {
+    background: #b45309;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(180, 83, 9, 0.25);
+  }
+  .btn-kpi-upgrade-warning:hover {
+    background: #92400e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(180, 83, 9, 0.35);
+    color: #ffffff !important;
+  }
+  @media (max-width: 768px) {
+    .saas-card-footer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .btn-kpi-upgrade {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <!-- HERO / PAGE HEADER -->
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">Dashboard Overview</h2>
+      <p class="dashboard-hero-subtitle">Real-time gym performance & management analytics</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <div class="dashboard-status-badge" style="{% if system_setting.maintenance_mode %}border-color: #fde68a; background: #fffbeb; color: #b45309;{% endif %}">
+        {% if system_setting.maintenance_mode %}
+          <span class="pulse-dot pulse-warning"></span>
+          <span class="font-weight-bold" style="color: #b45309 !important;"><i class="fas fa-tools mr-1"></i> Maintenance Active</span>
+        {% else %}
+          <span class="pulse-dot"></span>
+          <span>System Live</span>
+        {% endif %}
+        <span class="text-muted">|</span>
+        <span class="text-muted"><i class="far fa-clock mr-1"></i>{% now 'd M Y, H:i' %}</span>
+      </div>
+      <button class="btn-sync-refresh" onclick="location.reload();" title="Refresh Dashboard Data">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- SAAS PLAN & QUOTA STATUS BANNER / WIDGET -->
+  {% if gym_quota %}
+    {% if gym_quota.has_limit_reached %}
+    <div class="kpi-card kpi-danger saas-quota-card mb-4" role="alert">
+      <div>
+        <div class="kpi-header">
+          <span class="kpi-label">
+            <i class="fas fa-crown mr-1"></i> Plan Capacity Notice
+          </span>
+          <div class="kpi-icon-wrap kpi-icon-danger">
+            <i class="fas fa-user-lock"></i>
+          </div>
+        </div>
+        <div class="saas-card-title">
+          {% if gym_quota.members.is_limit_reached %}
+            Member Capacity Limit Reached ({{ gym_quota.members.current }} / {{ gym_quota.members.display_max }})
+          {% elif gym_quota.trainers.is_limit_reached %}
+            Trainer Quota Limit Reached ({{ gym_quota.trainers.current }} / {{ gym_quota.trainers.display_max }})
+          {% elif gym_quota.admins.is_limit_reached %}
+            Staff / Admin Account Limit Reached ({{ gym_quota.admins.current }} / {{ gym_quota.admins.display_max }})
+          {% else %}
+            SaaS Plan Resource Limit Reached
+          {% endif %}
+        </div>
+        <div class="saas-card-desc">
+          {% if gym_quota.members.is_limit_reached %}
+            Your gym has reached the maximum active member quota for <strong>{{ gym_quota.plan_name }}</strong>. New member registrations are locked until upgraded.
+          {% elif gym_quota.trainers.is_limit_reached %}
+            Your gym has onboarded the maximum allowed trainers ({{ gym_quota.trainers.current }}/{{ gym_quota.trainers.display_max }}). Adding new trainers is locked until upgraded.
+          {% elif gym_quota.admins.is_limit_reached %}
+            Your gym has reached the maximum sub-admin accounts ({{ gym_quota.admins.current }}/{{ gym_quota.admins.display_max }}). Member admissions remain active, but adding new staff logins is locked.
+          {% else %}
+            A platform capacity quota has been reached on your active subscription. Upgrade to expand capacity immediately.
+          {% endif %}
+        </div>
+      </div>
+      <div class="saas-card-footer">
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-danger">
+            <i class="fas fa-exclamation-triangle mr-1"></i> Needs Renewal
+          </span>
+          <span class="kpi-meta-desc">Follow-up</span>
+        </div>
+        <a href="{% url 'settings:my_subscription' %}" class="btn-kpi-upgrade btn-kpi-upgrade-danger">
+          <i class="fas fa-arrow-alt-circle-up mr-1"></i> Upgrade Plan Now
+        </a>
+      </div>
+    </div>
+    {% elif gym_quota.has_warning %}
+    <div class="kpi-card kpi-warning saas-quota-card mb-4" role="alert">
+      <div>
+        <div class="kpi-header">
+          <span class="kpi-label">
+            <i class="fas fa-crown mr-1"></i> Plan Capacity Notice
+          </span>
+          <div class="kpi-icon-wrap kpi-icon-warning">
+            <i class="fas fa-chart-line"></i>
+          </div>
+        </div>
+        <div class="saas-card-title">
+          Approaching Plan Capacity ({{ gym_quota.members.percent }}% Used)
+        </div>
+        <div class="saas-card-desc">
+          You have registered <strong>{{ gym_quota.members.current }} of {{ gym_quota.members.display_max }}</strong> members on the {{ gym_quota.plan_name }}. Upgrade soon to ensure seamless admissions.
+        </div>
+      </div>
+      <div class="saas-card-footer">
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-warning">
+            <i class="fas fa-clock mr-1"></i> Approaching Limit
+          </span>
+          <span class="kpi-meta-desc">{{ gym_quota.members.remaining }} slots left</span>
+        </div>
+        <a href="{% url 'settings:my_subscription' %}" class="btn-kpi-upgrade btn-kpi-upgrade-warning">
+          <i class="fas fa-arrow-alt-circle-up mr-1"></i> Review & Upgrade
+        </a>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Compact SaaS Quota Bar Widget -->
+    <div class="card border-0 mb-4" style="border-radius: 16px; background: #ffffff; border: 1px solid #e2e8f0 !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);">
+      <div class="card-body p-3 p-md-4">
+        <div class="row align-items-center">
+          <div class="col-lg-3 border-right mb-3 mb-lg-0">
+            <div class="d-flex align-items-center gap-2 mb-1.5 flex-wrap">
+              <span class="kpi-meta-badge kpi-badge-primary" style="font-size: 0.72rem; padding: 0.2rem 0.65rem; text-transform: uppercase;">
+                <i class="fas fa-crown mr-1"></i> {{ gym_quota.plan_tier }}
+              </span>
+              <span class="font-weight-bold text-dark" style="font-size: 0.95rem;">{{ gym_quota.plan_name }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 my-1">
+              {% if gym_quota.is_active %}
+                <span class="kpi-meta-badge kpi-badge-success" style="font-size: 0.7rem; padding: 0.15rem 0.55rem;">
+                  <i class="fas fa-check-circle mr-1"></i> Active
+                </span>
+                <span class="kpi-meta-desc">{{ gym_quota.days_remaining }} days left</span>
+              {% elif gym_quota.is_expired %}
+                <span class="kpi-meta-badge kpi-badge-danger" style="font-size: 0.7rem; padding: 0.15rem 0.55rem;">
+                  <i class="fas fa-exclamation-circle mr-1"></i> Expired
+                </span>
+              {% else %}
+                <span class="kpi-meta-badge kpi-badge-warning" style="font-size: 0.7rem; padding: 0.15rem 0.55rem;">
+                  Active
+                </span>
+              {% endif %}
+            </div>
+            <a href="{% url 'settings:my_subscription' %}" class="small font-weight-bold text-primary text-decoration-none d-inline-flex align-items-center gap-1 mt-1" style="font-size: 0.78rem;">
+              <span>View Quotas & Upgrades</span> <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <!-- Progress Bars -->
+          <div class="col-lg-7 mb-3 mb-lg-0">
+            <div class="row">
+              <!-- Member Bar -->
+              <div class="col-md-4 mb-2 mb-md-0">
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="font-weight-bold" style="color: #64748b; font-size: 0.78rem;">Members</span>
+                  <span class="font-weight-bold {% if gym_quota.members.is_limit_reached %}text-danger{% elif gym_quota.members.is_warning %}text-warning{% else %}text-dark{% endif %}" style="font-size: 0.78rem;">
+                    {{ gym_quota.members.current }} / {{ gym_quota.members.display_max }}
+                  </span>
+                </div>
+                <div class="progress" style="height: 8px; border-radius: 9999px; background: #f1f5f9;">
+                  <div class="progress-bar {% if gym_quota.members.is_limit_reached %}bg-danger{% elif gym_quota.members.is_warning %}bg-warning{% else %}bg-primary{% endif %}" 
+                       style="width: {{ gym_quota.members.percent }}%; border-radius: 9999px;"></div>
+                </div>
+              </div>
+
+              <!-- Trainer Bar -->
+              <div class="col-md-4 mb-2 mb-md-0">
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="font-weight-bold" style="color: #64748b; font-size: 0.78rem;">Trainers</span>
+                  <span class="font-weight-bold {% if gym_quota.trainers.is_limit_reached %}text-danger{% elif gym_quota.trainers.is_warning %}text-warning{% else %}text-dark{% endif %}" style="font-size: 0.78rem;">
+                    {{ gym_quota.trainers.current }} / {{ gym_quota.trainers.display_max }}
+                  </span>
+                </div>
+                <div class="progress" style="height: 8px; border-radius: 9999px; background: #f1f5f9;">
+                  <div class="progress-bar {% if gym_quota.trainers.is_limit_reached %}bg-danger{% elif gym_quota.trainers.is_warning %}bg-warning{% else %}bg-info{% endif %}" 
+                       style="width: {{ gym_quota.trainers.percent }}%; border-radius: 9999px;"></div>
+                </div>
+              </div>
+
+              <!-- Admins Bar -->
+              <div class="col-md-4">
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="font-weight-bold" style="color: #64748b; font-size: 0.78rem;">Staff / Admins</span>
+                  <span class="font-weight-bold {% if gym_quota.admins.is_limit_reached %}text-danger{% else %}text-dark{% endif %}" style="font-size: 0.78rem;">
+                    {{ gym_quota.admins.current }} / {{ gym_quota.admins.display_max }}
+                  </span>
+                </div>
+                <div class="progress" style="height: 8px; border-radius: 9999px; background: #f1f5f9;">
+                  <div class="progress-bar {% if gym_quota.admins.is_limit_reached %}bg-danger{% else %}bg-dark{% endif %}" 
+                       style="width: {{ gym_quota.admins.percent }}%; border-radius: 9999px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upgrade CTA -->
+          <div class="col-lg-2 text-lg-right">
+            <a href="{% url 'settings:my_subscription' %}" class="btn btn-sm font-weight-bold px-3 py-1.5" style="border-radius: 9999px; background: #ffffff; border: 1px solid #bfdbfe; color: #1d4ed8; box-shadow: 0 1px 3px rgba(37,99,235,0.08); font-size: 0.8rem;">
+              <i class="fas fa-arrow-alt-circle-up mr-1"></i> Upgrade
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- TOP 4 KPI STAT CARDS -->
+  {% if request.user|has_permission:'view_member' %}
+  <div class="row">
+    <!-- Total Members -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-primary">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Total Members</span>
+            <div class="kpi-icon-wrap kpi-icon-primary">
+              <i class="fas fa-users"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ total_members|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-primary">
+            <i class="fas fa-database mr-1"></i> Total Base
+          </span>
+          <span class="kpi-meta-desc">Updated today</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Members -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-success">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Active Members</span>
+            <div class="kpi-icon-wrap kpi-icon-success">
+              <i class="fas fa-user-check"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ active_members|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-success">
+            <i class="fas fa-shield-alt mr-1"></i> Active Now
+          </span>
+          <span class="kpi-meta-desc">Valid plans</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expired Members -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-danger">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Expired Members</span>
+            <div class="kpi-icon-wrap kpi-icon-danger">
+              <i class="fas fa-user-clock"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ inactive_members|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-danger">
+            <i class="fas fa-exclamation-triangle mr-1"></i> Needs Renewal
+          </span>
+          <span class="kpi-meta-desc">Follow-up</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Members (30 Days) -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-warning">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">New (30 Days)</span>
+            <div class="kpi-icon-wrap kpi-icon-warning">
+              <i class="fas fa-user-plus"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ new_members_last_30_days|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-warning">
+            <i class="fas fa-chart-line mr-1"></i> Growth
+          </span>
+          <span class="kpi-meta-desc">Last 30 days</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- QUICK ACTIONS BAR -->
+  {% if request.user|has_permission:'add_member' or request.user|has_permission:'add_enquiry' or request.user|has_permission:'view_payment' or request.user|has_permission:'add_expense' or request.user|has_permission:'view_memberattendance' or request.user|has_permission:'view_trainer' or request.user|has_permission:'view_workoutplan' %}
+  <div class="gym-card mb-4">
+    <div class="gym-card-header">
+      <div class="gym-card-title">
+        <i class="fas fa-bolt text-warning"></i>
+        <span>Quick Actions</span>
+      </div>
+      <span class="badge-soft badge-soft-secondary">Frequent Operations</span>
+    </div>
+    <div class="gym-card-body p-3">
+      <div class="quick-action-grid">
+        {% if request.user|has_permission:'add_member' %}
+        <a href="{% url 'add_new_member' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-member">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <span class="quick-action-label">Add Member</span>
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:'add_enquiry' %}
+        <a href="{% url 'add_new_enquiry' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-enquiry">
+            <i class="fas fa-comment-dots"></i>
+          </div>
+          <span class="quick-action-label">New Enquiry</span>
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:'view_payment' %}
+        <a href="{% url 'billing:submit_due' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-payment">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <span class="quick-action-label">Make Payment</span>
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:'add_expense' %}
+        <a href="{% url 'expense_add' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-expense">
+            <i class="fas fa-file-invoice-dollar"></i>
+          </div>
+          <span class="quick-action-label">Add Expense</span>
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:'view_memberattendance' %}
+        <a href="{% url 'attendance:member_attendance' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-attendance">
+            <i class="fas fa-clipboard-check"></i>
+          </div>
+          <span class="quick-action-label">Attendance</span>
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:'view_trainer' %}
+        <a href="{% url 'trainer_list' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-trainers">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <span class="quick-action-label">Trainers</span>
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:'view_workoutplan' %}
+        <a href="{% url 'workout_plans' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-workout">
+            <i class="fas fa-dumbbell"></i>
+          </div>
+          <span class="quick-action-label">Workout Plans</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- MEMBER GROWTH CHART -->
+  {% if request.user|has_permission:'view_member' %}
+  <div class="gym-card mb-4">
+    <div class="gym-card-header">
+      <div>
+        <div class="gym-card-title">
+          <i class="fas fa-chart-line text-primary"></i>
+          <span>Member Growth & Trends</span>
+        </div>
+        <div class="gym-card-subtitle">Track enrollments and expired memberships over the past 6 months</div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge-soft badge-soft-primary">
+          <i class="fas fa-calendar-alt mr-1"></i> Last 6 Months
+        </span>
+      </div>
+    </div>
+    <div class="gym-card-body">
+      <div style="height: 300px; position: relative;">
+        <canvas id="member-growth-chart"></canvas>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ATTENDANCE SECTION (Check-ins + Overview) -->
+  {% if request.user|has_module_permission:'attendance' %}
+  <div class="row">
+    <!-- Today's Attendance Table -->
+    <div class="col-xl-8 mb-4">
+      <div class="gym-card h-100 mb-0">
+        <div class="gym-card-header">
+          <div>
+            <div class="gym-card-title">
+              <i class="fas fa-fingerprint text-primary"></i>
+              <span>Today's Check-ins</span>
+            </div>
+            <div class="gym-card-subtitle">Live check-in feed for members and trainers</div>
+          </div>
+          <span class="badge-soft badge-soft-info font-weight-bold">
+            {{ today_attendance_count }} Total Check-ins
+          </span>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Person</th>
+                  <th>Role</th>
+                  <th>Check-in Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for attendance in todays_attendance %}
+                <tr>
+                  <td>
+                    <div class="member-info-col">
+                      {% if attendance.member %}
+                        <img src="{% if attendance.member.profile_picture %}{{ attendance.member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" alt="{{ attendance.member.first_name }}" class="member-avatar-img" />
+                      {% elif attendance.trainer %}
+                        <img src="{% if attendance.trainer.photo %}{{ attendance.trainer.photo.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" alt="{{ attendance.trainer.name }}" class="member-avatar-img" />
+                      {% endif %}
+                      <div>
+                        {% if attendance.member %}
+                          <span class="member-info-name">{{ attendance.member.first_name }} {{ attendance.member.last_name }}</span>
+                          <span class="member-info-id">{{ attendance.member.member_id|default:'Member' }}</span>
+                        {% elif attendance.trainer %}
+                          <span class="member-info-name">{{ attendance.trainer.name }}</span>
+                          <span class="member-info-id">Trainer Staff</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    {% if attendance.member %}
+                      <span class="badge-soft badge-soft-primary">Member</span>
+                    {% elif attendance.trainer %}
+                      <span class="badge-soft badge-soft-warning">Trainer</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <span class="text-dark font-weight-semibold">
+                      <i class="far fa-clock mr-1 text-muted"></i>{{ attendance.check_in_time|time:'g:i A' }}
+                    </span>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="3">
+                    <div class="modern-empty-state">
+                      <div class="empty-state-icon-wrap">
+                        <i class="fas fa-clipboard-user"></i>
+                      </div>
+                      <div class="empty-state-title">No attendance recorded today</div>
+                      <p class="empty-state-subtext">Check-ins will appear here as members and trainers arrive.</p>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% if todays_attendance %}
+        <div class="gym-card-footer">
+          <a href="{% url 'attendance:attendance_report' %}" class="btn btn-sm btn-outline-primary px-3">
+            View All Attendance Records <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Attendance Breakdown Chart -->
+    <div class="col-xl-4 mb-4">
+      <div class="gym-card h-100 mb-0 d-flex flex-column">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="fas fa-chart-pie text-success"></i>
+            <span>Attendance Overview</span>
+          </div>
+          <span class="badge-soft badge-soft-success">Today</span>
+        </div>
+        <div class="gym-card-body d-flex flex-column justify-content-between my-auto">
+          <div style="position: relative; height: 190px;">
+            <canvas id="attendance-chart"></canvas>
+          </div>
+          <div class="attendance-stat-grid">
+            <div class="attendance-stat-box box-present">
+              <div class="attendance-stat-count">{{ today_attendance_count }}</div>
+              <div class="attendance-stat-label"><i class="fas fa-check-circle mr-1"></i> Present</div>
+            </div>
+            <div class="attendance-stat-box box-absent">
+              <div class="attendance-stat-count">{{ absent_members_count }}</div>
+              <div class="attendance-stat-label"><i class="fas fa-user-slash mr-1"></i> Absent</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- MEMBERSHIP EXPIRIES SECTION -->
+  {% if request.user|has_permission:'view_member' %}
+  <div class="row">
+    <!-- Expired Members Table -->
+    <div class="col-xl-6 mb-4">
+      <div class="gym-card h-100 mb-0">
+        <div class="gym-card-header">
+          <div>
+            <div class="gym-card-title">
+              <i class="fas fa-user-times text-danger"></i>
+              <span>Expired Memberships</span>
+            </div>
+            <div class="gym-card-subtitle">Members with lapsed plans needing immediate renewal</div>
+          </div>
+          <span class="badge-soft badge-soft-danger font-weight-bold">
+            {{ expired_members|length }} Expired
+          </span>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Member</th>
+                  <th>Plan</th>
+                  <th>Expired</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for member in expired_members %}
+                <tr>
+                  <td>
+                    <div class="member-info-col">
+                      <img src="{% if member.profile_picture %}{{ member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" alt="{{ member.first_name }}" class="member-avatar-img" />
+                      <div>
+                        <a href="{% url 'member_profile' member.id %}" class="member-info-name">
+                          {{ member.first_name }} {{ member.last_name }}
+                        </a>
+                        <span class="member-info-id">{{ member.member_id|default:'No ID' }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    {% if member.latest_membership and member.latest_membership.plan %}
+                      <span class="badge-soft badge-soft-secondary">{{ member.latest_membership.plan.title }}</span>
+                    {% else %}
+                      <span class="badge-soft badge-soft-secondary">No Plan</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if member.latest_membership %}
+                      <span class="text-danger font-weight-bold d-block">{{ member.latest_membership.get_end_date|date:'d M Y' }}</span>
+                      <small class="text-muted">{{ member.latest_membership.get_end_date|timesince }} ago</small>
+                    {% else %}
+                      <span class="text-muted">None</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center">
+                    <div class="action-buttons-wrap">
+                      <a href="tel:{{ member.mobile_number }}" class="btn-icon-action btn-phone" title="Call {{ member.name }}">
+                        <i class="fas fa-phone-alt"></i>
+                      </a>
+                      <a href="{{ member|whatsapp_expired_url:gym }}" target="_blank" class="btn-icon-action btn-whatsapp" title="Send Expired Notice to {{ member.name }} via WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4">
+                    <div class="modern-empty-state">
+                      <div class="empty-state-icon-wrap" style="color: #10b981; background: #ecfdf5;">
+                        <i class="fas fa-check-circle"></i>
+                      </div>
+                      <div class="empty-state-title">No expired memberships</div>
+                      <p class="empty-state-subtext">All member plans are active and healthy!</p>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% if expired_members %}
+        <div class="gym-card-footer">
+          <a href="{% url 'member_list' %}?status_filter=expired" class="btn btn-sm btn-outline-danger px-3">
+            View All Expired Members ({{ inactive_members }}) <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Upcoming Expiries Table -->
+    <div class="col-xl-6 mb-4">
+      <div class="gym-card h-100 mb-0">
+        <div class="gym-card-header">
+          <div>
+            <div class="gym-card-title">
+              <i class="fas fa-hourglass-half text-warning"></i>
+              <span>Expiring Soon (Next 7 Days)</span>
+            </div>
+            <div class="gym-card-subtitle">Members due for renewal within the next week</div>
+          </div>
+          <span class="badge-soft badge-soft-warning font-weight-bold">
+            {{ upcoming_expiries|length }} Upcoming
+          </span>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Member</th>
+                  <th>Plan</th>
+                  <th>Expiry Date</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for member in upcoming_expiries %}
+                <tr>
+                  <td>
+                    <div class="member-info-col">
+                      <img src="{% if member.profile_picture %}{{ member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" alt="{{ member.first_name }}" class="member-avatar-img" />
+                      <div>
+                        <a href="{% url 'member_profile' member.id %}" class="member-info-name">
+                          {{ member.first_name }} {{ member.last_name }}
+                        </a>
+                        <span class="member-info-id">{{ member.member_id|default:'No ID' }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    {% if member.latest_membership and member.latest_membership.plan %}
+                      <span class="badge-soft badge-soft-info">{{ member.latest_membership.plan.title }}</span>
+                    {% else %}
+                      <span class="badge-soft badge-soft-secondary">No Plan</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if member.latest_membership %}
+                      <span class="text-warning font-weight-bold d-block">{{ member.latest_membership.get_end_date|date:'d M Y' }}</span>
+                      <small class="text-muted">Expires soon</small>
+                    {% else %}
+                      <span class="text-muted">None</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center">
+                    <div class="action-buttons-wrap">
+                      <a href="tel:{{ member.mobile_number }}" class="btn-icon-action btn-phone" title="Call {{ member.name }}">
+                        <i class="fas fa-phone-alt"></i>
+                      </a>
+                      <a href="{{ member|whatsapp_expiring_soon_url:gym }}" target="_blank" class="btn-icon-action btn-whatsapp" title="Send Renewal Reminder to {{ member.name }} via WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4">
+                    <div class="modern-empty-state">
+                      <div class="empty-state-icon-wrap" style="color: #3b82f6; background: #eff6ff;">
+                        <i class="fas fa-calendar-check"></i>
+                      </div>
+                      <div class="empty-state-title">No upcoming expiries</div>
+                      <p class="empty-state-subtext">No memberships ending in the next 7 days.</p>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% if upcoming_expiries %}
+        <div class="gym-card-footer">
+          <a href="{% url 'member_list' %}?status_filter=expiring_soon" class="btn btn-sm btn-outline-warning px-3">
+            View All Expiring Soon <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- FINANCIALS & DUES (Recent Payments + Pending Dues) -->
+  {% if request.user|has_module_permission:'billing' or request.user|has_permission:'view_payment' %}
+  <div class="row">
+    <!-- Recent Payments -->
+    <div class="col-xl-6 mb-4">
+      <div class="gym-card h-100 mb-0">
+        <div class="gym-card-header">
+          <div>
+            <div class="gym-card-title">
+              <i class="fas fa-receipt text-success"></i>
+              <span>Recent Payments</span>
+            </div>
+            <div class="gym-card-subtitle">Latest completed member fee transactions</div>
+          </div>
+          <span class="badge-soft badge-soft-success font-weight-bold">
+            ₹{{ total_recent_payments|intcomma }} Total
+          </span>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Member</th>
+                  <th>Amount</th>
+                  <th>Mode</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for payment in recent_payments %}
+                <tr>
+                  <td>
+                    <div class="member-info-col">
+                      <img src="{% if payment.member.profile_picture %}{{ payment.member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" alt="{{ payment.member.first_name }}" class="member-avatar-img" />
+                      <div>
+                        <span class="member-info-name">{{ payment.member.first_name }} {{ payment.member.last_name }}</span>
+                        <span class="member-info-id">{{ payment.member.member_id|default:'Member' }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="font-weight-bold text-success">₹{{ payment.amount|intcomma }}</span>
+                  </td>
+                  <td>
+                    <span class="badge-soft badge-soft-secondary">{{ payment.payment_mode|upper }}</span>
+                  </td>
+                  <td>
+                    <span class="text-muted"><i class="far fa-calendar-alt mr-1"></i>{{ payment.payment_date|date:'d M Y' }}</span>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4">
+                    <div class="modern-empty-state">
+                      <div class="empty-state-icon-wrap">
+                        <i class="fas fa-hand-holding-usd"></i>
+                      </div>
+                      <div class="empty-state-title">No recent payments</div>
+                      <p class="empty-state-subtext">Recent transactions will appear here.</p>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% if recent_payments %}
+        <div class="gym-card-footer">
+          <a href="{% url 'business_report' %}" class="btn btn-sm btn-outline-primary px-3">
+            View All Transactions <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Outstanding Dues -->
+    <div class="col-xl-6 mb-4">
+      <div class="gym-card h-100 mb-0">
+        <div class="gym-card-header">
+          <div>
+            <div class="gym-card-title">
+              <i class="fas fa-file-invoice-dollar text-danger"></i>
+              <span>Outstanding Dues</span>
+            </div>
+            <div class="gym-card-subtitle">Pending member balances and follow-up schedules</div>
+          </div>
+          <span class="badge-soft badge-soft-danger font-weight-bold">
+            {{ total_dues }} Pending
+          </span>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Member</th>
+                  <th>Follow-up</th>
+                  <th class="text-right">Due Amount</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for due in recent_dues|slice:':10' %}
+                <tr>
+                  <td>
+                    <div class="member-info-col">
+                      <img src="{% if due.member.profile_picture %}{{ due.member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" alt="{{ due.member.name }}" class="member-avatar-img" />
+                      <div>
+                        <a href="{% url 'member_profile' due.member.id %}" class="member-info-name">
+                          {{ due.member.name }}
+                        </a>
+                        <span class="member-info-id">{{ due.member.mobile_number }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    {% if due.follow_up_date %}
+                      <span class="badge-soft badge-soft-danger">
+                        <i class="far fa-calendar-alt mr-1"></i>{{ due.follow_up_date|date:'d M, Y' }}
+                      </span>
+                    {% else %}
+                      <span class="badge-soft badge-soft-secondary">Not Scheduled</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-right">
+                    <span class="text-danger font-weight-bold">₹{{ due.due_amount }}</span>
+                  </td>
+                  <td class="text-center">
+                    <div class="action-buttons-wrap">
+                      <a href="tel:{{ due.member.mobile_number }}" class="btn-icon-action btn-phone" title="Call {{ due.member.name }}">
+                        <i class="fas fa-phone-alt"></i>
+                      </a>
+                      <a href="{{ due|whatsapp_due_url:gym }}" target="_blank" class="btn-icon-action btn-whatsapp" title="Send Fee Reminder to {{ due.member.name }} via WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4">
+                    <div class="modern-empty-state">
+                      <div class="empty-state-icon-wrap" style="color: #10b981; background: #ecfdf5;">
+                        <i class="fas fa-check-double"></i>
+                      </div>
+                      <div class="empty-state-title">No pending dues</div>
+                      <p class="empty-state-subtext">All member fee payments are up to date!</p>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% if total_dues > 10 %}
+        <div class="gym-card-footer">
+          <a href="{% url 'billing:submit_due' %}" class="btn btn-sm btn-outline-primary px-3">
+            View All Dues ({{ total_dues }}) <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ENQUIRIES & BIRTHDAYS SECTION -->
+  {% if request.user|has_permission:'view_enquiry' or request.user|has_module_permission:'enquiry' or request.user|has_permission:'view_member' %}
+  <div class="row">
+    <!-- Enquiries & Follow-ups -->
+    {% if request.user|has_permission:'view_enquiry' or request.user|has_module_permission:'enquiry' %}
+    <div class="{% if request.user|has_permission:'view_member' %}col-lg-6 col-md-12{% else %}col-12{% endif %} mb-4">
+      <div class="gym-card h-100 mb-0">
+        <div class="gym-card-header">
+          <div>
+            <div class="gym-card-title">
+              <i class="fas fa-headset text-primary"></i>
+              <span>Enquiries & Follow-ups</span>
+            </div>
+            <div class="gym-card-subtitle">Prospective members and upcoming follow-up dates</div>
+          </div>
+          <span class="badge-soft badge-soft-primary font-weight-bold">
+            {{ total_enquiries }} Total
+          </span>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="enquiry-list-group">
+            {% for enquiry in recent_enquiries %}
+            <div class="enquiry-card-item">
+              <div class="enquiry-main-info">
+                <div class="enquiry-name">{{ enquiry.name }}</div>
+                <div class="enquiry-meta-row">
+                  <span class="badge-soft badge-soft-secondary">
+                    <i class="fas fa-tag mr-1"></i>{{ enquiry.source|default:'Walk-in'|title }}
+                  </span>
+                  {% if enquiry.next_follow_up_date %}
+                  <span class="badge-soft badge-soft-warning">
+                    <i class="far fa-calendar-check mr-1"></i>Follow-up: {{ enquiry.next_follow_up_date|date:'d M, Y' }}
+                  </span>
+                  {% endif %}
+                  {% if enquiry.status == 'new' %}
+                    <span class="badge-soft badge-soft-success">New</span>
+                  {% elif enquiry.status == 'follow_up' %}
+                    <span class="badge-soft badge-soft-warning">Follow-up</span>
+                  {% elif enquiry.status == 'converted' %}
+                    <span class="badge-soft badge-soft-info">Converted</span>
+                  {% else %}
+                    <span class="badge-soft badge-soft-secondary">{{ enquiry.status|title }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="action-buttons-wrap">
+                <a href="tel:{{ enquiry.mobile_number }}" class="btn-icon-action btn-phone" title="Call {{ enquiry.name }}">
+                  <i class="fas fa-phone-alt"></i>
+                </a>
+                <a href="{{ enquiry|whatsapp_enquiry_url:gym }}" target="_blank" class="btn-icon-action btn-whatsapp" title="Send Follow-up to {{ enquiry.name }} via WhatsApp">
+                  <i class="fab fa-whatsapp"></i>
+                </a>
+              </div>
+            </div>
+            {% empty %}
+            <div class="modern-empty-state">
+              <div class="empty-state-icon-wrap">
+                <i class="fas fa-envelope-open-text"></i>
+              </div>
+              <div class="empty-state-title">No recent enquiries</div>
+              <p class="empty-state-subtext">New leads and follow-ups will appear here.</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% if recent_enquiries %}
+        <div class="gym-card-footer">
+          <a href="{% url 'enquiry_list' %}" class="btn btn-sm btn-outline-primary px-3">
+            Manage All Enquiries <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Today's & Upcoming Birthdays -->
+    {% if request.user|has_permission:'view_member' %}
+    <div class="{% if request.user|has_permission:'view_enquiry' or request.user|has_module_permission:'enquiry' %}col-lg-6 col-md-12{% else %}col-12{% endif %} mb-4">
+      <div class="gym-card h-100 mb-0">
+        <div class="gym-card-header">
+          <div>
+            <div class="gym-card-title">
+              <i class="fas fa-birthday-cake text-warning"></i>
+              <span>Birthdays & Celebrations</span>
+            </div>
+            <div class="gym-card-subtitle">Member birthdays today and in the coming 7 days</div>
+          </div>
+          <span class="badge-soft badge-soft-warning font-weight-bold">
+            {{ today_birthdays|length }} Today &bull; {{ upcoming_birthdays|length }} Upcoming
+          </span>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Member</th>
+                  <th>Birthday</th>
+                  <th class="text-center">Wish Member</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for member in today_birthdays %}
+                <tr style="background-color: #f0fdf4;">
+                  <td>
+                    <div class="member-info-col">
+                      <img src="{% if member.profile_picture %}{{ member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" alt="{{ member.name }}" class="member-avatar-img" />
+                      <div>
+                        <span class="member-info-name">{{ member.name }}</span>
+                        <span class="member-info-id">{{ member.mobile_number }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge-soft badge-soft-success font-weight-bold">
+                      <i class="fas fa-cake-candles mr-1"></i> Today!
+                    </span>
+                    <small class="text-muted d-block mt-1">{{ member.date_of_birth|date:'d M' }}</small>
+                  </td>
+                  <td class="text-center">
+                    <div class="action-buttons-wrap">
+                      <a href="{{ member|whatsapp_birthday_url:'today' }}"
+                         target="_blank" class="btn-icon-action btn-whatsapp" title="Send Birthday Wish to {{ member.name }} via WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                      </a>
+                      <a href="tel:{{ member.mobile_number }}" class="btn-icon-action btn-phone" title="Call {{ member.name }}">
+                        <i class="fas fa-phone-alt"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+
+                {% for member in upcoming_birthdays %}
+                <tr>
+                  <td>
+                    <div class="member-info-col">
+                      <img src="{% if member.profile_picture %}{{ member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" alt="{{ member.name }}" class="member-avatar-img" />
+                      <div>
+                        <span class="member-info-name">{{ member.name }}</span>
+                        <span class="member-info-id">{{ member.mobile_number }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge-soft badge-soft-warning">Upcoming</span>
+                    <small class="text-muted d-block mt-1">{{ member.date_of_birth|date:'d M' }}</small>
+                  </td>
+                  <td class="text-center">
+                    <div class="action-buttons-wrap">
+                      <a href="{{ member|whatsapp_birthday_url:'upcoming' }}" target="_blank" class="btn-icon-action btn-whatsapp" title="Send Advance Birthday Wish to {{ member.name }} via WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                      </a>
+                      <a href="tel:{{ member.mobile_number }}" class="btn-icon-action btn-phone" title="Call {{ member.name }}">
+                        <i class="fas fa-phone-alt"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+
+                {% if not today_birthdays and not upcoming_birthdays %}
+                <tr>
+                  <td colspan="3">
+                    <div class="modern-empty-state">
+                      <div class="empty-state-icon-wrap" style="color: #f59e0b; background: #fffbeb;">
+                        <i class="fas fa-gift"></i>
+                      </div>
+                      <div class="empty-state-title">No birthdays coming up</div>
+                      <p class="empty-state-subtext">No members have birthdays today or in the next 7 days.</p>
+                    </div>
+                  </td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- ROLE PERMISSION FALLBACK (Shown if staff user has no dashboard modules permitted) -->
+  {% if not request.user|has_permission:'view_member' and not request.user|has_module_permission:'attendance' and not request.user|has_module_permission:'billing' and not request.user|has_permission:'view_payment' and not request.user|has_permission:'view_enquiry' and not request.user|has_module_permission:'enquiry' %}
+  <div class="gym-card mb-4 text-center py-5">
+    <div class="gym-card-body">
+      <div class="empty-state-icon-wrap mx-auto mb-3" style="width: 64px; height: 64px; font-size: 28px; color: #3b82f6; background: #eff6ff;">
+        <i class="fas fa-dumbbell"></i>
+      </div>
+      <h3 class="font-weight-bold text-dark mb-2">Welcome to ONEXIVAGYM Portal</h3>
+      <p class="text-muted mb-0" style="max-width: 540px; margin: 0 auto;">
+        Your operational dashboard is personalized according to your assigned staff role and module permissions. Use the sidebar navigation menu to access your permitted workspace modules.
+      </p>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- FOOTER STATUS BAR -->
+  <div class="sync-footer-bar">
+    <div class="sync-status-text">
+      <span class="pulse-dot"></span>
+      <span>Live Analytics Engine &bull; Last synchronized {% now 'd M Y, H:i' %}</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="text-muted small">Auto-refreshes every 5 mins</span>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block javascript %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 1. Member Growth Chart
+    const growthCanvas = document.getElementById('member-growth-chart');
+    if (growthCanvas) {
+      const ctx = growthCanvas.getContext('2d');
+
+      const primaryGradient = ctx.createLinearGradient(0, 0, 0, 280);
+      primaryGradient.addColorStop(0, 'rgba(59, 130, 246, 0.28)');
+      primaryGradient.addColorStop(1, 'rgba(59, 130, 246, 0.01)');
+
+      const dangerGradient = ctx.createLinearGradient(0, 0, 0, 280);
+      dangerGradient.addColorStop(0, 'rgba(239, 68, 68, 0.20)');
+      dangerGradient.addColorStop(1, 'rgba(239, 68, 68, 0.01)');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: {{ month_labels|safe }},
+          datasets: [
+            {
+              label: 'New Members',
+              data: {{ new_member_counts|safe }},
+              tension: 0.38,
+              fill: true,
+              backgroundColor: primaryGradient,
+              borderColor: '#3b82f6',
+              borderWidth: 2.5,
+              pointBackgroundColor: '#ffffff',
+              pointBorderColor: '#3b82f6',
+              pointBorderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointHoverBackgroundColor: '#2563eb',
+            },
+            {
+              label: 'Expired Members',
+              data: {{ expired_member_counts|safe }},
+              tension: 0.38,
+              fill: true,
+              backgroundColor: dangerGradient,
+              borderColor: '#ef4444',
+              borderWidth: 2,
+              borderDash: [4, 4],
+              pointBackgroundColor: '#ffffff',
+              pointBorderColor: '#ef4444',
+              pointBorderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointHoverBackgroundColor: '#dc2626',
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 12,
+                boxHeight: 12,
+                usePointStyle: true,
+                pointStyle: 'circle',
+                font: {
+                  family: "'Plus Jakarta Sans', sans-serif",
+                  size: 12,
+                  weight: '600'
+                },
+                color: '#475569',
+                padding: 16
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleColor: '#ffffff',
+              bodyColor: '#e2e8f0',
+              padding: 12,
+              cornerRadius: 10,
+              boxPadding: 6,
+              usePointStyle: true,
+              titleFont: {
+                family: "'Plus Jakarta Sans', sans-serif",
+                size: 13,
+                weight: '700'
+              },
+              bodyFont: {
+                family: "'Plus Jakarta Sans', sans-serif",
+                size: 12
+              },
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) label += ': ';
+                  if (context.parsed.y !== null) label += context.parsed.y + ' members';
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: '#f1f5f9',
+                drawBorder: false
+              },
+              ticks: {
+                font: {
+                  family: "'Plus Jakarta Sans', sans-serif",
+                  size: 11
+                },
+                color: '#94a3b8',
+                precision: 0
+              }
+            },
+            x: {
+              grid: {
+                display: false,
+                drawBorder: false
+              },
+              ticks: {
+                font: {
+                  family: "'Plus Jakarta Sans', sans-serif",
+                  size: 11,
+                  weight: '500'
+                },
+                color: '#64748b'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 2. Attendance Overview Chart (Donut Breakdown)
+    const attendanceCanvas = document.getElementById('attendance-chart');
+    if (attendanceCanvas) {
+      const attCtx = attendanceCanvas.getContext('2d');
+      const presentCount = {{ today_attendance_count|default:0 }};
+      const absentCount = {{ absent_members_count|default:0 }};
+
+      new Chart(attCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Present Today', 'Absent Today'],
+          datasets: [{
+            data: [presentCount > 0 || absentCount > 0 ? presentCount : 0, absentCount],
+            backgroundColor: ['#10b981', '#f59e0b'],
+            hoverBackgroundColor: ['#059669', '#d97706'],
+            borderWidth: 3,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '72%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                boxWidth: 10,
+                usePointStyle: true,
+                pointStyle: 'circle',
+                font: {
+                  family: "'Plus Jakarta Sans', sans-serif",
+                  size: 11,
+                  weight: '600'
+                },
+                color: '#475569',
+                padding: 14
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleColor: '#ffffff',
+              bodyColor: '#e2e8f0',
+              padding: 10,
+              cornerRadius: 8,
+              callbacks: {
+                label: function(context) {
+                  return ' ' + context.label + ': ' + context.parsed + ' persons';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Auto-refresh data every 5 minutes
+    setTimeout(function() {
+      location.reload();
+    }, 300000);
+  });
+</script>
+{% endblock javascript %}

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ plan.name }} - Workout Plan</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #333;
+        }
+        .header-banner {
+            background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header-banner h1 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .header-banner p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .plan-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .plan-card:hover {
+            transform: translateY(-5px);
+        }
+        .plan-cover-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .plan-info-badge {
+            background: rgba(25, 135, 84, 0.1);
+            color: #198754;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px;
+        }
+        .description-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #555;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            margin-top: 30px;
+        }
+        .description-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .document-download {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 30px;
+            border-left: 5px solid #198754;
+        }
+        .document-info h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        .document-info p {
+            margin: 5px 0 0;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        .btn-download {
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-download:hover {
+            background: #146c43;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+            color: white;
+        }
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .header-banner {
+                padding: 40px 20px;
+            }
+            .plan-cover-img {
+                height: 200px;
+            }
+            .document-download {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-banner">
+        <div class="container">
+            {% if plan.gym.logo %}
+                <img src="{{ plan.gym.logo.url }}" alt="{{ plan.gym.name }}" class="mb-3" style="max-height: 80px; border-radius: 10px;">
+            {% endif %}
+            <h1><i class="mdi mdi-dumbbell"></i> {{ plan.name }}</h1>
+            <p>Your personalized workout plan from <strong>{{ plan.gym.name }}</strong> designed to help you build strength and fitness.</p>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card plan-card">
+                    {% if plan.image %}
+                        <img src="{{ plan.image.url }}" alt="{{ plan.name }}" class="plan-cover-img">
+                    {% else %}
+                        <div class="plan-cover-img d-flex align-items-center justify-content-center" style="background: #e9ecef;">
+                            <i class="mdi mdi-weight-lifter text-muted" style="font-size: 5rem; opacity: 0.5;"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="card-body p-4 text-center">
+                        <div class="d-flex flex-wrap justify-content-center mb-4">
+                            <div class="plan-info-badge">
+                                <i class="mdi mdi-trending-up"></i>
+                                Difficulty: {{ plan.get_difficulty_display }}
+                            </div>
+                            <div class="plan-info-badge">
+                                <i class="mdi mdi-calendar-clock"></i>
+                                Duration: {{ plan.duration_days }} Days
+                            </div>
+                            {% if plan.created_by %}
+                            <div class="plan-info-badge">
+                                <i class="mdi mdi-account-edit"></i>
+                                Created by: {{ plan.created_by }}
+                            </div>
+                            {% endif %}
+                            {% if plan.gym %}
+                            <div class="plan-info-badge">
+                                <i class="mdi mdi-store"></i>
+                                Gym: {{ plan.gym.name }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="description-content">
+                    <h3 class="mb-4" style="color: #198754; border-bottom: 2px solid #e9ecef; padding-bottom: 10px;">
+                        <i class="mdi mdi-information-outline"></i> Workout Plan Details
+                    </h3>
+                    {{ plan.description|safe }}
+                </div>
+
+                {% if plan.document %}
+                <div class="document-download">
+                    <div class="document-info">
+                        <h4><i class="mdi mdi-file-document-outline text-success"></i> Attached Document</h4>
+                        <p>Download the attached PDF or Image for exercise charts and detailed routines.</p>
+                    </div>
+                    <a href="{{ plan.document.url }}" target="_blank" class="btn-download">
+                        <i class="mdi mdi-download"></i> Download File
+                    </a>
+                </div>
+                {% endif %}
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <p>&copy; {% now "Y" %} {% if plan.gym %}{{ plan.gym.name }}{% else %}Fitness Center{% endif %}. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

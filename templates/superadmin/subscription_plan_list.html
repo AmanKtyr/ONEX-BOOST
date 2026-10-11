@@ -1,0 +1,661 @@
+{% extends 'superadmin/base.html' %}
+{% load static %}
+
+{% block title %}Subscription Plans | ONEXIVASuperadmin{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<style>
+    .plan-tier-badge {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0.25rem 0.6rem;
+        border-radius: 4px;
+    }
+    .badge-tier-starter { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .badge-tier-growth { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-tier-pro { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+    .badge-tier-enterprise { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge-tier-custom { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+    .module-pill-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+        transition: transform 0.15s ease;
+    }
+    .module-pill-icon:hover {
+        transform: scale(1.15);
+    }
+    .pill-active-whatsapp { background: #dcfce7; color: #16a34a; }
+    .pill-active-attendance { background: #e0f2fe; color: #0284c7; }
+    .pill-active-billing { background: #ede9fe; color: #7c3aed; }
+    .pill-active-crm { background: #fef3c7; color: #d97706; }
+    .pill-active-reports { background: #fee2e2; color: #dc2626; }
+    .pill-active-expenses { background: #f1f5f9; color: #475569; }
+    .pill-active-inventory { background: #f3e8ff; color: #9333ea; }
+    .pill-active-salary { background: #e0e7ff; color: #4f46e5; }
+    .pill-active-diet { background: #ecfdf5; color: #059669; }
+
+    /* Fix table button dimensions so text is NEVER truncated */
+    .table td[data-label="Actions"] .btn-plan-action,
+    td[data-label="Actions"] .btn.btn-plan-action {
+        width: auto !important;
+        min-width: 34px !important;
+        height: 32px !important;
+        padding: 0 10px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        border-radius: 6px !important;
+    }
+    .table td[data-label="Actions"] .btn-plan-icon,
+    td[data-label="Actions"] .btn.btn-plan-icon {
+        width: 32px !important;
+        min-width: 32px !important;
+        height: 32px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 6px !important;
+    }
+</style>
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-package-variant-closed mdi-18px"></i> Subscription Plans
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div>
+            <h3 class="font-weight-bold text-dark mb-1">SaaS Subscription Plans</h3>
+            <p class="text-muted small mb-0">Define plan packages, subscriber quota limitations, and enabled features for gyms.</p>
+        </div>
+        <div class="mt-2 mt-md-0">
+            <a href="{% url 'superadmin:add_subscription_plan' %}" class="btn btn-primary btn-sm font-weight-bold shadow-sm">
+                <i class="mdi mdi-plus-circle mr-1"></i> Create New Plan
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-xs" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">All Subscription Plans ({{ plans|length }})</h4>
+            <span class="badge badge-light text-primary border px-3 py-1 font-weight-bold rounded-pill">
+                Active SaaS Tiers
+            </span>
+        </div>
+        <div class="card-body">
+            {% csrf_token %}
+            <!-- Search & Filter bar -->
+            <form method="get" class="mb-3">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-5 col-12 mb-2">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Search plan name, tagline, perks..." value="{{ query|default:'' }}">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-2">
+                        <select name="tier" class="form-control" onchange="this.form.submit()">
+                            <option value="">All Tiers</option>
+                            {% for key, val in tier_choices %}
+                                <option value="{{ key }}" {% if tier_filter == key %}selected{% endif %}>{{ val }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-6 mb-2">
+                        <select name="status" class="form-control" onchange="this.form.submit()">
+                            <option value="">All Status</option>
+                            <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                            <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-12 mb-2 text-right">
+                        {% if query or tier_filter or status_filter %}
+                            <a href="{% url 'superadmin:subscription_plan_list' %}" class="btn btn-outline-secondary btn-block">
+                                <i class="mdi mdi-reload mr-1"></i> Reset
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th class="font-weight-semibold py-2">#</th>
+                            <th class="font-weight-semibold py-2">Plan Details</th>
+                            <th class="font-weight-semibold py-2">Price & Duration</th>
+                            <th class="font-weight-semibold py-2">Capacity Limitations</th>
+                            <th class="font-weight-semibold py-2">Included Modules</th>
+                            <th class="font-weight-semibold py-2">Status</th>
+                            <th class="font-weight-semibold text-center py-2" style="min-width: 250px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plan in plans %}
+                        <tr>
+                            <td data-label="SR. No.">{{ forloop.counter }}</td>
+                            <td data-label="Plan Details">
+                                <div class="d-flex align-items-center mb-1">
+                                    <strong class="text-dark mr-2 font-weight-bold" style="font-size: 0.95rem;">{{ plan.name }}</strong>
+                                    <span class="plan-tier-badge badge-tier-{{ plan.plan_tier }}">{{ plan.get_plan_tier_display }}</span>
+                                    {% if plan.is_popular %}
+                                        <span class="badge badge-warning text-dark font-weight-bold ml-1" style="font-size: 0.68rem;">
+                                            <i class="mdi mdi-star"></i> POPULAR
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                {% if plan.tagline %}
+                                    <small class="text-muted d-block">{{ plan.tagline }}</small>
+                                {% endif %}
+                            </td>
+                            <td data-label="Price & Duration">
+                                <div class="font-weight-bold text-primary" style="font-size: 1rem;">
+                                    {{ system_setting.currency_symbol|default:"₹" }}{{ plan.price|floatformat:2 }}
+                                </div>
+                                <small class="text-muted">
+                                    for {{ plan.duration_months }} Month{{ plan.duration_months|pluralize }}
+                                </small>
+                            </td>
+                            <td data-label="Capacity Limitations">
+                                <div class="mb-1">
+                                    <span class="badge badge-light border text-dark font-weight-semibold px-2 py-1 shadow-xs">
+                                        <i class="mdi mdi-account-group text-primary mr-1"></i>
+                                        {{ plan.max_members_display }}
+                                    </span>
+                                </div>
+                                <div class="small text-muted d-flex flex-wrap gap-1">
+                                    <span class="mr-2" title="Trainer Quota">
+                                        <i class="mdi mdi-dumbbell text-success"></i> {{ plan.max_trainers_display }}
+                                    </span>
+                                    <span title="Admin Accounts">
+                                        <i class="mdi mdi-shield-account text-info"></i> {{ plan.max_admins_display }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td data-label="Included Modules">
+                                <div class="d-flex flex-wrap align-items-center">
+                                    {% if plan.has_whatsapp_support %}
+                                        <span class="module-pill-icon pill-active-whatsapp" title="WhatsApp Automation Enabled">
+                                            <i class="mdi mdi-whatsapp"></i>
+                                        </span>
+                                    {% endif %}
+                                    {% if plan.has_biometric_attendance %}
+                                        <span class="module-pill-icon pill-active-attendance" title="QR & Biometric Attendance Enabled">
+                                            <i class="mdi mdi-qrcode-scan"></i>
+                                        </span>
+                                    {% endif %}
+                                    {% if plan.has_billing_invoicing %}
+                                        <span class="module-pill-icon pill-active-billing" title="Invoicing & Dues Tracker Enabled">
+                                            <i class="mdi mdi-receipt"></i>
+                                        </span>
+                                    {% endif %}
+                                    {% if plan.has_crm_leads %}
+                                        <span class="module-pill-icon pill-active-crm" title="Lead & CRM Tracking Enabled">
+                                            <i class="mdi mdi-account-convert"></i>
+                                        </span>
+                                    {% endif %}
+                                    {% if plan.has_reports_analytics %}
+                                        <span class="module-pill-icon pill-active-reports" title="Business Analytics & Reports Enabled">
+                                            <i class="mdi mdi-chart-bar"></i>
+                                        </span>
+                                    {% endif %}
+                                    {% if plan.has_expense_management %}
+                                        <span class="module-pill-icon pill-active-expenses" title="Expense Management Enabled">
+                                            <i class="mdi mdi-cash-multiple"></i>
+                                        </span>
+                                    {% endif %}
+                                    {% if plan.has_inventory_management %}
+                                        <span class="module-pill-icon pill-active-inventory" title="Equipment & Inventory Enabled">
+                                            <i class="mdi mdi-package-variant"></i>
+                                        </span>
+                                    {% endif %}
+                                    {% if plan.has_staff_salary %}
+                                        <span class="module-pill-icon pill-active-salary" title="Trainer Payroll Enabled">
+                                            <i class="mdi mdi-account-cash"></i>
+                                        </span>
+                                    {% endif %}
+                                    {% if plan.has_diet_workout %}
+                                        <span class="module-pill-icon pill-active-diet" title="Diet & Workout Generator Enabled">
+                                            <i class="mdi mdi-food-apple"></i>
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td data-label="Status">
+                                {% if plan.is_active %}
+                                    <span class="badge badge-success px-2 py-1">Active</span>
+                                {% else %}
+                                    <span class="badge badge-secondary px-2 py-1">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td data-label="Actions" class="text-center" style="white-space: nowrap;">
+                                <div class="d-inline-flex align-items-center justify-content-center">
+                                    <!-- Preview Button -->
+                                    <button type="button" 
+                                            class="btn btn-sm btn-primary btn-action-text btn-plan-action mr-1 font-weight-semibold shadow-xs" 
+                                            style="background-color: #2563eb; color: #ffffff; border: none;"
+                                            onclick="openPlanPreview(this)" 
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#planPreviewModal"
+                                            data-toggle="modal"
+                                            data-target="#planPreviewModal"
+                                            data-plan-name="{{ plan.name|escape }}"
+                                            data-plan-tier="{{ plan.get_plan_tier_display }}"
+                                            data-plan-tagline="{{ plan.tagline|default:''|escape }}"
+                                            data-plan-price="{{ system_setting.currency_symbol|default:'₹' }}{{ plan.price|floatformat:2 }}"
+                                            data-plan-duration="{{ plan.duration_months }}"
+                                            data-plan-popular="{{ plan.is_popular|yesno:'1,0' }}"
+                                            data-plan-status="{{ plan.is_active|yesno:'Active,Inactive' }}"
+                                            data-plan-members="{{ plan.max_members_display }}"
+                                            data-plan-trainers="{{ plan.max_trainers_display }}"
+                                            data-plan-admins="{{ plan.max_admins_display }}"
+                                            data-plan-theme="{{ plan.color_theme }}"
+                                            data-plan-features="{{ plan.features|escape }}"
+                                            data-plan-edit-url="{% url 'superadmin:update_subscription_plan' plan.id %}"
+                                            data-plan-assign-url="{% url 'superadmin:assign_subscription' %}?plan_id={{ plan.id }}"
+                                            data-mod-whatsapp="{{ plan.has_whatsapp_support|yesno:'1,0' }}"
+                                            data-mod-biometric="{{ plan.has_biometric_attendance|yesno:'1,0' }}"
+                                            data-mod-billing="{{ plan.has_billing_invoicing|yesno:'1,0' }}"
+                                            data-mod-crm="{{ plan.has_crm_leads|yesno:'1,0' }}"
+                                            data-mod-reports="{{ plan.has_reports_analytics|yesno:'1,0' }}"
+                                            data-mod-expenses="{{ plan.has_expense_management|yesno:'1,0' }}"
+                                            data-mod-inventory="{{ plan.has_inventory_management|yesno:'1,0' }}"
+                                            data-mod-salary="{{ plan.has_staff_salary|yesno:'1,0' }}"
+                                            data-mod-diet="{{ plan.has_diet_workout|yesno:'1,0' }}"
+                                            title="Quick Preview Plan">
+                                        <i class="mdi mdi-eye mr-1"></i> Preview
+                                    </button>
+
+                                    <!-- Edit Button -->
+                                    <a href="{% url 'superadmin:update_subscription_plan' plan.id %}" 
+                                       class="btn btn-sm btn-info btn-plan-icon mr-1 shadow-xs" 
+                                       style="background-color: #0284c7; color: white; border: none;" 
+                                       data-toggle="tooltip" 
+                                       title="Edit Plan & Limits">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </a>
+
+                                    <!-- Assign Button -->
+                                    <a href="{% url 'superadmin:assign_subscription' %}?plan_id={{ plan.id }}" 
+                                       class="btn btn-sm btn-success btn-action-text btn-plan-action mr-1 font-weight-bold shadow-xs" 
+                                       style="background-color: #0d9488; color: white; border: none;" 
+                                       data-toggle="tooltip" 
+                                       title="Assign to Gym">
+                                        <i class="mdi mdi-link-variant mr-1"></i> Assign
+                                    </a>
+
+                                    <!-- Delete Button -->
+                                    <button type="button" 
+                                            class="btn btn-sm btn-danger btn-plan-icon shadow-xs" 
+                                            style="background-color: #e11d48; color: white; border: none;" 
+                                            onclick="confirmDelete('{{ plan.id }}', '{{ plan.name|escapejs }}', '{% url 'superadmin:delete_subscription_plan' plan.id %}')" 
+                                            data-toggle="tooltip" 
+                                            title="Delete Plan">
+                                        <i class="mdi mdi-delete"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="mdi mdi-package-variant-closed mdi-36px text-muted mb-2" style="display: block;"></i>
+                                <h6 class="font-weight-bold text-dark">No subscription plans found</h6>
+                                <p class="small text-muted mb-3">Create your first SaaS subscription tier with custom limits and feature access.</p>
+                                <a href="{% url 'superadmin:add_subscription_plan' %}" class="btn btn-primary btn-sm">
+                                    <i class="mdi mdi-plus-circle mr-1"></i> Create Plan
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            {% if plans.has_other_pages %}
+            {% include 'includes/pagination.html' with page_obj=plans %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Plan Preview Modal (Medium Size) -->
+<div class="modal fade" id="planPreviewModal" tabindex="-1" role="dialog" aria-labelledby="planPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 560px; margin: 1.75rem auto;" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+            <!-- Modal Header with Dynamic Theme Banner -->
+            <div class="modal-header text-white py-3 px-4" id="modalHeaderBanner" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+                <div class="d-flex align-items-center justify-content-between w-100">
+                    <div>
+                        <div class="d-flex align-items-center mb-1">
+                            <span class="badge badge-light text-dark font-weight-bold mr-2 text-uppercase" id="modalPlanTier" style="font-size: 0.7rem; letter-spacing: 0.5px;">GROWTH</span>
+                            <span class="badge badge-warning text-dark font-weight-bold d-none" id="modalPlanPopularBadge" style="font-size: 0.68rem;">
+                                <i class="mdi mdi-star"></i> MOST POPULAR
+                            </span>
+                        </div>
+                        <h4 class="modal-title font-weight-bold text-white mb-0" id="modalPlanName" style="font-size: 1.25rem;">Plan Name</h4>
+                        <p class="small text-white-50 mb-0 mt-0.5" id="modalPlanTagline" style="font-size: 0.8rem;">Tagline goes here</p>
+                    </div>
+                    <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" onclick="closePlanPreview()" aria-label="Close" style="opacity: 0.85; outline: none; border: none; background: transparent;">
+                        <span aria-hidden="true" style="font-size: 26px;">&times;</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body p-3 px-4" style="background-color: #f8fafc; max-height: calc(85vh - 120px); overflow-y: auto;">
+                <!-- Pricing & Duration Hero -->
+                <div class="bg-white rounded-lg p-2.5 px-3 border mb-3 shadow-xs d-flex flex-wrap align-items-center justify-content-between">
+                    <div>
+                        <small class="text-muted text-uppercase font-weight-bold" style="font-size: 0.68rem; letter-spacing: 0.5px;">Subscription Price</small>
+                        <div class="d-flex align-items-baseline">
+                            <h3 class="font-weight-bold text-primary mb-0 mr-2" id="modalPlanPrice" style="font-size: 1.4rem;">₹0.00</h3>
+                            <span class="text-muted font-weight-medium small" id="modalPlanDuration">/ 1 Month</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="badge badge-success px-2.5 py-1.5 font-weight-bold" id="modalPlanStatus" style="font-size: 0.78rem;">Active</span>
+                    </div>
+                </div>
+
+                <!-- Resource Capacities Section -->
+                <div class="mb-3">
+                    <h6 class="font-weight-bold text-dark mb-2 text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                        <i class="mdi mdi-shield-lock-outline mr-1 text-primary"></i> Quota Capacity Limitations
+                    </h6>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <div class="bg-white rounded p-2 border text-center shadow-xs">
+                                <div class="text-primary mb-0.5">
+                                    <i class="mdi mdi-account-group mdi-18px"></i>
+                                </div>
+                                <div class="font-weight-bold text-dark" id="modalPlanMembers" style="font-size: 0.95rem;">100</div>
+                                <small class="text-muted" style="font-size: 0.7rem;">Members</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="bg-white rounded p-2 border text-center shadow-xs">
+                                <div class="text-success mb-0.5">
+                                    <i class="mdi mdi-dumbbell mdi-18px"></i>
+                                </div>
+                                <div class="font-weight-bold text-dark" id="modalPlanTrainers" style="font-size: 0.95rem;">5</div>
+                                <small class="text-muted" style="font-size: 0.7rem;">Trainers</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="bg-white rounded p-2 border text-center shadow-xs">
+                                <div class="text-info mb-0.5">
+                                    <i class="mdi mdi-shield-account mdi-18px"></i>
+                                </div>
+                                <div class="font-weight-bold text-dark" id="modalPlanAdmins" style="font-size: 0.95rem;">2</div>
+                                <small class="text-muted" style="font-size: 0.7rem;">Admins</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SaaS Feature Modules Entitlements Grid -->
+                <div class="mb-3">
+                    <h6 class="font-weight-bold text-dark mb-2 text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                        <i class="mdi mdi-view-grid-plus mr-1 text-primary"></i> SaaS Feature Modules Entitlements
+                    </h6>
+                    <div class="bg-white rounded p-2.5 border shadow-xs">
+                        <div class="row g-1" id="modalModulesList">
+                            <!-- Modules will be injected by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features & Marketing Bullet Highlights -->
+                <div id="modalPerksSection" class="mb-1">
+                    <h6 class="font-weight-bold text-dark mb-2 text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                        <i class="mdi mdi-check-decagram mr-1 text-success"></i> Highlights & Marketing Perks
+                    </h6>
+                    <div class="bg-white rounded p-2.5 border shadow-xs" id="modalPerksList">
+                        <!-- Bullet points injected by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer with Quick Actions -->
+            <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-between">
+                <button type="button" class="btn btn-sm btn-secondary px-3 font-weight-bold" data-dismiss="modal" data-bs-dismiss="modal" onclick="closePlanPreview()">Close</button>
+                <div>
+                    <a href="#" id="modalEditBtn" class="btn btn-sm btn-info mr-2 px-3 font-weight-bold" style="background-color: #4599cd; border: none;">
+                        <i class="mdi mdi-pencil mr-1"></i> Edit Plan
+                    </a>
+                    <a href="#" id="modalAssignBtn" class="btn btn-sm btn-success px-3 font-weight-bold" style="background-color: #00bcd4; border: none;">
+                        <i class="mdi mdi-link-variant mr-1"></i> Assign to Gym
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPlanPreview(btn) {
+    if (!btn) return;
+    const ds = btn.dataset;
+    if (!ds) return;
+
+    // Plan name, tier, tagline
+    const nameEl = document.getElementById('modalPlanName');
+    if (nameEl) nameEl.textContent = ds.planName || 'Plan Details';
+
+    const tierEl = document.getElementById('modalPlanTier');
+    if (tierEl) tierEl.textContent = ds.planTier || 'PLAN';
+    
+    const taglineEl = document.getElementById('modalPlanTagline');
+    if (taglineEl) {
+        if (ds.planTagline && ds.planTagline.trim()) {
+            taglineEl.textContent = ds.planTagline;
+            taglineEl.style.display = 'block';
+        } else {
+            taglineEl.style.display = 'none';
+        }
+    }
+
+    // Popular badge
+    const popBadge = document.getElementById('modalPlanPopularBadge');
+    if (popBadge) {
+        if (ds.planPopular === '1') {
+            popBadge.classList.remove('d-none');
+        } else {
+            popBadge.classList.add('d-none');
+        }
+    }
+
+    // Price & Duration
+    const priceEl = document.getElementById('modalPlanPrice');
+    if (priceEl) priceEl.textContent = ds.planPrice || '₹0.00';
+
+    const duration = parseInt(ds.planDuration) || 1;
+    const durationEl = document.getElementById('modalPlanDuration');
+    if (durationEl) durationEl.textContent = `/ ${duration} Month${duration > 1 ? 's' : ''}`;
+
+    // Status
+    const statusEl = document.getElementById('modalPlanStatus');
+    if (statusEl) {
+        statusEl.textContent = ds.planStatus || 'Active';
+        if (ds.planStatus === 'Active') {
+            statusEl.className = 'badge badge-success px-3 py-2 font-weight-bold';
+        } else {
+            statusEl.className = 'badge badge-secondary px-3 py-2 font-weight-bold';
+        }
+    }
+
+    // Quotas
+    const memEl = document.getElementById('modalPlanMembers');
+    if (memEl) memEl.textContent = ds.planMembers || 'Unlimited';
+
+    const trEl = document.getElementById('modalPlanTrainers');
+    if (trEl) trEl.textContent = ds.planTrainers || 'Unlimited';
+
+    const admEl = document.getElementById('modalPlanAdmins');
+    if (admEl) admEl.textContent = ds.planAdmins || 'Unlimited';
+
+    // Theme banner
+    const banner = document.getElementById('modalHeaderBanner');
+    if (banner) {
+        const themeGradients = {
+            'blue': 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+            'emerald': 'linear-gradient(135deg, #065f46 0%, #10b981 100%)',
+            'purple': 'linear-gradient(135deg, #581c87 0%, #8b5cf6 100%)',
+            'amber': 'linear-gradient(135deg, #92400e 0%, #f59e0b 100%)',
+            'dark': 'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
+        };
+        banner.style.background = themeGradients[ds.planTheme] || themeGradients['blue'];
+    }
+
+    // Action buttons
+    const editBtn = document.getElementById('modalEditBtn');
+    if (editBtn) editBtn.href = ds.planEditUrl || '#';
+
+    const assignBtn = document.getElementById('modalAssignBtn');
+    if (assignBtn) assignBtn.href = ds.planAssignUrl || '#';
+
+    // SaaS Feature Modules
+    const modules = [
+        { key: 'modWhatsapp', name: 'WhatsApp Automation', icon: 'mdi-whatsapp' },
+        { key: 'modBiometric', name: 'QR & Biometric Attendance', icon: 'mdi-qrcode-scan' },
+        { key: 'modBilling', name: 'Invoicing & Dues Tracker', icon: 'mdi-receipt' },
+        { key: 'modCrm', name: 'Lead CRM & Enquiries', icon: 'mdi-account-convert' },
+        { key: 'modReports', name: 'Business Reports & Analytics', icon: 'mdi-chart-bar' },
+        { key: 'modExpenses', name: 'Expense & Cashbook', icon: 'mdi-cash-multiple' },
+        { key: 'modInventory', name: 'Inventory & Equipment', icon: 'mdi-package-variant' },
+        { key: 'modSalary', name: 'Staff Salary & Payroll', icon: 'mdi-account-cash' },
+        { key: 'modDiet', name: 'Diet & Workout Generator', icon: 'mdi-food-apple' },
+    ];
+
+    const modulesList = document.getElementById('modalModulesList');
+    if (modulesList) {
+        modulesList.innerHTML = '';
+        modules.forEach(mod => {
+            const isEnabled = ds[mod.key] === '1';
+            const col = document.createElement('div');
+            col.className = 'col-md-6 col-12 mb-2';
+            col.innerHTML = `
+                <div class="d-flex align-items-center p-2 rounded ${isEnabled ? 'bg-light border' : 'text-muted'}" style="${!isEnabled ? 'opacity: 0.65; text-decoration: line-through;' : ''}">
+                    <i class="mdi ${isEnabled ? 'mdi-check-circle text-success' : 'mdi-close-circle text-muted'} mr-2" style="font-size: 1.15rem;"></i>
+                    <i class="mdi ${mod.icon} mr-2 ${isEnabled ? 'text-primary' : 'text-muted'}"></i>
+                    <span class="font-weight-medium ${isEnabled ? 'text-dark' : 'text-muted'}" style="font-size: 0.85rem;">${mod.name}</span>
+                </div>
+            `;
+            modulesList.appendChild(col);
+        });
+    }
+
+    // Highlights & Perks
+    const perksSection = document.getElementById('modalPerksSection');
+    const perksList = document.getElementById('modalPerksList');
+    if (perksSection && perksList) {
+        if (ds.planFeatures && ds.planFeatures.trim()) {
+            perksSection.style.display = 'block';
+            perksList.innerHTML = '';
+            const lines = ds.planFeatures.split('\n').filter(l => l.trim().length > 0);
+            lines.forEach(line => {
+                const p = document.createElement('div');
+                p.className = 'd-flex align-items-center mb-1 text-dark small';
+                p.innerHTML = `<i class="mdi mdi-check text-success mr-2 font-weight-bold"></i> <span>${line.replace(/^[-*•]\s*/, '')}</span>`;
+                perksList.appendChild(p);
+            });
+        } else {
+            perksSection.style.display = 'none';
+        }
+    }
+
+    // Launch modal with multi-framework compatibility (Bootstrap 5, Bootstrap 4 / jQuery, or DOM fallback)
+    const modalEl = document.getElementById('planPreviewModal');
+    if (modalEl) {
+        if (window.bootstrap && typeof window.bootstrap.Modal === 'function') {
+            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            bsModal.show();
+        } else if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+            $('#planPreviewModal').modal('show');
+        } else {
+            modalEl.style.display = 'block';
+            modalEl.classList.add('show');
+            document.body.classList.add('modal-open');
+        }
+    }
+}
+
+function closePlanPreview() {
+    const modalEl = document.getElementById('planPreviewModal');
+    if (!modalEl) return;
+    if (window.bootstrap && typeof window.bootstrap.Modal === 'function') {
+        const bsModal = bootstrap.Modal.getInstance(modalEl);
+        if (bsModal) bsModal.hide();
+    }
+    if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+        $('#planPreviewModal').modal('hide');
+    }
+    modalEl.classList.remove('show');
+    modalEl.style.display = 'none';
+    document.body.classList.remove('modal-open');
+    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+}
+
+// Global hook
+window.openPlanPreview = openPlanPreview;
+window.closePlanPreview = closePlanPreview;
+
+// Auto-bind on DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    const modalEl = document.getElementById('planPreviewModal');
+    if (modalEl) {
+        modalEl.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            if (button && button.dataset && button.dataset.planName) {
+                openPlanPreview(button);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/delete_confirmation.js' %}"></script>
+{% endblock %}

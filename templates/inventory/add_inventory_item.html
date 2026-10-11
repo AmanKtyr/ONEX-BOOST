@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        Edit Inventory Item
+    {% else %}
+        Add New Inventory Item
+    {% endif %}
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<!-- Compact Breadcrumb -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'inventory:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-store-outline mdi-18px"></i> Inventory Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'inventory:all_items' %}" class="text-decoration-none">
+                <i class="mdi mdi-store-outline mdi-18px"></i> Inventory
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-plus-box-outline mdi-18px"></i> 
+            {% if form.instance.pk %}Edit Item{% else %}Add Item{% endif %}
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div>
+                <h4 class="mb-1 font-weight-bold text-white d-flex align-items-center">
+                    <i class="mdi mdi-plus-box-outline mr-2 me-2"></i> 
+                    {% if form.instance.pk %}Edit Inventory Item{% else %}Add New Inventory Item{% endif %}
+                </h4>
+                <p class="mb-0 text-white-50 small">Catalog store products, supplements, fitness gear, and track stock quantity.</p>
+            </div>
+            <a href="{% url 'inventory:all_items' %}" class="btn btn-light btn-sm mt-2 mt-md-0 font-weight-bold text-primary shadow-sm d-flex align-items-center">
+                <i class="mdi mdi-arrow-left mr-1 me-1"></i> Back to Inventory
+            </a>
+        </div>
+
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                        <fieldset class="border p-4 rounded mb-4">
+                            <legend class="w-auto px-2 h5">Item Information</legend>
+                            <div class="mb-3">
+                                <label for="{{ form.name.id_for_label }}" class="form-label"><i class="mdi mdi-tag-text-outline"></i> {{ form.name.label }}</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.sku.id_for_label }}" class="form-label"><i class="mdi mdi-barcode-scan"></i> {{ form.sku.label }}</label>
+                                {{ form.sku }}
+                                {% if form.sku.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.sku.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.category.id_for_label }}" class="form-label"><i class="mdi mdi-shape-outline"></i> {{ form.category.label }}</label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.category.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.description.id_for_label }}" class="form-label"><i class="mdi mdi-text-box-outline"></i> {{ form.description.label }}</label>
+                                {{ form.description }}
+                                {% if form.description.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.description.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="border p-4 rounded mb-4">
+                            <legend class="w-auto px-2 h5">Stock Details</legend>
+                            <div class="mb-3">
+                                <label for="{{ form.unit.id_for_label }}" class="form-label"><i class="mdi mdi-scale-balance"></i> {{ form.unit.label }}</label>
+                                {{ form.unit }}
+                                {% if form.unit.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.unit.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.current_stock.id_for_label }}" class="form-label"><i class="mdi mdi-chart-line"></i> {{ form.current_stock.label }}</label>
+                                    {{ form.current_stock }}
+                                    {% if form.current_stock.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.current_stock.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.reorder_level.id_for_label }}" class="form-label"><i class="mdi mdi-alert-circle-outline"></i> {{ form.reorder_level.label }}</label>
+                                    {{ form.reorder_level }}
+                                    <small class="text-muted d-block mt-1">Alert when stock reaches this level</small>
+                                    {% if form.reorder_level.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.reorder_level.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <fieldset class="border p-4 rounded mb-4">
+                            <legend class="w-auto px-2 h5">Pricing & Supplier</legend>
+                            <div class="mb-3">
+                                <label for="{{ form.purchase_price.id_for_label }}" class="form-label"><i class="mdi mdi-currency-inr"></i> {{ form.purchase_price.label }}</label>
+                                {{ form.purchase_price }}
+                                {% if form.purchase_price.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.purchase_price.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.selling_price.id_for_label }}" class="form-label"><i class="mdi mdi-currency-inr"></i> {{ form.selling_price.label }}</label>
+                                {{ form.selling_price }}
+                                {% if form.selling_price.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.selling_price.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.supplier.id_for_label }}" class="form-label"><i class="mdi mdi-truck-delivery-outline"></i> {{ form.supplier.label }}</label>
+                                {{ form.supplier }}
+                                {% if form.supplier.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.supplier.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <datalist id="supplier-list">
+                                    {% for supplier in suppliers %}
+                                        <option value="{{ supplier }}">
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="border p-4 rounded mb-4">
+                            <legend class="w-auto px-2 h5">Other Details</legend>
+                            <div class="mb-3">
+                                <label for="{{ form.expiry_date.id_for_label }}" class="form-label"><i class="mdi mdi-calendar-remove-outline"></i> {{ form.expiry_date.label }}</label>
+                                {{ form.expiry_date }}
+                                {% if form.expiry_date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.expiry_date.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.image.id_for_label }}" class="form-label"><i class="mdi mdi-file-image-outline"></i> {{ form.image.label }}</label>
+                                <div class="input-group">
+                                    {{ form.image }}
+                                    <button type="button" class="btn btn-outline-primary capture-btn" data-target="{{ form.image.id_for_label }}">
+                                        <i class="mdi mdi-camera"></i> 
+                                    </button>
+                                </div>
+                                <div id="preview_{{ form.image.id_for_label }}" class="mt-2" style="display: {% if form.instance.image %}block{% else %}none{% endif %};">
+                                    <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="img-thumbnail" style="max-height: 150px;">
+                                </div>
+                                {% if form.image.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.image.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a href="{% url 'inventory:all_items' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-semibold me-2 mb-2 mb-sm-0">
+                        <i class="mdi mdi-close mr-1 me-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill font-weight-bold shadow-sm" id="submitBtn">
+                        <i class="mdi mdi-check-circle-outline mr-1 me-1"></i> 
+                        {% if form.instance.pk %}Update Item{% else %}Save Item{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

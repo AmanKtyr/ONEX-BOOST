@@ -1,0 +1,599 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Leave Management{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    .table thead th { 
+        background-color: #f8f9fc; 
+        border-top: none; 
+        text-transform: uppercase; 
+        font-size: 0.75rem; 
+        letter-spacing: 0.05rem;
+        font-weight: 700;
+    }
+    .badge {
+        font-weight: 600;
+        padding: 0.4em 0.8em;
+        font-size: 0.75rem;
+    }
+    .badge-pending { background-color: #fff3cd; color: #856404; }
+    .badge-approved { background-color: #d4edda; color: #155724; }
+    .badge-rejected { background-color: #f8d7da; color: #721c24; }
+    .badge-trainer { background-color: #cce5ff; color: #004085; }
+    .badge-member { background-color: #e2d9f3; color: #5a328e; }
+</style>
+
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-calendar-remove-outline mdi-18px"></i> Leave Management
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div class="d-flex align-items-center mb-3 mb-md-0">
+                <h4 class="mb-0 mr-2 me-2">Leave Requests</h4>
+                <span class="badge bg-light text-primary px-2 py-1">{{ page_obj.paginator.count }}</span>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-light btn-sm dropdown-toggle d-flex align-items-center font-weight-bold" data-toggle="dropdown" aria-expanded="false">
+                    <i class="mdi mdi-plus mr-1 me-1"></i> Add Leave
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{% url 'attendance:add_trainer_leave' %}">For Trainer</a></li>
+                    <li><a class="dropdown-item" href="{% url 'attendance:add_member_leave' %}">For Member</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Unified Real-Time Filter Toolbar -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <form method="get" id="leaveFilterForm" action="{% url 'attendance:leave_management' %}">
+                        <div class="filter-card-box">
+                            <div class="row g-2 align-items-end">
+
+                                <!-- 1. Search Query Input with Live Clear -->
+                                <div class="col-xl-5 col-lg-5 col-md-5 col-12">
+                                    <label for="leave_search" class="filter-label">Search</label>
+                                    <div class="filter-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
+                                        <i class="mdi mdi-magnify filter-search-icon" style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 17px; line-height: 1; z-index: 4; margin: 0;"></i>
+                                        <input
+                                            type="text"
+                                            name="q"
+                                            id="leave_search"
+                                            class="form-control filter-control filter-search-input"
+                                            placeholder="Search by name or reason..."
+                                            value="{{ search_query|default:'' }}"
+                                            autocomplete="off"
+                                            style="padding-left: 35px; padding-right: 32px;"
+                                        />
+                                        <button type="button" class="filter-clear-btn" id="clearLeaveSearchBtn" title="Clear search text" style="position: absolute; right: 9px; top: 50%; transform: translateY(-50%); background: transparent; border: none; outline: none; box-shadow: none; color: #9ca3af; font-size: 17px; cursor: pointer; padding: 0; line-height: 1; z-index: 5; {% if not search_query %}display: none;{% endif %}">
+                                            <i class="mdi mdi-close-circle"></i>
+                                        </button>
+                                        <div class="filter-spinner" id="leaveSearchSpinner"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Status Select Dropdown -->
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-6">
+                                    <label for="status_filter" class="filter-label">Status</label>
+                                    <select
+                                        name="status"
+                                        id="status_filter"
+                                        class="form-control filter-control"
+                                    >
+                                        <option value="all" {% if status_filter == 'all' or not status_filter %}selected{% endif %}>All Status</option>
+                                        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                                        <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+                                        <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+                                    </select>
+                                </div>
+
+                                <!-- 3. Leave Type Select Dropdown -->
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-6">
+                                    <label for="type_filter" class="filter-label">Leave Type</label>
+                                    <select
+                                        name="type"
+                                        id="type_filter"
+                                        class="form-control filter-control"
+                                    >
+                                        <option value="all" {% if type_filter == 'all' or not type_filter %}selected{% endif %}>All Types</option>
+                                        <option value="sick" {% if type_filter == 'sick' %}selected{% endif %}>Sick Leave</option>
+                                        <option value="casual" {% if type_filter == 'casual' %}selected{% endif %}>Casual Leave</option>
+                                        <option value="medical" {% if type_filter == 'medical' %}selected{% endif %}>Medical Leave</option>
+                                        <option value="other" {% if type_filter == 'other' %}selected{% endif %}>Other</option>
+                                    </select>
+                                </div>
+
+                                <!-- 4. Reset Button -->
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-12">
+                                    <button type="button" class="btn btn-secondary w-100 filter-control filter-reset-btn" id="resetLeaveFilterBtn" title="Reset all filters">
+                                        <i class="mdi mdi-reload font-weight-bold"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive" id="leaveTableContainer">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Person</th>
+                            <th>Role</th>
+                            <th>Leave Type</th>
+                            <th>Duration</th>
+                            <th>Date Range</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Applied On</th>
+                            <th class="text-center" style="min-width: 175px; width: 175px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for leave in page_obj %}
+                        <tr>
+                            <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                            <td><strong>{{ leave.person_name }}</strong></td>
+                            <td>
+                                {% if leave.type == 'trainer' %}
+                                    <span class="badge badge-trainer">Trainer</span>
+                                {% else %}
+                                    <span class="badge badge-member">Member</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ leave.leave_type|capfirst }}</td>
+                            <td>
+                                {% if leave.is_half_day %}
+                                    <span class="badge bg-warning text-dark font-weight-bold">0.5 Day ({{ leave.half_day_period }})</span>
+                                {% else %}
+                                    <span class="badge bg-info text-white">{{ leave.duration_days }} day{{ leave.duration_days|pluralize }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>{{ leave.start_date|date:"d M Y" }}<br>to {{ leave.end_date|date:"d M Y" }}</small>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ leave.reason|truncatechars:40|default:"-" }}</small>
+                            </td>
+                            <td>
+                                {% if leave.status == 'pending' %}
+                                    <span class="badge badge-pending">Pending</span>
+                                {% elif leave.status == 'approved' %}
+                                    {% if leave.type == 'trainer' %}
+                                        {% if leave.is_paid %}
+                                            <span class="badge badge-approved" title="Paid Leave - counts towards payable salary">
+                                                <i class="fas fa-check-circle mr-1"></i>Approved (Paid)
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-secondary" title="Unpaid Leave - salary deduction applies">
+                                                <i class="fas fa-minus-circle mr-1"></i>Approved (Unpaid)
+                                            </span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge badge-approved"><i class="fas fa-check mr-1"></i>Approved</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge badge-rejected"><i class="fas fa-times mr-1"></i>Rejected</span>
+                                {% endif %}
+                                {% if leave.admin_notes %}
+                                    <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                                        <i class="fas fa-comment-alt mr-1"></i>{{ leave.admin_notes|truncatechars:35 }}
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td><small>{{ leave.created_at|date:"d M Y" }}</small></td>
+                            <td class="text-center align-middle" style="white-space: nowrap;">
+                                <div class="d-inline-flex align-items-center justify-content-center" style="gap: 5px;">
+                                    {% if leave.status == 'pending' %}
+                                        {% if leave.type == 'trainer' %}
+                                            <a href="{% url 'attendance:update_leave_status' leave.type leave.id 'approved' %}?is_paid=1" 
+                                               class="btn btn-sm btn-success action-btn shadow-none" data-action="approve" data-bs-toggle="tooltip" title="Approve as Paid Leave"
+                                               style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;">
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                            <a href="{% url 'attendance:update_leave_status' leave.type leave.id 'approved' %}?is_paid=0" 
+                                               class="btn btn-sm btn-info text-white action-btn shadow-none" data-action="approve" data-bs-toggle="tooltip" title="Approve as Unpaid Leave"
+                                               style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;">
+                                                <i class="fas fa-calendar-times"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'attendance:update_leave_status' leave.type leave.id 'approved' %}" 
+                                               class="btn btn-sm btn-success action-btn shadow-none" data-action="approve" data-bs-toggle="tooltip" title="Approve"
+                                               style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;">
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        {% endif %}
+                                        <a href="{% url 'attendance:update_leave_status' leave.type leave.id 'rejected' %}" 
+                                           class="btn btn-sm btn-warning text-white action-btn shadow-none" data-action="reject" data-bs-toggle="tooltip" title="Reject"
+                                           style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    {% endif %}
+                                    <button type="button" 
+                                            class="btn btn-sm btn-primary action-btn-edit shadow-none" 
+                                            data-toggle="modal" 
+                                            data-target="#editLeaveModal_{{ leave.type }}_{{ leave.id }}" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editLeaveModal_{{ leave.type }}_{{ leave.id }}" 
+                                            data-bs-toggle="tooltip"
+                                            title="Edit Leave Details"
+                                            style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <a href="{% url 'attendance:delete_leave' leave.type leave.id %}" 
+                                       class="btn btn-sm btn-danger action-btn shadow-none" data-action="delete" data-bs-toggle="tooltip" title="Delete"
+                                       style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="10" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                                    <p class="mb-1 fw-bold">No leave records found.</p>
+                                    <small>Use the filters above or create a new leave request.</small>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="leavePaginationContainer">
+                {% if page_obj.has_other_pages %}
+                    {% include 'includes/pagination.html' with page_obj=page_obj %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Leave Modals Container (placed outside card to prevent backdrop/z-index clipping) -->
+<div id="leaveModalsContainer">
+    {% for leave in page_obj %}
+    <div class="modal fade" id="editLeaveModal_{{ leave.type }}_{{ leave.id }}" tabindex="-1" role="dialog" aria-labelledby="editLeaveModalLabel_{{ leave.type }}_{{ leave.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title font-weight-bold" id="editLeaveModalLabel_{{ leave.type }}_{{ leave.id }}">
+                        <i class="fas fa-edit mr-2 me-2"></i>Edit Leave - {{ leave.person_name }}
+                    </h5>
+                    <button type="button" class="close btn-close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" style="background:none; border:none; font-size:1.25rem;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'attendance:edit_leave' leave.type leave.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body text-start" style="text-align: left;">
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold fw-bold">Person</label>
+                            <input type="text" class="form-control" value="{{ leave.person_name }} ({{ leave.person_type }})" disabled readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold fw-bold text-dark">Leave Type <span class="text-danger">*</span></label>
+                            <select name="leave_type" class="form-select form-control" required>
+                                {% if leave.type == 'trainer' %}
+                                    {% for val, label in trainer_leave_types %}
+                                        <option value="{{ val }}" {% if leave.leave_type_raw == val %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for val, label in member_leave_types %}
+                                        <option value="{{ val }}" {% if leave.leave_type_raw == val %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-bold fw-bold text-dark">Start Date <span class="text-danger">*</span></label>
+                                <input type="date" name="start_date" class="form-control" value="{{ leave.start_date_str }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-bold fw-bold text-dark">End Date <span class="text-danger">*</span></label>
+                                <input type="date" name="end_date" class="form-control" value="{{ leave.end_date_str }}" required>
+                            </div>
+                        </div>
+
+                        {% if leave.type == 'trainer' %}
+                        <div class="card bg-light border p-2 mb-3">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" name="is_half_day" id="halfDay_{{ leave.id }}" value="1" {% if leave.is_half_day %}checked{% endif %} onchange="toggleHalfDayOptions('{{ leave.id }}', this.checked)">
+                                <label class="form-check-label font-weight-bold fw-bold text-dark ms-2 ml-2" for="halfDay_{{ leave.id }}">
+                                    Half Day Leave
+                                </label>
+                            </div>
+                            <div id="halfDayPeriodDiv_{{ leave.id }}" style="display: {% if leave.is_half_day %}block{% else %}none{% endif %};">
+                                <label class="form-label font-weight-bold fw-bold text-dark small">Half Day Period</label>
+                                <select name="half_day_period" class="form-select form-control form-control-sm">
+                                    <option value="first_half" {% if leave.half_day_period_raw == 'first_half' %}selected{% endif %}>First Half</option>
+                                    <option value="second_half" {% if leave.half_day_period_raw == 'second_half' %}selected{% endif %}>Second Half</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold fw-bold text-dark">Payment Status</label>
+                            <select name="is_paid" class="form-select form-control">
+                                <option value="1" {% if leave.is_paid %}selected{% endif %}>Paid Leave</option>
+                                <option value="0" {% if not leave.is_paid %}selected{% endif %}>Unpaid Leave</option>
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold fw-bold text-dark">Status</label>
+                            <select name="status" class="form-select form-control">
+                                <option value="pending" {% if leave.status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="approved" {% if leave.status == 'approved' %}selected{% endif %}>Approved</option>
+                                <option value="rejected" {% if leave.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold fw-bold text-dark">Reason</label>
+                            <textarea name="reason" rows="2" class="form-control" placeholder="Reason for leave...">{{ leave.reason }}</textarea>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label font-weight-bold fw-bold text-dark">Admin Notes</label>
+                            <textarea name="admin_notes" rows="2" class="form-control" placeholder="Optional internal notes...">{{ leave.admin_notes }}</textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary font-weight-bold">
+                            <i class="fas fa-save mr-1 me-1"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const filterForm = document.getElementById("leaveFilterForm");
+    const searchInput = document.getElementById("leave_search");
+    const clearSearchBtn = document.getElementById("clearLeaveSearchBtn");
+    const searchSpinner = document.getElementById("leaveSearchSpinner");
+    const statusSelect = document.getElementById("status_filter");
+    const typeSelect = document.getElementById("type_filter");
+    const resetBtn = document.getElementById("resetLeaveFilterBtn");
+    const tableContainer = document.getElementById("leaveTableContainer");
+    const paginationContainer = document.getElementById("leavePaginationContainer");
+
+    let debounceTimer = null;
+    let abortController = null;
+
+    window.toggleHalfDayOptions = function(id, isChecked) {
+        const el = document.getElementById('halfDayPeriodDiv_' + id);
+        if (el) {
+            el.style.display = isChecked ? 'block' : 'none';
+        }
+    };
+
+    function bindActionButtons() {
+        // Tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // SweetAlert for action buttons
+        document.querySelectorAll('.action-btn').forEach(button => {
+            button.onclick = function (e) {
+                e.preventDefault();
+                const url = this.href;
+                const action = this.dataset.action;
+
+                let config = {
+                    title: 'Are you sure?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                };
+
+                if (action === 'approve') {
+                    config.text = "You are about to approve this leave request.";
+                    config.confirmButtonText = 'Yes, approve it!';
+                    config.icon = 'success';
+                } else if (action === 'reject') {
+                    config.text = "You are about to reject this leave request.";
+                    config.confirmButtonText = 'Yes, reject it!';
+                    config.icon = 'warning';
+                } else if (action === 'delete') {
+                    config.title = 'Are you absolutely sure?';
+                    config.text = "This action cannot be undone. This will permanently delete the leave record.";
+                    config.confirmButtonText = 'Yes, delete it!';
+                    config.icon = 'error';
+                }
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire(config).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = url;
+                        }
+                    });
+                } else {
+                    if (confirm(config.text || config.title)) {
+                        window.location.href = url;
+                    }
+                }
+            };
+        });
+    }
+
+    // Initial binding
+    bindActionButtons();
+
+    function toggleClearBtn() {
+        if (!clearSearchBtn || !searchInput) return;
+        clearSearchBtn.style.display = searchInput.value.trim().length > 0 ? "block" : "none";
+    }
+
+    function buildFilterUrl() {
+        const baseUrl = filterForm ? filterForm.getAttribute("action") : window.location.pathname;
+        const params = new URLSearchParams();
+
+        if (searchInput && searchInput.value.trim()) {
+            params.set("q", searchInput.value.trim());
+        }
+        if (statusSelect && statusSelect.value && statusSelect.value !== "all") {
+            params.set("status", statusSelect.value);
+        }
+        if (typeSelect && typeSelect.value && typeSelect.value !== "all") {
+            params.set("type", typeSelect.value);
+        }
+
+        const qs = params.toString();
+        return qs ? `${baseUrl}?${qs}` : baseUrl;
+    }
+
+    function runFilterRequest(url) {
+        if (abortController) abortController.abort();
+        abortController = new AbortController();
+
+        if (searchSpinner) searchSpinner.style.display = "block";
+        if (clearSearchBtn) clearSearchBtn.style.display = "none";
+        if (tableContainer) tableContainer.classList.add("is-filtering");
+
+        fetch(url, {
+            signal: abortController.signal,
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Network error");
+            return res.text();
+        })
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const newTable = doc.querySelector("#leaveTableContainer");
+            if (newTable && tableContainer) {
+                tableContainer.innerHTML = newTable.innerHTML;
+            }
+            const newPagination = doc.querySelector("#leavePaginationContainer");
+            if (newPagination && paginationContainer) {
+                paginationContainer.innerHTML = newPagination.innerHTML;
+            }
+            const newModals = doc.querySelector("#leaveModalsContainer");
+            const modalsContainer = document.getElementById("leaveModalsContainer");
+            if (newModals && modalsContainer) {
+                modalsContainer.innerHTML = newModals.innerHTML;
+            }
+
+            // Update badge count in card header if present
+            const badgeCount = doc.querySelector(".card-header .badge");
+            const currentBadge = document.querySelector(".card-header .badge");
+            if (badgeCount && currentBadge) {
+                currentBadge.textContent = badgeCount.textContent;
+            }
+
+            window.history.replaceState(null, "", url);
+            bindActionButtons();
+        })
+        .catch(err => {
+            if (err.name !== "AbortError") {
+                if (filterForm) filterForm.submit();
+            }
+        })
+        .finally(() => {
+            if (searchSpinner) searchSpinner.style.display = "none";
+            toggleClearBtn();
+            if (tableContainer) tableContainer.classList.remove("is-filtering");
+        });
+    }
+
+    function triggerAutoFilter(delay = 350) {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        toggleClearBtn();
+
+        debounceTimer = setTimeout(() => {
+            const targetUrl = buildFilterUrl();
+            runFilterRequest(targetUrl);
+        }, delay);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            triggerAutoFilter(350);
+        });
+        searchInput.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                triggerAutoFilter(0);
+            }
+        });
+    }
+
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener("click", function() {
+            if (searchInput) {
+                searchInput.value = "";
+                searchInput.focus();
+            }
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (typeSelect) {
+        typeSelect.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener("click", function() {
+            if (searchInput) searchInput.value = "";
+            if (statusSelect) statusSelect.value = "all";
+            if (typeSelect) typeSelect.value = "all";
+            toggleClearBtn();
+            const baseUrl = filterForm ? filterForm.getAttribute("action") : window.location.pathname;
+            runFilterRequest(baseUrl);
+        });
+    }
+
+    if (filterForm) {
+        filterForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            triggerAutoFilter(0);
+        });
+    }
+});
+</script>
+{% endblock extra_js %}

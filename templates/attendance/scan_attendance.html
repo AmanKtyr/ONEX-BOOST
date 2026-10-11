@@ -1,0 +1,1710 @@
+{% extends 'base_public.html' %}
+{% load static %}
+
+{% block title %}Live Attendance Scanner - {{ gym_name }}{% endblock %}
+
+{% block col_class %}col-12 col-xl-11 col-xxl-10 mx-auto px-2 px-sm-3{% endblock col_class %}
+
+{% block content %}
+<style>
+  :root {
+    --brand-primary: #1e3a8a;
+    --brand-secondary: #2563eb;
+    --brand-accent: #0284c7;
+    --brand-emerald: #10b981;
+    --brand-danger: #ef4444;
+    --brand-amber: #f59e0b;
+    --terminal-bg: #0b1329;
+    --card-surface: #ffffff;
+    --card-border: #e2e8f0;
+  }
+
+  /* Full Terminal Shell */
+  .turnstile-terminal-shell {
+    background: #ffffff;
+    border-radius: 26px;
+    box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(226, 232, 240, 0.9);
+    overflow: hidden;
+    margin: 15px auto 30px auto;
+  }
+
+  /* Kiosk Top Navigation Bar */
+  .terminal-topbar {
+    background: linear-gradient(135deg, #091124 0%, #1e3a8a 55%, #2563eb 100%);
+    color: #ffffff;
+    padding: 20px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .terminal-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .terminal-logo-box {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    background: #ffffff;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    border: 2.5px solid rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+  }
+
+  .terminal-logo-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .terminal-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 2px;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+  }
+
+  .terminal-badge-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50px;
+    padding: 3px 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #93c5fd;
+  }
+
+  .live-dot-pulse {
+    width: 8px;
+    height: 8px;
+    background-color: var(--brand-emerald);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--brand-emerald);
+    animation: livePulseAnim 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  }
+
+  @keyframes livePulseAnim {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+  }
+
+  /* Digital Clock & Controls */
+  .terminal-controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .terminal-clock-box {
+    text-align: right;
+  }
+
+  .terminal-time {
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    line-height: 1.1;
+  }
+
+  .terminal-date {
+    font-size: 0.74rem;
+    color: #cbd5e1;
+    font-weight: 500;
+  }
+
+  .btn-terminal-tool {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
+    text-decoration: none;
+  }
+
+  .btn-terminal-tool:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  /* Two Column Terminal Body */
+  .terminal-body {
+    padding: 28px;
+    background: #f8fafc;
+  }
+
+  /* Panel Cards */
+  .terminal-panel-card {
+    background: #ffffff;
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel-header {
+    padding: 16px 22px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+  }
+
+  .panel-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  /* Left Column: Live Camera Scanner */
+  .camera-viewport-wrap {
+    position: relative;
+    background: #091124;
+    border-radius: 18px;
+    overflow: hidden;
+    margin: 18px;
+    border: 2px solid #1e293b;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+  }
+
+  #reader {
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  #reader video {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 290px;
+    max-height: 380px;
+    object-fit: cover !important;
+    display: block;
+  }
+
+  /* Futuristic Reticle Overlay */
+  .scanner-hud-reticle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;
+    height: 220px;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .hud-corner {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-color: #38bdf8;
+    border-style: solid;
+  }
+
+  .hud-tl { top: 0; left: 0; border-width: 3.5px 0 0 3.5px; border-top-left-radius: 8px; }
+  .hud-tr { top: 0; right: 0; border-width: 3.5px 3.5px 0 0; border-top-right-radius: 8px; }
+  .hud-bl { bottom: 0; left: 0; border-width: 0 0 3.5px 3.5px; border-bottom-left-radius: 8px; }
+  .hud-br { bottom: 0; right: 0; border-width: 0 3.5px 3.5px 0; border-bottom-right-radius: 8px; }
+
+  /* Animated Laser Scan Line */
+  .hud-laser {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #38bdf8, #ffffff, #38bdf8, transparent);
+    box-shadow: 0 0 12px #38bdf8;
+    animation: laserScan 2.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes laserScan {
+    0% { top: 8px; opacity: 0.2; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { top: calc(100% - 8px); opacity: 0.2; }
+  }
+
+  .camera-helper-bar {
+    padding: 12px 20px;
+    background: #ffffff;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #64748b;
+  }
+
+  /* Manual Entry Accordion */
+  .manual-drawer {
+    padding: 18px 22px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .input-terminal {
+    height: 46px;
+    border-radius: 12px;
+    border: 1.5px solid #cbd5e1;
+    font-size: 0.92rem;
+    padding: 10px 14px;
+    background: #ffffff;
+    width: 100%;
+    transition: all 0.2s ease;
+  }
+
+  .input-terminal:focus {
+    border-color: var(--brand-secondary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    outline: none;
+  }
+
+  .btn-terminal-submit {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    height: 46px;
+    padding: 0 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s ease;
+  }
+
+  .btn-terminal-submit:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+    transform: translateY(-1px);
+    color: #ffffff;
+  }
+
+  /* Right Column: Dynamic Turnstile Attendee Result Display */
+  .result-display-container {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* STATE 1: IDLE WAITING STATE */
+  .state-idle-box {
+    text-align: center;
+    padding: 30px 15px;
+  }
+
+  .idle-radar-ring {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.08);
+    border: 2px dashed rgba(37, 99, 235, 0.35);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+    animation: radarSpin 12s linear infinite;
+  }
+
+  @keyframes radarSpin {
+    100% { transform: rotate(360deg); }
+  }
+
+  .idle-icon {
+    font-size: 2.8rem;
+    color: var(--brand-secondary);
+    animation: bounceIdle 2s infinite ease-in-out;
+  }
+
+  @keyframes bounceIdle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  .idle-heading {
+    font-size: 1.28rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .idle-subtext {
+    font-size: 0.88rem;
+    color: #64748b;
+    max-width: 360px;
+    margin: 0 auto 24px auto;
+    line-height: 1.5;
+  }
+
+  /* Recent Ticker */
+  .recent-feed-box {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 18px;
+    text-align: left;
+  }
+
+  .recent-feed-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .recent-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+
+  .recent-user-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .recent-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #2563eb;
+  }
+
+  /* STATE 2: VERIFIED ATTENDEE CARD */
+  .state-verified-box {
+    display: none;
+    animation: fadeInSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes fadeInSlide {
+    0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Big Access Status Pill */
+  .access-banner {
+    padding: 14px 20px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.88rem;
+  }
+
+  .access-banner.granted {
+    background: #ecfdf5;
+    border: 1.5px solid #a7f3d0;
+    color: #065f46;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
+  }
+
+  .access-banner.checkout {
+    background: #fffbeb;
+    border: 1.5px solid #fde68a;
+    color: #92400e;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+  }
+
+  .access-banner.denied {
+    background: #fef2f2;
+    border: 1.5px solid #fecaca;
+    color: #991b1b;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.15);
+  }
+
+  /* User Identity Hero Card */
+  .attendee-hero-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+  }
+
+  .attendee-avatar-frame {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .attendee-avatar-img {
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3.5px solid #2563eb;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.22);
+    display: block;
+    background: #ffffff;
+  }
+
+  .attendee-verified-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 24px;
+    height: 24px;
+    background: #10b981;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+  }
+
+  .attendee-name {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .attendee-role-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .role-pill-member {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+  }
+
+  .role-pill-coach {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+  }
+
+  /* 2x2 Details Grid */
+  .attendee-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .detail-tile {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px 16px;
+  }
+
+  .detail-tile-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    margin-bottom: 3px;
+  }
+
+  .detail-tile-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Auto-Reset Countdown Timer */
+  .reset-countdown-box {
+    background: #f1f5f9;
+    border-radius: 14px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .reset-info {
+    font-size: 0.8rem;
+    color: #475569;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-reset-now {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-reset-now:hover {
+    background: var(--brand-secondary);
+    color: #ffffff;
+    border-color: var(--brand-secondary);
+  }
+
+  /* Multiple Profiles Modal / Card List */
+  .profile-pick-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .profile-pick-item:hover {
+    background: #eff6ff !important;
+    border-color: #2563eb !important;
+    transform: translateY(-1px);
+  }
+
+  @keyframes pulseUpdate {
+    0% { transform: scale(0.97); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .pulse-update {
+    animation: pulseUpdate 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 991px) {
+    .terminal-body {
+      padding: 18px 14px;
+    }
+    .terminal-topbar {
+      padding: 16px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .terminal-controls {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .attendee-details-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<!-- html5-qrcode Library for live webcam QR stream -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<div class="turnstile-terminal-shell">
+  <!-- Top Kiosk Header -->
+  <header class="terminal-topbar">
+    <div class="terminal-brand-group">
+      <div class="terminal-logo-box">
+        <img
+          src="{% if gym.logo %}{{ gym.logo.url }}{% else %}{% static 'images/logo.jpg' %}{% endif %}"
+          alt="{{ gym_name }}"
+        />
+      </div>
+      <div>
+        <h2 class="terminal-title">{{ gym_name }}</h2>
+        <div class="terminal-badge-live">
+          <span class="live-dot-pulse"></span>
+          Attendance Scanner &bull; Station #1
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal-controls">
+      <div class="terminal-clock-box">
+        <div class="terminal-time" id="terminalClock">--:--:-- --</div>
+        <div class="terminal-date" id="terminalDate">Syncing date...</div>
+      </div>
+
+      <!-- Sound Toggle -->
+      <button type="button" class="btn-terminal-tool" onclick="toggleAudio()" title="Sound Effects" id="soundBtn">
+        <i class="mdi mdi-volume-high" id="soundIcon"></i>
+      </button>
+
+      <!-- Fullscreen Toggle -->
+      <button type="button" class="btn-terminal-tool" onclick="toggleTerminalFullscreen()" title="Fullscreen Mode" id="fsBtn">
+        <i class="mdi mdi-fullscreen" id="fsIcon"></i>
+      </button>
+
+      <!-- Link to Kiosk Display Stand -->
+      <a href="{% url 'attendance:qr_code' %}" class="btn-terminal-tool" title="Open QR Code Stand Display" target="_blank">
+        <i class="mdi mdi-qrcode"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Two-Column Terminal Workspace -->
+  <div class="terminal-body">
+    <div class="row g-4">
+      
+      <!-- =====================================================================
+           COLUMN 1: LIVE TURNSTILE CAMERA SCANNER
+           ===================================================================== -->
+      <div class="col-lg-6 col-12 mb-4 mb-lg-0">
+        <div class="terminal-panel-card">
+          
+          <div class="panel-header flex-wrap" style="gap: 8px;">
+            <div class="panel-title">
+              <i class="mdi mdi-camera-iris text-primary" style="font-size: 20px;"></i>
+              <span>Live Attendance Scanner</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <select id="cameraSelect" class="form-control form-control-sm border text-truncate" onchange="changeCameraDevice(this.value)" style="max-width: 170px; font-size: 11px; height: 32px; border-radius: 8px;" title="Select Camera Source">
+                <option value="">Detecting cameras...</option>
+              </select>
+              <button type="button" class="btn btn-sm btn-outline-secondary p-0 d-flex align-items-center justify-content-center" onclick="detectAndPopulateCameras()" title="Refresh Camera Devices" style="width: 32px; height: 32px; border-radius: 8px;">
+                <i class="mdi mdi-refresh"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Video Stream Container -->
+          <div class="camera-viewport-wrap">
+            <!-- HUD Reticle -->
+            <div class="scanner-hud-reticle">
+              <div class="hud-corner hud-tl"></div>
+              <div class="hud-corner hud-tr"></div>
+              <div class="hud-corner hud-bl"></div>
+              <div class="hud-corner hud-br"></div>
+              <div class="hud-laser"></div>
+            </div>
+
+            <!-- HTML5 QR Video Element -->
+            <div id="reader"></div>
+          </div>
+
+          <!-- Helper / Status Strip -->
+          <div class="camera-helper-bar flex-wrap" style="gap: 8px;">
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-xs btn-outline-primary rounded-pill px-2.5 font-weight-bold" onclick="triggerQrImageUpload()" style="font-size: 11px;">
+                <i class="mdi mdi-image-search mr-1"></i> Scan QR Image
+              </button>
+              <input type="file" id="qrFileInput" accept="image/*" style="display:none;" onchange="handleQrImageFile(this);">
+              <div id="qrFileHelper" style="display:none;"></div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <a href="javascript:void(0);" onclick="showWebcamHelp()" class="text-primary font-weight-bold" style="font-size: 0.74rem; text-decoration: none;" title="Why is DroidCam screen green?">
+                <i class="mdi mdi-help-circle-outline"></i> Why is DroidCam Green?
+              </a>
+              <span id="scanStatusIndicator" class="text-success font-weight-bold ml-1" style="font-size: 0.78rem;">
+                Ready
+              </span>
+            </div>
+          </div>
+
+          <!-- Manual Check-In Fallback Section -->
+          <div class="manual-drawer">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="font-weight-bold text-dark" style="font-size: 0.84rem;">
+                <i class="mdi mdi-keyboard-outline mr-1 text-primary"></i> Manual ID / Phone Check-In
+              </span>
+              {% if gym.attendance_code_required %}
+                <span class="badge badge-light border text-muted" style="font-size: 11px;">
+                  Code: <strong>{{ gym.attendance_code|default:'4-Digit' }}</strong>
+                </span>
+              {% endif %}
+            </div>
+
+            <form id="manualScanForm" onsubmit="handleManualSubmit(event);">
+              {% csrf_token %}
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="reg_number"
+                  name="reg_number"
+                  class="form-control input-terminal"
+                  placeholder="Enter Member ID, Coach ID, or Phone..."
+                  autocomplete="off"
+                  required
+                />
+                
+                {% if gym.attendance_code_required %}
+                  <input
+                    type="hidden"
+                    id="attendance_code"
+                    name="attendance_code"
+                    value="{{ gym.attendance_code }}"
+                  />
+                {% endif %}
+
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-terminal-submit" id="btnManualSubmit">
+                    <i class="mdi mdi-login mr-1"></i> Check In
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           COLUMN 2: LIVE ATTENDEE CONFIRMATION & SCAN RESULT DISPLAY
+           ===================================================================== -->
+      <div class="col-lg-6 col-12">
+        <div class="terminal-panel-card">
+          
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="mdi mdi-account-check-outline text-primary" style="font-size: 20px;"></i>
+              <span>Live Attendance Status</span>
+            </div>
+            <span class="badge-soft badge-soft-primary px-2.5 py-1" style="font-size: 11px;" id="panelStatusBadge">
+              WAITING FOR SCAN
+            </span>
+          </div>
+
+          <div class="result-display-container">
+            
+            <!-- -------------------------------------------------------------
+                 STATE 1: IDLE / WAITING STATE (Default)
+                 ------------------------------------------------------------- -->
+            <div id="stateIdle" class="state-idle-box">
+              <div class="idle-radar-ring">
+                <i class="mdi mdi-qrcode-scan idle-icon"></i>
+              </div>
+              <h3 class="idle-heading">Ready For Attendance Scan</h3>
+              <p class="idle-subtext">
+                Present your Coach Pass or Membership QR Code to the camera on the left. The scanner will instantly verify your pass and log your attendance.
+              </p>
+
+              <!-- Recent Today Check-Ins Feed -->
+              <div class="recent-feed-box">
+                <div class="recent-feed-title">
+                  <i class="mdi mdi-history text-primary"></i> Recent Check-Ins Today
+                </div>
+                <div id="recentCheckinsList">
+                  {% for rec in recent_checkins %}
+                    <div class="recent-item">
+                      <div class="recent-user-left">
+                        <img src="{{ rec.photo }}" alt="{{ rec.name }}" class="recent-avatar" onerror="this.src='{% static 'images/member_dp.jpg' %}';">
+                        <div>
+                          <div class="font-weight-bold text-dark" style="font-size: 0.85rem;">{{ rec.name }}</div>
+                          <div class="text-muted small" style="font-size: 0.72rem;">{{ rec.member_id }} &bull; {{ rec.badge }}</div>
+                        </div>
+                      </div>
+                      <span class="badge badge-pill badge-light border text-muted font-monospace" style="font-size: 11px;">
+                        <i class="mdi mdi-clock-outline mr-1 text-primary"></i>{{ rec.time }}
+                      </span>
+                    </div>
+                  {% empty %}
+                    <div class="text-center py-3 text-muted small">
+                      No check-ins recorded yet today. Be the first!
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <!-- -------------------------------------------------------------
+                 STATE 2: VERIFIED ATTENDEE CARD (Rendered dynamically on scan)
+                 ------------------------------------------------------------- -->
+            <div id="stateVerified" class="state-verified-box">
+              
+              <!-- Access Banner (Granted / Checked Out / Warning) -->
+              <div id="accessBanner" class="access-banner granted">
+                <span id="accessBannerText">
+                  <i class="mdi mdi-check-circle mr-1.5" style="font-size: 1.2rem;"></i> ACCESS GRANTED &bull; CHECKED IN
+                </span>
+                <span id="accessTimestamp" class="font-monospace opacity-85" style="font-size: 0.78rem;">12:00:00 PM</span>
+              </div>
+
+              <!-- Attendee Hero Card -->
+              <div class="attendee-hero-card">
+                <div class="attendee-avatar-frame">
+                  <img
+                    id="attendeePhoto"
+                    src="{% static 'images/member_dp.jpg' %}"
+                    alt="Attendee Photo"
+                    class="attendee-avatar-img"
+                    onerror="this.src='{% static 'images/member_dp.jpg' %}';"
+                  />
+                  <span class="attendee-verified-badge" title="Verified Pass">
+                    <i class="mdi mdi-check"></i>
+                  </span>
+                </div>
+                <div style="min-width: 0; flex: 1;">
+                  <h4 class="attendee-name text-truncate" id="attendeeName">User Name</h4>
+                  <div class="d-flex align-items-center flex-wrap gap-2 mt-1">
+                    <span class="attendee-role-pill role-pill-member" id="attendeeRolePill">
+                      <i class="mdi mdi-account-check mr-1"></i> Member
+                    </span>
+                    <span class="badge badge-light border font-monospace text-muted" id="attendeeIdTag">
+                      MEM-000000
+                    </span>
+                  </div>
+                  <div class="text-muted small mt-1.5 text-truncate" id="attendeeSubMessage">
+                    Welcome to today's workout!
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2x2 Details Grid -->
+              <div class="attendee-details-grid">
+                <div class="detail-tile">
+                  <div class="detail-tile-label">Plan / Role</div>
+                  <div class="detail-tile-value" id="attendeePlan">Standard Membership</div>
+                </div>
+                <div class="detail-tile">
+                  <div class="detail-tile-label">Valid Thru / Role Status</div>
+                  <div class="detail-tile-value text-primary font-weight-bold" id="attendeeValid">Active Access</div>
+                </div>
+                <div class="detail-tile">
+                  <div class="detail-tile-label">Registered Phone</div>
+                  <div class="detail-tile-value" id="attendeePhone">+91 --</div>
+                </div>
+                <div class="detail-tile">
+                  <div class="detail-tile-label">Attendance Check-In Time</div>
+                  <div class="detail-tile-value text-success" id="attendeeTime">--:-- --</div>
+                </div>
+              </div>
+
+              <!-- Auto-Reset Progress Bar -->
+              <div class="reset-countdown-box">
+                <div class="reset-info">
+                  <i class="mdi mdi-timer-sand text-primary" style="font-size: 1.1rem;"></i>
+                  <span>Ready for next person in <strong id="resetSecNum">5</strong>s</span>
+                  <span class="badge badge-success px-2 py-0.5 ml-1" style="font-size: 10px; font-weight: 600;">
+                    <i class="mdi mdi-camera-retake mr-1"></i>Scanner Active
+                  </span>
+                </div>
+                <button type="button" class="btn-reset-now" onclick="resetToIdleState()">
+                  <i class="mdi mdi-refresh mr-1"></i> Reset View
+                </button>
+              </div>
+
+            </div>
+
+            <!-- -------------------------------------------------------------
+                 STATE 3: MULTIPLE PROFILES SELECTION (For shared phone numbers)
+                 ------------------------------------------------------------- -->
+            <div id="stateMultiple" style="display: none;" class="state-verified-box">
+              <div class="access-banner" style="background: #eff6ff; border-color: #bfdbfe; color: #1e40af;">
+                <span><i class="mdi mdi-account-multiple mr-1.5"></i> Multiple Profiles Found</span>
+                <span class="font-monospace small">Select Profile</span>
+              </div>
+              <p class="text-muted small mb-3">
+                Multiple gym members are registered with this phone number. Tap your profile below to confirm check-in:
+              </p>
+              <div id="multipleMemberList" class="d-flex flex-column gap-2 mb-3"></div>
+              <button type="button" class="btn btn-outline-secondary btn-block rounded-pill" onclick="resetToIdleState()">
+                Cancel & Return
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+  // ============================================================================
+  // TURNSTILE TERMINAL CORE: AUDIO CHIME, SCANNER & ASYNC CHECK-IN ENGINE
+  // ============================================================================
+  
+  let html5QrcodeScanner = null;
+  let isScanningActive = false;
+  let isVerifyingAjax = false;
+  let lastScannedCode = null;
+  let lastScannedTime = 0;
+  let currentCameraFacing = "environment"; // environment (back) or user (front)
+  let soundEnabled = true;
+  let resetTimer = null;
+  const SCAN_URL = "{% url 'attendance:scan_attendance' gym_id=gym.gym_id %}";
+  const CSRF_TOKEN = "{{ csrf_token }}";
+
+  // 1. Digital Clock
+  function updateTerminalClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    const strHours = String(hours).padStart(2, '0');
+    
+    const clockEl = document.getElementById('terminalClock');
+    if (clockEl) clockEl.textContent = `${strHours}:${minutes}:${seconds} ${ampm}`;
+
+    const dateEl = document.getElementById('terminalDate');
+    if (dateEl) dateEl.textContent = now.toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+  }
+  setInterval(updateTerminalClock, 1000);
+  updateTerminalClock();
+
+  // 2. High-Tech Turnstile Sound Chimes (Web Audio API Synthesizer - Zero External Files)
+  function playSound(type) {
+    if (!soundEnabled) return;
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      if (type === 'granted') {
+        // Crisp dual pleasant chime (E5 -> B5)
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5
+        osc.frequency.exponentialRampToValueAtTime(987.77, audioCtx.currentTime + 0.12); // B5
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.32);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.32);
+      } else if (type === 'checkout') {
+        // Gentle descending checkout chime (A5 -> D5)
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(587.33, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else {
+        // Warning / Error buzz
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.25);
+      }
+    } catch(e) {}
+  }
+
+  function toggleAudio() {
+    soundEnabled = !soundEnabled;
+    const icon = document.getElementById('soundIcon');
+    if (icon) {
+      icon.className = soundEnabled ? 'mdi mdi-volume-high' : 'mdi mdi-volume-off text-danger';
+    }
+  }
+
+  // 3. Fullscreen Toggle
+  function toggleTerminalFullscreen() {
+    const fsIcon = document.getElementById('fsIcon');
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().then(() => {
+        if (fsIcon) fsIcon.className = 'mdi mdi-fullscreen-exit';
+      }).catch(err => console.warn(err));
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().then(() => {
+          if (fsIcon) fsIcon.className = 'mdi mdi-fullscreen';
+        });
+      }
+    }
+  }
+
+  // 4. Parse Scanned Code (Accepts Raw ID, Phone, Path /verify-pass/<id>/, or Query Params)
+  function parseDecodedString(str) {
+    if (!str) return null;
+    let clean = str.trim();
+    if (clean.startsWith('http://') || clean.startsWith('https://')) {
+      try {
+        const u = new URL(clean);
+        // 1. Check query parameters
+        const param = u.searchParams.get('id') || u.searchParams.get('reg_number') || u.searchParams.get('member_id') || u.searchParams.get('trainer_id');
+        if (param) return param.trim();
+
+        // 2. Check path segments e.g. /verify-pass/PMT-TRN-26-112866/
+        const segments = u.pathname.split('/').filter(Boolean);
+        const idx = segments.findIndex(s => s === 'verify-pass' || s === 'verify');
+        if (idx !== -1 && segments.length > idx + 1) {
+          return segments[idx + 1].trim();
+        }
+
+        // 3. Fallback to last segment if it looks like an ID
+        if (segments.length > 0) {
+          const last = segments[segments.length - 1];
+          if (last.includes('-') || last.length >= 6) {
+            return last.trim();
+          }
+        }
+      } catch (e) {}
+    }
+    return clean;
+  }
+
+  let selectedCameraId = null;
+
+  // 5. Initialize Live Camera Scanner & Enumerate Devices
+  function detectAndPopulateCameras() {
+    const select = document.getElementById('cameraSelect');
+    if (select) select.innerHTML = '<option value="">Detecting cameras...</option>';
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      startScannerWithFacingMode("environment");
+      return;
+    }
+
+    Html5Qrcode.getCameras().then(devices => {
+      if (devices && devices.length) {
+        if (select) {
+          select.innerHTML = '';
+          let phoneCamId = null;
+
+          devices.forEach((dev, idx) => {
+            const opt = document.createElement('option');
+            opt.value = dev.id;
+            const label = dev.label || `Camera ${idx + 1}`;
+            opt.textContent = label;
+            select.appendChild(opt);
+
+            // Auto-detect phone / virtual webcam drivers (DroidCam, Iriun, Camo, EpocCam, Phone Link, USB)
+            if (/droidcam|iriun|camo|epoccam|phone|virtual|obs|usb/i.test(label)) {
+              phoneCamId = dev.id;
+            }
+          });
+
+          // Check if previously saved
+          const savedId = localStorage.getItem('fitstack_kiosk_camera_id');
+          if (savedId && devices.some(d => d.id === savedId)) {
+            selectedCameraId = savedId;
+          } else if (phoneCamId) {
+            selectedCameraId = phoneCamId;
+          } else {
+            selectedCameraId = devices[0].id;
+          }
+
+          select.value = selectedCameraId;
+        }
+
+        launchCameraScanner(selectedCameraId);
+      } else {
+        if (select) select.innerHTML = '<option value="">Default Camera</option>';
+        startScannerWithFacingMode("environment");
+      }
+    }).catch(err => {
+      console.warn("Camera enumeration error:", err);
+      if (select) select.innerHTML = '<option value="">Default Camera</option>';
+      startScannerWithFacingMode("environment");
+    });
+  }
+
+  function changeCameraDevice(newDeviceId) {
+    if (!newDeviceId) return;
+    selectedCameraId = newDeviceId;
+    try {
+      localStorage.setItem('fitstack_kiosk_camera_id', newDeviceId);
+    } catch(e) {}
+    
+    launchCameraScanner(newDeviceId);
+  }
+
+  function launchCameraScanner(deviceId) {
+    const statusEl = document.getElementById('scanStatusIndicator');
+    if (statusEl) statusEl.textContent = 'Starting Camera...';
+
+    const launch = () => {
+      try {
+        html5QrcodeScanner = new Html5Qrcode("reader");
+        const config = {
+          fps: 15,
+          qrbox: { width: 220, height: 220 },
+          aspectRatio: 1.0
+        };
+
+        const cameraArg = deviceId ? { deviceId: { exact: deviceId } } : { facingMode: currentCameraFacing };
+
+        html5QrcodeScanner.start(
+          cameraArg,
+          config,
+          onQrCodeScanned
+        ).then(() => {
+          isScanningActive = true;
+          if (statusEl) {
+            statusEl.textContent = 'Camera Active';
+            statusEl.className = 'text-success font-weight-bold ml-1';
+          }
+        }).catch(err => {
+          console.warn("Failed starting camera with deviceId, trying fallback:", err);
+          startScannerWithFacingMode("environment");
+        });
+      } catch(err) {
+        console.error(err);
+        showCameraErrorState();
+      }
+    };
+
+    if (html5QrcodeScanner) {
+      isScanningActive = false;
+      html5QrcodeScanner.stop().then(() => {
+        html5QrcodeScanner.clear();
+        html5QrcodeScanner = null;
+        launch();
+      }).catch(() => {
+        html5QrcodeScanner = null;
+        launch();
+      });
+    } else {
+      launch();
+    }
+  }
+
+  function startScannerWithFacingMode(mode) {
+    currentCameraFacing = mode;
+    const statusEl = document.getElementById('scanStatusIndicator');
+
+    try {
+      html5QrcodeScanner = new Html5Qrcode("reader");
+      const config = {
+        fps: 15,
+        qrbox: { width: 220, height: 220 },
+        aspectRatio: 1.0
+      };
+
+      html5QrcodeScanner.start(
+        { facingMode: mode },
+        config,
+        onQrCodeScanned
+      ).then(() => {
+        isScanningActive = true;
+        if (statusEl) statusEl.textContent = 'Camera Active';
+      }).catch(err => {
+        console.warn("Facing mode camera start error:", err);
+        showCameraErrorState();
+      });
+    } catch(e) {
+      showCameraErrorState();
+    }
+  }
+
+  function showCameraErrorState() {
+    const statusEl = document.getElementById('scanStatusIndicator');
+    if (statusEl) {
+      statusEl.textContent = 'Feed Inactive';
+      statusEl.className = 'text-warning font-weight-bold ml-1';
+    }
+
+    const readerEl = document.getElementById('reader');
+    if (readerEl) {
+      readerEl.innerHTML = `
+        <div style="padding: 30px 20px; text-align: center; color: #94a3b8;">
+          <i class="mdi mdi-camera-off" style="font-size: 2.5rem; color: #f87171;"></i>
+          <div class="font-weight-bold text-white mt-2">Camera Feed Not Receiving Video</div>
+          <p class="small text-muted mt-1 mb-2">If using your phone as a webcam (DroidCam / Iriun), make sure the phone app is connected to your PC.</p>
+          <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="detectAndPopulateCameras()">
+            <i class="mdi mdi-refresh mr-1"></i> Retry Camera
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function triggerQrImageUpload() {
+    const fi = document.getElementById('qrFileInput');
+    if (fi) fi.click();
+  }
+
+  function handleQrImageFile(input) {
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    const statusEl = document.getElementById('scanStatusIndicator');
+    if (statusEl) {
+      statusEl.textContent = 'Decoding Image...';
+      statusEl.className = 'text-primary font-weight-bold ml-1';
+    }
+
+    try {
+      const fileScanner = new Html5Qrcode("qrFileHelper");
+      fileScanner.scanFile(file, false)
+        .then(decodedText => {
+          try { fileScanner.clear(); } catch(e){}
+          if (statusEl) {
+            statusEl.textContent = 'QR Decoded!';
+            statusEl.className = 'text-success font-weight-bold ml-1';
+          }
+          if (resetTimer) clearInterval(resetTimer);
+          const cleanId = parseDecodedString(decodedText);
+          if (cleanId) {
+            lastScannedCode = cleanId;
+            lastScannedTime = Date.now();
+            processCheckIn(cleanId);
+          }
+        })
+        .catch(err => {
+          try { fileScanner.clear(); } catch(e){}
+          console.warn("Scan image error:", err);
+          showErrorBanner("Could not find a readable QR code in this image. Please upload a clear gym QR code.");
+          playSound('error');
+          setTimeout(() => { resetToIdleState(); }, 3500);
+        })
+        .finally(() => {
+          input.value = '';
+        });
+    } catch (e) {
+      console.error(e);
+      showErrorBanner("Image scanner error. Try entering the ID manually below.");
+      input.value = '';
+    }
+  }
+
+  function showWebcamHelp() {
+    Swal.fire({
+      title: 'Why is DroidCam Green?',
+      html: `
+        <div class="text-left small" style="line-height: 1.65; color: #334155;">
+          <p class="mb-2 text-danger font-weight-bold">
+            <i class="mdi mdi-information-outline"></i> The green screen is DroidCam's "Standby / Not Connected" test signal from Windows.
+          </p>
+          <p class="mb-2 text-muted">
+            The browser and camera feed are working properly, but the DroidCam Windows driver sends a solid green image until you connect your phone to the PC software.
+          </p>
+          <div class="bg-light p-2.5 rounded border mb-3">
+            <strong class="text-dark d-block mb-1">To Fix in 10 Seconds:</strong>
+            <ol class="pl-3 mb-0" style="font-size: 12px;">
+              <li>Open the <strong>DroidCam app on your phone</strong> (note the WiFi IP e.g. <code>192.168.1.X</code>).</li>
+              <li>Open the <strong>DroidCam Client program on your PC</strong>.</li>
+              <li>Type in your phone's IP and click <span class="badge badge-success">Start</span> in the PC software.</li>
+              <li>The green box here will instantly turn into your live phone camera video!</li>
+            </ol>
+          </div>
+          <div class="alert alert-info py-2 px-3 mb-0 small">
+            <strong>Quick Alternative:</strong> Click <strong>"Scan QR Image"</strong> above to test with any QR screenshot, or type an ID like <code>MEM-100001</code> into the Manual Check-In box below!
+          </div>
+        </div>
+      `,
+      icon: 'info',
+      confirmButtonColor: '#1e3a8a',
+      confirmButtonText: 'Understood'
+    });
+  }
+
+  // 6. QR Code Detected Handler
+  function onQrCodeScanned(decodedText) {
+    if (!isScanningActive || isVerifyingAjax) return;
+    const cleanId = parseDecodedString(decodedText);
+    if (!cleanId) return;
+
+    const now = Date.now();
+    // Debounce: If the exact same code is scanned within 3.5s, ignore duplicate camera frames
+    if (cleanId === lastScannedCode && (now - lastScannedTime) < 3500) {
+      return;
+    }
+
+    // New QR code (different attendee) OR cooldown elapsed -> process immediately!
+    lastScannedCode = cleanId;
+    lastScannedTime = now;
+
+    // Clear active 5s timer immediately so next attendee gets verified right away
+    if (resetTimer) clearInterval(resetTimer);
+
+    processCheckIn(cleanId);
+  }
+
+  // 7. Manual Form Submit Handler
+  function handleManualSubmit(e) {
+    e.preventDefault();
+    const input = document.getElementById('reg_number');
+    const val = input ? input.value.trim() : '';
+    if (!val) return;
+    if (resetTimer) clearInterval(resetTimer);
+    processCheckIn(val);
+  }
+
+  // 8. Core Asynchronous Check-In Engine (Submits via AJAX, updates right panel in real time)
+  function processCheckIn(regNumber, memberId) {
+    isVerifyingAjax = true;
+    const statusEl = document.getElementById('scanStatusIndicator');
+    if (statusEl) {
+      statusEl.textContent = 'Verifying Pass...';
+      statusEl.className = 'text-primary font-weight-bold ml-1';
+    }
+
+    const formData = new FormData();
+    formData.append('csrfmiddlewaretoken', CSRF_TOKEN);
+    formData.append('is_ajax', '1');
+    formData.append('reg_number', regNumber);
+
+    const codeInput = document.getElementById('attendance_code');
+    if (codeInput && codeInput.value) {
+      formData.append('attendance_code', codeInput.value);
+    }
+
+    if (memberId) {
+      formData.append('member_id', memberId);
+    }
+
+    fetch(SCAN_URL, {
+      method: 'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': CSRF_TOKEN,
+      },
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      isVerifyingAjax = false;
+
+      if (data.status === 'multiple') {
+        renderMultipleMembersChoice(data.members, regNumber);
+        playSound('warning');
+        return;
+      }
+
+      if (data.status === 'error') {
+        showErrorBanner(data.message || 'Pass not recognized.', data.user);
+        playSound('error');
+        // Restart countdown to reset after 5s
+        startAutoResetTimer(5);
+        return;
+      }
+
+      // Success or checkout
+      renderVerifiedAttendee(data);
+      if (data.action === 'checkout') {
+        playSound('checkout');
+      } else {
+        playSound('granted');
+      }
+
+      if (statusEl) {
+        statusEl.textContent = 'Camera Active (Scanning)';
+        statusEl.className = 'text-success font-weight-bold ml-1';
+      }
+
+      // Prepend to Recent Check-ins list
+      prependRecentCheckin(data.user);
+
+      // Start auto-reset countdown (5 seconds, but camera stays LIVE for the next attendee!)
+      startAutoResetTimer(5);
+    })
+    .catch(err => {
+      isVerifyingAjax = false;
+      console.error(err);
+      showErrorBanner('Communication error. Please try again.');
+      playSound('error');
+      startAutoResetTimer(3);
+    });
+  }
+
+  // 9. Render Verified Attendee on Right Panel
+  function renderVerifiedAttendee(data) {
+    const idleBox = document.getElementById('stateIdle');
+    const verifiedBox = document.getElementById('stateVerified');
+    const multipleBox = document.getElementById('stateMultiple');
+    const badge = document.getElementById('panelStatusBadge');
+
+    if (idleBox) idleBox.style.display = 'none';
+    if (multipleBox) multipleBox.style.display = 'none';
+    if (verifiedBox) {
+      verifiedBox.style.display = 'block';
+      verifiedBox.classList.remove('pulse-update');
+      void verifiedBox.offsetWidth; // trigger reflow for smooth re-animation
+      verifiedBox.classList.add('pulse-update');
+    }
+
+    const u = data.user || {};
+    
+    // Status Banner
+    const banner = document.getElementById('accessBanner');
+    const bannerText = document.getElementById('accessBannerText');
+    const bannerTime = document.getElementById('accessTimestamp');
+
+    if (banner && bannerText) {
+      if (data.action === 'checkout') {
+        banner.className = 'access-banner checkout';
+        bannerText.innerHTML = `<i class="mdi mdi-logout mr-1.5" style="font-size: 1.2rem;"></i> CHECKED OUT SUCCESSFULLY`;
+        if (badge) { badge.className = 'badge-soft badge-soft-warning px-2.5 py-1'; badge.textContent = 'CHECKED OUT'; }
+      } else if (data.action === 'already_checked_in') {
+        banner.className = 'access-banner checkout';
+        bannerText.innerHTML = `<i class="mdi mdi-alert-circle mr-1.5" style="font-size: 1.2rem;"></i> ALREADY INSIDE (CHECKED IN)`;
+        if (badge) { badge.className = 'badge-soft badge-soft-warning px-2.5 py-1'; badge.textContent = 'ALREADY ACTIVE'; }
+      } else {
+        banner.className = 'access-banner granted';
+        bannerText.innerHTML = `<i class="mdi mdi-check-circle mr-1.5" style="font-size: 1.2rem;"></i> ACCESS GRANTED &bull; CHECKED IN`;
+        if (badge) { badge.className = 'badge-soft badge-soft-success px-2.5 py-1'; badge.textContent = 'ACCESS GRANTED'; }
+      }
+    }
+    if (bannerTime) bannerTime.textContent = u.time || '';
+
+    // Identity Card
+    const nameEl = document.getElementById('attendeeName');
+    const photoEl = document.getElementById('attendeePhoto');
+    const rolePill = document.getElementById('attendeeRolePill');
+    const idTag = document.getElementById('attendeeIdTag');
+    const subMsg = document.getElementById('attendeeSubMessage');
+
+    if (nameEl) nameEl.textContent = u.name || 'Attendee';
+    if (photoEl && u.photo) photoEl.src = u.photo;
+    if (idTag) idTag.textContent = u.id || '';
+    if (subMsg) subMsg.textContent = data.message || 'Have a great session!';
+
+    if (rolePill) {
+      if (u.type === 'trainer') {
+        rolePill.className = 'attendee-role-pill role-pill-coach';
+        rolePill.innerHTML = '<i class="mdi mdi-shield-account mr-1"></i> Coach / Trainer';
+      } else {
+        rolePill.className = 'attendee-role-pill role-pill-member';
+        rolePill.innerHTML = '<i class="mdi mdi-account-check mr-1"></i> Gym Member';
+      }
+    }
+
+    // 2x2 Details Grid
+    const planEl = document.getElementById('attendeePlan');
+    const validEl = document.getElementById('attendeeValid');
+    const phoneEl = document.getElementById('attendeePhone');
+    const timeEl = document.getElementById('attendeeTime');
+
+    if (planEl) planEl.textContent = u.plan || 'Standard Membership';
+    if (validEl) validEl.textContent = u.valid_thru || 'Active Access';
+    if (phoneEl) phoneEl.textContent = u.phone ? `+91 ${u.phone}` : '--';
+    if (timeEl) timeEl.textContent = u.time || '--:-- --';
+  }
+
+  // 10. Render Multiple Members Choice
+  function renderMultipleMembersChoice(members, regNumber) {
+    const idleBox = document.getElementById('stateIdle');
+    const verifiedBox = document.getElementById('stateVerified');
+    const multipleBox = document.getElementById('stateMultiple');
+    const listEl = document.getElementById('multipleMemberList');
+
+    if (idleBox) idleBox.style.display = 'none';
+    if (verifiedBox) verifiedBox.style.display = 'none';
+    if (multipleBox) multipleBox.style.display = 'block';
+
+    if (listEl) {
+      listEl.innerHTML = '';
+      members.forEach(m => {
+        const item = document.createElement('div');
+        item.className = 'profile-pick-item p-3 border rounded-16 d-flex align-items-center justify-content-between bg-white';
+        item.style.borderRadius = '14px';
+        item.innerHTML = `
+          <div class="d-flex align-items-center" style="gap: 12px;">
+            <img src="${m.photo}" alt="${m.name}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #2563eb;" onerror="this.src='{% static 'images/member_dp.jpg' %}';">
+            <div>
+              <div class="font-weight-bold text-dark" style="font-size: 0.95rem;">${m.name}</div>
+              <div class="text-muted small">${m.member_id}</div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 font-weight-bold">
+            Select &bull; Check In
+          </button>
+        `;
+        item.onclick = function() {
+          processCheckIn(regNumber, m.id);
+        };
+        listEl.appendChild(item);
+      });
+    }
+  }
+
+  // 11. Prepend Check-In into Recent Ticker
+  function prependRecentCheckin(u) {
+    if (!u) return;
+    const list = document.getElementById('recentCheckinsList');
+    if (!list) return;
+
+    const row = document.createElement('div');
+    row.className = 'recent-item';
+    row.innerHTML = `
+      <div class="recent-user-left">
+        <img src="${u.photo || '{% static "images/member_dp.jpg" %}'}" alt="${u.name}" class="recent-avatar" onerror="this.src='{% static "images/member_dp.jpg" %}';">
+        <div>
+          <div class="font-weight-bold text-dark" style="font-size: 0.85rem;">${u.name}</div>
+          <div class="text-muted small" style="font-size: 0.72rem;">${u.id || ''} &bull; ${u.badge || 'Member'}</div>
+        </div>
+      </div>
+      <span class="badge badge-pill badge-light border text-muted font-monospace" style="font-size: 11px;">
+        <i class="mdi mdi-clock-outline mr-1 text-primary"></i>${u.time || ''}
+      </span>
+    `;
+    list.insertBefore(row, list.firstChild);
+
+    // Keep top 5
+    while (list.children.length > 5) {
+      list.removeChild(list.lastChild);
+    }
+  }
+
+  // 12. Show Error Banner (Rich Access Denial Display)
+  function showErrorBanner(msg, user) {
+    const idleBox = document.getElementById('stateIdle');
+    const verifiedBox = document.getElementById('stateVerified');
+    const multipleBox = document.getElementById('stateMultiple');
+
+    if (idleBox) idleBox.style.display = 'none';
+    if (multipleBox) multipleBox.style.display = 'none';
+    if (verifiedBox) {
+      verifiedBox.style.display = 'block';
+      verifiedBox.classList.remove('pulse-update');
+      void verifiedBox.offsetWidth;
+      verifiedBox.classList.add('pulse-update');
+    }
+
+    const banner = document.getElementById('accessBanner');
+    const bannerText = document.getElementById('accessBannerText');
+    const badge = document.getElementById('panelStatusBadge');
+
+    if (banner && bannerText) {
+      banner.className = 'access-banner denied';
+      bannerText.innerHTML = `<i class="mdi mdi-close-circle mr-1.5" style="font-size: 1.2rem;"></i> ACCESS DENIED`;
+    }
+    if (badge) {
+      badge.className = 'badge-soft badge-soft-danger px-2.5 py-1';
+      badge.textContent = 'ACCESS DENIED';
+    }
+
+    const nameEl = document.getElementById('attendeeName');
+    const subMsg = document.getElementById('attendeeSubMessage');
+    const photoEl = document.getElementById('attendeePhoto');
+    const planEl = document.getElementById('attendeePlan');
+    const validEl = document.getElementById('attendeeValid');
+    const rolePill = document.getElementById('attendeeRolePill');
+    const idTag = document.getElementById('attendeeIdTag');
+    const timeEl = document.getElementById('attendeeTime');
+
+    if (user) {
+      if (nameEl) nameEl.textContent = user.name || 'Member';
+      if (subMsg) subMsg.textContent = msg;
+      if (photoEl && user.photo) photoEl.src = user.photo;
+      if (idTag) idTag.textContent = user.id || '';
+      if (planEl) planEl.textContent = user.plan || 'Standard Membership';
+      if (validEl) {
+        validEl.textContent = user.valid_thru || 'Expired';
+        validEl.className = 'detail-tile-value text-danger font-weight-bold';
+      }
+      if (timeEl) timeEl.textContent = user.time || '--:-- --';
+      if (rolePill) {
+        rolePill.className = 'attendee-role-pill bg-danger-subtle text-danger border border-danger';
+        rolePill.innerHTML = '<i class="mdi mdi-alert-circle mr-1"></i> ' + (user.membership_status || 'Access Denied');
+      }
+    } else {
+      if (nameEl) nameEl.textContent = 'Pass Verification Failed';
+      if (subMsg) subMsg.textContent = msg;
+      if (photoEl) photoEl.src = '{% static "images/member_dp.jpg" %}';
+      if (idTag) idTag.textContent = 'INVALID-PASS';
+      if (planEl) planEl.textContent = '--';
+      if (validEl) {
+        validEl.textContent = '--';
+        validEl.className = 'detail-tile-value text-muted';
+      }
+    }
+  }
+
+  // 13. Auto-Reset Countdown Engine
+  function startAutoResetTimer(seconds) {
+    if (resetTimer) clearInterval(resetTimer);
+    let remaining = seconds;
+    const secEl = document.getElementById('resetSecNum');
+    if (secEl) secEl.textContent = remaining;
+
+    resetTimer = setInterval(() => {
+      remaining -= 1;
+      if (secEl) secEl.textContent = remaining;
+      if (remaining <= 0) {
+        clearInterval(resetTimer);
+        resetToIdleState();
+      }
+    }, 1000);
+  }
+
+  function resetToIdleState() {
+    if (resetTimer) clearInterval(resetTimer);
+    
+    // Clear debounce code and flags so camera and scanner are completely fresh
+    lastScannedCode = null;
+    isVerifyingAjax = false;
+    isScanningActive = true;
+
+    const idleBox = document.getElementById('stateIdle');
+    const verifiedBox = document.getElementById('stateVerified');
+    const multipleBox = document.getElementById('stateMultiple');
+    const badge = document.getElementById('panelStatusBadge');
+    const statusEl = document.getElementById('scanStatusIndicator');
+    const manualInput = document.getElementById('reg_number');
+
+    if (idleBox) idleBox.style.display = 'block';
+    if (verifiedBox) verifiedBox.style.display = 'none';
+    if (multipleBox) multipleBox.style.display = 'none';
+    if (badge) {
+      badge.className = 'badge-soft badge-soft-primary px-2.5 py-1';
+      badge.textContent = 'WAITING FOR SCAN';
+    }
+    if (statusEl) {
+      statusEl.textContent = 'Camera Active';
+      statusEl.className = 'text-success font-weight-bold ml-1';
+    }
+    if (manualInput) manualInput.value = '';
+  }
+
+  // Initialize on page load
+  document.addEventListener("DOMContentLoaded", function () {
+    detectAndPopulateCameras();
+  });
+</script>
+{% endblock extra_js %}

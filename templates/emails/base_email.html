@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ email_title|default:platform_name }}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #334155;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+      border: 1px solid #e2e8f0;
+    }
+    .email-header {
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+      padding: 32px 30px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .header-logo-text {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin: 0;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+    .header-subtext {
+      font-size: 13px;
+      color: #dbeafe;
+      margin-top: 6px;
+      margin-bottom: 0;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    .email-body {
+      padding: 36px 32px;
+    }
+    .greeting {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 16px;
+    }
+    .content-text {
+      font-size: 15px;
+      color: #475569;
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+    .credential-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-left: 4px solid #3b82f6;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .credential-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+    .credential-row:last-child {
+      border-bottom: none;
+    }
+    .credential-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .credential-value {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      background: #ffffff;
+      padding: 3px 10px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+    }
+    .btn-action {
+      display: inline-block;
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+      color: #ffffff !important;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 13px 32px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+      margin: 18px 0 8px 0;
+      text-align: center;
+    }
+    .btn-action:hover {
+      background: #1d4ed8;
+    }
+    .security-notice {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 24px 0 10px 0;
+      font-size: 13px;
+      color: #92400e;
+      line-height: 1.5;
+    }
+    .email-footer {
+      background: #f8fafc;
+      padding: 24px 30px;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .footer-links a {
+      color: #3b82f6;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+    @media only screen and (max-width: 600px) {
+      .email-container {
+        margin: 10px !important;
+        border-radius: 8px !important;
+      }
+      .email-body {
+        padding: 24px 20px !important;
+      }
+      .email-header {
+        padding: 24px 20px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <!-- Header -->
+    <div class="email-header">
+      <h1 class="header-logo-text">{{ platform_name|default:"ONEXIVA" }}</h1>
+      <p class="header-subtext">{{ platform_tagline|default:"Powering Smarter Fitness Businesses" }}</p>
+    </div>
+
+    <!-- Body -->
+    <div class="email-body">
+      {% block email_content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <div class="email-footer">
+      <div class="footer-links" style="margin-bottom: 8px;">
+        <a href="{{ website_url|default:'#' }}">Platform Portal</a> &bull;
+        {% if support_email %}<a href="mailto:{{ support_email }}">Support Desk</a> &bull;{% endif %}
+        {% if support_phone %}<a href="tel:{{ support_phone }}">Direct Line</a>{% endif %}
+      </div>
+      <div>&copy; {{ current_year|default:"2026" }} {{ company_name|default:platform_name }}. All rights reserved.</div>
+      <div style="margin-top: 6px; font-size: 11px; color: #cbd5e1;">
+        Confidential Security Notice: This automated notification was generated by the platform. Please do not reply directly to this email unless directed.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+{% extends 'superadmin/base.html' %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'superadmin:gym_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-office-building mdi-18px"></i> Gyms
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-account-plus-outline mdi-18px"></i> Create Gym Admin
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create Gym Admin</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Personal Info -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5>Personal Info</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label for="name">Full Name</label>
+                                        <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}" id="name" name="name" placeholder="Enter full name" value="{{ form.name.value|default:'' }}" required>
+                                        {% for error in form.name.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="Phone_number">Phone Number</label>
+                                        <input type="text" class="form-control {% if form.Phone_number.errors %}is-invalid{% endif %}" id="Phone_number" placeholder="Enter phone number" name="Phone_number" value="{{ form.Phone_number.value|default:'' }}">
+                                        {% for error in form.Phone_number.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" placeholder="Enter email" name="email" value="{{ form.email.value|default:'' }}" required>
+                                        {% for error in form.email.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="photo">Photo</label>
+                                        <input type="file" class="form-control-file {% if form.photo.errors %}is-invalid{% endif %}" id="photo" name="photo">
+                                        {% for error in form.photo.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security & Access -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5>Security & Access</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label for="username">Username</label>
+                                        <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" placeholder="Enter username" name="username" value="{{ form.username.value|default:'' }}" required>
+                                        {% for error in form.username.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="password">Password</label>
+                                        <input type="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="password" placeholder="Enter password" name="password" required>
+                                        {% for error in form.password.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="confirm_password">Confirm Password</label>
+                                        <input type="password" class="form-control {% if form.confirm_password.errors %}is-invalid{% endif %}" id="confirm_password" placeholder="Confirm password" name="confirm_password" required>
+                                        {% for error in form.confirm_password.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Info -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5>Additional Info</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="Department">Department/Team</label>
+                                        <input type="text" class="form-control {% if form.Department.errors %}is-invalid{% endif %}" id="Department" placeholder="Enter department/Team" name="Department" value="{{ form.Department.value|default:'' }}">
+                                        {% for error in form.Department.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="notes">Notes</label>
+                                        <textarea class="form-control {% if form.notes.errors %}is-invalid{% endif %}" id="notes" name="notes" placeholder="Enter any additional notes" rows="3">{{ form.notes.value|default:'' }}</textarea>
+                                        {% for error in form.notes.errors %}
+                                            <div class="invalid-feedback">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary">Create Admin</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

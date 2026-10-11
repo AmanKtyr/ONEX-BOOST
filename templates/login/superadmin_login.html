@@ -1,0 +1,242 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ system_setting.platform_name|default:"ONEXIVA" }} - Superadmin Login</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Custom and Vendor CSS -->
+  <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/customstyle.css' %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  {% if system_setting and system_setting.platform_favicon %}
+    <link rel="shortcut icon" href="{{ system_setting.platform_favicon.url }}" />
+  {% else %}
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+  {% endif %}
+  
+  <style>
+   
+    .login-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .brand-logo {
+      text-align: center;
+    }
+    
+    .brand-logo img {
+      max-width: 180px;
+      height: auto;
+    }
+    
+    .form-control-lg {
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      padding: 15px;
+    }
+    
+    .form-control-lg:focus {
+      border-color: #6689ea;
+      box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+    
+      {% comment %} .auth-form-btn {
+        border-radius: 8px;
+        padding: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      } {% endcomment %}
+    
+
+    
+    .auth-link {
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .auth-link:hover {
+      color: #667eea !important;
+    }
+    
+    .form-check-input:checked {
+      background-color: #667eea;
+      border-color: #667eea;
+    }
+    
+    .alert-danger {
+      border-radius: 8px;
+      border: none;
+    }
+  </style>
+</head>
+
+<body class="d-flex align-items-center min-vh-100">
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
+        <div class="auth-form-light text-start p-4 p-md-5 p-lg-5 login-container shadow-lg">
+          <div class="brand-logo mb-4 text-center">
+            {% if system_setting and system_setting.platform_logo %}
+              <img src="{{ system_setting.platform_logo.url }}" alt="{{ system_setting.platform_name|default:'ONEXIVA Logo' }}" class="img-fluid" style="max-height: 70px; width: auto; object-fit: contain;">
+            {% elif system_setting and system_setting.platform_favicon %}
+              <img src="{{ system_setting.platform_favicon.url }}" alt="{{ system_setting.platform_name|default:'ONEXIVA Logo' }}" class="img-fluid" style="max-height: 70px; width: auto; object-fit: contain;">
+            {% else %}
+              <img src="{% static 'images/onexiva-logo.png' %}" alt="ONEXIVA Logo" class="img-fluid" style="max-height: 70px; width: auto; object-fit: contain;">
+            {% endif %}
+          </div>
+          
+          <h4 class="fw-bold mb-2">Hello! Let's get started</h4>
+          <h6 class="fw-light mb-4 text-muted">Sign in to continue as Super Admin</h6>
+          
+          {% if messages %}
+          <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            {% for message in messages %}
+            <div>{{ message }}</div>
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endif %}
+          
+          <form class="pt-2" method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+              <input type="text" class="form-control form-control-lg" id="username" name="username" placeholder="Username" required>
+            </div>
+            
+            <div class="mb-4">
+              <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Password" required>
+            </div>
+            
+            <div class="mb-4">
+              <button class="btn btn-primary btn-lg w-100 auth-form-btn" type="submit">
+                SIGN IN
+              </button>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" id="keepSignedIn">
+                <label class="form-check-label text-muted small" for="keepSignedIn">
+                  Keep me signed in
+                </label>
+              </div>
+              <a href="#" class="auth-link text-decoration-none text-muted small" id="sa-forgot-password-link">Forgot password?</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Vendor Scripts -->
+  <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script>
+  
+  <!-- Custom Scripts -->
+  <script src="{% static 'js/off-canvas.js' %}"></script>
+  <script src="{% static 'js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'js/misc.js' %}"></script>
+  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Add form validation
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      
+      form.addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        if (!username || !password) {
+          e.preventDefault();
+          alert('Please fill in both username and password fields.');
+        }
+      });
+      
+      // Add focus effect to inputs
+      const inputs = document.querySelectorAll('.form-control-lg');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.classList.add('focused');
+        });
+        input.addEventListener('blur', function() {
+          this.parentElement.classList.remove('focused');
+        });
+      });
+
+      const forgotLink = document.getElementById('sa-forgot-password-link');
+      if (forgotLink) {
+        forgotLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          Swal.fire({
+            title: 'Reset Superadmin Password',
+            text: 'Enter your registered Superadmin email or username:',
+            input: 'text',
+            inputPlaceholder: 'admin@onexiva.com or username',
+            showCancelButton: true,
+            confirmButtonText: 'Send Reset Email',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#1e40af',
+            showLoaderOnConfirm: true,
+            preConfirm: function(identifier) {
+              if (!identifier || !identifier.trim()) {
+                Swal.showValidationMessage('Please enter your email or username');
+                return false;
+              }
+              var formData = new URLSearchParams();
+              formData.append('identifier', identifier.trim());
+              formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+              return fetch("{% url 'forgot_password_api' %}", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+              })
+              .then(function(res) { return res.json(); })
+              .then(function(data) {
+                if (!data.success) {
+                  throw new Error(data.message || 'Failed to send reset email.');
+                }
+                return data;
+              })
+              .catch(function(err) {
+                Swal.showValidationMessage(err.message);
+              });
+            },
+            allowOutsideClick: function() { return !Swal.isLoading(); }
+          }).then(function(result) {
+            if (result.isConfirmed && result.value) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Reset Email Sent!',
+                text: result.value.message,
+                confirmButtonColor: '#1e40af'
+              });
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

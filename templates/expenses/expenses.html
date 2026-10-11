@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Expenses{% endblock %}
+
+{% block content %}
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <i class="mdi mdi-cash-multiple mdi-18px"></i> Expenses
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Expenses</h4>
+            <div>
+                <a href="{% url 'expense_trash' %}" class="btn btn-danger btn-sm me-2">
+                    <i class="mdi mdi-trash-can-outline"></i> Trash
+                </a>
+                <a href="{% url 'expense_add' %}" class="btn btn-light btn-sm">
+                    <i class="mdi mdi-plus"></i> Add Expense
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            {% csrf_token %}
+
+            <!-- =========================================================================
+                 SMART AUTO-FILTER TOOLBAR
+                 ========================================================================= -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <form method="get" action="{% url 'expenses' %}" id="expenseFilterForm">
+                        <div class="filter-card-box">
+                            <div class="row g-2 g-md-3 align-items-end">
+                                
+                                <!-- 1. Live Search Input -->
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-12">
+                                    <label for="expense_search" class="filter-label">Search Expenses</label>
+                                    <div class="filter-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
+                                        <i class="mdi mdi-magnify filter-search-icon" style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 17px; line-height: 1; z-index: 4; margin: 0;"></i>
+                                        <input
+                                            type="text"
+                                            name="q"
+                                            id="expense_search"
+                                            class="form-control filter-control filter-search-input"
+                                            placeholder="Category, vendor, bill #..."
+                                            value="{{ request.GET.q|default:'' }}"
+                                            autocomplete="off"
+                                            style="padding-left: 35px; padding-right: 32px;"
+                                        />
+                                        <button type="button" class="filter-clear-btn" id="clearExpenseSearchBtn" title="Clear search text" style="position: absolute; right: 9px; top: 50%; transform: translateY(-50%); background: transparent; border: none; outline: none; box-shadow: none; color: #9ca3af; font-size: 17px; cursor: pointer; padding: 0; line-height: 1; z-index: 5; {% if not request.GET.q %}display: none;{% endif %}">
+                                            <i class="mdi mdi-close-circle"></i>
+                                        </button>
+                                        <div class="filter-spinner" id="expenseSearchSpinner"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Category Select Dropdown -->
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-6">
+                                    <label for="expense_category" class="filter-label">Category</label>
+                                    <select name="category" id="expense_category" class="form-control filter-control">
+                                        <option value="">All Categories</option>
+                                        {% for key, val in categories %}
+                                        <option value="{{ key }}" {% if request.GET.category == key %}selected{% endif %}>{{ val }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <!-- 3. Payment Mode Dropdown -->
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-6">
+                                    <label for="expense_payment_mode" class="filter-label">Payment Mode</label>
+                                    <select name="payment_mode" id="expense_payment_mode" class="form-control filter-control">
+                                        <option value="">All Modes</option>
+                                        {% for key, val in payment_modes %}
+                                        <option value="{{ key }}" {% if request.GET.payment_mode == key %}selected{% endif %}>{{ val }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <!-- 4. Date From -->
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-6">
+                                    <label for="date_from" class="filter-label">From</label>
+                                    <input
+                                        type="date"
+                                        name="date_from"
+                                        id="date_from"
+                                        class="form-control filter-control"
+                                        value="{{ request.GET.date_from|default:'' }}"
+                                    />
+                                </div>
+
+                                <!-- 5. Date To -->
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-6">
+                                    <label for="date_to" class="filter-label">To</label>
+                                    <input
+                                        type="date"
+                                        name="date_to"
+                                        id="date_to"
+                                        class="form-control filter-control"
+                                        value="{{ request.GET.date_to|default:'' }}"
+                                    />
+                                </div>
+
+                                <!-- 6. Reset / Reload Button -->
+                                <div class="col-xl-1 col-lg-1 col-md-12 col-12">
+                                    <button type="button" class="btn btn-secondary w-100 filter-control filter-reset-btn" id="resetExpenseFilterBtn" title="Reset all filters">
+                                        <i class="mdi mdi-reload font-weight-bold"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive" id="expensesTableContainer">
+                <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Vendor Details</th>
+                            <th>Payment</th>
+                            <th>Amount</th>
+                            <th>Receipt</th>
+                            <th>Description</th>
+                            <th>Added By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for expense in expenses %}
+                        <tr>
+                            <td data-label="#">{{ forloop.counter }}</td>
+                            <td data-label="Date">{{ expense.date }}</td>
+
+                            <td data-label="Category">
+                                <span class="badge bg-dark text-white">{{ expense.get_category_display }}</span>
+                            </td>
+
+                            <td data-label="Vendor Details">
+                                {{ expense.vendor_name|default:"-" }}
+                                {% if expense.vendor_phone %}
+                                <br><small class="text-muted">Phone: {{ expense.vendor_phone }}</small>
+                                {% endif %}
+                                {% if expense.vendor_bill_number %}
+                                <br><small class="text-muted">Bill: {{ expense.vendor_bill_number }}</small>
+                                {% endif %}
+                            </td>
+
+                            <td data-label="Payment">
+                                <span class="badge bg-info text-white">{{ expense.get_payment_mode_display }}</span>
+                                {% if expense.transaction_id %}
+                                <br><small class="text-muted">TX: {{ expense.transaction_id }}</small>
+                                {% endif %}
+                            </td>
+
+                            <td data-label="Amount">
+                                ₹ {{ expense.amount }}
+                            </td>
+
+                            <td data-label="Receipt">
+                                {% if expense.receipt_image %}
+                                <a href="{{ expense.receipt_image.url }}" target="_blank">
+                                    <i class="mdi mdi-file-image mdi-24px text-primary"></i>
+                                </a>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td data-label="Description" >
+                                {{ expense.description|default:"-" }}
+                            </td>
+                            <td data-label="Added By">
+                              {{ expense.added_by.username|default:"-" }}
+                               
+                            </td>
+                            
+
+                            <td data-label="Actions">
+
+                                <a href="{% url 'expense_edit' expense.pk %}" class="btn btn-sm btn-info">
+                                    <i class="mdi mdi-pencil"></i>
+                                </a>
+
+                                <a href="#" 
+                                   class="btn btn-sm btn-danger delete-btn"
+                                   data-item-id="{{ expense.pk }}"
+                                   data-item-name="{{ expense.category|slice:":10" }}"
+                                   data-delete-url="{% url 'expense_delete' expense.pk %}">
+                                    <i class="mdi mdi-trash-can"></i>
+                                </a>
+
+                            </td>
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="10" class="text-center py-5">
+                                <i class="mdi mdi-cash-remove mdi-48px text-muted d-block mb-3"></i>
+                                <h5>No expenses found</h5>
+                                <p class="text-muted">Add an expense or adjust search filters.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div id="expensesPaginationContainer">
+            {% if page_obj.has_other_pages %}
+            <div class="mt-4">
+                {% include 'includes/pagination.html' with page_obj=page_obj %}
+            </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script src="{% static 'js/delete_confirmation.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function attachDeleteHandlers() {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            deleteButtons.forEach(button => {
+                button.onclick = function(e) {
+                    e.preventDefault();
+                    const itemId = this.dataset.itemId;
+                    const itemName = this.dataset.itemName;
+                    const deleteUrl = this.dataset.deleteUrl;
+                    confirmDelete(itemId, itemName, deleteUrl);
+                };
+            });
+        }
+        attachDeleteHandlers();
+
+        const filterForm = document.getElementById("expenseFilterForm");
+        const searchInput = document.getElementById("expense_search");
+        const clearSearchBtn = document.getElementById("clearExpenseSearchBtn");
+        const searchSpinner = document.getElementById("expenseSearchSpinner");
+        const categorySelect = document.getElementById("expense_category");
+        const paymentModeSelect = document.getElementById("expense_payment_mode");
+        const dateFromInput = document.getElementById("date_from");
+        const dateToInput = document.getElementById("date_to");
+        const resetBtn = document.getElementById("resetExpenseFilterBtn");
+        const tableContainer = document.getElementById("expensesTableContainer");
+        const paginationContainer = document.getElementById("expensesPaginationContainer");
+
+        let debounceTimer = null;
+        let currentAbortController = null;
+
+        function toggleClearBtn() {
+            if (clearSearchBtn) {
+                clearSearchBtn.style.display = (searchInput && searchInput.value.trim().length > 0) ? "block" : "none";
+            }
+        }
+
+        function buildFilterUrl() {
+            const baseUrl = filterForm.getAttribute("action") || window.location.pathname;
+            const params = new URLSearchParams();
+
+            const qVal = (searchInput?.value || "").trim();
+            const catVal = categorySelect?.value || "";
+            const modeVal = paymentModeSelect?.value || "";
+            const fromVal = dateFromInput?.value || "";
+            const toVal = dateToInput?.value || "";
+
+            if (qVal) params.set("q", qVal);
+            if (catVal) params.set("category", catVal);
+            if (modeVal) params.set("payment_mode", modeVal);
+            if (fromVal) params.set("date_from", fromVal);
+            if (toVal) params.set("date_to", toVal);
+
+            const queryString = params.toString();
+            return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+        }
+
+        function runFilterRequest(url) {
+            if (currentAbortController) currentAbortController.abort();
+            currentAbortController = new AbortController();
+
+            if (searchSpinner) searchSpinner.style.display = "block";
+            if (clearSearchBtn) clearSearchBtn.style.display = "none";
+            if (tableContainer) tableContainer.classList.add("is-filtering");
+
+            fetch(url, {
+                signal: currentAbortController.signal,
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Network error");
+                return res.text();
+            })
+            .then(html => {
+                const doc = new DOMParser().parseFromString(html, "text/html");
+                const newTable = doc.querySelector("#expensesTableContainer");
+                if (newTable && tableContainer) {
+                    tableContainer.innerHTML = newTable.innerHTML;
+                }
+                const newPagination = doc.querySelector("#expensesPaginationContainer");
+                if (newPagination && paginationContainer) {
+                    paginationContainer.innerHTML = newPagination.innerHTML;
+                }
+                window.history.replaceState(null, "", url);
+                attachDeleteHandlers();
+            })
+            .catch(err => {
+                if (err.name !== "AbortError") {
+                    filterForm.submit();
+                }
+            })
+            .finally(() => {
+                if (searchSpinner) searchSpinner.style.display = "none";
+                toggleClearBtn();
+                if (tableContainer) tableContainer.classList.remove("is-filtering");
+            });
+        }
+
+        function triggerAutoFilter(delay = 350) {
+            if (debounceTimer) clearTimeout(debounceTimer);
+            toggleClearBtn();
+
+            debounceTimer = setTimeout(() => {
+                const targetUrl = buildFilterUrl();
+                runFilterRequest(targetUrl);
+            }, delay);
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener("input", function() {
+                triggerAutoFilter(350);
+            });
+            searchInput.addEventListener("keydown", function(e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    triggerAutoFilter(0);
+                }
+            });
+        }
+
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener("click", function() {
+                if (searchInput) {
+                    searchInput.value = "";
+                    searchInput.focus();
+                }
+                triggerAutoFilter(0);
+            });
+        }
+
+        if (categorySelect) {
+            categorySelect.addEventListener("change", function() {
+                triggerAutoFilter(0);
+            });
+        }
+
+        if (paymentModeSelect) {
+            paymentModeSelect.addEventListener("change", function() {
+                triggerAutoFilter(0);
+            });
+        }
+
+        if (dateFromInput) {
+            dateFromInput.addEventListener("change", function() {
+                triggerAutoFilter(0);
+            });
+        }
+
+        if (dateToInput) {
+            dateToInput.addEventListener("change", function() {
+                triggerAutoFilter(0);
+            });
+        }
+
+        if (resetBtn) {
+            resetBtn.addEventListener("click", function() {
+                if (searchInput) searchInput.value = "";
+                if (categorySelect) categorySelect.value = "";
+                if (paymentModeSelect) paymentModeSelect.value = "";
+                if (dateFromInput) dateFromInput.value = "";
+                if (dateToInput) dateToInput.value = "";
+                toggleClearBtn();
+                const baseUrl = filterForm.getAttribute("action") || window.location.pathname;
+                runFilterRequest(baseUrl);
+            });
+        }
+    });
+</script>
+{% endblock javascript %}

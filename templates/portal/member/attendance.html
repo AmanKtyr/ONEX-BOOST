@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}My Attendance History - {{ member.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">My Attendance History</h2>
+      <p class="dashboard-hero-subtitle">Complete verified check-in history and attendance consistency</p>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button type="button" class="btn btn-warning btn-sm font-weight-bold px-3 rounded-pill shadow-sm" data-toggle="modal" data-target="#applyMemberLeaveModal" data-bs-toggle="modal" data-bs-target="#applyMemberLeaveModal">
+        <i class="mdi mdi-calendar-plus mr-1"></i> Apply for Leave
+      </button>
+      <form method="post" action="{% url 'member_portal:attendance_action' %}" id="member-att-page-form" class="m-0">
+        {% csrf_token %}
+        {% if is_checked_in %}
+          <input type="hidden" name="action" value="checkout">
+          <button type="button" class="btn btn-danger btn-sm font-weight-bold px-3 rounded-pill shadow-sm" onclick="confirmMemberPageCheckOut();">
+            <i class="mdi mdi-logout-variant mr-1"></i> Check Out (In since {{ active_attendance.check_in_time|time:'g:i A' }})
+          </button>
+        {% else %}
+          <input type="hidden" name="action" value="checkin">
+          <button type="submit" class="btn btn-success btn-sm font-weight-bold px-3 rounded-pill shadow-sm" {% if member.current_status != 'Active' %}disabled title="Membership inactive"{% endif %}>
+            <i class="mdi mdi-login-variant mr-1"></i> Check In Now
+          </button>
+        {% endif %}
+      </form>
+      <a href="{% url 'member_portal:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+        <i class="fas fa-arrow-left mr-1"></i> Dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="kpi-card kpi-primary">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Total Gym Check-ins</span>
+            <div class="kpi-icon-wrap kpi-icon-primary">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ total_days }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-primary">
+            <i class="fas fa-history mr-1"></i> Lifetime
+          </span>
+          <span class="kpi-meta-desc">Verified attendance entries</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="kpi-card kpi-success">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">This Month Sessions</span>
+            <div class="kpi-icon-wrap kpi-icon-success">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ this_month_count }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-success">
+            <i class="fas fa-fire mr-1"></i> Consistency
+          </span>
+          <span class="kpi-meta-desc">Current calendar month</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Table -->
+  <div class="gym-card">
+    <div class="gym-card-header">
+      <div class="gym-card-title">
+        <i class="mdi mdi-calendar-text text-primary" style="font-size: 1.25rem;"></i>
+        <span>Check-in Records</span>
+      </div>
+      <span class="badge-soft badge-soft-secondary">{{ all_attendance|length }} Total Records</span>
+    </div>
+    <div class="gym-card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th>#</th>
+              <th>Date</th>
+              <th>Day</th>
+              <th>Check-In</th>
+              <th>Check-Out</th>
+              <th>Duration</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in all_attendance %}
+            <tr>
+              <td class="text-muted">{{ forloop.counter }}</td>
+              <td class="font-weight-bold text-dark">{{ record.check_in_time|date:'d M Y' }}</td>
+              <td><span class="badge badge-light border text-muted">{{ record.check_in_time|date:'l' }}</span></td>
+              <td class="text-primary font-weight-bold">{{ record.check_in_time|time:'g:i A' }}</td>
+              <td>{{ record.check_out_time|time:'g:i A'|default:'-' }}</td>
+              <td>
+                {% if record.duration %}
+                  <span class="badge badge-light border font-weight-bold">{{ record.duration }}</span>
+                {% elif not record.check_out_time %}
+                  <span class="badge badge-success px-2 py-1">In Gym</span>
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+              <td>
+                <span class="badge badge-success px-2 py-1">
+                  <i class="fas fa-check-circle mr-1"></i> Present
+                </span>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="text-center py-5 text-muted">
+                <i class="mdi mdi-calendar-blank" style="font-size: 2.5rem;"></i>
+                <div class="mt-2 font-weight-bold">No attendance records found</div>
+                <div class="small">Use the button above to check in for your workout!</div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Member Leave Applications & Status Tracking -->
+  <div class="gym-card mt-4">
+    <div class="gym-card-header d-flex justify-content-between align-items-center">
+      <div class="gym-card-title">
+        <i class="mdi mdi-calendar-alert text-warning" style="font-size: 1.25rem;"></i>
+        <span>My Leave Requests</span>
+      </div>
+      <button type="button" class="btn btn-warning btn-xs px-3 rounded-pill font-weight-bold" data-toggle="modal" data-target="#applyMemberLeaveModal" data-bs-toggle="modal" data-bs-target="#applyMemberLeaveModal">
+        <i class="fas fa-plus mr-1"></i> Request Leave
+      </button>
+    </div>
+    <div class="gym-card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th>#</th>
+              <th>Leave Type</th>
+              <th>Duration</th>
+              <th>Period / Date</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Gym Notes</th>
+              <th>Applied On</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for leave in my_leaves %}
+            <tr>
+              <td class="text-muted">{{ forloop.counter }}</td>
+              <td class="font-weight-bold text-dark">{{ leave.get_leave_type_display }}</td>
+              <td>
+                <span class="badge badge-primary px-2 py-1">
+                  {{ leave.duration_days }} Day{{ leave.duration_days|pluralize }}
+                </span>
+              </td>
+              <td>
+                <span class="text-dark font-weight-bold">{{ leave.start_date|date:"d M Y" }}</span>
+                {% if leave.start_date != leave.end_date %}
+                  <span class="text-muted small">to</span> <span class="text-dark font-weight-bold">{{ leave.end_date|date:"d M Y" }}</span>
+                {% endif %}
+              </td>
+              <td><small class="text-muted">{{ leave.reason|default:"-" }}</small></td>
+              <td>
+                {% if leave.status == 'pending' %}
+                  <span class="badge badge-warning px-2 py-1"><i class="fas fa-clock mr-1"></i> Pending Review</span>
+                {% elif leave.status == 'approved' %}
+                  <span class="badge badge-success px-2 py-1"><i class="fas fa-check mr-1"></i> Approved</span>
+                {% elif leave.status == 'rejected' %}
+                  <span class="badge badge-danger px-2 py-1"><i class="fas fa-times mr-1"></i> Rejected</span>
+                {% endif %}
+              </td>
+              <td><small class="text-muted">{{ leave.admin_notes|default:"-" }}</small></td>
+              <td><small class="text-muted">{{ leave.created_at|date:"d M Y, g:i A" }}</small></td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="text-center py-4 text-muted">
+                <i class="mdi mdi-calendar-remove" style="font-size: 2rem;"></i>
+                <div class="mt-2 font-weight-bold">No leave requests found</div>
+                <div class="small">Traveling, sick, or taking a break? Submit a leave request so the gym can pause/track your schedule.</div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Apply For Member Leave Modal -->
+<div class="modal fade" id="applyMemberLeaveModal" tabindex="-1" role="dialog" aria-labelledby="applyMemberLeaveModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+      <div class="modal-header bg-primary text-white py-3 px-4">
+        <h5 class="modal-title font-weight-bold d-flex align-items-center gap-2" id="applyMemberLeaveModalLabel">
+          <i class="mdi mdi-calendar-plus"></i> Request Gym Leave / Pause
+        </h5>
+        <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" style="opacity: 0.9;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" action="{% url 'member_portal:apply_leave' %}" id="memberLeaveForm">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          <div class="form-group mb-3">
+            <label class="font-weight-bold text-dark small text-uppercase">Leave Type / Reason Category <span class="text-danger">*</span></label>
+            <select name="leave_type" class="form-control rounded-lg shadow-none" required>
+              <option value="medical">Medical / Health Issue</option>
+              <option value="personal">Personal / Family</option>
+              <option value="sick">Sick Leave</option>
+              <option value="casual">Casual / Vacation / Travel</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label class="font-weight-bold text-dark small text-uppercase">Start Date <span class="text-danger">*</span></label>
+              <input type="date" name="start_date" id="memberLeaveStartDate" class="form-control rounded-lg shadow-none" required>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label class="font-weight-bold text-dark small text-uppercase">End Date <span class="text-danger">*</span></label>
+              <input type="date" name="end_date" id="memberLeaveEndDate" class="form-control rounded-lg shadow-none" required>
+            </div>
+          </div>
+
+          <div class="form-group mb-0">
+            <label class="font-weight-bold text-dark small text-uppercase">Reason / Details</label>
+            <textarea name="reason" class="form-control rounded-lg shadow-none" rows="3" placeholder="Tell the gym management why you need to pause attendance..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light px-4 py-3 border-top d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-secondary px-3 rounded-pill" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary font-weight-bold px-4 rounded-pill shadow-sm">
+            <i class="mdi mdi-send mr-1"></i> Submit Leave Request
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function confirmMemberPageCheckOut() {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Finish Workout?',
+            text: 'Are you sure you want to check out and complete your gym session?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: '<i class="fas fa-sign-out-alt mr-1"></i> Yes, Check Out',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('member-att-page-form').submit();
+            }
+        });
+    } else {
+        if (confirm('Are you sure you want to check out?')) {
+            document.getElementById('member-att-page-form').submit();
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    const startInput = document.getElementById('memberLeaveStartDate');
+    const endInput = document.getElementById('memberLeaveEndDate');
+    if (startInput && !startInput.value) {
+        startInput.value = today;
+    }
+    if (endInput && !endInput.value) {
+        endInput.value = today;
+    }
+});
+</script>
+{% endblock %}

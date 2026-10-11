@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Stock Out{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'inventory:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-store-outline mdi-18px"></i> Inventory Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'inventory:all_items' %}" class="text-decoration-none">
+                <i class="mdi mdi-store-outline "></i> Inventory
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-package-variant-closed-minus "></i> Stock Out
+        </li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-people-carry"></i> Stock Out
+                </h4>
+            </div>
+            <div class="card-body">
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <fieldset class="border p-4 rounded mb-4">
+                        <legend class="w-auto px-2 h5">Stock Details</legend>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.item.id_for_label }}" class="form-label">
+                                    <i class="mdi mdi-cube-outline"></i> {{ form.item.label }}
+                                </label>
+                                <select name="{{ form.item.name }}" id="{{ form.item.id_for_label }}" class="form-control">
+                                    <option value="">---------</option>
+                                    {% for item in items %}
+                                        <option value="{{ item.id }}" data-selling-price="{{ item.selling_price }}" {% if form.item.value == item.id %}selected{% endif %}>
+                                            {{ item.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.item.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.item.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.quantity.id_for_label }}" class="form-label">
+                                    <i class="mdi mdi-counter"></i> {{ form.quantity.label }}
+                                </label>
+                                {{ form.quantity }}
+                                {% if form.quantity.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.quantity.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.discount.id_for_label }}" class="form-label">
+                                    <i class="mdi mdi-sale"></i> {{ form.discount.label }}
+                                </label>
+                                {{ form.discount }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.reason.id_for_label }}" class="form-label">
+                                    <i class="mdi mdi-help-circle-outline"></i> {{ form.reason.label }}
+                                </label>
+                                {{ form.reason }}
+                                {% if form.reason.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.reason.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.issued_to.id_for_label }}" class="form-label">
+                                    <i class="mdi mdi-account-outline"></i> {{ form.issued_to.label }}
+                                </label>
+                                {{ form.issued_to }}
+                                {% if form.issued_to.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.issued_to.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                                    <i class="mdi mdi-phone-outline"></i> {{ form.phone_number.label }}
+                                </label>
+                                {{ form.phone_number }}
+                                {% if form.phone_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.phone_number.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="{{ form.remarks.id_for_label }}" class="form-label">
+                                    <i class="mdi mdi-comment-text-outline"></i> {{ form.remarks.label }}
+                                </label>
+                                {{ form.remarks }}
+                                {% if form.remarks.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.remarks.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="mdi mdi-package-variant-closed-minus"></i> Stock Out
+                        </button>
+                        <a href="{% url 'inventory:all_items' %}" class="btn btn-secondary">
+                            <i class="mdi mdi-cancel"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">
+                    <i class="mdi mdi-receipt"></i> Billing Summary
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="billing-summary">
+                    <div class="billing-item">
+                        <span>Unit Price</span>
+                        <span id="summary-unit-price">₹0.00</span>
+                    </div>
+                    <div class="billing-item">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">₹0.00</span>
+                    </div>
+                    <div class="billing-item">
+                        <span>Discount</span>
+                        <span id="summary-discount">₹0.00</span>
+                    </div>
+                    <div class="billing-item total">
+                        <span>Total</span>
+                        <span id="summary-total">₹0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .billing-summary {
+        font-size: 1rem;
+    }
+    .billing-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    .billing-item:last-child {
+        border-bottom: none;
+    }
+    .billing-item span:first-child {
+        font-weight: 500;
+        color: #555;
+    }
+    .billing-item span:last-child {
+        font-weight: 600;
+        color: #333;
+    }
+    .billing-item.total {
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding-top: 1rem;
+        border-top: 2px solid #333;
+    }
+    .billing-item.total span {
+        color: #000;
+    }
+</style>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const itemSelect = document.getElementById('{{ form.item.id_for_label }}');
+    const quantityInput = document.getElementById('{{ form.quantity.id_for_label }}');
+    const discountInput = document.getElementById('{{ form.discount.id_for_label }}');
+
+    const summaryUnitPrice = document.getElementById('summary-unit-price');
+    const summarySubtotal = document.getElementById('summary-subtotal');
+    const summaryDiscount = document.getElementById('summary-discount');
+    const summaryTotal = document.getElementById('summary-total');
+
+    function calculateTotal() {
+        const quantity = parseFloat(quantityInput ? quantityInput.value : 0) || 0;
+        const selectedOption = itemSelect && itemSelect.selectedIndex >= 0 ? itemSelect.options[itemSelect.selectedIndex] : null;
+        const unitPrice = selectedOption ? parseFloat(selectedOption.getAttribute('data-selling-price')) || 0 : 0;
+        const discount = parseFloat(discountInput ? discountInput.value : 0) || 0;
+
+        const subtotal = Math.max(0, quantity * unitPrice);
+        const total = Math.max(0, subtotal - discount);
+
+        summaryUnitPrice.textContent = `₹${unitPrice.toFixed(2)}`;
+        summarySubtotal.textContent = `₹${subtotal.toFixed(2)}`;
+        summaryDiscount.textContent = `₹${discount.toFixed(2)}`;
+        summaryTotal.textContent = `₹${total.toFixed(2)}`;
+    }
+
+    itemSelect.addEventListener('change', calculateTotal);
+    quantityInput.addEventListener('input', calculateTotal);
+    discountInput.addEventListener('input', calculateTotal);
+
+    if (itemSelect.value) {
+        itemSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock extra_js %}

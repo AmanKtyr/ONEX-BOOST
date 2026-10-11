@@ -1,0 +1,1129 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}My Profile & Coach Pass - Coach {{ trainer.name }}{% endblock %}
+
+{% block content %}
+<style>
+/* ==========================================================================
+   VERTICAL PHONE-VIEW COACH SMART PASS DESIGN SYSTEM (MULTI-THEME)
+   Modeled after modern digital boarding passes & standee QR posters
+   ========================================================================== */
+.pvc-id-card-wrapper {
+  perspective: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 4px 0;
+}
+
+/* Vertical Smartphone Card Geometry (Reference: Mobile Wallet / Standee Format) */
+.phone-smart-pass {
+  width: 350px;
+  max-width: 100%;
+  box-sizing: border-box;
+  border-radius: 22px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.3s ease;
+  transform-style: preserve-3d;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* -------------------------------------------------------------
+   THEME 1: MINIMAL WHITE (With Official Geometric ID Card Background)
+   ------------------------------------------------------------- */
+.phone-smart-pass.theme-corporate-white {
+  background-color: #f0f7ff;
+  background-image: url('{% if id_card_bg_data_uri %}{{ id_card_bg_data_uri }}{% else %}{% static "images/id_card_bg.png" %}{% endif %}');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #0f172a;
+  border: 1px solid #bfdbfe;
+  box-shadow: 
+    0 24px 55px -12px rgba(15, 23, 42, 0.16),
+    0 8px 18px -4px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.phone-smart-pass.theme-corporate-white:hover {
+  box-shadow: 
+    0 32px 65px -12px rgba(15, 23, 42, 0.22),
+    0 12px 24px -4px rgba(15, 23, 42, 0.08);
+}
+.phone-smart-pass.theme-corporate-white .pass-brand-title { color: #0f172a; }
+.phone-smart-pass.theme-corporate-white .pass-brand-sub { color: #2563eb; }
+.phone-smart-pass.theme-corporate-white .pass-divider { border-color: rgba(37, 99, 235, 0.15); }
+.phone-smart-pass.theme-corporate-white .pass-member-card { 
+  background: rgba(255, 255, 255, 0.82); 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.06);
+}
+.phone-smart-pass.theme-corporate-white .pass-id-pill { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+.phone-smart-pass.theme-corporate-white .pass-qr-frame { 
+  background: #ffffff; 
+  border: 1.5px solid rgba(37, 99, 235, 0.22); 
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12); 
+}
+.phone-smart-pass.theme-corporate-white .reticle-bracket { border-color: #2563eb; }
+.phone-smart-pass.theme-corporate-white .pass-scan-line { background: rgba(37, 99, 235, 0.18); }
+.phone-smart-pass.theme-corporate-white .pass-scan-text { color: #1e40af; }
+.phone-smart-pass.theme-corporate-white .pass-credential-box { 
+  background: rgba(255, 255, 255, 0.82); 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.05);
+}
+.phone-smart-pass.theme-corporate-white .cred-label { color: #64748b; }
+.phone-smart-pass.theme-corporate-white .cred-val { color: #0f172a; }
+.phone-smart-pass.theme-corporate-white .feature-item { color: #475569; }
+.phone-smart-pass.theme-corporate-white .feature-item i { color: #2563eb; }
+.phone-smart-pass.theme-corporate-white .pass-footer-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+  color: #ffffff;
+}
+
+/* -------------------------------------------------------------
+   THEME 2: OBSIDIAN TITANIUM (Stealth Luxury / Equinox Aesthetic)
+   ------------------------------------------------------------- */
+.phone-smart-pass.theme-obsidian-titanium {
+  background: linear-gradient(160deg, #131a26 0%, #080c14 100%);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 24px 55px -12px rgba(0, 0, 0, 0.7),
+    0 10px 22px -4px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.phone-smart-pass.theme-obsidian-titanium:hover {
+  box-shadow: 
+    0 32px 65px -12px rgba(0, 0, 0, 0.85),
+    0 14px 28px -4px rgba(0, 0, 0, 0.6);
+}
+.phone-smart-pass.theme-obsidian-titanium .pass-brand-title { color: #ffffff; }
+.phone-smart-pass.theme-obsidian-titanium .pass-brand-sub { color: #cbd5e1; }
+.phone-smart-pass.theme-obsidian-titanium .pass-divider { border-color: rgba(255, 255, 255, 0.08); }
+.phone-smart-pass.theme-obsidian-titanium .pass-member-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
+.phone-smart-pass.theme-obsidian-titanium .pass-id-pill { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #f8fafc; }
+.phone-smart-pass.theme-obsidian-titanium .pass-qr-frame { background: #ffffff; border: 1.5px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); }
+.phone-smart-pass.theme-obsidian-titanium .reticle-bracket { border-color: #cbd5e1; }
+.phone-smart-pass.theme-obsidian-titanium .pass-scan-line { background: rgba(255, 255, 255, 0.12); }
+.phone-smart-pass.theme-obsidian-titanium .pass-scan-text { color: #cbd5e1; }
+.phone-smart-pass.theme-obsidian-titanium .pass-credential-box { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); }
+.phone-smart-pass.theme-obsidian-titanium .cred-label { color: #94a3b8; }
+.phone-smart-pass.theme-obsidian-titanium .cred-val { color: #ffffff; }
+.phone-smart-pass.theme-obsidian-titanium .feature-item { color: #94a3b8; }
+.phone-smart-pass.theme-obsidian-titanium .feature-item i { color: #cbd5e1; }
+.phone-smart-pass.theme-obsidian-titanium .pass-footer-banner {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #ffffff;
+}
+
+/* -------------------------------------------------------------
+   THEME 3: EXECUTIVE NAVY (Athletic Corporate / Royal Midnight)
+   ------------------------------------------------------------- */
+.phone-smart-pass.theme-executive-navy {
+  background: linear-gradient(160deg, #0f1c3f 0%, #070d1e 100%);
+  color: #f8fafc;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 
+    0 24px 55px -12px rgba(7, 13, 30, 0.75),
+    0 10px 22px -4px rgba(7, 13, 30, 0.5),
+    inset 0 1px 0 rgba(147, 197, 253, 0.18);
+}
+.phone-smart-pass.theme-executive-navy:hover {
+  box-shadow: 
+    0 32px 65px -12px rgba(7, 13, 30, 0.9),
+    0 14px 28px -4px rgba(7, 13, 30, 0.6);
+}
+.phone-smart-pass.theme-executive-navy .pass-brand-title { color: #ffffff; }
+.phone-smart-pass.theme-executive-navy .pass-brand-sub { color: #38bdf8; }
+.phone-smart-pass.theme-executive-navy .pass-divider { border-color: rgba(255, 255, 255, 0.08); }
+.phone-smart-pass.theme-executive-navy .pass-member-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(59, 130, 246, 0.25); }
+.phone-smart-pass.theme-executive-navy .pass-id-pill { background: rgba(37, 99, 235, 0.22); border: 1px solid rgba(96, 165, 250, 0.45); color: #bfdbfe; }
+.phone-smart-pass.theme-executive-navy .pass-qr-frame { background: #ffffff; border: 1.5px solid rgba(56, 189, 248, 0.35); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45); }
+.phone-smart-pass.theme-executive-navy .reticle-bracket { border-color: #38bdf8; }
+.phone-smart-pass.theme-executive-navy .pass-scan-line { background: rgba(59, 130, 246, 0.25); }
+.phone-smart-pass.theme-executive-navy .pass-scan-text { color: #38bdf8; }
+.phone-smart-pass.theme-executive-navy .pass-credential-box { background: rgba(15, 28, 63, 0.6); border: 1px solid rgba(59, 130, 246, 0.22); }
+.phone-smart-pass.theme-executive-navy .cred-label { color: #93c5fd; }
+.phone-smart-pass.theme-executive-navy .cred-val { color: #ffffff; }
+.phone-smart-pass.theme-executive-navy .feature-item { color: #93c5fd; }
+.phone-smart-pass.theme-executive-navy .feature-item i { color: #38bdf8; }
+.phone-smart-pass.theme-executive-navy .pass-footer-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  color: #ffffff;
+}
+
+/* -------------------------------------------------------------
+   COMMON PHONE PASS COMPONENT STYLES
+   ------------------------------------------------------------- */
+.pass-brand-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+.pass-brand-sub {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+.pass-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.pass-status-badge.status-active {
+  background: rgba(37, 99, 235, 0.1);
+  color: #1e40af;
+  border: 1px solid #3b82f6;
+}
+.pass-status-badge.status-inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid #f87171;
+}
+
+/* Coach Avatar & Identity */
+.pass-avatar-img {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+.pass-avatar-verified {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.58rem;
+}
+.pass-member-name {
+  font-size: 1.18rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.pass-id-pill {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 5px;
+  display: inline-block;
+  letter-spacing: 0.03em;
+}
+.pass-member-meta {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* Big Central QR Code Reticle Frame */
+.pass-qr-frame {
+  position: relative;
+  display: inline-block;
+  padding: 8px;
+  border-radius: 14px;
+}
+.pass-qr-image {
+  width: 148px;
+  height: 148px;
+  display: block;
+  border-radius: 6px;
+}
+.reticle-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+}
+.bracket-tl { top: -3px; left: -3px; border-top: 3px solid; border-left: 3px solid; border-top-left-radius: 4px; }
+.bracket-tr { top: -3px; right: -3px; border-top: 3px solid; border-right: 3px solid; border-top-right-radius: 4px; }
+.bracket-bl { bottom: -3px; left: -3px; border-bottom: 3px solid; border-left: 3px solid; border-bottom-left-radius: 4px; }
+.bracket-br { bottom: -3px; right: -3px; border-bottom: 3px solid; border-right: 3px solid; border-bottom-right-radius: 4px; }
+
+/* Scan Instruction Divider Line */
+.pass-scan-instruction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+.pass-scan-instruction .line {
+  height: 1px;
+  flex: 1;
+}
+.pass-scan-instruction .text {
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Credential Capsule (Specialization & Working Shift) */
+.pass-credential-box {
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+.cred-label {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.cred-val {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* 4 Trust Feature Icons */
+.pass-features-row {
+  padding: 6px 0;
+}
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.feature-item i {
+  font-size: 1rem;
+}
+
+/* Active Beacon Pulse Dot */
+.pass-pulse-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  box-shadow: 0 0 5px currentColor;
+  animation: passPulseAnim 2s infinite ease-in-out;
+  vertical-align: middle;
+}
+@keyframes passPulseAnim {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* Theme Selector Bar - Clean, Robust Segmented Control (Zero Overlap) */
+.pass-theme-selector-wrapper {
+  margin: 0 auto 16px auto;
+  text-align: center;
+}
+.pass-theme-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin-right: 8px;
+  display: inline-flex;
+  align-items: center;
+}
+.pass-theme-pill-track {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
+}
+.pass-theme-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1.2;
+  outline: none;
+  user-select: none;
+}
+.pass-theme-tab:hover {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Individual Active Theme Colors */
+#themeBtnWhite.active {
+  background: #ffffff !important;
+  color: #1e3a8a !important;
+  border: 1px solid #2563eb !important;
+  font-weight: 800;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.22) !important;
+}
+#themeBtnWhite.active i {
+  color: #2563eb !important;
+}
+
+#themeBtnObsidian.active {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  font-weight: 800;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.45) !important;
+}
+#themeBtnObsidian.active i {
+  color: #cbd5e1 !important;
+}
+
+#themeBtnNavy.active {
+  background: linear-gradient(135deg, #070d1e 0%, #1e3a8a 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid #3b82f6 !important;
+  font-weight: 800;
+  box-shadow: 0 3px 12px rgba(30, 58, 138, 0.5) !important;
+}
+#themeBtnNavy.active i {
+  color: #38bdf8 !important;
+}
+
+@media (max-width: 576px) {
+  .pass-theme-label {
+    display: block;
+    margin-bottom: 6px;
+    margin-right: 0;
+  }
+  .pass-theme-pill-track {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .pass-theme-tab {
+    padding: 6px 8px;
+    font-size: 0.67rem;
+    flex: 1;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+  .sidebar, 
+  .navbar, 
+  .footer, 
+  .dashboard-hero-header, 
+  #profileHeroCard,
+  #personalInfoCardCol, 
+  .print-hide {
+    display: none !important;
+  }
+  .page-body-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+  .gym-dashboard-root {
+    padding: 0 !important;
+  }
+  #officialTrainerIdCard {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    page-break-inside: avoid;
+    margin: 20px auto !important;
+    max-width: 360px !important;
+  }
+}
+</style>
+
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <!-- NOTIFICATIONS -->
+  {% if messages %}
+    <div class="mb-3 print-hide">
+      {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% else %}info{% endif %} alert-dismissible fade show rounded-pill px-4 py-2.5 shadow-sm d-flex align-items-center justify-content-between mb-2" role="alert">
+          <div>
+            {% if message.tags == 'success' %}
+              <i class="fas fa-check-circle mr-2 text-success"></i>
+            {% elif message.tags == 'error' %}
+              <i class="fas fa-exclamation-circle mr-2 text-danger"></i>
+            {% else %}
+              <i class="fas fa-info-circle mr-2 text-info"></i>
+            {% endif %}
+            <span class="font-weight-medium text-dark">{{ message }}</span>
+          </div>
+          <button type="button" class="close p-0 m-0 ml-3" data-dismiss="alert" aria-label="Close" style="line-height: 1; outline: none;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- HERO / PAGE HEADER -->
+  <div class="dashboard-hero-header">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+        <span class="badge-soft badge-soft-primary">
+          <i class="fas fa-id-badge mr-1"></i> Coach Profile
+        </span>
+        <span class="badge-soft badge-soft-info">
+          <i class="fas fa-building mr-1"></i> {{ gym.name }}
+        </span>
+      </div>
+      <h2 class="dashboard-hero-title">My Profile & Coach Pass</h2>
+      <p class="dashboard-hero-subtitle">Manage personal coach details, official turnstile pass, and account security</p>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap mt-2 mt-md-0">
+      <a href="{% url 'trainer_portal:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+        <i class="fas fa-arrow-left mr-1"></i> Dashboard
+      </a>
+      <button type="button" class="btn btn-outline-danger btn-sm px-3 rounded-pill ml-1" data-toggle="modal" data-target="#changePasswordModal">
+        <i class="fas fa-key mr-1"></i> Change Password
+      </button>
+      <button type="button" class="btn btn-primary btn-sm px-3 rounded-pill shadow-sm ml-1" onclick="window.print();">
+        <i class="fas fa-id-card mr-1"></i> Print Pass
+      </button>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE PROFILE HERO CARD -->
+  <div class="gym-card mb-4" id="profileHeroCard" style="overflow: hidden;">
+    <!-- Brand Color Gradient Accent Header Strip -->
+    <div style="height: 85px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%); position: relative;">
+      <div style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); opacity: 0.12; font-size: 80px; color: #ffffff; pointer-events: none;">
+        <i class="fas fa-dumbbell"></i>
+      </div>
+    </div>
+
+    <div class="px-4 pb-4">
+      <div class="row align-items-end">
+        <!-- Avatar & Coach Identity -->
+        <div class="col-lg-7 col-md-8">
+          <div class="d-flex align-items-center flex-wrap" style="margin-top: -42px;">
+            <div class="position-relative mr-3 mb-2 mb-sm-0">
+              <img src="{% if trainer.photo %}{{ trainer.photo.url }}{% else %}{% static 'images/trainer_dp.png' %}{% endif %}" 
+                   onerror="this.src='{% static 'images/trainer_dp.png' %}';"
+                   alt="{{ trainer.name }}" 
+                   id="profileAvatarPreview"
+                   class="rounded-circle shadow" 
+                   style="width: 88px; height: 88px; object-fit: cover; border: 4px solid #ffffff; background: #f8fafc;">
+              <label for="profile_photo_input" class="position-absolute d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="bottom: 0; right: 0; width: 28px; height: 28px; background: #2563eb; color: #ffffff; cursor: pointer; border: 2px solid #ffffff;" title="Change Coach Photo">
+                <i class="fas fa-camera" style="font-size: 0.72rem;"></i>
+              </label>
+            </div>
+            <div>
+              <div class="d-flex align-items-center flex-wrap gap-2">
+                <h3 class="font-weight-bold text-dark mb-0 mr-2" style="font-size: 1.45rem;">Coach {{ trainer.name }}</h3>
+                {% if trainer.is_active %}
+                  <span class="badge-soft badge-soft-success font-weight-bold">
+                    <i class="fas fa-check-circle mr-1"></i> Active Coach
+                  </span>
+                {% else %}
+                  <span class="badge-soft badge-soft-danger font-weight-bold">
+                    <i class="fas fa-times-circle mr-1"></i> Inactive
+                  </span>
+                {% endif %}
+              </div>
+              <div class="d-flex align-items-center flex-wrap text-muted small mt-1 gap-2">
+                <span><i class="fas fa-id-badge text-primary mr-1"></i> Trainer ID: <strong class="text-dark">{{ trainer.trainer_id }}</strong></span>
+                <span class="d-none d-sm-inline text-muted">&bull;</span>
+                <span><i class="fas fa-user-lock text-primary mr-1"></i> Login ID: <strong class="text-dark font-monospace">{{ trainer.user.username }}</strong></span>
+                <span class="d-none d-sm-inline text-muted">&bull;</span>
+                <span><i class="fas fa-certificate text-warning mr-1"></i> {{ trainer.get_specialization_display|default:trainer.specialization }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Snapshot Tiles -->
+        <div class="col-lg-5 col-md-4 mt-3 mt-md-0">
+          <div class="d-flex justify-content-start justify-content-md-end align-items-center flex-wrap gap-2">
+            <div class="p-2.5 rounded-lg border text-center mr-2 mb-1" style="background: #f8fafc; min-width: 100px;">
+              <span class="d-block small text-muted font-weight-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.04em;">PT Clients</span>
+              <strong class="text-primary font-weight-bold" style="font-size: 1.15rem;">{{ active_clients_count }}</strong>
+            </div>
+            <div class="p-2.5 rounded-lg border text-center mr-2 mb-1" style="background: #f8fafc; min-width: 100px;">
+              <span class="d-block small text-muted font-weight-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.04em;">Attendance</span>
+              <strong class="text-dark font-weight-bold" style="font-size: 1.15rem;">{{ total_attendance_count }}</strong>
+            </div>
+            <div class="p-2.5 rounded-lg border text-center mb-1" style="background: #f8fafc; min-width: 100px;">
+              <span class="d-block small text-muted font-weight-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.04em;">PT Rate</span>
+              <strong class="text-success font-weight-bold" style="font-size: 1.15rem;">&#8377;{{ trainer.personal_training_monthly_amount|default:0|intcomma }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Strength Progress Bar -->
+      <div class="mt-3 pt-3 border-top">
+        <div class="d-flex justify-content-between align-items-center mb-1 small">
+          <span class="font-weight-bold text-dark">
+            <i class="fas fa-shield-halved text-primary mr-1"></i> Profile Completeness
+          </span>
+          <span class="font-weight-bold text-primary">{{ profile_pct }}%</span>
+        </div>
+        <div class="progress" style="height: 6px; border-radius: 9999px; background: #e2e8f0;">
+          <div class="progress-bar font-weight-bold" role="progressbar" style="width: {{ profile_pct }}%; background: linear-gradient(90deg, #2563eb, #3b82f6);" aria-valuenow="{{ profile_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN SECTION: DIGITAL COACH ID PASS & PERSONAL INFO -->
+  <div class="row" id="profileEditFormsRow">
+
+    <!-- COLUMN 1: OFFICIAL DIGITAL COACH PASS (TOP ON MOBILE, RIGHT ON DESKTOP) -->
+    <div class="col-xl-6 col-lg-12 order-xl-2 order-1 mb-4" id="digitalPassCardCol">
+      <div class="gym-card h-100 mb-0 shadow-sm">
+        <div class="gym-card-header d-flex justify-content-between align-items-center flex-wrap">
+          <div class="gym-card-title">
+            <i class="fas fa-id-card text-primary" style="font-size: 1.25rem;"></i>
+            <span>Coach Access ID Pass</span>
+          </div>
+          <span class="badge-soft badge-soft-success font-weight-bold">
+            <i class="fas fa-qrcode mr-1"></i> Turnstile Scannable
+          </span>
+        </div>
+
+        <div class="gym-card-body px-2 py-3 px-sm-3 text-center">
+
+          <!-- INTERACTIVE CARD THEME SWITCHER -->
+          <div class="pass-theme-selector-wrapper print-hide">
+            <span class="pass-theme-label">
+              <i class="fas fa-palette mr-1 text-primary"></i> Card Style:
+            </span>
+            <div class="pass-theme-pill-track">
+              <button type="button" class="pass-theme-tab active" id="themeBtnWhite" data-theme="theme-corporate-white" onclick="switchCardTheme('theme-corporate-white');">
+                <i class="fas fa-id-card mr-1 text-primary"></i> Minimal White
+              </button>
+              <button type="button" class="pass-theme-tab" id="themeBtnObsidian" data-theme="theme-obsidian-titanium" onclick="switchCardTheme('theme-obsidian-titanium');">
+                <i class="fas fa-gem mr-1 text-secondary"></i> Obsidian Matte
+              </button>
+              <button type="button" class="pass-theme-tab" id="themeBtnNavy" data-theme="theme-executive-navy" onclick="switchCardTheme('theme-executive-navy');">
+                <i class="fas fa-shield-alt mr-1 text-info"></i> Executive Navy
+              </button>
+            </div>
+          </div>
+
+          <!-- 3D PERSPECTIVE TILT WRAPPER -->
+          <div class="pvc-id-card-wrapper" id="passTiltWrapper">
+
+            <!-- OFFICIAL DIGITAL ID CARD ELEMENT (CANVAS/EXPORT TARGET) -->
+            <div id="officialTrainerIdCard" class="phone-smart-pass theme-corporate-white mx-auto text-left position-relative">
+
+              <!-- INNER CONTENT (Flush Rounded Clean Top) -->
+              <div class="p-3 text-center" style="padding: 18px 18px 12px 18px;">
+
+                <!-- HEADER ROW: GYM BRAND & INTEGRATED SMART STATUS -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 pass-divider" style="border-bottom-width: 1px; border-bottom-style: solid; gap: 8px;">
+                  <!-- Brand Identity -->
+                  <div class="d-flex align-items-center text-left" style="gap: 8px; min-width: 0; flex: 1;">
+                    {% if gym_logo_data_uri or gym.logo %}
+                      <div style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.08); background: #ffffff; padding: 2px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+                        <img src="{% if gym_logo_data_uri %}{{ gym_logo_data_uri }}{% else %}{{ gym.logo.url }}{% endif %}" alt="{{ gym.name }}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                      </div>
+                    {% else %}
+                      <div style="width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ffffff;">
+                        <i class="fas fa-dumbbell" style="font-size: 1rem;"></i>
+                      </div>
+                    {% endif %}
+                    <div style="min-width: 0;">
+                      <div class="font-weight-bold text-truncate pass-brand-title">
+                        {{ gym.name|default:'ONEXIVAGYM' }}
+                      </div>
+                      <div class="text-truncate pass-brand-sub">
+                        <i class="fas fa-qrcode mr-1"></i> DIGITAL SMART PASS
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Right: Status Pill -->
+                  <div class="flex-shrink-0">
+                    {% if trainer.is_active %}
+                      <span class="pass-status-badge status-active">
+                        <span class="pass-pulse-dot" style="color: #2563eb;"></span> ACTIVE COACH
+                      </span>
+                    {% else %}
+                      <span class="pass-status-badge status-inactive">
+                        <span class="pass-pulse-dot" style="color: #ef4444;"></span> INACTIVE
+                      </span>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- COACH IDENTITY TILE -->
+                <div class="pass-member-card mb-3 p-2.5 rounded-lg d-flex align-items-center text-left" style="gap: 12px;">
+                  <div class="position-relative flex-shrink-0">
+                    <img src="{% if profile_pic_data_uri %}{{ profile_pic_data_uri }}{% elif trainer.photo %}{{ trainer.photo.url }}{% else %}{% static 'images/trainer_dp.png' %}{% endif %}" 
+                         onerror="this.src='{% static 'images/trainer_dp.png' %}';"
+                         alt="{{ trainer.name }}" 
+                         id="cardAvatarImg"
+                         class="rounded-circle pass-avatar-img">
+                    {% if trainer.is_active %}
+                      <span class="pass-avatar-verified shadow-sm" title="Verified Coach">
+                        <i class="fas fa-check"></i>
+                      </span>
+                    {% endif %}
+                  </div>
+                  <div style="min-width: 0; flex: 1;">
+                    <div class="font-weight-bold text-truncate pass-member-name">
+                      Coach {{ trainer.name }}
+                    </div>
+                    <div class="my-1">
+                      <span class="pass-id-pill">
+                        <i class="fas fa-id-badge mr-1" style="font-size: 0.68rem;"></i>{{ trainer.trainer_id }}
+                      </span>
+                    </div>
+                    <div class="pass-member-meta text-truncate">
+                      <span><i class="fas fa-certificate mr-1 text-warning" style="font-size: 0.68rem;"></i>{{ trainer.get_specialization_display|default:trainer.specialization }}</span>
+                      <span class="mx-1.5 opacity-50">&bull;</span>
+                      <span><i class="fas fa-phone mr-1" style="font-size: 0.65rem;"></i>+91 {{ trainer.phone|default:'None' }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PROMINENT CENTER QR CODE SECTION -->
+                <div class="my-2 position-relative d-inline-block">
+                  <div class="pass-qr-frame">
+                    <div class="reticle-bracket bracket-tl"></div>
+                    <div class="reticle-bracket bracket-tr"></div>
+                    <div class="reticle-bracket bracket-bl"></div>
+                    <div class="reticle-bracket bracket-br"></div>
+                    {% if qr_data_uri %}
+                      <img src="{{ qr_data_uri }}" alt="Verification QR Code" class="pass-qr-image">
+                    {% else %}
+                      <div class="pass-qr-image d-flex align-items-center justify-content-center bg-light">
+                        <i class="fas fa-qrcode text-dark" style="font-size: 4rem;"></i>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- SCAN INSTRUCTION DIVIDER -->
+                <div class="pass-scan-instruction my-2">
+                  <span class="line pass-scan-line"></span>
+                  <span class="text pass-scan-text"><i class="fas fa-camera mr-1"></i> SCAN AT TURNSTILE TO ENTER</span>
+                  <span class="line pass-scan-line"></span>
+                </div>
+
+                <!-- CREDENTIAL BOX (Specialization & Working Shift) -->
+                <div class="pass-credential-box mb-3 border">
+                  <div class="row no-gutters">
+                    <div class="col-6 pr-2 text-left">
+                      <span class="cred-label">SPECIALIZATION</span>
+                      <span class="cred-val text-truncate">
+                        {{ trainer.get_specialization_display|default:trainer.specialization }}
+                      </span>
+                    </div>
+                    <div class="col-6 pl-2 text-left" style="border-left: 1px solid rgba(148, 163, 184, 0.2);">
+                      <span class="cred-label">WORKING SHIFT</span>
+                      <span class="cred-val font-weight-bold text-primary">
+                        {{ trainer.time_slot|default:'Full Day' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 4 TRUST / SECURITY FEATURES -->
+                <div class="pass-features-row d-flex justify-content-around align-items-center mb-1 pt-2 pass-divider" style="border-top-width: 1px; border-top-style: solid;">
+                  <div class="feature-item text-center">
+                    <i class="fas fa-bolt mb-1"></i>
+                    <span>Fast Entry</span>
+                  </div>
+                  <div class="feature-item text-center">
+                    <i class="fas fa-shield-alt mb-1"></i>
+                    <span>Verified</span>
+                  </div>
+                  <div class="feature-item text-center">
+                    <i class="fas fa-calendar-check mb-1"></i>
+                    <span>Attendance Pass</span>
+                  </div>
+                  <div class="feature-item text-center">
+                    <i class="fas fa-dumbbell mb-1"></i>
+                    <span>Staff Access</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- SIGNATURE SOLID BOTTOM BANNER STRIP -->
+              <div class="pass-footer-banner d-flex justify-content-between align-items-center px-3 py-2">
+                <div class="d-flex align-items-center text-truncate" style="gap: 6px;">
+                  <i class="fas fa-shield-halved" style="font-size: 0.82rem;"></i>
+                  <span class="font-weight-bold" style="font-size: 0.7rem; letter-spacing: 0.04em;">Official ONEXIVACoach Pass</span>
+                </div>
+                <div class="text-right">
+                  <span class="font-monospace opacity-75" style="font-size: 0.65rem; letter-spacing: 0.06em;">{{ trainer.trainer_id }}</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Action Buttons: Download Pass (PNG) -->
+          <div class="mt-4 pt-3 border-top print-hide text-center">
+            <div class="d-flex justify-content-center align-items-center flex-wrap">
+              <button type="button" id="btnDownloadCardImage" class="btn btn-primary rounded-pill font-weight-bold px-4 py-2.5 shadow-sm m-1" onclick="downloadIdCardAsImage();">
+                <i class="fas fa-download mr-1.5"></i> Download Coach Pass (PNG)
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMN 2: COACH INFORMATION & EDIT DETAILS -->
+    <div class="col-xl-6 col-lg-12 order-xl-1 order-2 mb-4" id="personalInfoCardCol">
+      <div class="gym-card mb-0 shadow-sm">
+        <div class="gym-card-header d-flex justify-content-between align-items-center flex-wrap">
+          <div class="gym-card-title">
+            <i class="fas fa-user-edit text-primary" style="font-size: 1.25rem;"></i>
+            <span>Coach Information</span>
+          </div>
+          <span class="badge-soft badge-soft-primary">
+            <i class="fas fa-id-badge mr-1"></i> {{ trainer.trainer_id }}
+          </span>
+        </div>
+
+        <div class="gym-card-body p-4">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="update_profile" value="1">
+            <input type="file" id="profile_photo_input" name="photo" accept="image/*" style="display: none;" onchange="previewProfilePhoto(this);">
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label small text-muted font-weight-bold">Full Name</label>
+                <input type="text" class="form-control" value="{{ trainer.name }}" readonly style="background: #f8fafc; font-weight: 600;">
+                <small class="text-muted">Contact gym administration to change legal name.</small>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small text-muted font-weight-bold">Username (Login ID)</label>
+                <input type="text" class="form-control font-monospace" value="{{ trainer.user.username }}" readonly style="background: #f8fafc; font-weight: 600;">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small text-muted font-weight-bold">Mobile Number</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-light text-muted small font-weight-bold">+91</span>
+                  </div>
+                  <input type="text" name="phone" class="form-control font-weight-semibold" value="{{ trainer.phone|default:'' }}" placeholder="10-digit number" maxlength="10">
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small text-muted font-weight-bold">Email Address</label>
+                <input type="email" name="email" class="form-control font-weight-semibold" value="{{ trainer.email|default:'' }}" placeholder="coach@example.com">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small text-muted font-weight-bold">Specialization</label>
+                <input type="text" class="form-control font-weight-semibold" value="{{ trainer.get_specialization_display|default:trainer.specialization }}" readonly style="background: #f8fafc;">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small text-muted font-weight-bold">Working Shift / Time Slot</label>
+                <input type="text" class="form-control font-weight-semibold" value="{{ trainer.time_slot|default:'Full Day / Flexible' }}" readonly style="background: #f8fafc;">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small text-muted font-weight-bold">Joining Date</label>
+                <input type="text" class="form-control font-weight-semibold" value="{{ trainer.joining_date|date:'d M Y' }}" readonly style="background: #f8fafc;">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small text-muted font-weight-bold">Monthly PT Rate</label>
+                <input type="text" class="form-control font-weight-semibold text-success" value="&#8377;{{ trainer.personal_training_monthly_amount|default:0|intcomma }}" readonly style="background: #f8fafc;">
+              </div>
+              <div class="col-12 mb-3">
+                <label class="form-label small text-muted font-weight-bold">Residential Address</label>
+                <textarea name="address" rows="2" class="form-control font-weight-semibold" placeholder="Enter residential address">{{ trainer.address }}</textarea>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-3 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <span class="text-muted small">
+                <i class="fas fa-lock mr-1 text-primary"></i> Information synced with Gym Management.
+              </span>
+              <button type="submit" class="btn btn-primary rounded-pill font-weight-bold px-4 py-2 shadow-sm">
+                <i class="fas fa-save mr-1.5"></i> Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-0 shadow-lg rounded-24" style="border-radius: 20px; overflow: hidden;">
+      <div class="modal-header bg-gradient-primary text-white p-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);">
+        <div class="d-flex align-items-center">
+          <div class="mr-3 bg-white-20 rounded-circle p-2.5 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(255,255,255,0.18);">
+            <i class="fas fa-key text-white" style="font-size: 1.1rem;"></i>
+          </div>
+          <div>
+            <h5 class="modal-title font-weight-bold text-white mb-0" id="changePasswordModalLabel">Change Password</h5>
+            <span class="small opacity-85 text-white">Update your coach portal login credentials</span>
+          </div>
+        </div>
+        <button type="button" class="close text-white opacity-90 p-0 m-0" data-dismiss="modal" aria-label="Close" style="outline: none;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" onsubmit="return validatePasswordChange();">
+        {% csrf_token %}
+        <input type="hidden" name="change_password" value="1">
+        <div class="modal-body p-4">
+          <div class="form-group mb-3">
+            <label class="form-label small text-muted font-weight-bold">New Password</label>
+            <div class="input-group">
+              <input type="password" id="modal_new_pwd" name="new_password" class="form-control" required placeholder="Minimum 6 characters">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" onclick="togglePwdVisibility('modal_new_pwd', this);">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group mb-2">
+            <label class="form-label small text-muted font-weight-bold">Confirm New Password</label>
+            <div class="input-group">
+              <input type="password" id="modal_confirm_pwd" name="confirm_password" class="form-control" required placeholder="Repeat new password">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" onclick="togglePwdVisibility('modal_confirm_pwd', this);">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <small class="text-muted d-block mt-2">
+            <i class="fas fa-info-circle mr-1 text-info"></i> Make sure your new password is secure and at least 6 characters long.
+          </small>
+        </div>
+        <div class="modal-footer bg-light px-4 py-3 border-top">
+          <button type="button" class="btn btn-outline-secondary rounded-pill font-weight-semibold px-4" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary rounded-pill font-weight-bold px-4 shadow-sm">Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS: html2canvas Super-Sampled Direct Download Engine & Interactive 3D Card Dynamics -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// ==============================================================================
+// PHOTO PREVIEW & PASSWORD TOGGLE
+// ==============================================================================
+function previewProfilePhoto(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const heroPreview = document.getElementById('profileAvatarPreview');
+      if (heroPreview) heroPreview.src = e.target.result;
+      const cardPreview = document.getElementById('cardAvatarImg');
+      if (cardPreview) cardPreview.src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function togglePwdVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const icon = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (icon) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+  } else {
+    input.type = 'password';
+    if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+  }
+}
+
+function validatePasswordChange() {
+  const newPwd = document.getElementById('modal_new_pwd').value;
+  const confirmPwd = document.getElementById('modal_confirm_pwd').value;
+  if (newPwd.length < 6) {
+    alert('New password must be at least 6 characters long.');
+    return false;
+  }
+  if (newPwd !== confirmPwd) {
+    alert('New passwords do not match. Please verify.');
+    return false;
+  }
+  return true;
+}
+
+// ==============================================================================
+// SMART PVC PASS THEME SWITCHER
+// ==============================================================================
+function switchCardTheme(themeName) {
+  const card = document.getElementById('officialTrainerIdCard');
+  if (!card) return;
+
+  // Remove existing themes
+  card.classList.remove('theme-corporate-white', 'theme-obsidian-titanium', 'theme-executive-navy');
+  card.classList.add(themeName);
+
+  // Update button active state
+  document.querySelectorAll('.pass-theme-tab').forEach(btn => {
+    if (btn.getAttribute('data-theme') === themeName) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  try {
+    localStorage.setItem('fitstack_trainer_card_theme', themeName);
+  } catch (e) {}
+}
+
+// ==============================================================================
+// DIGITAL PASS CANVAS ENGINE & DIRECT RETINA PNG DOWNLOAD
+// ==============================================================================
+function downloadIdCardAsImage() {
+  const btn = document.getElementById('btnDownloadCardImage');
+  const origHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1.5"></i> Generating Coach Pass...';
+  }
+
+  const card = document.getElementById('officialTrainerIdCard');
+  if (!card) {
+    if (btn) btn.disabled = false;
+    return;
+  }
+
+  // Neutralize outer transform & outer box-shadow during capture
+  const prevTransform = card.style.transform;
+  const prevShadow = card.style.boxShadow;
+  const prevTransition = card.style.transition;
+
+  card.style.transform = 'none';
+  card.style.transition = 'none';
+  card.style.boxShadow = 'none';
+
+  html2canvas(card, {
+    scale: 3,                // 3x Super-Sampling for Retina Ultra-HD
+    useCORS: true,           // Allow base64 Data URIs & cross-origin images
+    allowTaint: false,
+    backgroundColor: null,   // Pristine transparent background outside the rounded card
+    logging: false,
+    imageTimeout: 15000,
+    removeContainer: true
+  }).then(canvas => {
+    // Restore original interactive styles immediately
+    card.style.transform = prevTransform;
+    card.style.boxShadow = prevShadow;
+    card.style.transition = prevTransition;
+
+    const dataUrl = canvas.toDataURL('image/png', 1.0);
+    const filename = 'Gym_Coach_ID_Pass_{{ trainer.trainer_id }}.png';
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = dataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check-circle mr-1.5 text-success"></i> Downloaded Coach Pass!';
+      setTimeout(() => { btn.innerHTML = origHtml; }, 2500);
+    }
+  }).catch(err => {
+    console.error('Error generating coach pass image:', err);
+    card.style.transform = prevTransform;
+    card.style.boxShadow = prevShadow;
+    card.style.transition = prevTransition;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = origHtml;
+    }
+    alert('Unable to generate coach pass image. Please try again.');
+  });
+}
+
+// ==============================================================================
+// 3D PERSPECTIVE TILT & THEME RESTORE ON LOAD
+// ==============================================================================
+document.addEventListener('DOMContentLoaded', function() {
+  // Restore saved card style preference
+  try {
+    const savedTheme = localStorage.getItem('fitstack_trainer_card_theme');
+    if (savedTheme && ['theme-corporate-white', 'theme-obsidian-titanium', 'theme-executive-navy'].includes(savedTheme)) {
+      switchCardTheme(savedTheme);
+    }
+  } catch (e) {}
+
+  const card = document.getElementById('officialTrainerIdCard');
+  const wrapper = document.getElementById('passTiltWrapper');
+  if (!card || !wrapper) return;
+
+  // Only enable on desktop pointer devices
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    wrapper.addEventListener('mousemove', function(e) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = ((y - centerY) / centerY) * -7;
+      const rotateY = ((x - centerX) / centerX) * 7;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.015, 1.015, 1.015)`;
+    });
+
+    wrapper.addEventListener('mouseleave', function() {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    });
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Invoice #{{ history.id }} - {{ system_setting.platform_name|default:"ONEXIVA" }} GYM{% endblock title %}
+
+{% block extra_css %}
+<style>
+    .invoice-card {
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        background: #ffffff;
+        position: relative;
+        overflow: hidden;
+    }
+    .invoice-top-band {
+        height: 6px;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    }
+    /* Official Paid Stamp */
+    .paid-stamp {
+        border: 3px dashed #10b981;
+        color: #059669;
+        font-weight: 800;
+        font-size: 1.15rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        display: inline-block;
+        border-radius: 8px;
+        transform: rotate(-7deg);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        background: rgba(236, 253, 245, 0.8);
+    }
+    .due-stamp {
+        border: 3px dashed #f43f5e;
+        color: #e11d48;
+        font-weight: 800;
+        font-size: 1.15rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        display: inline-block;
+        border-radius: 8px;
+        transform: rotate(-7deg);
+        box-shadow: 0 4px 12px rgba(244, 63, 94, 0.15);
+        background: rgba(255, 241, 242, 0.8);
+    }
+    @page {
+        size: A4 portrait;
+        margin: 12mm 15mm;
+    }
+    @media print {
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+        html, body {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            min-width: 100% !important;
+            font-size: 13px !important;
+        }
+        .sidebar,
+        .navbar,
+        .footer,
+        .custom-breadcrumb,
+        .no-print,
+        nav,
+        header,
+        footer,
+        #sidebar,
+        .navbar-menu-wrapper,
+        .settings-panel {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .container-scroller,
+        .page-body-wrapper,
+        .main-panel,
+        .content-wrapper,
+        .content-wrapper > .row,
+        .col-lg-10,
+        .col-lg-12 {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            display: block !important;
+            position: static !important;
+            float: none !important;
+        }
+        #printable-invoice {
+            display: block !important;
+            position: static !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            background: #ffffff !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        .invoice-card {
+            border-radius: 8px !important;
+            box-shadow: none !important;
+        }
+        .invoice-top-band {
+            height: 6px !important;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        #printable-invoice > div.p-4,
+        #printable-invoice > div.p-md-5 {
+            padding: 24px 28px !important;
+        }
+        .paid-stamp,
+        .due-stamp {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            font-size: 1rem !important;
+            padding: 4px 14px !important;
+        }
+        .table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+        }
+        .bg-light {
+            background-color: #f8fafc !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3 no-print">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-decoration-none"><i class="mdi mdi-home-outline mdi-18px"></i> Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'billing:invoices_list' %}" class="text-decoration-none"><i class="mdi mdi-file-document-box-outline mdi-18px"></i> Invoices</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'member_profile' member.id %}" class="text-decoration-none"><i class="mdi mdi-account-outline mdi-18px"></i> {{ member.first_name }} {{ member.last_name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><i class="mdi mdi-receipt mdi-18px"></i> Invoice #{{ history.id }}</li>
+    </ol>
+</nav>
+
+<div class="col-lg-10 mx-auto px-0">
+    <div class="invoice-card" id="printable-invoice">
+        <div class="invoice-top-band"></div>
+        <div class="p-4 p-md-5">
+
+            <!-- Invoice Header -->
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center pb-4 mb-4 border-bottom">
+                <div class="mb-3 mb-sm-0">
+                    {% if gym.logo %}
+                        <img src="{{ gym.logo.url }}" alt="{{ gym.name }}" class="img-fluid rounded-circle mb-2" style="width: 65px; height: 65px; object-fit: cover; border: 2px solid #e2e8f0;">
+                    {% endif %}
+                    <h3 class="font-weight-bold text-dark mb-0">{{ gym.name }}</h3>
+                    <p class="text-muted small mb-0">{{ gym.slogan|default:"Smart Gym & Fitness Management" }}</p>
+                    {% if gym.gst_number %}
+                        <div class="badge rounded-pill bg-light text-secondary border mt-1">GSTIN: {{ gym.gst_number }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="text-sm-right text-start">
+                    <div class="text-uppercase text-secondary font-weight-bold small letter-spacing-1">Tax Invoice / Receipt</div>
+                    <h2 class="font-weight-bold text-primary mb-1">#INV-{{ history.id }}</h2>
+                    <div class="text-muted small"><strong>Date:</strong> {{ history.created_at|date:"d M, Y" }}</div>
+                    
+                    <div class="mt-2">
+                        {% if history.due_amount <= 0 %}
+                            <div class="paid-stamp">✔ PAID IN FULL</div>
+                        {% else %}
+                            <div class="due-stamp">⚠ DUES PENDING</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Party Details -->
+            <div class="row g-4 mb-4">
+                <div class="col-sm-6">
+                    <div class="text-uppercase text-muted font-weight-bold small mb-2">Issued By:</div>
+                    <div class="font-weight-bold text-dark">{{ gym.name }}</div>
+                    <div class="text-secondary small">{{ gym.address }}</div>
+                    <div class="text-secondary small">{{ gym.city }}{% if gym.state %}, {{ gym.state }}{% endif %} - {{ gym.pincode }}</div>
+                    <div class="text-secondary small mt-1"><i class="mdi mdi-phone mr-1"></i> {{ gym.phone|default:"-" }}</div>
+                    <div class="text-secondary small"><i class="mdi mdi-email-outline mr-1"></i> {{ gym.email|default:"-" }}</div>
+                </div>
+
+                <div class="col-sm-6 text-sm-right">
+                    <div class="text-uppercase text-muted font-weight-bold small mb-2">Billed To (Member):</div>
+                    <div class="font-weight-bold text-dark font-size-16">{{ member.first_name }} {{ member.last_name }}</div>
+                    <div class="badge rounded-pill bg-primary-subtle text-primary border font-weight-bold mb-1" style="background: #eff6ff; color: #1e40af; border-color: #bfdbfe;">ID: #{{ member.id }}</div>
+                    <div class="text-secondary small">{{ member.address|default:"-" }}</div>
+                    <div class="text-secondary small">{{ member.city|default:"" }}{% if member.state %}, {{ member.state }}{% endif %}</div>
+                    <div class="text-secondary small mt-1"><i class="mdi mdi-cellphone mr-1"></i> +91 {{ member.mobile_number }}</div>
+                    {% if member.email %}
+                        <div class="text-secondary small"><i class="mdi mdi-email-outline mr-1"></i> {{ member.email }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <div class="table-responsive mb-4 rounded-3 border">
+                <table class="table mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Plan & Subscription Item</th>
+                            <th class="text-center">Duration</th>
+                            <th class="text-right">Catalog MRP</th>
+                            <th class="text-right">Discount</th>
+                            <th class="text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-muted font-weight-bold">01</td>
+                            <td>
+                                <strong class="text-dark">{{ history.plan.title }}</strong>
+                                <div class="text-muted small mt-1">
+                                    <span>Active: <strong>{{ history.membership_start_date|date:"d M, Y" }}</strong></span> &rarr; 
+                                    <span>Expires: <strong>{{ history.get_end_date|date:"d M, Y" }}</strong></span>
+                                </div>
+                                {% if history.plan.description %}
+                                    <div class="text-muted small font-italic">{{ history.plan.description }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge rounded-pill bg-light text-dark border">{{ history.plan.get_duration_display }}</span>
+                            </td>
+                            <td class="text-right font-weight-medium">₹{{ history.plan.amount }}</td>
+                            <td class="text-right text-success">-₹{{ history.plan.discount }}</td>
+                            <td class="text-right font-weight-bold text-dark">₹{{ history.plan.offer_price }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Summary & Financial Calculations -->
+            <div class="row justify-content-end mb-4">
+                <div class="col-lg-5 col-md-6">
+                    <div class="p-3 rounded-3 bg-light border">
+                        <table class="table table-borderless table-sm mb-0">
+                            <tbody>
+                                <tr>
+                                    <td class="text-secondary">Subtotal Plan Price:</td>
+                                    <td class="text-right font-weight-semibold">₹{{ history.plan.offer_price }}</td>
+                                </tr>
+                                {% if history.registration_fee and history.registration_fee > 0 %}
+                                <tr>
+                                    <td class="text-secondary">Registration Fee:</td>
+                                    <td class="text-right font-weight-semibold">+₹{{ history.registration_fee }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if history.discount and history.discount > 0 %}
+                                <tr>
+                                    <td class="text-secondary">Special Discount:</td>
+                                    <td class="text-right text-success font-weight-semibold">-₹{{ history.discount }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if sgst > 0 and cgst > 0 %}
+                                <tr>
+                                    <td class="text-secondary">SGST ({{ sgst_rate|floatformat:2 }}%):</td>
+                                    <td class="text-right font-weight-semibold">₹{{ sgst|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary">CGST ({{ cgst_rate|floatformat:2 }}%):</td>
+                                    <td class="text-right font-weight-semibold">₹{{ cgst|floatformat:2 }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr class="border-top pt-2">
+                                    <td class="font-weight-bold text-dark">Total Bill Amount:</td>
+                                    <td class="text-right font-weight-bold text-primary font-size-16">₹{{ history.total_amount }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-success font-weight-semibold">Amount Paid:</td>
+                                    <td class="text-right text-success font-weight-bold">₹{{ history.paid_amount }}</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td class="font-weight-bold {% if history.due_amount > 0 %}text-danger{% else %}text-muted{% endif %}">Balance Due:</td>
+                                    <td class="text-right font-weight-bold {% if history.due_amount > 0 %}text-danger{% else %}text-muted{% endif %}">
+                                        ₹{{ history.due_amount }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Notes & Meta -->
+            <div class="row pt-3 border-top align-items-center">
+                <div class="col-md-7">
+                    {% if history.transaction_id %}
+                        <div class="small text-muted mb-1"><strong>Transaction Reference:</strong> <span class="badge bg-light text-dark border">{{ history.transaction_id }}</span></div>
+                    {% endif %}
+                    {% if history.comment %}
+                        <div class="small text-muted"><strong>Notes:</strong> {{ history.comment }}</div>
+                    {% endif %}
+                    <div class="small text-muted mt-2">Computer generated tax receipt issued by {{ system_setting.platform_name|default:"ONEXIVA" }} GYM Management Software.</div>
+                </div>
+
+                <div class="col-md-5 text-md-right mt-3 mt-md-0">
+                    <div class="text-muted small">Authorized Signatory</div>
+                    <div class="font-weight-bold text-dark mt-4 border-top d-inline-block pt-1" style="min-width: 140px;">{{ gym.name }}</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex flex-wrap justify-content-center gap-2 mt-4 no-print">
+        <button class="btn btn-primary px-4 py-2 rounded-pill font-weight-bold shadow-sm" onclick="window.print()">
+            <i class="mdi mdi-printer mr-1 me-1"></i> Print / Save PDF
+        </button>
+        <a href="{% url 'update_membership_plan' member.id history.id %}" class="btn btn-outline-primary px-4 py-2 rounded-pill font-weight-semibold shadow-sm">
+            <i class="mdi mdi-pencil mr-1 me-1"></i> Edit Plan
+        </a>
+        <a href="{% url 'member_profile' member.id %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-semibold shadow-sm">
+            <i class="mdi mdi-account-outline mr-1 me-1"></i> Member Profile
+        </a>
+
+        {% if previous_invoice %}
+            <a href="{% url 'billing:invoice' member.id previous_invoice.id %}" class="btn btn-light px-3 py-2 rounded-pill border">
+                <i class="mdi mdi-chevron-left"></i> Previous
+            </a>
+        {% endif %}
+        {% if next_invoice %}
+            <a href="{% url 'billing:invoice' member.id next_invoice.id %}" class="btn btn-light px-3 py-2 rounded-pill border">
+                Next <i class="mdi mdi-chevron-right"></i>
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

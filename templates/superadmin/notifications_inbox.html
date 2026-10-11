@@ -1,0 +1,174 @@
+{% extends 'superadmin/base.html' %}
+{% load static %}
+
+{% block title %}Superadmin Notifications Inbox{% endblock %}
+
+{% block content %}
+<div class="content-wrapper p-3 p-md-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-bell-ring-outline text-primary mr-2"></i>Notifications Inbox
+            </h3>
+            <p class="text-muted small mb-0">Announcements, system updates, and alerts.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-outline-primary btn-sm font-weight-bold" onclick="markAllNotificationsRead()">
+                <i class="mdi mdi-check-all mr-1"></i> Mark All as Read
+            </button>
+            <a href="{% url 'superadmin:notification_list' %}" class="btn btn-primary btn-sm font-weight-bold">
+                <i class="mdi mdi-cog-outline mr-1"></i> Manage Broadcasts
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Pills -->
+    <div class="d-flex gap-2 mb-3">
+        <a href="?filter=all" class="btn btn-sm {% if filter_type == 'all' %}btn-primary font-weight-bold{% else %}btn-light text-dark border{% endif %}">
+            All ({{ total_count }})
+        </a>
+        <a href="?filter=unread" class="btn btn-sm {% if filter_type == 'unread' %}btn-primary font-weight-bold{% else %}btn-light text-dark border{% endif %}">
+            Unread Only
+        </a>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="card border-0 shadow-sm rounded-lg">
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+                {% for item in page_obj %}
+                <div class="list-group-item p-3 p-md-4 d-flex justify-content-between align-items-start {% if not item.is_read %}bg-light{% endif %}" id="notif-item-{{ item.notification.id }}">
+                    <div class="d-flex align-items-start" style="min-width: 0;">
+                        <!-- Type Icon -->
+                        <div class="mr-3 mt-1 flex-shrink-0">
+                            {% if item.notification.notification_type == 'info' %}
+                                <div class="rounded-circle p-2 bg-info text-white d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                    <i class="mdi mdi-information-variant font-size-18"></i>
+                                </div>
+                            {% elif item.notification.notification_type == 'success' %}
+                                <div class="rounded-circle p-2 bg-success text-white d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                    <i class="mdi mdi-check-bold font-size-18"></i>
+                                </div>
+                            {% elif item.notification.notification_type == 'warning' %}
+                                <div class="rounded-circle p-2 bg-warning text-white d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                    <i class="mdi mdi-alert-outline font-size-18"></i>
+                                </div>
+                            {% elif item.notification.notification_type == 'danger' %}
+                                <div class="rounded-circle p-2 bg-danger text-white d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                    <i class="mdi mdi-alert-circle-outline font-size-18"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Content -->
+                        <div style="min-width: 0;">
+                            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                <h6 class="font-weight-bold text-dark mb-0">{{ item.notification.title }}</h6>
+                                {% if not item.is_read %}
+                                    <span class="badge badge-primary px-2 py-1 font-weight-bold" style="font-size: 10px;">NEW</span>
+                                {% endif %}
+                            </div>
+                            <p class="text-muted small mb-2" style="line-height: 1.6; white-space: pre-wrap;">{{ item.notification.message }}</p>
+                            {% if item.notification.image %}
+                                <div class="mb-2">
+                                    <a href="{{ item.notification.image.url }}" target="_blank">
+                                        <img src="{{ item.notification.image.url }}" alt="{{ item.notification.title }}" class="img-fluid rounded border shadow-sm" style="max-height: 220px; max-width: 100%; object-fit: cover;">
+                                    </a>
+                                </div>
+                            {% endif %}
+                            <div class="d-flex align-items-center gap-3 text-muted" style="font-size: 11px;">
+                                <span><i class="mdi mdi-clock-outline mr-1"></i>{{ item.notification.created_at|date:"d M Y, h:i A" }}</span>
+                                {% if item.notification.action_label and item.notification.action_url %}
+                                    <a href="{{ item.notification.action_url }}" class="font-weight-bold text-primary">
+                                        <i class="mdi mdi-open-in-new mr-1"></i>{{ item.notification.action_label }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Read toggle button -->
+                    {% if not item.is_read %}
+                    <div class="ml-3 flex-shrink-0">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="markSingleRead({{ item.notification.id }})" title="Mark as read">
+                            <i class="mdi mdi-check"></i>
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="text-center py-5 text-muted">
+                    <i class="mdi mdi-bell-sleep-outline d-block mb-2" style="font-size: 48px; color: #94a3b8;"></i>
+                    <h6 class="font-weight-bold">No Notifications</h6>
+                    <p class="small mb-0">You're all caught up! New announcements and alerts will appear here.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="card-footer bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                <ul class="pagination pagination-sm mb-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&filter={{ filter_type }}">Previous</a></li>
+                    {% endif %}
+                    {% for p in page_obj.paginator.page_range %}
+                        {% if p == page_obj.number %}
+                            <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+                        {% elif p > page_obj.number|add:'-3' and p < page_obj.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ p }}&filter={{ filter_type }}">{{ p }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&filter={{ filter_type }}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function markSingleRead(notificationId) {
+    fetch(`/notifications/${notificationId}/mark-read/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const el = document.getElementById(`notif-item-${notificationId}`);
+            if (el) {
+                el.classList.remove('bg-light');
+                const badge = el.querySelector('.badge-primary');
+                if (badge) badge.remove();
+                const btn = el.querySelector('button');
+                if (btn) btn.remove();
+            }
+        }
+    });
+}
+
+function markAllNotificationsRead() {
+    fetch('/notifications/mark-all-read/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            location.reload();
+        }
+    });
+}
+</script>
+{% endblock %}

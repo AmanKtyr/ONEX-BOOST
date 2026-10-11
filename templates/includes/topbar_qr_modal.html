@@ -1,0 +1,206 @@
+{% load static %}
+<!-- ==============================================================================
+     TOPBAR ATTENDANCE & TURNSTILE ACCESS PASS MODAL
+     Role-Aware: Displays Coach Pass, Member Pass, or Gym Turnstile Hub
+     ============================================================================== -->
+<div class="modal fade" id="topbarAttendanceQrModal" tabindex="-1" role="dialog" aria-labelledby="topbarAttendanceQrModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;" role="document">
+    <div class="modal-content border-0 shadow-24" style="border-radius: 22px; overflow: hidden; background: #ffffff;">
+
+      {% if is_trainer %}
+        <!-- ==================== COACH ATTENDANCE PASS ==================== -->
+        <div class="modal-header border-0 p-4 text-white position-relative" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);">
+          <div class="d-flex align-items-center" style="gap: 12px; min-width: 0;">
+            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ffffff;">
+              <i class="mdi mdi-qrcode-scan" style="font-size: 22px;"></i>
+            </div>
+            <div style="min-width: 0;">
+              <h5 class="modal-title font-weight-bold text-white mb-0 text-truncate" id="topbarAttendanceQrModalLabel">Coach Attendance Pass</h5>
+              <div class="text-white opacity-85 text-truncate" style="font-size: 0.76rem; letter-spacing: 0.04em;">{{ gym.name|default:'ONEXIVAGYM' }}</div>
+            </div>
+          </div>
+          <button type="button" class="close text-white p-0 m-0" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" style="line-height: 1; outline: none; opacity: 0.9;">
+            <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body p-4 text-center">
+          <!-- Coach Avatar & Card Header -->
+          <div class="d-flex align-items-center justify-content-center mb-3 p-2.5 rounded-16 border" style="background: #f8fafc; border-color: #e2e8f0; gap: 12px; border-radius: 16px;">
+            <img src="{% if current_trainer.photo %}{{ current_trainer.photo.url }}{% else %}{% static 'images/trainer_dp.png' %}{% endif %}" 
+                 onerror="this.src='{% static 'images/trainer_dp.png' %}';"
+                 alt="{{ current_trainer.name }}" 
+                 class="rounded-circle shadow-sm" 
+                 style="width: 52px; height: 52px; object-fit: cover; border: 2px solid #2563eb;">
+            <div class="text-left" style="min-width: 0;">
+              <div class="font-weight-bold text-dark text-truncate" style="font-size: 1.05rem;">Coach {{ current_trainer.name|default:user_display_name }}</div>
+              <div class="d-flex align-items-center flex-wrap gap-1 mt-0.5">
+                <span class="badge badge-pill badge-primary font-monospace px-2 py-0.5" style="font-size: 10px;">{{ current_trainer.trainer_id }}</span>
+                <span class="text-muted small ml-1">&bull; {{ current_trainer.get_specialization_display|default:current_trainer.specialization|default:'Coach' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Central High-Precision QR Code -->
+          <div class="my-3 d-inline-block position-relative p-2.5 rounded-20 border shadow-sm" style="background: #ffffff; border-color: #e2e8f0; border-radius: 16px;">
+            {% if topbar_qr_data_uri %}
+              <img src="{{ topbar_qr_data_uri }}" alt="Coach Verification QR" style="width: 175px; height: 175px; display: block; border-radius: 8px;">
+            {% else %}
+              <div class="d-flex align-items-center justify-content-center bg-light rounded" style="width: 175px; height: 175px;">
+                <i class="mdi mdi-qrcode text-dark" style="font-size: 4rem;"></i>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Turnstile Instruction Banner -->
+          <div class="d-flex align-items-center justify-content-center text-primary font-weight-bold text-uppercase my-2" style="font-size: 0.72rem; letter-spacing: 0.08em; gap: 8px;">
+            <span style="height: 1px; background: #e2e8f0; flex: 1;"></span>
+            <span><i class="fas fa-camera mr-1"></i> Scan At Gym Turnstile To Check In</span>
+            <span style="height: 1px; background: #e2e8f0; flex: 1;"></span>
+          </div>
+
+          <!-- Active Beacon -->
+          <div class="mt-2 mb-1">
+            <span class="badge badge-pill px-3 py-1.5 font-weight-bold" style="background: rgba(37,99,235,0.1); color: #1e40af; border: 1px solid #bfdbfe; font-size: 0.74rem; letter-spacing: 0.03em;">
+              <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #2563eb; margin-right: 5px; vertical-align: middle;"></span>
+              VERIFIED ACTIVE COACH &bull; STAFF PASS
+            </span>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light px-4 py-3 border-top d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill font-weight-semibold px-3" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
+          <a href="{% url 'trainer_portal:profile' %}" class="btn btn-primary btn-sm rounded-pill font-weight-bold px-4 shadow-sm">
+            <i class="fas fa-id-card mr-1"></i> Open Full Pass
+          </a>
+        </div>
+
+      {% elif is_member %}
+        <!-- ==================== MEMBER ATTENDANCE PASS ==================== -->
+        <div class="modal-header border-0 p-4 text-white position-relative" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);">
+          <div class="d-flex align-items-center" style="gap: 12px; min-width: 0;">
+            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ffffff;">
+              <i class="mdi mdi-qrcode-scan" style="font-size: 22px;"></i>
+            </div>
+            <div style="min-width: 0;">
+              <h5 class="modal-title font-weight-bold text-white mb-0 text-truncate" id="topbarAttendanceQrModalLabel">Member Attendance Pass</h5>
+              <div class="text-white opacity-85 text-truncate" style="font-size: 0.76rem; letter-spacing: 0.04em;">{{ gym.name|default:'ONEXIVAGYM' }}</div>
+            </div>
+          </div>
+          <button type="button" class="close text-white p-0 m-0" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" style="line-height: 1; outline: none; opacity: 0.9;">
+            <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body p-4 text-center" style="background: #f0f7ff url('{% static 'images/id_card_bg.png' %}') center / cover no-repeat;">
+          <!-- Member Avatar & Card Header -->
+          <div class="d-flex align-items-center justify-content-center mb-3 p-2.5 rounded-16 border shadow-sm" style="background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-color: rgba(255,255,255,0.9); gap: 12px; border-radius: 16px;">
+            <img src="{% if current_member.profile_picture %}{{ current_member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                 onerror="this.src='{% static 'images/member_dp.jpg' %}';"
+                 alt="{{ current_member.name }}" 
+                 class="rounded-circle shadow-sm" 
+                 style="width: 52px; height: 52px; object-fit: cover; border: 2px solid #2563eb;">
+            <div class="text-left" style="min-width: 0;">
+              <div class="font-weight-bold text-dark text-truncate" style="font-size: 1.05rem;">{{ current_member.name|default:user_display_name }}</div>
+              <div class="d-flex align-items-center flex-wrap gap-1 mt-0.5">
+                <span class="badge badge-pill badge-primary font-monospace px-2 py-0.5" style="font-size: 10px;">{{ current_member.member_id }}</span>
+                <span class="text-muted small ml-1">&bull; Member</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Central High-Precision QR Code -->
+          <div class="my-3 d-inline-block position-relative p-2.5 rounded-20 border shadow-sm" style="background: #ffffff; border-color: rgba(37, 99, 235, 0.2); border-radius: 16px; box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);">
+            {% if topbar_qr_data_uri %}
+              <img src="{{ topbar_qr_data_uri }}" alt="Member Verification QR" style="width: 175px; height: 175px; display: block; border-radius: 8px;">
+            {% else %}
+              <div class="d-flex align-items-center justify-content-center bg-light rounded" style="width: 175px; height: 175px;">
+                <i class="mdi mdi-qrcode text-dark" style="font-size: 4rem;"></i>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Turnstile Instruction Banner -->
+          <div class="d-flex align-items-center justify-content-center text-primary font-weight-bold text-uppercase my-2" style="font-size: 0.72rem; letter-spacing: 0.08em; gap: 8px;">
+            <span style="height: 1px; background: rgba(37, 99, 235, 0.2); flex: 1;"></span>
+            <span><i class="fas fa-camera mr-1"></i> Scan At Gym Turnstile To Enter</span>
+            <span style="height: 1px; background: rgba(37, 99, 235, 0.2); flex: 1;"></span>
+          </div>
+
+          <!-- Active Beacon -->
+          <div class="mt-2 mb-1">
+            <span class="badge badge-pill px-3 py-1.5 font-weight-bold" style="background: rgba(255,255,255,0.9); color: #1e40af; border: 1px solid #bfdbfe; font-size: 0.74rem; letter-spacing: 0.03em; box-shadow: 0 2px 8px rgba(37,99,235,0.08);">
+              <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #2563eb; margin-right: 5px; vertical-align: middle;"></span>
+              ACTIVE TURNSTILE PASS
+            </span>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light px-4 py-3 border-top d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill font-weight-semibold px-3" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
+          <a href="{% url 'member_portal:profile' %}" class="btn btn-primary btn-sm rounded-pill font-weight-bold px-4 shadow-sm">
+            <i class="fas fa-id-card mr-1"></i> Open Full Pass
+          </a>
+        </div>
+
+      {% else %}
+        <!-- ==================== GYM ADMIN / STAFF ATTENDANCE HUB ==================== -->
+        <div class="modal-header border-0 p-4 text-white position-relative" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%);">
+          <div class="d-flex align-items-center" style="gap: 12px; min-width: 0;">
+            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ffffff;">
+              <i class="mdi mdi-qrcode-scan" style="font-size: 22px;"></i>
+            </div>
+            <div style="min-width: 0;">
+              <h5 class="modal-title font-weight-bold text-white mb-0 text-truncate" id="topbarAttendanceQrModalLabel">Attendance & QR Hub</h5>
+              <div class="text-white opacity-85 text-truncate" style="font-size: 0.76rem; letter-spacing: 0.04em;">{{ gym.name|default:'ONEXIVAGYM' }} Front Desk</div>
+            </div>
+          </div>
+          <button type="button" class="close text-white p-0 m-0" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" style="line-height: 1; outline: none; opacity: 0.9;">
+            <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body p-4 text-center">
+          <!-- Live 4-Digit Attendance Code Highlight -->
+          <div class="mb-3 p-3 rounded-16 border text-center" style="background: #f8fafc; border-radius: 16px; border-color: #e2e8f0;">
+            <div class="small font-weight-bold text-muted text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.05em;">Today's Turnstile Passcode</div>
+            <div class="font-weight-bold text-primary font-monospace" style="font-size: 2rem; letter-spacing: 6px; line-height: 1.2;">
+              {{ gym.attendance_code|default:'1234' }}
+            </div>
+            <small class="text-muted d-block mt-1">Refreshes every 5 mins on Turnstile Kiosk</small>
+          </div>
+
+          <!-- Dual Quick Launch Buttons -->
+          <div class="d-flex flex-column gap-2 mb-2">
+            <a href="{% url 'attendance:qr_code' %}" target="_blank" class="btn btn-primary btn-block rounded-pill font-weight-bold py-2.5 shadow-sm text-decoration-none">
+              <i class="mdi mdi-monitor-dashboard mr-1.5"></i> Launch Full-Screen Turnstile Kiosk
+            </a>
+            {% if gym.gym_id %}
+              <a href="{% url 'attendance:scan_attendance' gym.gym_id %}" target="_blank" class="btn btn-outline-primary btn-block rounded-pill font-weight-bold py-2 mt-2 text-decoration-none">
+                <i class="mdi mdi-camera-iris mr-1.5"></i> Open Check-In Scanner Page
+              </a>
+            {% endif %}
+          </div>
+
+          <!-- If UPI Payment QR is configured, show a toggle or preview -->
+          {% if payment_settings.qr_code %}
+            <div class="mt-3 pt-3 border-top text-left">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small font-weight-bold text-muted text-uppercase" style="font-size: 0.7rem;"><i class="mdi mdi-cash-multiple text-success mr-1"></i> UPI Payment QR</span>
+                <span class="small font-weight-bold text-dark font-monospace" style="font-size: 0.7rem;">{{ payment_settings.upi_id }}</span>
+              </div>
+              <button type="button" class="btn btn-light btn-sm btn-block rounded-pill text-muted font-weight-semibold" onclick="showImage('{{ payment_settings.qr_code.url }}'); jQuery('#topbarAttendanceQrModal').modal('hide');">
+                <i class="mdi mdi-eye mr-1"></i> View UPI Payment QR Code
+              </button>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="modal-footer bg-light px-4 py-2.5 border-top d-flex justify-content-end">
+          <button type="button" class="btn btn-secondary btn-sm rounded-pill font-weight-semibold px-4" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>

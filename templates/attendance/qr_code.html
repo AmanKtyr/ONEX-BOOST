@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Attendance</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-base-200 to-base-300 flex items-center justify-center min-h-screen p-4">
+
+<div class="card w-full max-w-sm bg-base-100 shadow-2xl rounded-2xl">
+    <div class="card-body items-center text-center p-1">
+        <h2 class="card-title text-3xl font-bold mb-1">Scan for Attendance</h2>
+<p class="mb-4 text-base-content/80">Scan the QR code to check in and train.</p>
+        
+        {% if gym.qr_code %}
+            <figure class="px-6 pt-4">
+                <img src="{{ gym.qr_code.url }}" alt="QR Code" class="rounded-lg border-8 border-base-300 shadow-lg transition-transform duration-300 hover:scale-105" />
+            </figure>
+            <div class="py-6">
+                <h3 class="text-2xl font-semibold">Code: <span class="text-primary tracking-widest">{{ gym.attendance_code }}</span></h3>
+                <div class="mt-4">
+                    <p class="text-base-content/80" id="countdown-timer" data-expiry="{{ gym.attendance_code_expiry.isoformat }}">This code will expire in 5 minutes.</p>
+                    <progress class="progress progress-primary w-56 mt-2" value="300" max="300" id="countdown-progress"></progress>
+                </div>
+            </div>
+        {% else %}
+            <div role="alert" class="alert alert-warning mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <span>QR code not available. Please contact support.</span>
+            </div>
+        {% endif %}
+        
+        <div class="card-actions justify-center w-full mt-0">
+            {% if request.user.is_authenticated and request.session.role == 'trainer' %}
+            <form method="post" class="w-full mb-2">
+                {% csrf_token %}
+                <button type="submit" name="action" value="mark_own_attendance" class="btn btn-accent btn-wide">
+                    Mark Own Attendance
+                </button>
+            </form>
+            {% endif %}
+            <form method="post" class="w-full">
+                {% csrf_token %}
+                <button type="submit" name="action" value="reset_code" class="btn btn-primary btn-wide">
+                    Generate New Code
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const countdownElement = document.getElementById('countdown-timer');
+    const progressElement = document.getElementById('countdown-progress');
+    
+    if (countdownElement && countdownElement.dataset.expiry) {
+        const expiryTime = new Date(countdownElement.dataset.expiry).getTime();
+        const totalDuration = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+        const countdownInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = expiryTime - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                location.reload();
+                return;
+            }
+
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = "Expires in: <span class='font-semibold'>" + minutes + "m " + seconds + "s</span>";
+            
+            const remainingSeconds = distance / 1000;
+            progressElement.value = remainingSeconds;
+
+        }, 1000);
+    }
+});
+</script>
+
+</body>
+</html>

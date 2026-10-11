@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {% if form.instance.id %}
+        Edit Equipment
+    {% else %}
+        Add Equipment
+    {% endif %}
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'inventory:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-store-outline mdi-18px"></i> Inventory Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'inventory:all_equipment' %}" class="text-decoration-none">
+                <i class="mdi mdi-dumbbell mdi-18px"></i> All Equipment
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-plus-box-outline mdi-18px"></i> {% if form.instance.id %}Edit{% else %}Add{% endif %} Equipment
+        </li>
+    </ol>
+</nav>
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="mdi mdi-dumbbell"></i> 
+                {% if form.instance.id %}
+                    Edit Equipment
+                {% else %}
+                    Add Equipment
+                {% endif %}
+            </h4>
+            <a href="{% url 'inventory:all_equipment' %}" class="btn btn-light btn-sm">
+                <i class="mdi mdi-arrow-left"></i> Back to Equipment List
+            </a>
+        </div>
+
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                <fieldset class="border p-4 rounded mb-4">
+                    <legend class="w-auto px-2 h5">Basic Information</legend>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-tag-outline"></i> {{ form.name.label }}
+                            </label>
+                            {{ form.name }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-folder-outline"></i> {{ form.category.label }}
+                            </label>
+                            {{ form.category }}
+                            <datalist id="category-list">
+                                {% for category in categories %}
+                                    <option value="{{ category }}">
+                                {% endfor %}
+                            </datalist>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.brand.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-domain"></i> {{ form.brand.label }}
+                            </label>
+                            {{ form.brand }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.model.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-pound-box-outline"></i> {{ form.model.label }}
+                            </label>
+                            {{ form.model }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.serial_number.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-barcode-scan"></i> {{ form.serial_number.label }}
+                            </label>
+                            {{ form.serial_number }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.location.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-map-marker-outline"></i> {{ form.location.label }}
+                            </label>
+                            {{ form.location }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-4 rounded mb-4">
+                    <legend class="w-auto px-2 h5">Purchase & Warranty</legend>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.supplier.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-truck-delivery-outline"></i> {{ form.supplier.label }}
+                            </label>
+                            {{ form.supplier }}
+                            <datalist id="supplier-list">
+                                {% for supplier in suppliers %}
+                                    <option value="{{ supplier }}">
+                                {% endfor %}
+                            </datalist>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.purchase_date.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-calendar-check-outline"></i> {{ form.purchase_date.label }}
+                            </label>
+                            {{ form.purchase_date }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.purchase_cost.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-currency-inr"></i> {{ form.purchase_cost.label }}
+                            </label>
+                            {{ form.purchase_cost }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.warranty_period.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-calendar-clock-outline"></i> {{ form.warranty_period.label }}
+                            </label>
+                            {{ form.warranty_period }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-4 rounded mb-4">
+                    <legend class="w-auto px-2 h5">Dates & Status</legend>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.installation_date.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-calendar-plus"></i> {{ form.installation_date.label }}
+                            </label>
+                            {{ form.installation_date }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.expected_life.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-heart-pulse"></i> {{ form.expected_life.label }}
+                            </label>
+                            {{ form.expected_life }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.condition.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-wrench-outline"></i> {{ form.condition.label }}
+                            </label>
+                            {{ form.condition }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-list-status"></i> {{ form.status.label }}
+                            </label>
+                            {{ form.status }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-4 rounded mb-4">
+                    <legend class="w-auto px-2 h5">Additional Information</legend>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-image-outline"></i> {{ form.image.label }}
+                            </label>
+                            <div class="input-group">
+                                {{ form.image }}
+                                <button type="button" class="btn btn-outline-primary capture-btn" data-target="{{ form.image.id_for_label }}">
+                                    <i class="mdi mdi-camera"></i> 
+                                </button>
+                            </div>
+                            <div id="preview_{{ form.image.id_for_label }}" class="mt-2" style="display: {% if form.instance.image %}block{% else %}none{% endif %};">
+                                <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                            {% for error in form.image.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">
+                                <i class="mdi mdi-comment-text-outline"></i> {{ form.notes.label }}
+                            </label>
+                            {{ form.notes }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="mt-4 pt-3 border-top d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="mdi mdi-content-save"></i> Save Equipment
+                    </button>
+                    <a href="{% url 'inventory:all_equipment' %}" class="btn btn-secondary">
+                        <i class="mdi mdi-cancel"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

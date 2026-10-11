@@ -1,0 +1,721 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+.kpi-value {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 1.45rem !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.25 !important;
+}
+@media (min-width: 1440px) {
+    .kpi-value {
+        font-size: 1.6rem !important;
+    }
+}
+@media (max-width: 1200px) {
+    .kpi-value {
+        font-size: 1.35rem !important;
+    }
+}
+.kpi-meta {
+    flex-wrap: wrap !important;
+    row-gap: 0.25rem !important;
+}
+</style>
+
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-file-document-outline mdi-18px"></i> Business Report
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card mb-4">
+        <!-- Card Header with Primary Background Matching other pages -->
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <h4 class="mb-0 mr-2 me-2">Business Report</h4>
+                <span class="badge bg-light text-primary px-2 py-1 ml-2" id="reportFilterBadge">
+                    {% if is_filtered %}Filtered{% else %}All Time{% endif %}
+                </span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="?export=transactions&q={{ query|default:'' }}&from_date={{ request.GET.from_date|default:'' }}&to_date={{ request.GET.to_date|default:'' }}" 
+                   id="exportTransactionsTopBtn"
+                   class="btn btn-sm mr-2 me-2 d-flex align-items-center font-weight-bold" 
+                   style="background-color: #1D6F42; border-color: #1D6F42; color: white;" 
+                   title="Export Transactions to Excel">
+                    <i class="mdi mdi-file-excel mr-1 me-1"></i> Export Transactions
+                </a>
+                <a href="?export=expenses" 
+                   id="exportExpensesTopBtn"
+                   class="btn btn-sm d-flex align-items-center font-weight-bold" 
+                   style="background-color: #1D6F42; border-color: #1D6F42; color: white;" 
+                   title="Export Expenses to Excel">
+                    <i class="mdi mdi-file-excel mr-1 me-1"></i> Export Expenses
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Unified Real-Time Filter Toolbar -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <form method="get" id="businessReportFilterForm" action="{% url 'business_report' %}">
+                        <div class="filter-card-box">
+                            <div class="row g-2 align-items-end">
+
+                                <!-- 1. Search Query Input with Live Clear -->
+                                <div class="col-xl-5 col-lg-5 col-md-6 col-12">
+                                    <label for="q" class="filter-label">Search Transactions</label>
+                                    <div class="filter-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
+                                        <i class="mdi mdi-magnify filter-search-icon" style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 17px; line-height: 1; z-index: 4; margin: 0;"></i>
+                                        <input
+                                            type="text"
+                                            name="q"
+                                            id="q"
+                                            class="form-control filter-control filter-search-input"
+                                            placeholder="Search by name, ID, phone..."
+                                            value="{{ query|default:'' }}"
+                                            autocomplete="off"
+                                            style="padding-left: 35px; padding-right: 32px;"
+                                        />
+                                        <button type="button" class="filter-clear-btn" id="clearSearchBtn" title="Clear search text" style="position: absolute; right: 9px; top: 50%; transform: translateY(-50%); background: transparent; border: none; outline: none; box-shadow: none; color: #9ca3af; font-size: 17px; cursor: pointer; padding: 0; line-height: 1; z-index: 5; {% if not query %}display: none;{% endif %}">
+                                            <i class="mdi mdi-close-circle"></i>
+                                        </button>
+                                        <div class="filter-spinner" id="searchSpinner"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. From Date -->
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-6">
+                                    <label for="from_date" class="filter-label">From Date</label>
+                                    <input
+                                        type="date"
+                                        name="from_date"
+                                        id="from_date"
+                                        class="form-control filter-control"
+                                        value="{{ request.GET.from_date|default:'' }}"
+                                    />
+                                </div>
+
+                                <!-- 3. To Date -->
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-6">
+                                    <label for="to_date" class="filter-label">To Date</label>
+                                    <input
+                                        type="date"
+                                        name="to_date"
+                                        id="to_date"
+                                        class="form-control filter-control"
+                                        value="{{ request.GET.to_date|default:'' }}"
+                                    />
+                                </div>
+
+                                <!-- 4. Reset Button -->
+                                <div class="col-xl-1 col-lg-1 col-md-12 col-12">
+                                    <button type="button" class="btn btn-secondary w-100 filter-control filter-reset-btn d-flex align-items-center justify-content-center" id="resetReportFilterBtn" title="Reset all filters">
+                                        <i class="mdi mdi-reload font-weight-bold"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Dynamic Report Content (Asynchronously Swapped) -->
+            <div id="businessReportContentContainer">
+                <!-- KPI Metric Cards -->
+                <div class="row mb-4">
+                <!-- Total Income -->
+                <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+                    <div class="kpi-card kpi-primary">
+                        <div>
+                            <div class="kpi-header">
+                                <span class="kpi-label">Total Income</span>
+                                <div class="kpi-icon-wrap kpi-icon-primary">
+                                    <i class="mdi mdi-cash-multiple"></i>
+                                </div>
+                            </div>
+                            <div class="kpi-value" style="white-space: nowrap !important;" title="₹{{ total_income|floatformat:2 }}">₹{{ total_income|floatformat:2 }}</div>
+                        </div>
+                        <div class="kpi-meta">
+                            <span class="kpi-meta-badge kpi-badge-primary">
+                                <i class="mdi mdi-arrow-bottom-left mr-1"></i> Inflow
+                            </span>
+                            <span class="kpi-meta-desc">{% if is_filtered %}Filtered Period{% else %}All-Time Total{% endif %}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Expense -->
+                <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+                    <div class="kpi-card kpi-danger">
+                        <div>
+                            <div class="kpi-header">
+                                <span class="kpi-label">Total Expense</span>
+                                <div class="kpi-icon-wrap kpi-icon-danger">
+                                    <i class="mdi mdi-credit-card-outline"></i>
+                                </div>
+                            </div>
+                            <div class="kpi-value" style="white-space: nowrap !important;" title="₹{{ total_expense|floatformat:2 }}">₹{{ total_expense|floatformat:2 }}</div>
+                        </div>
+                        <div class="kpi-meta">
+                            <span class="kpi-meta-badge kpi-badge-danger">
+                                <i class="mdi mdi-arrow-top-right mr-1"></i> Outflow
+                            </span>
+                            <span class="kpi-meta-desc">{% if is_filtered %}Filtered Period{% else %}All-Time Total{% endif %}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Net Profit -->
+                <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+                    <div class="kpi-card kpi-success">
+                        <div>
+                            <div class="kpi-header">
+                                <span class="kpi-label">Gross Income / Net</span>
+                                <div class="kpi-icon-wrap kpi-icon-success">
+                                    <i class="mdi mdi-chart-line"></i>
+                                </div>
+                            </div>
+                            <div class="kpi-value" style="white-space: nowrap !important;" title="₹{{ gross_income|floatformat:2 }}">₹{{ gross_income|floatformat:2 }}</div>
+                        </div>
+                        <div class="kpi-meta">
+                            <span class="kpi-meta-badge kpi-badge-success">
+                                <i class="mdi mdi-wallet-outline mr-1"></i> Balance
+                            </span>
+                            <span class="kpi-meta-desc">Income minus Expense</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Due -->
+                <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+                    <div class="kpi-card kpi-warning">
+                        <div>
+                            <div class="kpi-header">
+                                <span class="kpi-label">Total Due</span>
+                                <div class="kpi-icon-wrap kpi-icon-warning">
+                                    <i class="mdi mdi-alert-circle-outline"></i>
+                                </div>
+                            </div>
+                            <div class="kpi-value" style="white-space: nowrap !important;" title="₹{{ total_due|floatformat:2 }}">₹{{ total_due|floatformat:2 }}</div>
+                        </div>
+                        <div class="kpi-meta">
+                            <span class="kpi-meta-badge kpi-badge-warning">
+                                <i class="mdi mdi-clock-alert-outline mr-1"></i> Dues
+                            </span>
+                            <span class="kpi-meta-desc">Pending Member Fees</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="row mb-4">
+                <div class="col-lg-8 d-flex align-items-stretch mb-3 mb-lg-0">
+                    <div class="card shadow-sm border w-100">
+                        <div class="card-header py-3 bg-light d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="mdi mdi-finance mr-1"></i> Income vs. Expense (Last 6 Months)
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div style="position: relative; height: 280px; width: 100%;">
+                                <canvas id="incomeExpenseChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 d-flex align-items-stretch">
+                    <div class="card shadow-sm border w-100">
+                        <div class="card-header py-3 bg-light d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="mdi mdi-chart-donut mr-1"></i> Expense Breakdown
+                            </h6>
+                        </div>
+                        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                            <div style="position: relative; height: 240px; width: 100%;">
+                                <canvas id="expenseBreakdownChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Transactions Table (Standard Table Style) -->
+            <div class="card shadow-sm border mb-4" id="transactionsTableCard">
+                <div class="card-header bg-light py-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                    <div class="d-flex align-items-center mb-2 mb-md-0">
+                        <h6 class="m-0 font-weight-bold text-primary mr-2">
+                            <i class="mdi mdi-history mr-1"></i> Recent Transactions
+                        </h6>
+                    </div>
+                    <a href="?export=transactions&q={{ query|default:'' }}&from_date={{ request.GET.from_date|default:'' }}&to_date={{ request.GET.to_date|default:'' }}" 
+                       id="exportTransactionsTableBtn"
+                       class="btn btn-sm d-flex align-items-center font-weight-bold" 
+                       style="background-color: #1D6F42; border-color: #1D6F42; color: white;" 
+                       title="Export to Excel">
+                        <i class="mdi mdi-file-excel mr-1"></i> Export Transactions
+                    </a>
+                </div>
+                <div class="card-body px-0 py-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm table-stack-on-mobile mb-0" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="font-weight-semibold py-2">#</th>
+                                    <th class="font-weight-semibold py-2">Invoice</th>
+                                    <th class="font-weight-semibold py-2">Date</th>
+                                    <th class="font-weight-semibold py-2">Profile</th>
+                                    <th class="font-weight-semibold py-2">Member</th>
+                                    <th class="font-weight-semibold py-2">Amount</th>
+                                    <th class="font-weight-semibold py-2">Paid</th>
+                                    <th class="font-weight-semibold py-2">Due</th>
+                                    <th class="font-weight-semibold py-2">Status / Mode</th>
+                                    <th class="font-weight-semibold py-2">Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in transactions_list %}
+                                <tr>
+                                    <td data-label="S.No.">{{ latest_transactions.start_index|add:forloop.counter0 }}</td>
+                                    <td data-label="Invoice ID">
+                                        {% if transaction.invoice %}
+                                            {% if transaction.invoice_type == 'membership' %}
+                                                <a href="{% url 'billing:invoice' transaction.member.id transaction.invoice.id %}" class="font-weight-bold">
+                                                    #{{ transaction.invoice.id }}
+                                                </a>
+                                            {% elif transaction.invoice_type == 'pt' %}
+                                                <a href="{% url 'billing:pt_invoice' transaction.member.id transaction.invoice.id %}" class="font-weight-bold text-info">
+                                                    #{{ transaction.invoice.id }}
+                                                </a>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="Date">{{ transaction.date|date:"d-m-Y" }}</td>
+                                    <td data-label="Profile">
+                                        <img src="{% if transaction.member.profile_picture %}{{ transaction.member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}"
+                                            class="rounded-circle border" 
+                                            style="width: 40px; height: 40px; object-fit: cover;"
+                                            alt="{{ transaction.member.name }}"
+                                            onerror="this.src='{% static 'images/member_dp.jpg' %}';">
+                                    </td>
+                                    <td data-label="Member">
+                                        <a href="{% url 'member_profile' transaction.member.id %}" class="text-decoration-none">
+                                            <strong>{{ transaction.member.name }}</strong>
+                                        </a>
+                                        <br>
+                                        <small class="text-muted">#{{ transaction.member.member_id }}</small>
+                                    </td>
+                                    <td data-label="Amount">₹{{ transaction.amount|floatformat:2 }}</td>
+                                    <td data-label="Paid" class="text-success font-weight-bold">₹{{ transaction.paid|floatformat:2 }}</td>
+                                    <td data-label="Due" class="{% if transaction.due > 0 %}text-danger font-weight-bold{% else %}text-muted{% endif %}">
+                                        {% if transaction.due > 0 %}₹{{ transaction.due|floatformat:2 }}{% else %}₹0{% endif %}
+                                    </td>
+                                    <td data-label="Status / Mode">
+                                        <span class="badge badge-{% if transaction.status == 'Paid' or transaction.status == 'Completed' %}success{% else %}warning{% endif %}">
+                                            {{ transaction.status }}
+                                        </span>
+                                        <small class="text-muted ml-1">/ {{ transaction.mode|default:'N/A'|upper }}</small>
+                                    </td>
+                                    <td data-label="Type">
+                                        <span class="badge badge-light border text-dark">{{ transaction.type }}</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="10" class="text-center py-4 text-muted">No recent transactions found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div id="transactionsPaginationContainer">
+                            {% if latest_transactions.has_other_pages %}
+                                <div class="px-3 py-2 border-top">
+                                    {% include 'includes/pagination.html' with page_obj=latest_transactions query=query %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Expenses Table (Standard Table Style) -->
+            <div class="card shadow-sm border mb-4">
+                <div class="card-header bg-light py-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                    <div class="d-flex align-items-center mb-2 mb-md-0">
+                        <h6 class="m-0 font-weight-bold text-danger mr-2">
+                            <i class="mdi mdi-receipt mr-1"></i> Recent Expenses
+                        </h6>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <a href="?export=expenses" class="btn btn-sm d-flex align-items-center mr-2 me-2 font-weight-bold" 
+                           style="background-color: #1D6F42; border-color: #1D6F42; color: white;" 
+                           title="Export Expenses to Excel">
+                            <i class="mdi mdi-file-excel mr-1"></i> Export Expenses
+                        </a>
+                        <a href="{% url 'expenses' %}" class="btn btn-outline-danger btn-sm font-weight-bold">
+                            <i class="mdi mdi-arrow-right mr-1"></i> See All Expenses
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body px-0 py-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm table-stack-on-mobile mb-0" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="font-weight-semibold py-2">#</th>
+                                    <th class="font-weight-semibold py-2">Date</th>
+                                    <th class="font-weight-semibold py-2">Category</th>
+                                    <th class="font-weight-semibold py-2">Amount</th>
+                                    <th class="font-weight-semibold py-2">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for expense in latest_expenses %}
+                                <tr>
+                                    <td data-label="#">{{ forloop.counter }}</td>
+                                    <td data-label="Date">{{ expense.date|date:"d-m-Y" }}</td>
+                                    <td data-label="Category">
+                                        <span class="badge badge-light border text-dark font-weight-semibold">
+                                            {{ expense.get_category_display }}
+                                        </span>
+                                    </td>
+                                    <td data-label="Amount" class="text-danger font-weight-bold">₹{{ expense.amount|floatformat:2 }}</td>
+                                    <td data-label="Description">{{ expense.description|default:"—"|truncatechars:50 }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">No recent expenses recorded.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center py-3 border-top bg-light">
+                        <a href="{% url 'expenses' %}" class="btn btn-danger btn-sm font-weight-bold px-4">
+                            <i class="mdi mdi-format-list-bulleted mr-1"></i> View Full Expenses List
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Embedded Chart JSON Data for AJAX Sync -->
+            <script id="businessChartData" type="application/json">
+            {
+                "lineLabels": {{ line_chart_labels|safe }},
+                "lineIncome": {{ line_chart_income_data|safe }},
+                "lineExpense": {{ line_chart_expense_data|safe }},
+                "pieLabels": {{ pie_chart_labels|safe }},
+                "pieData": {{ pie_chart_data|safe }}
+            }
+            </script>
+        </div><!-- /#businessReportContentContainer -->
+
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const filterForm = document.getElementById("businessReportFilterForm");
+    const searchInput = document.getElementById("q");
+    const clearSearchBtn = document.getElementById("clearSearchBtn");
+    const searchSpinner = document.getElementById("searchSpinner");
+    const fromDateInput = document.getElementById("from_date");
+    const toDateInput = document.getElementById("to_date");
+    const resetBtn = document.getElementById("resetReportFilterBtn");
+    const contentContainer = document.getElementById("businessReportContentContainer");
+
+    let debounceTimer = null;
+    let abortController = null;
+    let incomeExpenseChartInstance = null;
+    let expenseBreakdownChartInstance = null;
+
+    function renderChartsFromDom() {
+        const dataScript = document.getElementById("businessChartData");
+        if (!dataScript) return;
+        let chartData;
+        try {
+            chartData = JSON.parse(dataScript.textContent);
+        } catch (e) {
+            console.error("Error parsing chart data", e);
+            return;
+        }
+
+        // 1. Line Chart: Income vs. Expense
+        const incomeExpenseCtx = document.getElementById('incomeExpenseChart');
+        if (incomeExpenseCtx) {
+            if (incomeExpenseChartInstance) {
+                incomeExpenseChartInstance.destroy();
+                incomeExpenseChartInstance = null;
+            }
+            incomeExpenseChartInstance = new Chart(incomeExpenseCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: chartData.lineLabels || [],
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: chartData.lineIncome || [],
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Expense',
+                            data: chartData.lineExpense || [],
+                            borderColor: '#dc2626',
+                            backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Pie / Doughnut Chart: Expense Breakdown
+        const expenseBreakdownCtx = document.getElementById('expenseBreakdownChart');
+        if (expenseBreakdownCtx) {
+            if (expenseBreakdownChartInstance) {
+                expenseBreakdownChartInstance.destroy();
+                expenseBreakdownChartInstance = null;
+            }
+            const rawLabels = chartData.pieLabels || [];
+            const rawData = chartData.pieData || [];
+            const hasData = rawData && rawData.length > 0 && rawData.some(v => v > 0);
+
+            expenseBreakdownChartInstance = new Chart(expenseBreakdownCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: hasData ? rawLabels : ['No Expenses'],
+                    datasets: [{
+                        data: hasData ? rawData : [1],
+                        backgroundColor: hasData ? 
+                            ['#2563eb', '#10b981', '#f59e0b', '#dc2626', '#8b5cf6', '#06b6d4', '#6c757d'] : 
+                            ['#e9ecef']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+    }
+
+    function toggleClearBtn() {
+        if (!clearSearchBtn || !searchInput) return;
+        clearSearchBtn.style.display = searchInput.value.trim().length > 0 ? "block" : "none";
+    }
+
+    function bindPaginationLinks() {
+        const pagContainer = document.getElementById("transactionsPaginationContainer");
+        if (!pagContainer) return;
+        pagContainer.querySelectorAll("a.page-link").forEach(link => {
+            link.onclick = function(e) {
+                e.preventDefault();
+                const href = this.getAttribute("href");
+                if (href && href !== "#") {
+                    const targetUrl = new URL(href, window.location.href).toString();
+                    runFilterRequest(targetUrl);
+                    const txTable = document.getElementById("transactionsTableCard");
+                    if (txTable) {
+                        window.scrollTo({ top: txTable.offsetTop - 80, behavior: "smooth" });
+                    }
+                }
+            };
+        });
+    }
+
+    function buildFilterUrl() {
+        const baseUrl = filterForm ? filterForm.getAttribute("action") : window.location.pathname;
+        const params = new URLSearchParams();
+
+        if (searchInput && searchInput.value.trim()) {
+            params.set("q", searchInput.value.trim());
+        }
+        if (fromDateInput && fromDateInput.value) {
+            params.set("from_date", fromDateInput.value);
+        }
+        if (toDateInput && toDateInput.value) {
+            params.set("to_date", toDateInput.value);
+        }
+
+        const qs = params.toString();
+        return qs ? `${baseUrl}?${qs}` : baseUrl;
+    }
+
+    function runFilterRequest(url) {
+        if (abortController) abortController.abort();
+        abortController = new AbortController();
+
+        if (searchSpinner) searchSpinner.style.display = "block";
+        if (clearSearchBtn) clearSearchBtn.style.display = "none";
+        if (contentContainer) contentContainer.classList.add("is-filtering");
+
+        fetch(url, {
+            signal: abortController.signal,
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Network error");
+            return res.text();
+        })
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const newContent = doc.getElementById("businessReportContentContainer");
+            if (newContent && contentContainer) {
+                contentContainer.innerHTML = newContent.innerHTML;
+            }
+
+            // Sync Header Badge
+            const newBadge = doc.getElementById("reportFilterBadge");
+            const curBadge = document.getElementById("reportFilterBadge");
+            if (newBadge && curBadge) {
+                curBadge.innerHTML = newBadge.innerHTML;
+            }
+
+            // Sync Export Links
+            const newTxTop = doc.getElementById("exportTransactionsTopBtn");
+            const curTxTop = document.getElementById("exportTransactionsTopBtn");
+            if (newTxTop && curTxTop) {
+                curTxTop.href = newTxTop.href;
+            }
+
+            window.history.replaceState(null, "", url);
+            renderChartsFromDom();
+            bindPaginationLinks();
+        })
+        .catch(err => {
+            if (err.name !== "AbortError") {
+                if (filterForm) filterForm.submit();
+            }
+        })
+        .finally(() => {
+            if (searchSpinner) searchSpinner.style.display = "none";
+            toggleClearBtn();
+            if (contentContainer) contentContainer.classList.remove("is-filtering");
+        });
+    }
+
+    function triggerAutoFilter(delay = 350) {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        toggleClearBtn();
+
+        debounceTimer = setTimeout(() => {
+            const targetUrl = buildFilterUrl();
+            runFilterRequest(targetUrl);
+        }, delay);
+    }
+
+    // Search Input Events
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            triggerAutoFilter(350);
+        });
+        searchInput.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                triggerAutoFilter(0);
+            }
+        });
+    }
+
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener("click", function() {
+            if (searchInput) {
+                searchInput.value = "";
+                searchInput.focus();
+            }
+            triggerAutoFilter(0);
+        });
+    }
+
+    // Date Pickers Events
+    if (fromDateInput) {
+        fromDateInput.addEventListener("change", function() {
+            triggerAutoFilter(200);
+        });
+    }
+
+    if (toDateInput) {
+        toDateInput.addEventListener("change", function() {
+            triggerAutoFilter(200);
+        });
+    }
+
+    // Reset Button
+    if (resetBtn) {
+        resetBtn.addEventListener("click", function() {
+            if (searchInput) searchInput.value = "";
+            if (fromDateInput) fromDateInput.value = "";
+            if (toDateInput) toDateInput.value = "";
+            toggleClearBtn();
+            const baseUrl = filterForm ? filterForm.getAttribute("action") : window.location.pathname;
+            runFilterRequest(baseUrl);
+        });
+    }
+
+    if (filterForm) {
+        filterForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            triggerAutoFilter(0);
+        });
+    }
+
+    // History popstate
+    window.addEventListener("popstate", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (searchInput) searchInput.value = urlParams.get("q") || "";
+        if (fromDateInput) fromDateInput.value = urlParams.get("from_date") || "";
+        if (toDateInput) toDateInput.value = urlParams.get("to_date") || "";
+        toggleClearBtn();
+        runFilterRequest(window.location.href);
+    });
+
+    // Initial load
+    toggleClearBtn();
+    renderChartsFromDom();
+    bindPaginationLinks();
+});
+</script>
+{% endblock %}

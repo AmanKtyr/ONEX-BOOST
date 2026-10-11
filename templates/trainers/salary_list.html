@@ -1,0 +1,531 @@
+
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}Trainer Payroll & Salary Decisions - ONEXIVAGYM{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}" />
+<style>
+  /* Trainer Blue Link Styling matching Trainer List & Member List */
+  .trainer-name-link {
+    color: #0d6efd !important;
+    text-decoration: none !important;
+    font-weight: 600;
+    transition: color 0.15s ease, text-decoration 0.15s ease;
+  }
+  .trainer-name-link:hover {
+    color: #0a58ca !important;
+    text-decoration: underline !important;
+  }
+
+  /* Filter Card Box Styling matching member_list.html */
+  .filter-card-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 1rem 1.15rem;
+    transition: all 0.2s ease;
+  }
+
+  .filter-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.35rem;
+    display: block;
+  }
+
+  .filter-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .filter-search-icon {
+    position: absolute;
+    left: 11px;
+    color: #9ca3af;
+    pointer-events: none;
+    font-size: 17px;
+    z-index: 4;
+  }
+
+  .filter-control {
+    height: 38px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    font-size: 0.875rem;
+    color: #1f2937;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    background-color: #ffffff;
+    width: 100%;
+  }
+
+  .filter-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+    outline: none;
+  }
+
+  .filter-search-input {
+    padding-left: 35px;
+    padding-right: 32px;
+  }
+
+  .filter-clear-btn {
+    position: absolute;
+    right: 9px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #9ca3af;
+    font-size: 17px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    z-index: 5;
+    transition: color 0.15s ease;
+  }
+
+  .filter-clear-btn:hover {
+    color: #ef4444;
+  }
+
+  /* Attendance Pill Badges */
+  .badge-att-p {
+    background-color: #10b981;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  .badge-att-hd {
+    background-color: #0284c7;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  .badge-att-pl {
+    background-color: #4f46e5;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  .badge-att-ul {
+    background-color: #f59e0b;
+    color: #1f2937;
+    font-weight: 600;
+  }
+  .badge-att-a {
+    background-color: #ef4444;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'dashboard' %}" class="text-decoration-none">
+        <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="{% url 'trainer_list' %}" class="text-decoration-none">
+        <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Trainers
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <i class="mdi mdi-cash-multiple mdi-18px"></i> Payroll & Salary Decisions
+    </li>
+  </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+  <div class="card shadow-sm border-0">
+    <!-- Card Header matching Member List & Trainer List -->
+    <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+      <div class="d-flex align-items-center mb-3 mb-md-0">
+        <h4 class="mb-0 mr-2 me-2 font-weight-bold">Trainer Payroll & Salary Decisions</h4>
+        <span class="badge bg-light text-primary px-2 py-1 font-weight-bold" id="payrollCountBadge">
+          {{ total_trainers_count }} Trainers
+        </span>
+      </div>
+      <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'recalculate_trainer_salaries' %}?month={{ selected_month }}&year={{ selected_year }}" 
+           class="btn btn-light btn-sm d-flex align-items-center font-weight-bold text-primary mr-2 me-2" 
+           title="Recalculate all trainer salaries for this month">
+          <i class="mdi mdi-refresh mr-1 me-1"></i> Recalculate All
+        </a>
+        <a href="{% url 'attendance:leave_management' %}" 
+           class="btn btn-sm d-flex align-items-center font-weight-bold text-dark mr-2 me-2" 
+           style="background-color: #ffab2d; border-color: #ffab2d;" 
+           title="Review Trainer & Member Leave Requests">
+          <i class="mdi mdi-calendar-check mr-1 me-1"></i> Leave Requests
+        </a>
+        <a href="{% url 'trainer_list' %}" 
+           class="btn btn-outline-light btn-sm d-flex align-items-center font-weight-bold">
+          <i class="mdi mdi-account-group mr-1 me-1"></i> Trainer List
+        </a>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- =========================================================================
+           SMART AUTO-FILTER TOOLBAR
+           ========================================================================= -->
+      <div class="filter-card-box mb-4">
+        <form method="get" action="{% url 'trainer_salary_list' %}" id="payrollFilterForm">
+          <div class="row g-2 g-md-3 align-items-end">
+
+            <!-- Search Live Input -->
+            <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+              <label for="q" class="filter-label">Search Trainer</label>
+              <div class="filter-search-wrapper">
+                <i class="mdi mdi-magnify filter-search-icon"></i>
+                <input
+                  type="text"
+                  name="q"
+                  id="q"
+                  class="form-control filter-control filter-search-input"
+                  placeholder="ID, name, phone..."
+                  value="{{ search_query|default:'' }}"
+                  autocomplete="off"
+                />
+                {% if search_query %}
+                  <a href="?month={{ selected_month }}&year={{ selected_year }}" class="filter-clear-btn" title="Clear search">
+                    <i class="mdi mdi-close-circle"></i>
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Month Dropdown -->
+            <div class="col-xl-2 col-lg-2 col-md-3 col-6">
+              <label for="month" class="filter-label">Month</label>
+              <select name="month" id="month" class="form-control filter-control" onchange="this.form.submit()">
+                {% for m_num, m_name in months %}
+                  <option value="{{ m_num }}" {% if m_num == selected_month %}selected{% endif %}>{{ m_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Year Dropdown -->
+            <div class="col-xl-2 col-lg-2 col-md-3 col-6">
+              <label for="year" class="filter-label">Year</label>
+              <select name="year" id="year" class="form-control filter-control" onchange="this.form.submit()">
+                {% for y in years %}
+                  <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Status Dropdown -->
+            <div class="col-xl-2 col-lg-2 col-md-6 col-6">
+              <label for="status" class="filter-label">Status</label>
+              <select name="status" id="status" class="form-control filter-control" onchange="this.form.submit()">
+                <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Statuses</option>
+                <option value="draft" {% if status_filter == 'draft' %}selected{% endif %}>Draft / Review</option>
+                <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+                <option value="paid" {% if status_filter == 'paid' %}selected{% endif %}>Paid</option>
+              </select>
+            </div>
+
+            <!-- Filter / Reset Actions -->
+            <div class="col-xl-2 col-lg-2 col-md-6 col-6">
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100 d-flex align-items-center justify-content-center" style="height: 38px; font-weight: 600;">
+                  <i class="mdi mdi-filter-outline mr-1 me-1"></i> Filter
+                </button>
+                <a href="{% url 'trainer_salary_list' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center" style="height: 38px; min-width: 42px;" title="Reset Filters">
+                  <i class="mdi mdi-restore"></i>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- =========================================================================
+           SALARY REGISTER TABLE
+           ========================================================================= -->
+      <div class="table-responsive">
+        <table class="table table-hover table-sm table-stack-on-mobile align-middle mb-0">
+          <thead>
+            <tr>
+              <th class="font-weight-semibold py-2">#</th>
+              <th class="font-weight-semibold py-2">Photo</th>
+              <th class="font-weight-semibold py-2">Trainer</th>
+              <th class="font-weight-semibold py-2">Base Salary</th>
+              <th class="font-weight-semibold py-2">Attendance Breakdown</th>
+              <th class="font-weight-semibold py-2">Payable Days</th>
+              <th class="font-weight-semibold py-2">Earned Base</th>
+              <th class="font-weight-semibold py-2">PT Comm</th>
+              <th class="font-weight-semibold py-2">Bonus / Deduct</th>
+              <th class="font-weight-semibold py-2">Net Salary</th>
+              <th class="font-weight-semibold py-2 text-center">Status</th>
+              <th class="font-weight-semibold py-2 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for sal in salaries %}
+              <tr>
+                <!-- # Index -->
+                <td data-label="SR. No.">{{ forloop.counter }}</td>
+
+                <!-- Photo -->
+                <td data-label="Photo">
+                  <a href="{% url 'trainer_profile' sal.trainer.id %}" title="View {{ sal.trainer.name }}'s Profile">
+                    {% if sal.trainer.photo %}
+                      <img src="{{ sal.trainer.photo.url }}" alt="{{ sal.trainer.name }}" class="img-fluid rounded-circle equipment-image" style="width: 40px; height: 40px; object-fit: cover; cursor: pointer;">
+                    {% else %}
+                      <img src="{% static 'images/gym-guy.jpg' %}" alt="Default" class="img-fluid rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                    {% endif %}
+                  </a>
+                </td>
+
+                <!-- Trainer Name & ID -->
+                <td data-label="Trainer">
+                  <strong>
+                    <a href="{% url 'trainer_profile' sal.trainer.id %}" class="trainer-name-link font-weight-bold" title="View Profile">
+                      {{ sal.trainer.name }}
+                    </a>
+                  </strong><br />
+                  <small class="text-muted">#{{ sal.trainer.trainer_id }}</small>
+                </td>
+
+                <!-- Base Salary -->
+                <td data-label="Base Salary">
+                  <strong>₹{{ sal.base_salary|floatformat:2|intcomma }}</strong><br />
+                  <small class="text-muted">/ {{ sal.total_days }} days</small>
+                </td>
+
+                <!-- Attendance Breakdown -->
+                <td data-label="Attendance Breakdown">
+                  <div class="d-flex flex-wrap gap-1" style="font-size: 0.75rem;">
+                    <span class="badge badge-att-p" title="Present Days">P: {{ sal.present_days|floatformat:1 }}</span>
+                    {% if sal.half_days > 0 %}
+                      <span class="badge badge-att-hd" title="Half Days (0.5 day rate)">½D: {{ sal.half_days }}</span>
+                    {% endif %}
+                    {% if sal.paid_leave_days > 0 %}
+                      <span class="badge badge-att-pl" title="Approved Paid Leaves">PL: {{ sal.paid_leave_days|floatformat:1 }}</span>
+                    {% endif %}
+                    {% if sal.unpaid_leave_days > 0 %}
+                      <span class="badge badge-att-ul" title="Unpaid Leaves">UL: {{ sal.unpaid_leave_days|floatformat:1 }}</span>
+                    {% endif %}
+                    {% if sal.absent_days > 0 %}
+                      <span class="badge badge-att-a" title="Unexcused Absents">A: {{ sal.absent_days|floatformat:1 }}</span>
+                    {% endif %}
+                  </div>
+                </td>
+
+                <!-- Payable Days -->
+                <td data-label="Payable Days">
+                  <strong>{{ sal.payable_days|floatformat:1 }}</strong> <small class="text-muted">/ {{ sal.total_days }}</small>
+                </td>
+
+                <!-- Earned Base -->
+                <td data-label="Earned Base">
+                  <strong>₹{{ sal.base_salary_earned|floatformat:2|intcomma }}</strong>
+                </td>
+
+                <!-- PT Commission -->
+                <td data-label="PT Comm">
+                  <span class="text-info font-weight-bold">+₹{{ sal.pt_commission|floatformat:2|intcomma }}</span><br />
+                  <small class="text-muted">{{ sal.pt_clients_count }} PT Client{{ sal.pt_clients_count|pluralize }}</small>
+                </td>
+
+                <!-- Bonus / Deductions -->
+                <td data-label="Bonus / Deduct">
+                  <div style="font-size: 0.82rem;">
+                    {% if sal.bonus > 0 %}
+                      <span class="text-success font-weight-bold">+₹{{ sal.bonus|floatformat:2 }}</span>
+                    {% endif %}
+                    {% if sal.deductions > 0 %}
+                      <span class="text-danger font-weight-bold">-₹{{ sal.deductions|floatformat:2 }}</span>
+                    {% endif %}
+                    {% if sal.bonus == 0 and sal.deductions == 0 %}
+                      <span class="text-muted">₹0.00</span>
+                    {% endif %}
+                  </div>
+                  {% if sal.remarks %}
+                    <small class="text-muted d-block text-truncate" style="max-width: 120px;" title="{{ sal.remarks }}">
+                      {{ sal.remarks }}
+                    </small>
+                  {% endif %}
+                </td>
+
+                <!-- Net Salary -->
+                <td data-label="Net Salary">
+                  <h6 class="mb-0 font-weight-bold text-dark">
+                    ₹{{ sal.net_salary|floatformat:2|intcomma }}
+                  </h6>
+                </td>
+
+                <!-- Status -->
+                <td data-label="Status" class="text-center">
+                  {% if sal.status == 'paid' %}
+                    <span class="badge badge-success">
+                      <i class="mdi mdi-check-all mr-1 me-1"></i> Paid
+                    </span>
+                    {% if sal.payment_date %}
+                      <br><small class="text-muted" style="font-size: 0.72rem;">{{ sal.payment_date|date:"d M, Y" }}</small>
+                    {% endif %}
+                  {% elif sal.status == 'approved' %}
+                    <span class="badge badge-primary">
+                      <i class="mdi mdi-check mr-1 me-1"></i> Approved
+                    </span>
+                  {% else %}
+                    <span class="badge badge-secondary">
+                      <i class="mdi mdi-pencil mr-1 me-1"></i> Draft
+                    </span>
+                  {% endif %}
+                </td>
+
+                <!-- Actions -->
+                <td data-label="Actions" class="text-center">
+                  <div class="d-inline-flex align-items-center justify-content-center">
+                    <!-- View / Print Payslip -->
+                    <a href="{% url 'trainer_payslip' sal.id %}" target="_blank" class="btn btn-info btn-sm" title="View / Print Official Payslip">
+                      <i class="mdi mdi-file-document-outline"></i>
+                    </a>
+
+                    <!-- Adjust Bonus / Deductions -->
+                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#adjustModal{{ sal.id }}" data-bs-toggle="modal" data-bs-target="#adjustModal{{ sal.id }}" title="Adjust Bonus, Deductions & Remarks">
+                      <i class="mdi mdi-tune"></i>
+                    </button>
+
+                    <!-- Approve Salary -->
+                    {% if sal.status == 'draft' %}
+                      <a href="{% url 'approve_trainer_salary' sal.id %}" class="btn btn-primary btn-sm" title="Approve Salary" onclick="return confirm('Approve salary for {{ sal.trainer.name|escapejs }}?');">
+                        <i class="mdi mdi-check-bold"></i>
+                      </a>
+                    {% endif %}
+
+                    <!-- Pay / Disburse Salary -->
+                    {% if sal.status != 'paid' %}
+                      <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#payModal{{ sal.id }}" data-bs-toggle="modal" data-bs-target="#payModal{{ sal.id }}" title="Record Disbursal / Payment">
+                        <i class="mdi mdi-cash"></i>
+                      </button>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="12" class="text-center py-5 text-muted">
+                  <div class="mb-3">
+                    <i class="mdi mdi-account-off-outline text-muted" style="font-size: 3rem;"></i>
+                  </div>
+                  <h5 class="font-weight-bold">No trainer salary records found for this period.</h5>
+                  <p class="small text-muted mb-3">Make sure active trainers exist in your gym for the selected month.</p>
+                  <a href="{% url 'recalculate_trainer_salaries' %}?month={{ selected_month }}&year={{ selected_year }}" class="btn btn-primary btn-sm font-weight-bold">
+                    <i class="mdi mdi-refresh mr-1 me-1"></i> Generate Monthly Salaries
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     MODALS FOR SALARY ADJUSTMENT & PAYMENT DISBURSAL
+     (Placed outside the table & card to prevent stacking context & blinking bugs)
+     ========================================================================= -->
+{% for sal in salaries %}
+  <!-- Adjust Modal -->
+  <div class="modal fade" id="adjustModal{{ sal.id }}" tabindex="-1" role="dialog" aria-labelledby="adjustModalLabel{{ sal.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content border-0 shadow-lg" style="background-color: #ffffff !important; border-radius: 12px; overflow: hidden;">
+        <form method="post" action="{% url 'update_trainer_salary_adjustment' sal.id %}">
+          {% csrf_token %}
+          <div class="modal-header bg-primary text-white py-3 px-4 d-flex justify-content-between align-items-center">
+            <h5 class="modal-title font-weight-bold mb-0 text-white" id="adjustModalLabel{{ sal.id }}">
+              <i class="mdi mdi-tune mr-1 me-1"></i> Adjust Salary - {{ sal.trainer.name }}
+            </h5>
+            <button type="button" class="close text-white border-0 bg-transparent" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" style="font-size: 1.5rem; line-height: 1; opacity: 0.9; cursor: pointer;">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4 text-start">
+            <div class="alert alert-light border small text-muted mb-3">
+              Period: <strong>{{ sal.month }}/{{ sal.year }}</strong> | Earned Base: <strong>₹{{ sal.base_salary_earned }}</strong> | PT Comm: <strong>₹{{ sal.pt_commission }}</strong>
+            </div>
+            <div class="form-group mb-3">
+              <label class="filter-label">Performance Bonus / Incentive (₹)</label>
+              <input type="number" step="0.01" min="0" name="bonus" class="form-control filter-control" value="{{ sal.bonus }}">
+            </div>
+            <div class="form-group mb-3">
+              <label class="filter-label">Salary Deductions / Penalty (₹)</label>
+              <input type="number" step="0.01" min="0" name="deductions" class="form-control filter-control" value="{{ sal.deductions }}">
+            </div>
+            <div class="form-group mb-0">
+              <label class="filter-label">Notes / Reason for Adjustment</label>
+              <textarea name="remarks" class="form-control filter-control" style="height: auto;" rows="2" placeholder="e.g. Festival bonus, advance recovery...">{{ sal.remarks }}</textarea>
+            </div>
+          </div>
+          <div class="modal-footer py-2 px-4 bg-light d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm font-weight-bold">Save Adjustment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pay Modal -->
+  <div class="modal fade" id="payModal{{ sal.id }}" tabindex="-1" role="dialog" aria-labelledby="payModalLabel{{ sal.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content border-0 shadow-lg" style="background-color: #ffffff !important; border-radius: 12px; overflow: hidden;">
+        <form method="post" action="{% url 'pay_trainer_salary' sal.id %}">
+          {% csrf_token %}
+          <div class="modal-header bg-success text-white py-3 px-4 d-flex justify-content-between align-items-center">
+            <h5 class="modal-title font-weight-bold mb-0 text-white" id="payModalLabel{{ sal.id }}">
+              <i class="mdi mdi-cash mr-1 me-1"></i> Disburse Salary - {{ sal.trainer.name }}
+            </h5>
+            <button type="button" class="close text-white border-0 bg-transparent" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" style="font-size: 1.5rem; line-height: 1; opacity: 0.9; cursor: pointer;">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4 text-start">
+            <div class="bg-light p-3 rounded text-center mb-3 border">
+              <span class="text-muted small">Total Net Payable Amount</span>
+              <div class="h3 font-weight-bold text-success mb-0">₹{{ sal.net_salary|floatformat:2|intcomma }}</div>
+            </div>
+            <div class="form-group mb-3">
+              <label class="filter-label">Payment Mode</label>
+              <select name="payment_mode" class="form-control filter-control" required>
+                {% for mode_val, mode_label in payment_modes %}
+                  <option value="{{ mode_val }}" {% if mode_val == 'bank_transfer' %}selected{% endif %}>{{ mode_label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group mb-3">
+              <label class="filter-label">Transaction ID / Reference / Cheque No.</label>
+              <input type="text" name="transaction_id" class="form-control filter-control" placeholder="e.g. UTR / IMPS12345 / Cash receipt...">
+            </div>
+            <div class="form-group mb-0">
+              <label class="filter-label">Payment Date</label>
+              <input type="date" name="payment_date" class="form-control filter-control" value="{% now 'Y-m-d' %}" required>
+            </div>
+          </div>
+          <div class="modal-footer py-2 px-4 bg-light d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success btn-sm font-weight-bold">Confirm & Mark as Paid</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+{% endblock content %}

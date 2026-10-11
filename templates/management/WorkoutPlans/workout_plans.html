@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block content %}
+  {% load static %}
+
+  <!-- Compact Breadcrumb Navigation -->
+  <nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'dashboard' %}" class="text-decoration-none"><i class="mdi mdi-home-outline mdi-18px"></i> Dashboard</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="mdi mdi-weight-lifter mdi-18px"></i> Workout Plans
+      </li>
+    </ol>
+  </nav>
+
+  <div class="col-lg-12 px-0">
+    <div class="card">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Workout Plan List</h4>
+        <a href="#" class="btn btn-light btn-sm" data-toggle="modal" data-target="#addPlanModal"><i class="mdi mdi-plus"></i> Add Plan</a>
+      </div>
+      <div class="card-body">
+        <!-- Search form -->
+        {% include 'includes/search_form.html' %}
+
+        <div class="table-responsive">
+          <table class="table table-hover table-sm table-stack-on-mobile">
+            <thead>
+              <tr>
+                <th class="font-weight-semibold py-2">#</th>
+                <th class="font-weight-semibold py-2">Image</th>
+                <th class="font-weight-semibold py-2">Name</th>
+                <th class="font-weight-semibold py-2">Duration (Days)</th>
+                <th class="font-weight-semibold py-2">Created By</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for plan in plans %}
+                <tr data-pk="{{ plan.pk }}">
+                  <td data-label="SR. No.">{{ forloop.counter0|add:plans.start_index }}</td>
+                  <td data-label="Image">
+                    {% if plan.image and plan.image.url %}
+                      <img src="{{ plan.image.url }}" alt="{{ plan.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" />
+                    {% else %}
+                      No Image
+                    {% endif %}
+                  </td>
+                  <td data-label="Name">{{ plan.name }}</td>
+                  <td data-label="Duration">{{ plan.duration_days }}</td>
+                  <td data-label="Difficulty">{{ plan.get_difficulty_display }}</td>
+                  <td data-label="Created By">{{ plan.created_by|default:'N/A' }}</td>
+                  <td data-label="Actions">
+                    <a href="{% url 'public_workout_plan' plan.pk %}" target="_blank" class="btn btn-info btn-sm" title="View Public Page">
+                       <i class="mdi mdi-eye-outline"></i>
+                    </a>
+                    <a href="{% url 'edit_workout_plan' plan.pk %}" class="btn btn-primary btn-sm"><i class="mdi mdi-pencil-outline"></i></a>
+                    <a href="#" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ plan.pk }}', '{{ plan.name }}', '{% url 'delete_workout_plan' plan.pk %}')"><i class="mdi mdi-delete-outline"></i></a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if plans.has_other_pages %}
+          {% include 'includes/pagination.html' with page_obj=plans %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Plan Modal -->
+  <div class="modal fade" id="addPlanModal" tabindex="-1" role="dialog" aria-labelledby="addPlanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+        <div class="modal-header bg-primary text-white" style="border-radius: 15px 15px 0 0;">
+          <h5 class="modal-title font-weight-bold" id="addPlanModal"><i class="mdi mdi-plus-circle-outline mr-2"></i>Add New Workout Plan</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body p-4">
+          <form method="post" id="workoutPlanForm" action="{% url 'workout_plans' %}" enctype="multipart/form-data">
+            {{ form.media }}
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="id_name" class="font-weight-semibold">Workout Plan Name</label>
+                    {{ form.name }}
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="id_difficulty" class="font-weight-semibold">Difficulty</label>
+                    {{ form.difficulty }}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="id_duration_days" class="font-weight-semibold">Duration (Days)</label>
+                    {{ form.duration_days }}
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="id_created_by" class="font-weight-semibold">Created By</label>
+                    {{ form.created_by }}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="id_image" class="font-weight-semibold">Cover Image (Optional)</label>
+                    {{ form.image }}
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="id_document" class="font-weight-semibold">Upload PDF / Document</label>
+                    {{ form.document }}
+                    <small class="form-text text-muted">Upload an Image or PDF for the workout plan description.</small>
+                </div>
+            </div>
+
+            <div class="form-group mb-4">
+                <label for="id_description" class="font-weight-semibold">Workout Description</label>
+                {{ form.description }}
+            </div>
+            
+            <div class="d-flex justify-content-end border-top pt-3">
+                <button type="button" class="btn btn-light mr-2 rounded-pill px-4" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4"><i class="mdi mdi-content-save mr-1"></i> Save Plan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+
+    $(document).ready(function() {
+        // Update CKEditor instances before form submit
+        $('#workoutPlanForm').on('submit', function() {
+            if (typeof CKEDITOR !== 'undefined') {
+                for (var instance in CKEDITOR.instances) {
+                    CKEDITOR.instances[instance].updateElement();
+                }
+            }
+        });
+    });
+  </script>
+{% endblock %}

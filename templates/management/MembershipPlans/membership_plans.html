@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-package-variant-closed mdi-18px"></i> Membership Plans
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Membership Plan List</h4>
+            <a href="#" class="btn btn-light btn-sm" data-toggle="modal" data-target="#addPlanModal">
+                <i class="mdi mdi-plus"></i> Add Plan
+            </a>
+        </div>
+        <div class="card-body">
+            <!-- Search form -->
+            {% include 'includes/search_form.html' %}
+
+            <div class="table-responsive">
+               <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th class="font-weight-semibold py-2">#</th>
+                            <th class="font-weight-semibold py-2">Name</th>
+                            <th class="font-weight-semibold py-2">Amount</th>
+                            <th class="font-weight-semibold py-2">Discount</th>
+                            <th class="font-weight-semibold py-2">Offer Price</th>
+                            <th class="font-weight-semibold py-2">Duration</th>
+                            <th class="font-weight-semibold py-2">Add on days</th>
+                            <th class="font-weight-semibold py-2">Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plan in plans %}
+                        <tr>
+                            <td data-label="SR. No.">{{ forloop.counter0|add:plans.start_index }}</td>
+                            <td data-label="Name">{{ plan.title }}</td>
+                            <td data-label="Amount">{{ plan.amount }}</td>
+                            <td data-label="Discount">{{ plan.discount }}</td>
+                            <td data-label="Offer Price">{{ plan.offer_price }}</td>
+                            <td data-label="Duration">{{ plan.get_duration_display }}</td>
+                            <td data-label="add_on_days">{{ plan.add_on_days }}</td>
+                            <td data-label="Description">{{ plan.description }}</td>
+                            <td data-label="Actions">
+                                <a href="{% url 'edit_membership_plan' plan.id %}" class="btn btn-primary btn-sm"> <i class="mdi mdi-pencil-outline"></i></a>
+                                <a href="#" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ plan.id }}', '{{ plan.title }}', '{% url 'delete_membership_plan' plan.id %}')"> <i class="mdi mdi-delete-outline"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if plans.has_other_pages %}
+                {% include 'includes/pagination.html' with page_obj=plans %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Plan Modal -->
+<div class="modal fade" id="addPlanModal" tabindex="-1" role="dialog" aria-labelledby="addPlanModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addPlanModalLabel">Add New Membership Plan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'membership_plans' %}">
+            {% csrf_token %}
+            {% load form_tags %}
+            <div class="form-group">
+                {{ form.title.label_tag }}
+                {{ form.title|attr:"class:form-control" }}
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.amount.label_tag }}
+                        {{ form.amount|attr:"class:form-control" }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form.discount.label_tag }}
+                        {{ form.discount|attr:"class:form-control" }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="id_offer_price">Offer Price</label>
+                        <input type="text" id="id_offer_price" name="offer_price" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                            <div class="form-group">
+                                {{ form.duration.label_tag }}
+                                {{ form.duration|attr:"class:form-control" }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{ form.add_on_days.label_tag }}
+                                {{ form.add_on_days|attr:"class:form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form.description.label_tag }}
+                        {{ form.description|attr:"class:form-control" }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Plan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const amountInput = document.getElementById('id_amount');
+        const discountInput = document.getElementById('id_discount');
+        const offerPriceInput = document.getElementById('id_offer_price');
+
+        function calculateOfferPrice() {
+            const amount = parseFloat(amountInput.value) || 0;
+            const discount = parseFloat(discountInput.value) || 0;
+            const offerPrice = amount - discount;
+            offerPriceInput.value = offerPrice.toFixed(2);
+        }
+
+        amountInput.addEventListener('input', calculateOfferPrice);
+        discountInput.addEventListener('input', calculateOfferPrice);
+    });
+</script>
+
+{% endblock %}

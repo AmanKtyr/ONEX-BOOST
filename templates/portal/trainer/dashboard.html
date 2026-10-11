@@ -1,0 +1,419 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}Trainer Dashboard - {{ trainer.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <!-- HERO / PAGE HEADER -->
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">Welcome back, Coach {{ trainer.name }}!</h2>
+      <p class="dashboard-hero-subtitle">
+        {{ trainer.get_specialization_display|default:trainer.specialization }} &bull; Shift: {{ trainer.time_slot|default:'Full Day' }}
+      </p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <div class="dashboard-status-badge">
+        <span class="pulse-dot"></span>
+        <span class="text-muted">Trainer ID:</span>
+        <strong class="text-dark">{{ trainer.trainer_id }}</strong>
+        <span class="text-muted">|</span>
+        <span class="text-muted"><i class="far fa-clock mr-1"></i>{% now 'd M Y' %}</span>
+      </div>
+      <button class="btn-sync-refresh" onclick="location.reload();" title="Refresh Dashboard Data">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  {% if expiring_clients %}
+    <div class="alert alert-warning shadow-sm border-0 mb-4 p-3 d-flex align-items-center justify-content-between flex-wrap rounded-3" style="background-color: #fffbeb; border-left: 4px solid #f59e0b !important;">
+      <div class="d-flex align-items-center mb-2 mb-md-0">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #fef3c7; display: flex; align-items: center; justify-content: center; color: #d97706; margin-right: 14px; font-size: 20px; flex-shrink: 0;">
+          <i class="mdi mdi-alert-circle-outline"></i>
+        </div>
+        <div>
+          <h6 class="font-weight-bold text-dark mb-0" style="font-size: 14.5px;">Client PT Package Alert &bull; {{ expiring_clients|length }} Client{{ expiring_clients|pluralize }} Expiring Soon</h6>
+          <p class="text-muted mb-0 small">
+            {% for c in expiring_clients %}
+              <strong>{{ c.member.name }}</strong> ({{ c.days_left }}d left){% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            &mdash; Follow up with clients to schedule package renewals.
+          </p>
+        </div>
+      </div>
+      <a href="{% url 'trainer_portal:personal_training' %}" class="btn btn-sm btn-warning px-3 font-weight-bold shadow-sm" style="border-radius: 6px; background-color: #f59e0b; border-color: #f59e0b; color: #ffffff;">
+        <i class="mdi mdi-account-group mr-1"></i> View PT Clients
+      </a>
+    </div>
+  {% endif %}
+
+  <!-- TRAINER SELF-ATTENDANCE CONTROL DESK (NATIVE PORTAL GYM-CARD) -->
+  <div class="gym-card mb-4">
+    <div class="gym-card-header d-flex align-items-center justify-content-between flex-wrap">
+      <div class="gym-card-title">
+        <i class="mdi mdi-calendar-clock text-primary" style="font-size: 1.25rem;"></i>
+        <span>Shift & Attendance Desk</span>
+        <small class="text-muted ml-2 font-weight-normal d-none d-md-inline">&bull; {{ gym.name }} &bull; Trainer Punch Station</small>
+      </div>
+      <div class="mt-2 mt-sm-0">
+        {% if is_checked_in %}
+          <span class="badge-soft badge-soft-success">
+            <span class="attendance-radar-dot"></span> On Shift (Clocked In)
+          </span>
+        {% elif today_attendance %}
+          <span class="badge-soft badge-soft-primary">
+            <i class="fas fa-check-circle mr-1"></i> Shift Completed Today
+          </span>
+        {% else %}
+          <span class="badge-soft badge-soft-secondary">
+            <i class="fas fa-moon mr-1"></i> Not Clocked In
+          </span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="gym-card-body py-3 px-4">
+      <div class="row align-items-center">
+        <!-- Left: Clock & Metrics -->
+        <div class="col-lg-7 col-md-8 mb-3 mb-md-0">
+          <div class="d-flex align-items-center flex-wrap">
+            {% if is_checked_in %}
+              <div class="mr-4 pr-3 border-right mb-2">
+                <div class="h2 font-weight-bold text-success mb-0" id="live-shift-timer" data-start="{{ active_attendance.check_in_time.isoformat }}" style="font-variant-numeric: tabular-nums; font-family: 'Plus Jakarta Sans', monospace; line-height: 1.1;">00:00:00</div>
+                <small class="text-muted font-weight-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.04em;">
+                  <i class="fas fa-stopwatch text-success mr-1"></i> Active Shift Duration
+                </small>
+              </div>
+              <div class="d-flex align-items-center flex-wrap">
+                <div class="mr-4 mb-2">
+                  <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Punch In Time</span>
+                  <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ active_attendance.check_in_time|time:'g:i A' }}</span>
+                </div>
+                <div class="mr-3 mb-2">
+                  <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Today's Total</span>
+                  <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ today_duration_str }}</span>
+                </div>
+              </div>
+            {% else %}
+              <div class="mr-4 pr-3 border-right mb-2">
+                <div class="h2 font-weight-bold text-dark mb-0" id="live-digital-clock" style="font-variant-numeric: tabular-nums; font-family: 'Plus Jakarta Sans', monospace; line-height: 1.1;">--:--:--</div>
+                <small class="text-muted font-weight-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.04em;">
+                  <i class="far fa-clock text-primary mr-1"></i> Current Time
+                </small>
+              </div>
+              <div class="d-flex align-items-center flex-wrap">
+                {% if today_attendance %}
+                  <div class="mr-4 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Last In</span>
+                    <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ today_attendance.check_in_time|time:'g:i A' }}</span>
+                  </div>
+                  <div class="mr-4 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Last Out</span>
+                    <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ today_attendance.check_out_time|time:'g:i A'|default:'-' }}</span>
+                  </div>
+                  <div class="mr-3 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Today's Hours</span>
+                    <span class="font-weight-bold text-primary" style="font-size: 1rem;">{{ today_duration_str }}</span>
+                  </div>
+                {% else %}
+                  <div class="mr-4 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Scheduled Slot</span>
+                    <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ trainer.time_slot|default:'Full Day Shift' }}</span>
+                  </div>
+                  <div class="mr-3 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Shift Status</span>
+                    <span class="badge-soft badge-soft-warning font-weight-bold">Ready to Start</span>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Right: Action Button -->
+        <div class="col-lg-5 col-md-4 text-md-right mt-2 mt-md-0">
+          <form method="post" action="{% url 'trainer_portal:attendance_action' %}" id="trainer-attendance-form" class="m-0 d-inline-block">
+            {% csrf_token %}
+            {% if is_checked_in %}
+              <input type="hidden" name="action" value="checkout">
+              <button type="button" class="btn btn-danger font-weight-bold px-4 py-2 rounded-pill shadow-sm" id="btn-clock-out-trigger" onclick="confirmCheckOut();">
+                <i class="mdi mdi-logout-variant mr-1"></i> Clock Out (End Shift)
+              </button>
+            {% else %}
+              <input type="hidden" name="action" value="checkin">
+              <button type="submit" class="btn btn-success font-weight-bold px-4 py-2 rounded-pill shadow-sm" id="btn-clock-in-trigger">
+                <i class="mdi mdi-login-variant mr-1"></i> {% if today_attendance %}Clock In Again{% else %}Clock In (Start Shift){% endif %}
+              </button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP KPI CARDS -->
+  <div class="row">
+    <!-- Active Clients Card -->
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="kpi-card kpi-primary">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Active PT Clients</span>
+            <div class="kpi-icon-wrap kpi-icon-primary">
+              <i class="fas fa-users"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ total_clients_count }} <span style="font-size: 0.9rem; font-weight: 500;">Members</span></div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-primary">
+            <i class="fas fa-dumbbell mr-1"></i> Personal Training
+          </span>
+          <a href="{% url 'trainer_portal:clients' %}" class="kpi-meta-desc text-primary font-weight-bold">View Roster &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Card -->
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="kpi-card kpi-success">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Attendance (This Month)</span>
+            <div class="kpi-icon-wrap kpi-icon-success">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ this_month_sessions }} <span style="font-size: 0.9rem; font-weight: 500;">Days</span></div>
+        </div>
+        <div class="kpi-meta">
+          {% if is_checked_in %}
+            <span class="kpi-meta-badge kpi-badge-success">
+              <i class="fas fa-dot-circle mr-1 text-success"></i> Inside (since {{ active_attendance.check_in_time|time:'g:i A' }})
+            </span>
+          {% elif today_attendance %}
+            <span class="kpi-meta-badge kpi-badge-primary">
+              <i class="fas fa-check mr-1"></i> Logged ({{ today_duration_str }})
+            </span>
+          {% else %}
+            <span class="kpi-meta-badge kpi-badge-warning">
+              <i class="fas fa-clock mr-1"></i> Not Checked In Today
+            </span>
+          {% endif %}
+          <a href="{% url 'trainer_portal:attendance' %}" class="kpi-meta-desc text-primary font-weight-bold">Log &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compensation / Status Card -->
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="kpi-card kpi-warning">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">My Salary ({% now 'M Y' %})</span>
+            <div class="kpi-icon-wrap kpi-icon-warning">
+              <i class="fas fa-rupee-sign"></i>
+            </div>
+          </div>
+          <div class="kpi-value">&#8377;{{ this_month_salary.net_salary|default:trainer.salary|default:0|floatformat:2|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          {% if this_month_salary.status == 'paid' %}
+            <span class="kpi-meta-badge kpi-badge-success">
+              <i class="fas fa-check-double mr-1"></i> Paid
+            </span>
+          {% elif this_month_salary.status == 'approved' %}
+            <span class="kpi-meta-badge kpi-badge-primary">
+              <i class="fas fa-check mr-1"></i> Approved
+            </span>
+          {% else %}
+            <span class="kpi-meta-badge kpi-badge-warning">
+              <i class="fas fa-calculator mr-1"></i> Calculating
+            </span>
+          {% endif %}
+          <a href="{% url 'trainer_portal:salary' %}" class="kpi-meta-desc text-warning font-weight-bold">View Statement &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT ROSTER & ATTENDANCE -->
+  <div class="row">
+    <!-- Active Clients Table -->
+    <div class="col-lg-7 mb-4">
+      <div class="gym-card h-100">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="mdi mdi-account-multiple text-primary" style="font-size: 1.25rem;"></i>
+            <span>My Assigned Clients</span>
+          </div>
+          <a href="{% url 'trainer_portal:clients' %}" class="small font-weight-bold text-primary">
+            View All ({{ total_clients_count }}) &rarr;
+          </a>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th>Client</th>
+                  <th>Contact</th>
+                  <th>Plan Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in clients %}
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="{% if c.member.profile_picture %}{{ c.member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                           alt="{{ c.member.name }}" 
+                           class="rounded-circle mr-2" 
+                           style="width: 34px; height: 34px; object-fit: cover; border: 1px solid #e2e8f0;">
+                      <div>
+                        <div class="font-weight-bold text-dark">{{ c.member.name }}</div>
+                        <div class="text-muted small">ID: {{ c.member.member_id }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="small"><i class="fas fa-phone mr-1 text-muted"></i> {{ c.member.mobile_number }}</div>
+                  </td>
+                  <td>
+                    {% if c.member.current_status == 'Active' %}
+                      <span class="badge badge-success px-2 py-1">Active</span>
+                    {% else %}
+                      <span class="badge badge-secondary px-2 py-1">Expired</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="3" class="text-center py-4 text-muted">No personal training clients assigned yet.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Attendance Log -->
+    <div class="col-lg-5 mb-4">
+      <div class="gym-card h-100">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="mdi mdi-history text-success" style="font-size: 1.25rem;"></i>
+            <span>Recent Shifts</span>
+          </div>
+          <a href="{% url 'trainer_portal:attendance' %}" class="small font-weight-bold text-primary">
+            Full Log &rarr;
+          </a>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th>Date</th>
+                  <th>In</th>
+                  <th>Out</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for log in recent_logs %}
+                <tr>
+                  <td class="font-weight-bold text-dark">{{ log.check_in_time|date:'d M' }}</td>
+                  <td class="text-success font-weight-bold">{{ log.check_in_time|time:'g:i A' }}</td>
+                  <td>
+                    {% if log.check_out_time %}
+                      {{ log.check_out_time|time:'g:i A' }}
+                    {% else %}
+                      <span class="badge badge-success py-1 px-2">Inside</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if log.duration %}
+                      <span class="badge badge-light border font-weight-bold">{{ log.duration }}</span>
+                    {% elif not log.check_out_time %}
+                      <span class="text-muted small">In progress</span>
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-muted">No recent shift attendance recorded.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Digital Clock for Idle state
+function updateDigitalClock() {
+    const el = document.getElementById('live-digital-clock');
+    if (!el) return;
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+setInterval(updateDigitalClock, 1000);
+updateDigitalClock();
+
+// Live Shift Timer for Active Check-in
+const timerEl = document.getElementById('live-shift-timer');
+if (timerEl && timerEl.dataset.start) {
+    const startTime = new Date(timerEl.dataset.start).getTime();
+    function tickShiftTimer() {
+        const now = new Date().getTime();
+        let diffSecs = Math.max(0, Math.floor((now - startTime) / 1000));
+        const hrs = String(Math.floor(diffSecs / 3600)).padStart(2, '0');
+        diffSecs %= 3600;
+        const mins = String(Math.floor(diffSecs / 60)).padStart(2, '0');
+        const secs = String(diffSecs % 60).padStart(2, '0');
+        timerEl.textContent = `${hrs}:${mins}:${secs}`;
+    }
+    setInterval(tickShiftTimer, 1000);
+    tickShiftTimer();
+}
+
+// SweetAlert Check Out Confirmation
+function confirmCheckOut() {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'End Gym Shift?',
+            text: 'Are you sure you want to clock out for today?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: '<i class="fas fa-sign-out-alt mr-1"></i> Yes, Clock Out',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.getElementById('trainer-attendance-form');
+                const btn = document.getElementById('btn-clock-out-trigger');
+                if (btn) btn.disabled = true;
+                form.submit();
+            }
+        });
+    } else {
+        if (confirm('Are you sure you want to clock out?')) {
+            document.getElementById('trainer-attendance-form').submit();
+        }
+    }
+}
+</script>
+{% endblock %}

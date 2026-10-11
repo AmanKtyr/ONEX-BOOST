@@ -1,0 +1,919 @@
+{% extends 'superadmin/base.html' %}
+{% load static humanize %}
+
+{% block title %}Disaster Recovery & Backup Center | ONEXIVA{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard_modern.css' %}">
+
+<style>
+    /* Scope card override & polish */
+    .scope-selector-card {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        height: 100%;
+    }
+    .scope-selector-card:hover {
+        border-color: #93c5fd;
+        background: #f0f7ff;
+    }
+    .custom-control-input:checked ~ .scope-selector-card {
+        border-color: #2563eb;
+        background: #eff6ff;
+        box-shadow: 0 0 0 1px #2563eb;
+    }
+    .dropzone-modern {
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 32px 20px;
+        text-align: center;
+        background: #f8fafc;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .dropzone-modern:hover {
+        border-color: #3b82f6;
+        background: #f0f7ff;
+    }
+    .table thead th {
+        background-color: #f8fafc;
+        color: #334155;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.74rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+        padding: 12px 16px;
+    }
+    .table tbody td {
+        padding: 13px 16px;
+        vertical-align: middle;
+        font-size: 0.88rem;
+    }
+    .scope-badge-full {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.76rem;
+    }
+    .scope-badge-gym {
+        background-color: #ecfeff;
+        color: #0e7490;
+        border: 1px solid #a5f3fc;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.76rem;
+    }
+    .scope-badge-media {
+        background-color: #fffbeb;
+        color: #b45309;
+        border: 1px solid #fde68a;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.76rem;
+    }
+    .component-pill-db {
+        background: #f1f5f9;
+        color: #2563eb;
+        border: 1px solid #cbd5e1;
+        font-weight: 700;
+        font-size: 0.7rem;
+        padding: 2px 7px;
+        border-radius: 6px;
+    }
+    .component-pill-media {
+        background: #f0fdf4;
+        color: #059669;
+        border: 1px solid #bbf7d0;
+        font-weight: 700;
+        font-size: 0.7rem;
+        padding: 2px 7px;
+        border-radius: 6px;
+    }
+    .safety-code-input {
+        letter-spacing: 4px;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 1.15rem;
+        text-align: center;
+    }
+</style>
+
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+    <!-- BREADCRUMB NAVIGATION -->
+    <nav aria-label="breadcrumb" class="custom-breadcrumb mb-2">
+        <ol class="breadcrumb mb-0 py-1 px-0 bg-transparent">
+            <li class="breadcrumb-item">
+                <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none text-primary">
+                    <i class="mdi mdi-home-outline"></i> Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'superadmin:system_settings' %}" class="text-decoration-none text-muted">
+                    <i class="mdi mdi-settings"></i> Settings
+                </a>
+            </li>
+            <li class="breadcrumb-item active text-dark font-weight-bold" aria-current="page">
+                <i class="mdi mdi-backup-restore"></i> Backup & Disaster Recovery
+            </li>
+        </ol>
+    </nav>
+
+    <!-- HERO / PAGE HEADER (Standard ONEXIVAExecutive Header) -->
+    <div class="dashboard-hero-header mb-4">
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center justify-content-center text-white shadow-sm mr-3" style="width: 48px; height: 48px; min-width: 48px; border-radius: 12px; font-size: 22px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;">
+                <i class="fas fa-database"></i>
+            </div>
+            <div>
+                <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
+                    <h2 class="dashboard-hero-title">Disaster Recovery &amp; Backup Center</h2>
+                    <span class="badge badge-pill badge-success font-weight-bold" style="font-size: 0.72rem; padding: 0.32rem 0.75rem; background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0;">
+                        <i class="fas fa-shield-alt mr-1"></i> System Protected
+                    </span>
+                </div>
+                <p class="dashboard-hero-subtitle">Automated platform snapshots, tenant data packages, and safe disaster recovery</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
+            <div class="dashboard-status-badge">
+                <span class="pulse-dot"></span>
+                <span><strong>{{ storage_stats.db_engine }}</strong> ({{ storage_stats.db_size_display }})</span>
+                <span class="text-muted">|</span>
+                <span class="text-muted"><i class="far fa-clock mr-1"></i>{% now 'H:i' %}</span>
+            </div>
+            <a href="{% url 'superadmin:system_settings' %}" class="btn-sync-refresh" title="Configure System Settings">
+                <i class="mdi mdi-settings mr-1 text-primary"></i> System Settings
+            </a>
+            <button class="btn-sync-refresh" onclick="location.reload();" title="Refresh Storage & Backups">
+                <i class="fas fa-sync-alt mr-1"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- TOP 4 KPI STAT CARDS (Exact Soft Tinted Modern Style) -->
+    <div class="row">
+        <!-- 1. Stored Backups -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-primary">
+                <div>
+                    <div class="kpi-header">
+                        <span class="kpi-label">Stored Backups</span>
+                        <div class="kpi-icon-wrap kpi-icon-primary">
+                            <i class="fas fa-archive"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{{ storage_stats.backup_files_count }}</div>
+                </div>
+                <div class="kpi-meta">
+                    <span class="kpi-meta-badge kpi-badge-primary">
+                        <i class="fas fa-hdd mr-1"></i> {{ storage_stats.backup_total_size_display }}
+                    </span>
+                    <span class="kpi-meta-desc">Total on server disk</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Database Snapshot -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-success">
+                <div>
+                    <div class="kpi-header">
+                        <span class="kpi-label">Database Snapshot</span>
+                        <div class="kpi-icon-wrap kpi-icon-success">
+                            <i class="fas fa-database"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{{ storage_stats.db_engine }}</div>
+                </div>
+                <div class="kpi-meta">
+                    <span class="kpi-meta-badge kpi-badge-success">
+                        <i class="fas fa-check-circle mr-1"></i> {{ storage_stats.db_size_display }}
+                    </span>
+                    <span class="kpi-meta-desc">{{ storage_stats.db_name }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Media Assets -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-warning">
+                <div>
+                    <div class="kpi-header">
+                        <span class="kpi-label">Media Assets</span>
+                        <div class="kpi-icon-wrap kpi-icon-warning">
+                            <i class="fas fa-images"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{{ storage_stats.media_stats.total_files }}</div>
+                </div>
+                <div class="kpi-meta">
+                    <span class="kpi-meta-badge kpi-badge-warning">
+                        <i class="fas fa-folder mr-1"></i> {{ storage_stats.media_stats.total_size_display }}
+                    </span>
+                    <span class="kpi-meta-desc">Photos & Documents</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Registered Gyms -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-primary">
+                <div>
+                    <div class="kpi-header">
+                        <span class="kpi-label">Registered Gyms</span>
+                        <div class="kpi-icon-wrap kpi-icon-primary">
+                            <i class="fas fa-building"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{{ storage_stats.gym_count }}</div>
+                </div>
+                <div class="kpi-meta">
+                    <span class="kpi-meta-badge kpi-badge-primary">
+                        <i class="fas fa-users mr-1"></i> {{ storage_stats.member_count }} Members
+                    </span>
+                    <span class="kpi-meta-desc">Active Tenant Base</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TWO-COLUMN ACTION PANELS: CREATE BACKUP vs UPLOAD/RESTORE -->
+    <div class="row">
+        <!-- Panel 1: Create Backup Archive -->
+        <div class="col-lg-6 mb-4">
+            <div class="gym-card h-100">
+                <div class="gym-card-header">
+                    <div class="gym-card-title">
+                        <i class="fas fa-file-export text-primary mr-1"></i>
+                        <span>Create New Backup Archive</span>
+                    </div>
+                    <span class="badge badge-light border text-primary font-weight-bold">Export Mode</span>
+                </div>
+                <div class="gym-card-body">
+                    <form method="POST" action="{% url 'superadmin:create_backup' %}" id="createBackupForm">
+                        {% csrf_token %}
+
+                        <!-- 1. Scope Selection -->
+                        <div class="form-group mb-3">
+                            <label class="font-weight-bold text-dark mb-2" style="font-size: 0.85rem;">1. Select Backup Scope</label>
+                            <div class="row">
+                                <div class="col-sm-4 mb-2 mb-sm-0">
+                                    <label class="w-100 mb-0" for="scope_full">
+                                        <input type="radio" id="scope_full" name="backup_scope" value="full" class="d-none" checked onchange="toggleScopeInputs('full')">
+                                        <div class="scope-selector-card text-center" id="card_scope_full">
+                                            <i class="fas fa-globe text-primary mb-1" style="font-size: 1.3rem;"></i>
+                                            <div class="font-weight-bold text-dark" style="font-size: 0.88rem;">Full Platform</div>
+                                            <small class="text-muted d-block">All gyms & DB</small>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-sm-4 mb-2 mb-sm-0">
+                                    <label class="w-100 mb-0" for="scope_gym">
+                                        <input type="radio" id="scope_gym" name="backup_scope" value="gym" class="d-none" onchange="toggleScopeInputs('gym')">
+                                        <div class="scope-selector-card text-center" id="card_scope_gym">
+                                            <i class="fas fa-building text-info mb-1" style="font-size: 1.3rem;"></i>
+                                            <div class="font-weight-bold text-dark" style="font-size: 0.88rem;">Single Gym</div>
+                                            <small class="text-muted d-block">Tenant package</small>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="w-100 mb-0" for="scope_media">
+                                        <input type="radio" id="scope_media" name="backup_scope" value="media" class="d-none" onchange="toggleScopeInputs('media')">
+                                        <div class="scope-selector-card text-center" id="card_scope_media">
+                                            <i class="fas fa-images text-warning mb-1" style="font-size: 1.3rem;"></i>
+                                            <div class="font-weight-bold text-dark" style="font-size: 0.88rem;">Media Only</div>
+                                            <small class="text-muted d-block">Assets & images</small>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Target Gym Selector (Appears for Single Gym or Media for gym) -->
+                        <div class="form-group mb-3 d-none" id="gymSelectorContainer">
+                            <label class="font-weight-bold text-dark mb-1" style="font-size: 0.85rem;">Select Target Gym Tenant <span class="text-danger">*</span></label>
+                            <select name="gym_id" id="gym_id_select" class="form-control form-control-sm">
+                                <option value="">-- Choose a registered Gym --</option>
+                                {% for g in gyms %}
+                                    <option value="{{ g.id }}">{{ g.name }} ({{ g.gym_id }}) — {{ g.member_total }} Members</option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">All related records (Members, Plans, Attendance, Billing, Staff) will be packaged.</small>
+                        </div>
+
+                        <!-- 3. Components to Include -->
+                        <div class="form-group mb-3">
+                            <label class="font-weight-bold text-dark mb-2" style="font-size: 0.85rem;">2. Package Components</label>
+                            <div class="d-flex flex-wrap p-2 bg-light rounded border">
+                                <div class="custom-control custom-checkbox mr-4 mb-1" id="includeDbWrapper">
+                                    <input type="checkbox" class="custom-control-input" id="include_db" name="include_db" value="1" checked>
+                                    <label class="custom-control-label font-weight-bold" for="include_db" style="font-size: 0.85rem;">
+                                        <i class="fas fa-database text-primary mr-1"></i> Database Data & Records
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-checkbox mb-1">
+                                    <input type="checkbox" class="custom-control-input" id="include_media" name="include_media" value="1" checked>
+                                    <label class="custom-control-label font-weight-bold" for="include_media" style="font-size: 0.85rem;">
+                                        <i class="fas fa-images text-success mr-1"></i> Media Files (Logos, Photos, Docs)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Notes / Tag -->
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold text-dark mb-1" style="font-size: 0.85rem;">3. Backup Tag / Notes (Optional)</label>
+                            <input type="text" name="notes" class="form-control form-control-sm" placeholder="e.g. Monthly maintenance snapshot or pre-upgrade archive">
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center pt-2 border-top">
+                            <button type="submit" name="download_now" value="0" class="btn btn-primary btn-sm font-weight-bold mr-2 mb-2 shadow-sm">
+                                <i class="fas fa-server mr-1"></i> Generate & Save on Server
+                            </button>
+                            <button type="submit" name="download_now" value="1" class="btn btn-outline-success btn-sm font-weight-bold mb-2 shadow-sm">
+                                <i class="fas fa-download mr-1"></i> Generate & Download Now
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 2: Upload & Disaster Recovery Restore -->
+        <div class="col-lg-6 mb-4">
+            <div class="gym-card h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="gym-card-header">
+                        <div class="gym-card-title">
+                            <i class="fas fa-file-import text-warning mr-1"></i>
+                            <span>Upload & Disaster Recovery</span>
+                        </div>
+                        <span class="badge badge-warning text-dark font-weight-bold">Restore Mode</span>
+                    </div>
+                    <div class="gym-card-body">
+                        <p class="text-muted small mb-3">Upload a previously generated backup archive (<code>.zip</code>, <code>.json</code>, or <code>.sqlite3</code>). The system inspects file contents and verifies safety before restoration.</p>
+
+                        <div class="dropzone-modern mb-3" onclick="document.getElementById('uploadBackupFileInput').click()">
+                            <i class="fas fa-cloud-upload-alt text-primary mb-2" style="font-size: 38px;"></i>
+                            <h6 class="font-weight-bold text-dark mb-1" style="font-size: 0.95rem;">Click to browse or drop backup file here</h6>
+                            <span class="badge badge-light border text-muted">Supports .ZIP, .JSON, .SQLITE3</span>
+                            <div id="selectedFileNotice" class="mt-2 text-success font-weight-bold small d-none"></div>
+                        </div>
+                        <input type="file" id="uploadBackupFileInput" style="display: none;" accept=".zip,.json,.sqlite3,.db,.sqlite" onchange="onBackupFileSelected(this)">
+
+                        <div class="p-3 bg-light rounded border small text-muted mb-0">
+                            <i class="fas fa-shield-alt text-success mr-1"></i> <strong>Safety Guaranteed:</strong> An automated snapshot of the current database is captured automatically prior to executing any restore operation.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gym-card-footer justify-content-between bg-white border-top">
+                    <span class="small text-muted font-weight-bold">Pre-restore Inspection</span>
+                    <button type="button" class="btn btn-warning btn-sm text-dark font-weight-bold shadow-sm" id="btnInspectUpload" disabled onclick="inspectUploadedFile()">
+                        <i class="fas fa-search mr-1"></i> Inspect & Restore Archive
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTER PILLS -->
+    <div class="mb-3 d-flex flex-wrap align-items-center">
+        <a href="{% url 'superadmin:backup_manager' %}" class="btn btn-sm mr-2 mb-1 {% if not type_filter %}btn-primary font-weight-bold shadow-sm{% else %}btn-outline-primary{% endif %}">
+            All Backups <span class="badge badge-light ml-1">{{ backups.paginator.count|default:backups|length }}</span>
+        </a>
+        <a href="{% url 'superadmin:backup_manager' %}?type=full" class="btn btn-sm mr-2 mb-1 {% if type_filter == 'full' %}btn-primary font-weight-bold shadow-sm{% else %}btn-outline-primary{% endif %}">
+            Full Platform
+        </a>
+        <a href="{% url 'superadmin:backup_manager' %}?type=gym" class="btn btn-sm mr-2 mb-1 {% if type_filter == 'gym' %}btn-info text-white font-weight-bold shadow-sm{% else %}btn-outline-info{% endif %}">
+            Single Gym
+        </a>
+        <a href="{% url 'superadmin:backup_manager' %}?type=media" class="btn btn-sm mb-1 {% if type_filter == 'media' %}btn-warning text-dark font-weight-bold shadow-sm{% else %}btn-outline-warning{% endif %}">
+            Media Assets
+        </a>
+    </div>
+
+    <!-- STORED BACKUPS REGISTRY TABLE -->
+    <div class="gym-card mb-4">
+        <div class="gym-card-header">
+            <div class="gym-card-title">
+                <i class="fas fa-list text-primary"></i>
+                <span>Backup Archives Registry</span>
+            </div>
+            <div>
+                <form method="GET" action="{% url 'superadmin:backup_manager' %}" class="form-inline">
+                    {% if type_filter %}
+                        <input type="hidden" name="type" value="{{ type_filter }}">
+                    {% endif %}
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="q" class="form-control" placeholder="Search backups..." value="{{ search_query|default:'' }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="gym-card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Archive Filename</th>
+                            <th>Scope / Target</th>
+                            <th>Components</th>
+                            <th>File Size</th>
+                            <th>Created Timestamp</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in backups %}
+                            <tr>
+                                <td>
+                                    <div class="font-weight-bold text-dark">
+                                        <i class="fas fa-file-archive text-warning mr-1"></i> {{ b.filename }}
+                                    </div>
+                                    {% if b.notes %}
+                                        <small class="text-muted"><i class="fas fa-tag mr-1"></i>{{ b.notes }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if b.backup_type == 'full' %}
+                                        <span class="scope-badge-full">
+                                            <i class="fas fa-globe mr-1"></i> Full Platform
+                                        </span>
+                                    {% elif b.backup_type == 'gym' %}
+                                        <span class="scope-badge-gym">
+                                            <i class="fas fa-building mr-1"></i> {{ b.gym_name|default:"Single Gym" }}
+                                        </span>
+                                    {% else %}
+                                        <span class="scope-badge-media">
+                                            <i class="fas fa-images mr-1"></i> Media Assets
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if b.includes_database %}
+                                        <span class="component-pill-db mr-1">
+                                            <i class="fas fa-database mr-1"></i>DB
+                                        </span>
+                                    {% endif %}
+                                    {% if b.includes_media %}
+                                        <span class="component-pill-media">
+                                            <i class="fas fa-images mr-1"></i>Media
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="font-weight-bold text-dark">{{ b.file_size_display }}</span>
+                                </td>
+                                <td>
+                                    <div class="small font-weight-bold text-dark">{{ b.created_at|date:"d M Y, h:i A" }}</div>
+                                    <small class="text-muted">By: {{ b.created_by.username|default:"Super Admin" }}</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Download -->
+                                        <a href="{% url 'superadmin:download_backup' b.id %}" class="btn btn-outline-primary" title="Download Archive">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        <!-- Inspect -->
+                                        <button type="button" class="btn btn-outline-info" title="Inspect Contents" onclick="inspectStoredBackup('{{ b.id }}')">
+                                            <i class="fas fa-info-circle"></i>
+                                        </button>
+                                        <!-- Restore -->
+                                        <button type="button" class="btn btn-outline-warning text-dark" title="Restore this Backup" onclick="openRestoreConfirmationModal('{{ b.id }}', '{{ b.filename }}')">
+                                            <i class="fas fa-undo-alt"></i>
+                                        </button>
+                                        <!-- Delete -->
+                                        <button type="button" class="btn btn-outline-danger" title="Delete Archive" onclick="confirmDeleteBackup('{{ b.id }}', '{{ b.filename }}')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="fas fa-folder-open mb-2" style="font-size: 40px; color: #cbd5e1;"></i>
+                                    <h6 class="font-weight-bold text-dark">No Backup Archives Found</h6>
+                                    <p class="small mb-0">Use the export panel above to generate your first platform snapshot.</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- SERVER MEDIA ASSETS BREAKDOWN ACCORDION -->
+    <div class="gym-card mb-5">
+        <div class="gym-card-header" style="cursor: pointer;" data-toggle="collapse" data-target="#collapseMediaStats">
+            <div class="gym-card-title">
+                <i class="fas fa-folder-tree text-warning mr-1"></i>
+                <span>Server Media Directory Breakdown</span>
+            </div>
+            <i class="fas fa-chevron-down text-muted"></i>
+        </div>
+        <div id="collapseMediaStats" class="collapse">
+            <div class="gym-card-body bg-light">
+                <div class="row">
+                    {% for folder, info in storage_stats.media_stats.breakdown.items %}
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="p-3 bg-white rounded border shadow-sm">
+                                <div class="font-weight-bold text-dark text-truncate mb-1">
+                                    <i class="fas fa-folder text-primary mr-1"></i> {{ folder }}/
+                                </div>
+                                <div class="d-flex justify-content-between small text-muted">
+                                    <span>{{ info.files }} files</span>
+                                    <span class="font-weight-bold text-dark">{{ info.size_display }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12 text-center text-muted py-3">No media files stored yet.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================================================== -->
+<!-- MODALS -->
+<!-- ============================================================================== -->
+
+<!-- 1. Modal: Inspect Archive Contents (Compact & Responsive) -->
+<div class="modal fade" id="inspectModal" tabindex="-1" role="dialog" aria-labelledby="inspectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header py-2.5 px-3.5" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff; border-bottom: none;">
+                <h6 class="modal-title font-weight-bold text-white d-flex align-items-center mb-0" id="inspectModalLabel" style="font-size: 0.95rem;">
+                    <i class="fas fa-search mr-2 text-warning"></i> Backup Inspection Report
+                </h6>
+                <button type="button" class="close text-white" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close" onclick="closeInspectModal()" style="opacity: 0.9; font-size: 1.4rem; background: transparent; border: none; line-height: 1; padding: 0.2rem 0.4rem; transition: opacity 0.2s;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-3.5" id="inspectModalBody">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;"></div>
+                    <p class="mt-2 text-muted small mb-0">Analyzing archive manifest and records structure...</p>
+                </div>
+            </div>
+            <div class="modal-footer py-2 px-3 bg-light border-top" style="justify-content: flex-end; gap: 6px;">
+                <button type="button" class="btn btn-secondary font-weight-bold btn-sm px-3 rounded-pill" data-bs-dismiss="modal" data-dismiss="modal" onclick="closeInspectModal()">Close</button>
+                <button type="button" class="btn btn-warning text-dark font-weight-bold btn-sm px-3 rounded-pill d-none" id="btnModalTriggerRestore" onclick="openRestoreFromInspection()">
+                    <i class="fas fa-undo-alt mr-1"></i> Proceed to Restore
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Modal: Safety Restore Confirmation Dialog (Compact) -->
+<div class="modal fade" id="restoreConfirmModal" tabindex="-1" role="dialog" aria-labelledby="restoreConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header py-2.5 px-3.5 bg-danger text-white" style="border-bottom: none;">
+                <h6 class="modal-title font-weight-bold text-white d-flex align-items-center mb-0" id="restoreConfirmModalLabel" style="font-size: 0.95rem;">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Confirm Disaster Recovery Restore
+                </h6>
+                <button type="button" class="close text-white" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close" onclick="closeRestoreModal()" style="opacity: 0.9; font-size: 1.4rem; background: transparent; border: none; line-height: 1; padding: 0.2rem 0.4rem;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'superadmin:restore_backup' %}" enctype="multipart/form-data" id="restoreForm">
+                {% csrf_token %}
+                <input type="hidden" name="backup_id" id="restore_backup_id_input">
+                <input type="file" name="backup_file" id="restore_backup_file_input" style="display: none;">
+
+                <div class="modal-body p-3.5">
+                    <div class="alert alert-warning border-0 small mb-3 p-2.5" style="border-radius: 10px;">
+                        <i class="fas fa-info-circle mr-1 font-weight-bold"></i>
+                        <strong>Notice:</strong> Restoring will import database records and media assets into production. An automated safety backup of current data will be created first.
+                    </div>
+
+                    <div class="p-2.5 bg-light rounded border mb-3">
+                        <div class="small text-muted font-weight-bold text-uppercase" style="font-size: 0.72rem;">Target Archive</div>
+                        <div class="font-weight-bold text-dark text-truncate" id="restoreTargetFilename" style="font-size: 0.88rem;">---</div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <label class="font-weight-bold text-danger small mb-1">To confirm, type <span class="badge badge-danger">RESTORE</span> below:</label>
+                        <input type="text" name="confirm_text" id="confirmRestoreTextInput" class="form-control safety-code-input" placeholder="RESTORE" autocomplete="off" oninput="validateRestoreCode(this)">
+                        <small class="text-muted" style="font-size: 0.75rem;">Type RESTORE exactly to unlock the execution button.</small>
+                    </div>
+                </div>
+
+                <div class="modal-footer py-2 px-3 bg-light border-top" style="justify-content: flex-end; gap: 6px;">
+                    <button type="button" class="btn btn-secondary btn-sm font-weight-bold px-3 rounded-pill" data-bs-dismiss="modal" data-dismiss="modal" onclick="closeRestoreModal()">Cancel</button>
+                    <button type="submit" class="btn btn-danger btn-sm font-weight-bold px-3 rounded-pill" id="btnExecuteRestore" disabled>
+                        <i class="fas fa-undo-alt mr-1"></i> Start Restoration
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Form for Delete (Hidden) -->
+<form method="POST" id="deleteBackupForm" style="display: none;">
+    {% csrf_token %}
+</form>
+
+<script>
+    let activeInspectionData = null;
+
+    function toggleScopeInputs(scope) {
+        const gymSelect = document.getElementById('gymSelectorContainer');
+        const includeDbWrapper = document.getElementById('includeDbWrapper');
+
+        // Style the active scope card
+        document.querySelectorAll('.scope-selector-card').forEach(el => {
+            el.style.borderColor = '#e2e8f0';
+            el.style.background = '#f8fafc';
+        });
+
+        const activeCard = document.getElementById('card_scope_' + scope);
+        if (activeCard) {
+            activeCard.style.borderColor = '#2563eb';
+            activeCard.style.background = '#eff6ff';
+        }
+
+        if (scope === 'gym') {
+            gymSelect.classList.remove('d-none');
+            includeDbWrapper.classList.remove('d-none');
+            document.getElementById('include_db').checked = true;
+        } else if (scope === 'media') {
+            gymSelect.classList.remove('d-none');
+            includeDbWrapper.classList.add('d-none');
+            document.getElementById('include_db').checked = false;
+        } else {
+            gymSelect.classList.add('d-none');
+            includeDbWrapper.classList.remove('d-none');
+            document.getElementById('include_db').checked = true;
+        }
+    }
+
+    // Init active scope styling
+    document.addEventListener("DOMContentLoaded", function() {
+        toggleScopeInputs('full');
+    });
+
+    function onBackupFileSelected(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const notice = document.getElementById('selectedFileNotice');
+            notice.classList.remove('d-none');
+            notice.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Selected: ${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+            document.getElementById('btnInspectUpload').disabled = false;
+        }
+    }
+
+    function showModal(modalId) {
+        const el = document.getElementById(modalId);
+        if (!el) return;
+        if (window.bootstrap && bootstrap.Modal) {
+            let inst = bootstrap.Modal.getInstance(el);
+            if (!inst) inst = new bootstrap.Modal(el);
+            inst.show();
+            return;
+        }
+        if (window.$ && $.fn && $.fn.modal) {
+            $(el).modal('show');
+            return;
+        }
+        el.classList.add('show');
+        el.style.display = 'block';
+        document.body.classList.add('modal-open');
+    }
+
+    function hideModal(modalId) {
+        const el = document.getElementById(modalId);
+        if (!el) return;
+        if (window.bootstrap && bootstrap.Modal) {
+            let inst = bootstrap.Modal.getInstance(el);
+            if (inst) {
+                inst.hide();
+            }
+        }
+        if (window.$ && $.fn && $.fn.modal) {
+            $(el).modal('hide');
+        }
+        el.classList.remove('show');
+        el.style.display = 'none';
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('padding-right');
+        document.body.style.removeProperty('overflow');
+        document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+    }
+
+    function closeInspectModal() {
+        hideModal('inspectModal');
+    }
+
+    function closeRestoreModal() {
+        hideModal('restoreConfirmModal');
+    }
+
+    function inspectUploadedFile() {
+        const input = document.getElementById('uploadBackupFileInput');
+        if (!input.files || !input.files[0]) return;
+
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        formData.append('backup_file', file);
+
+        showModal('inspectModal');
+        document.getElementById('inspectModalBody').innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;"></div>
+                <p class="mt-2 text-muted small mb-0">Inspecting uploaded archive '${file.name}'...</p>
+            </div>
+        `;
+        document.getElementById('btnModalTriggerRestore').classList.add('d-none');
+
+        fetch("{% url 'superadmin:inspect_backup_api' %}", {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            activeInspectionData = data;
+            renderInspectionReport(data, file.name, true);
+        })
+        .catch(err => {
+            document.getElementById('inspectModalBody').innerHTML = `
+                <div class="alert alert-danger mb-0 small">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Failed to inspect archive: Network or parsing error.
+                </div>
+            `;
+        });
+    }
+
+    function inspectStoredBackup(backupId) {
+        showModal('inspectModal');
+        document.getElementById('inspectModalBody').innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;"></div>
+                <p class="mt-2 text-muted small mb-0">Reading stored archive manifest...</p>
+            </div>
+        `;
+        document.getElementById('btnModalTriggerRestore').classList.add('d-none');
+
+        fetch(`{% url 'superadmin:inspect_backup_api' %}?backup_id=${backupId}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            activeInspectionData = data;
+            renderInspectionReport(data, data.filename, false);
+        })
+        .catch(err => {
+            document.getElementById('inspectModalBody').innerHTML = `
+                <div class="alert alert-danger mb-0 small">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Failed to inspect archive: File unreadable.
+                </div>
+            `;
+        });
+    }
+
+    function renderInspectionReport(data, filename, isUpload) {
+        if (!data.is_valid) {
+            document.getElementById('inspectModalBody').innerHTML = `
+                <div class="alert alert-danger mb-0">
+                    <h6 class="font-weight-bold mb-1"><i class="fas fa-exclamation-circle mr-1"></i> Invalid Archive File</h6>
+                    <p class="mb-0 small">${data.error || 'The file structure is not recognized as a valid backup.'}</p>
+                </div>
+            `;
+            return;
+        }
+
+        let recordBadgesHtml = '';
+        if (data.record_counts && Object.keys(data.record_counts).length > 0) {
+            for (const [model, count] of Object.entries(data.record_counts)) {
+                if (count > 0) {
+                    recordBadgesHtml += `<span class="badge badge-light border mr-1.5 mb-1.5 p-1.5" style="font-size: 0.74rem;"><strong>${model.replace('_', ' ')}:</strong> ${count}</span>`;
+                }
+            }
+        }
+
+        let scopeLabel = 'Full Platform Archive';
+        let scopeBadgeClass = 'badge-primary';
+        if (data.backup_type === 'gym') {
+            scopeLabel = `Tenant: ${data.gym_name || 'Gym'}`;
+            scopeBadgeClass = 'badge-info';
+        } else if (data.backup_type === 'media') {
+            scopeLabel = 'Media Archive';
+            scopeBadgeClass = 'badge-warning text-dark';
+        }
+
+        let formattedDate = data.created_at || 'N/A';
+        if (data.created_at && data.created_at.includes('T')) {
+            try {
+                const parsed = new Date(data.created_at);
+                if (!isNaN(parsed.getTime())) {
+                    formattedDate = parsed.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                }
+            } catch (e) {}
+        }
+
+        document.getElementById('inspectModalBody').innerHTML = `
+            <div class="p-3 bg-light rounded border mb-2.5">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                    <span class="font-weight-bold text-dark text-truncate" style="max-width: 320px; font-size: 0.88rem;" title="${filename}">
+                        <i class="far fa-file-archive text-primary mr-1"></i> ${filename}
+                    </span>
+                    <span class="badge ${scopeBadgeClass} font-weight-bold px-2 py-1" style="font-size: 0.7rem; border-radius: 9999px;">${scopeLabel}</span>
+                </div>
+                <div class="row g-2 small text-muted">
+                    <div class="col-6 mb-1.5"><span class="text-secondary font-weight-semibold">Archive Size:</span> <strong class="text-dark">${data.file_size_display}</strong></div>
+                    <div class="col-6 mb-1.5"><span class="text-secondary font-weight-semibold">Created:</span> <strong class="text-dark">${formattedDate}</strong></div>
+                    <div class="col-6"><span class="text-secondary font-weight-semibold">Database:</span> ${data.has_database ? '<span class="text-success font-weight-bold"><i class="fas fa-check-circle mr-1"></i>Yes</span>' : '<span class="text-muted">No</span>'}</div>
+                    <div class="col-6"><span class="text-secondary font-weight-semibold">Media Files:</span> ${data.has_media ? `<span class="text-info font-weight-bold"><i class="fas fa-images mr-1"></i>${data.media_files_count} files</span>` : '<span class="text-muted">None</span>'}</div>
+                </div>
+            </div>
+
+            ${recordBadgesHtml ? `
+                <div class="mt-2">
+                    <div class="font-weight-bold text-dark mb-1.5 small"><i class="fas fa-layer-group mr-1 text-primary"></i> Entity Breakdown:</div>
+                    <div class="d-flex flex-wrap" style="max-height: 110px; overflow-y: auto;">${recordBadgesHtml}</div>
+                </div>
+            ` : ''}
+        `;
+
+        document.getElementById('btnModalTriggerRestore').classList.remove('d-none');
+    }
+
+    function openRestoreFromInspection() {
+        hideModal('inspectModal');
+        if (!activeInspectionData) return;
+
+        if (activeInspectionData.backup_id) {
+            openRestoreConfirmationModal(activeInspectionData.backup_id, activeInspectionData.filename);
+        } else {
+            const uploadInput = document.getElementById('uploadBackupFileInput');
+            if (uploadInput.files && uploadInput.files[0]) {
+                const restoreFileInput = document.getElementById('restore_backup_file_input');
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(uploadInput.files[0]);
+                restoreFileInput.files = dataTransfer.files;
+
+                document.getElementById('restore_backup_id_input').value = '';
+                document.getElementById('restoreTargetFilename').innerText = uploadInput.files[0].name;
+                document.getElementById('confirmRestoreTextInput').value = '';
+                document.getElementById('btnExecuteRestore').disabled = true;
+                showModal('restoreConfirmModal');
+            }
+        }
+    }
+
+    function openRestoreConfirmationModal(backupId, filename) {
+        document.getElementById('restore_backup_id_input').value = backupId;
+        document.getElementById('restore_backup_file_input').value = '';
+        document.getElementById('restoreTargetFilename').innerText = filename;
+        document.getElementById('confirmRestoreTextInput').value = '';
+        document.getElementById('btnExecuteRestore').disabled = true;
+        showModal('restoreConfirmModal');
+    }
+
+    function validateRestoreCode(input) {
+        const btn = document.getElementById('btnExecuteRestore');
+        if (input.value.trim().toUpperCase() === 'RESTORE') {
+            btn.disabled = false;
+        } else {
+            btn.disabled = true;
+        }
+    }
+
+    function confirmDeleteBackup(backupId, filename) {
+        if (confirm(`Are you sure you want to permanently delete the backup archive '${filename}' from server disk? This action cannot be undone.`)) {
+            const form = document.getElementById('deleteBackupForm');
+            form.action = `{% url 'superadmin:delete_backup' 0 %}`.replace('0', backupId);
+            form.submit();
+        }
+    }
+</script>
+{% endblock %}

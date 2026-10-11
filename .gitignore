@@ -1,0 +1,143 @@
+# ==========================
+# 🐍 DJANGO PROJECT GITIGNORE
+# ==========================
+
+# Logs
+*.log
+*.pot
+
+# Python cache
+*.pyc
+__pycache__/
+*$py.class
+*.so
+.Python
+
+# Databases
+db.sqlite3
+backups/
+
+# ==========================
+# 📁 ENVIRONMENTS
+# ==========================
+.env
+.venv/
+venv/
+env/
+
+# ==========================
+# 🧠 IDE / EDITORS
+# ==========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==========================
+# 💻 OS FILES
+# ==========================
+.DS_Store
+Thumbs.db
+
+# ==========================
+# 🧱 DJANGO STATIC & MEDIA
+# ==========================
+
+# Ignore collected static output (from collectstatic)
+# but keep app-level static and media folders
+/staticfiles/
+/static_root/
+
+/media/
+
+# Ignore only root-level media (collected), not GYM/media/
+#/media/
+
+
+# ==========================
+# 🛠️ BUILD / DIST FILES
+# ==========================
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ==========================
+# 🚫 BACKUPS & MISC
+# ==========================
+*.bak
+*~
+
+# ==========================
+# ⚙️ DJANGO MIGRATIONS (optional)
+# ==========================
+# Uncomment below if you don't want migration files tracked
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# ==========================
+# 📊 COVERAGE & TESTING
+# ==========================
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+.tox/
+.nox/
+
+# ==========================
+# 📦 PACKAGE MANAGEMENT
+# ==========================
+Pipfile.lock
+poetry.lock
+# requirements.txt
+
+# ==========================
+# 🔧 DJANGO SPECIFIC
+# ==========================
+local_settings.py
+*.mo
+
+# ==========================
+# 📱 MEDIA FILES (selective)
+# ==========================
+# Ignore user-uploaded media files but keep structure
+/media/profile_pics/*
+!/media/profile_pics/.gitkeep
+/signs/*
+!/signs/.gitkeep
+
+# ==========================
+# 🖼️ STATIC FILES (development)
+# ==========================
+/staticfiles/
+/static_root/
+
+# ==========================
+# 🐳 DOCKER
+# ==========================
+.dockerignore
+
+# ==========================
+# 🔒 SECURITY & SECRETS
+# ==========================
+*.key
+*.pem
+*.crt
+secrets.json
+config.json

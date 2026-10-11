@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}General Settings - {{ system_setting.platform_name|default:"ONEXIVA" }}{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}" />
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'settings:gym_profile' %}" class="text-decoration-none">
+                <i class="mdi mdi-domain mdi-18px"></i> Gym Profile
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-cog-outline mdi-18px"></i> General Settings
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card mb-4">
+        <!-- Card Header with Primary Background Matching other pages -->
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <h4 class="mb-0 mr-2 me-2">General Gym Settings</h4>
+                <small class="text-white ml-2 opacity-75">Update branch profile, contact channels & taxation</small>
+            </div>
+            <div class="d-flex">
+                <a href="{% url 'settings:gym_profile' %}" class="btn btn-light btn-sm font-weight-bold d-flex align-items-center">
+                    <i class="mdi mdi-arrow-left mr-1 me-1"></i> Back to Profile
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" id="generalSettingsForm">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger shadow-sm mb-4">
+                        {% for error in form.non_field_errors %}
+                            <p class="mb-0"><i class="mdi mdi-alert-circle mr-1"></i> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- 1. Branch Identity & Location -->
+                <div class="card border mb-4 shadow-sm">
+                    <div class="card-header bg-light py-2 px-3 d-flex align-items-center">
+                        <i class="mdi mdi-map-marker-radius-outline text-primary mr-2 mdi-18px"></i>
+                        <h6 class="mb-0 font-weight-bold text-dark">Branch Identity & Location</h6>
+                    </div>
+                    <div class="card-body p-3 p-md-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.name.id_for_label }}">
+                                    Gym Name <span class="text-danger">*</span>
+                                </label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.name.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.slogan.id_for_label }}">
+                                    Slogan / Tagline
+                                </label>
+                                {{ form.slogan }}
+                                {% if form.slogan.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.slogan.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.pincode.id_for_label }}">
+                                    Pincode <span class="badge badge-light border text-muted small ml-1">Auto-fetches City/State</span>
+                                </label>
+                                {{ form.pincode }}
+                                {% if form.pincode.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.pincode.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.city.id_for_label }}">
+                                    City
+                                </label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.city.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.state.id_for_label }}">
+                                    State
+                                </label>
+                                {{ form.state }}
+                                {% if form.state.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.state.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.address.id_for_label }}">
+                                    Street Address
+                                </label>
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.address.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.area.id_for_label }}">
+                                    Area / Neighborhood
+                                </label>
+                                {{ form.area }}
+                                {% if form.area.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.area.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Communication & Contact Channels -->
+                <div class="card border mb-4 shadow-sm">
+                    <div class="card-header bg-light py-2 px-3 d-flex align-items-center">
+                        <i class="mdi mdi-phone-classic text-success mr-2 mdi-18px"></i>
+                        <h6 class="mb-0 font-weight-bold text-dark">Communication & Contact Channels</h6>
+                    </div>
+                    <div class="card-body p-3 p-md-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.phone.id_for_label }}">
+                                    Mobile Phone Number <span class="text-danger">*</span>
+                                </label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.phone.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.landline.id_for_label }}">
+                                    Landline Phone
+                                </label>
+                                {{ form.landline }}
+                                {% if form.landline.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.landline.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.email.id_for_label }}">
+                                    Official Email Address <span class="text-danger">*</span>
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.website.id_for_label }}">
+                                    Website URL
+                                </label>
+                                {{ form.website }}
+                                {% if form.website.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.website.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. GST & Taxation Profile -->
+                <div class="card border mb-4 shadow-sm">
+                    <div class="card-header bg-light py-2 px-3 d-flex align-items-center">
+                        <i class="mdi mdi-receipt-text-outline text-warning mr-2 mdi-18px"></i>
+                        <h6 class="mb-0 font-weight-bold text-dark">GST & Taxation Profile</h6>
+                    </div>
+                    <div class="card-body p-3 p-md-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label font-weight-semibold" for="id_gst_enabled">
+                                    Enable GST Invoicing
+                                </label>
+                                <div class="form-check form-switch mt-1">
+                                    {{ form.gst_enabled }}
+                                    <label class="form-check-label ml-2" for="id_gst_enabled">Check to apply GST on invoices</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3" id="gst-rate-group" style="display: none">
+                                <label class="form-label font-weight-semibold" for="id_gst_rate">
+                                    GST Rate (%)
+                                </label>
+                                {{ form.gst_rate }}
+                            </div>
+                            <div class="col-md-4 mb-3" id="gst-number-group" style="display: none">
+                                <label class="form-label font-weight-semibold" for="id_gst_number">
+                                    GST Number / IN
+                                </label>
+                                {{ form.gst_number }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Attendance & Security -->
+                <div class="card border mb-4 shadow-sm">
+                    <div class="card-header bg-light py-2 px-3 d-flex align-items-center">
+                        <i class="mdi mdi-qrcode-scan text-info mr-2 mdi-18px"></i>
+                        <h6 class="mb-0 font-weight-bold text-dark">Attendance QR Security</h6>
+                    </div>
+                    <div class="card-body p-3 p-md-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="id_attendance_code_required" class="form-label font-weight-semibold">
+                                    Require 4-Digit Verification Code for QR Attendance
+                                </label>
+                                <div class="form-check form-switch mt-1">
+                                    {{ form.attendance_code_required }}
+                                    <label class="form-check-label ml-2" for="id_attendance_code_required">
+                                        When enabled, members and staff must enter the gym's daily 4-digit code after scanning the QR code to verify physical presence.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Branding, Gym ID & Notes -->
+                <div class="card border mb-4 shadow-sm">
+                    <div class="card-header bg-light py-2 px-3 d-flex align-items-center">
+                        <i class="mdi mdi-image-outline text-secondary mr-2 mdi-18px"></i>
+                        <h6 class="mb-0 font-weight-bold text-dark">Branding & Gym Logo</h6>
+                    </div>
+                    <div class="card-body p-3 p-md-4">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.gym_id_prefix.id_for_label }}">
+                                    Gym ID Prefix
+                                </label>
+                                {{ form.gym_id_prefix }}
+                                <small class="form-text text-muted">e.g. FIT, GYM, PMT</small>
+                                {% if form.gym_id_prefix.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.gym_id_prefix.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label font-weight-semibold" for="{{ form.logo.id_for_label }}">
+                                    Gym Logo
+                                </label>
+                                <div class="custom-file">
+                                    {{ form.logo }}
+                                    <label class="custom-file-label" for="{{ form.logo.id_for_label }}">Choose image file</label>
+                                </div>
+                                <small class="form-text text-muted">Upload a square image (PNG, JPG, WebP) for receipts and branding.</small>
+
+                                <!-- Existing Logo Preview -->
+                                {% if form.instance.logo %}
+                                <div id="existing-logo-container" class="mt-2">
+                                    <p class="small text-muted mb-1 font-weight-semibold">Current Active Logo:</p>
+                                    <img id="existing-logo"
+                                         src="{{ form.instance.logo.url }}"
+                                         alt="Current Logo"
+                                         class="img-thumbnail rounded-circle"
+                                         style="width: 80px; height: 80px; object-fit: cover;" />
+                                </div>
+                                {% endif %}
+
+                                <!-- New Upload Preview -->
+                                <div id="logo-preview-container" class="mt-2" style="display: none">
+                                    <p class="small text-success mb-1 font-weight-semibold">Selected Logo Preview:</p>
+                                    <img id="logo-preview"
+                                         src="#"
+                                         alt="Logo Preview"
+                                         class="img-thumbnail rounded-circle"
+                                         style="width: 80px; height: 80px; object-fit: cover;" />
+                                </div>
+                                {% if form.logo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.logo.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label font-weight-semibold" for="{{ form.note.id_for_label }}">
+                                    Branch Notes
+                                </label>
+                                {{ form.note }}
+                                {% if form.note.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.note.errors %}<small>{{ error }}</small>{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Bar -->
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                    <a href="{% url 'settings:gym_profile' %}" class="btn btn-secondary font-weight-bold">
+                        <i class="mdi mdi-close mr-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary font-weight-bold px-4 shadow-sm" id="submitSettingsBtn">
+                        <i class="mdi mdi-content-save mr-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // 1. Pincode API Auto-Fill
+    const pincodeInput = document.getElementById("{{ form.pincode.id_for_label }}");
+    const cityInput = document.getElementById("{{ form.city.id_for_label }}");
+    const stateInput = document.getElementById("{{ form.state.id_for_label }}");
+
+    if (pincodeInput) {
+        pincodeInput.addEventListener("blur", function () {
+            const pincode = this.value.trim();
+            if (pincode.length === 6) {
+                fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data[0] && data[0].Status === "Success") {
+                            const postOffice = data[0].PostOffice[0];
+                            if (cityInput && !cityInput.value) cityInput.value = postOffice.District;
+                            if (stateInput && !stateInput.value) stateInput.value = postOffice.State;
+                        }
+                    })
+                    .catch(error => console.error("Error fetching pincode data:", error));
+            }
+        });
+    }
+
+    // 2. GST Fields Toggle
+    const gstEnabledCheckbox = document.getElementById("id_gst_enabled");
+    const gstRateGroup = document.getElementById("gst-rate-group");
+    const gstNumberGroup = document.getElementById("gst-number-group");
+
+    function toggleGstFields() {
+        if (!gstEnabledCheckbox) return;
+        const isEnabled = gstEnabledCheckbox.checked;
+        if (gstRateGroup) gstRateGroup.style.display = isEnabled ? "block" : "none";
+        if (gstNumberGroup) gstNumberGroup.style.display = isEnabled ? "block" : "none";
+    }
+
+    if (gstEnabledCheckbox) {
+        toggleGstFields();
+        gstEnabledCheckbox.addEventListener("change", toggleGstFields);
+    }
+
+    // 3. Logo Live Preview
+    const logoInput = document.getElementById('{{ form.logo.id_for_label }}');
+    const logoPreview = document.getElementById('logo-preview');
+    const logoPreviewContainer = document.getElementById('logo-preview-container');
+    const existingLogoContainer = document.getElementById('existing-logo-container');
+    const customFileLabel = document.querySelector(`label[for="{{ form.logo.id_for_label }}"]`);
+
+    if (logoInput) {
+        logoInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (logoPreview) logoPreview.src = e.target.result;
+                    if (logoPreviewContainer) logoPreviewContainer.style.display = 'block';
+                    if (existingLogoContainer) existingLogoContainer.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+                if (customFileLabel) customFileLabel.textContent = file.name;
+            } else {
+                if (logoPreview) logoPreview.src = '#';
+                if (logoPreviewContainer) logoPreviewContainer.style.display = 'none';
+                if (existingLogoContainer) existingLogoContainer.style.display = 'block';
+                if (customFileLabel) customFileLabel.textContent = 'Choose image file';
+            }
+        });
+    }
+});
+</script>
+{% endblock content %}

@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-calendar-multiple-check mdi-18px"></i> Events
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Event List</h4>
+            <a href="{% url 'events:create_event' %}" class="btn btn-light btn-sm">
+                <i class="mdi mdi-plus"></i> Create Event
+            </a>
+        </div>
+        <div class="card-body">
+            {% csrf_token %}
+            <!-- Search and filter form -->
+            <div class="d-flex justify-content-between mb-3">
+                <form method="get" action="{% url 'events:event_list' %}" class="form-inline ml-3">
+                    <div class="form-group">
+                        <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">All Statuses</option>
+                            {% for status in statuses %}
+                                <option value="{{ status }}" {% if status == status_filter %}selected{% endif %}>{{ status }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                     <a href="{% url 'events:event_list' %}" class="btn btn-secondary ml-2">Clear</a>
+                </form>
+            </div>
+            <div class="row" id="event-list">
+                {% for event in events %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        {% if event.banner_image %}
+                        <img src="{{ event.banner_image.url }}" class="card-img-top" alt="{{ event.event_name }}" style="max-height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title mb-1">{{ event.event_name }}</h5>
+                                    <p class="card-subtitle text-muted">{{ event.get_event_type_display }}</p>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="Event Actions">
+                                    <a href="{% url 'events:event_registration' event.id %}" class="btn btn-info btn-sm" target="_blank" data-toggle="tooltip" title="Register"><i class="mdi mdi-account-plus"></i></a>
+                                    <a href="#" onclick="confirmAction('{% url 'events:edit_event' event.id %}', 'edit')" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit"><i class="mdi mdi-pencil-outline"></i></a>
+                                    <a href="#" onclick="confirmAction('{% url 'events:notify_members' event.id %}', 'notify')" class="btn btn-warning btn-sm" data-toggle="tooltip" title="Notify Members"><i class="mdi mdi-bell-ring"></i></a>
+                                    <a href="#" onclick="confirmAction('{% url 'events:cancel_event' event.id %}', 'cancel')" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Cancel"><i class="mdi mdi-cancel"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="mb-1"><strong>Dates:</strong></p>
+                                    <p class="text-muted small">
+                                        {{ event.start_date|date:"d-m-Y H:i" }} to<br>
+                                        {{ event.end_date|date:"d-m-Y H:i" }}
+                                    </p>
+
+                                    <p class="mb-1 mt-2"><strong>Registration:</strong></p>
+                                    <p class="text-muted small">
+                                        Deadline: {{ event.registration_deadline|date:"d-m-Y H:i" }}<br>
+                                        Limit: {{ event.max_participants }} / Registered: {{ event.registered_members.count }}
+                                    </p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="mb-1"><strong>Details:</strong></p>
+                                    <p class="text-muted small">
+                                        Trainer: {{ event.trainer_name }}<br>
+                                        Address: {{ event.address }}
+                                    </p>
+
+                                    <p class="mb-1 mt-2"><strong>Billing:</strong></p>
+                                    <p class="small">
+                                        <span class="badge {% if event.status == 'Upcoming' %}badge-info{% elif event.status == 'Ongoing' %}badge-success{% elif event.status == 'Completed' %}badge-secondary{% endif %}">
+                                            {{ event.get_status_display }}
+                                        </span>
+                                        <br>
+                                        {% if event.fee_amount %}
+                                            <span class="text-muted">₹{{ event.fee_amount|floatformat:2 }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Free</span>
+                                        {% endif %}
+                                        <br>
+                                        {% if event.upi_id %}
+                                            <span class="text-muted">UPI: {{ event.upi_id }}</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    {% if event.payment_qr_code %}
+                                        <p class="mb-1"><strong>QR Code:</strong></p>
+                                        <img src="{{ event.payment_qr_code.url }}" class="img-fluid" style="max-width: 100px;"/>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if event.description %}
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <p class="mb-1"><strong>Description:</strong></p>
+                                    <p class="text-muted small">{{ event.description|truncatewords:20 }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="text-center py-4">
+                        <div class="text-muted">
+                            <i class="mdi mdi-calendar-remove-outline mdi-36px mb-2"></i>
+                            <h6 class="mb-2">No events found</h6>
+                            <p class="mb-2 small">No events have been created yet.</p>
+                            <a href="{% url 'events:create_event' %}" class="btn btn-primary btn-sm">
+                                <i class="mdi mdi-plus"></i> Create Event
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                placement: 'top',
+                trigger: 'hover',
+                delay: { show: 100, hide: 100 }
+            });
+        });
+    });
+
+    function confirmAction(url, action) {
+        let title, text, confirmButtonText;
+
+        switch (action) {
+            case 'edit':
+                title = 'Are you sure?';
+                text = 'You are about to edit this event.';
+                confirmButtonText = 'Yes, edit it!';
+                break;
+            case 'cancel':
+                title = 'Are you sure?';
+                text = 'You are about to cancel this event. This action cannot be undone.';
+                confirmButtonText = 'Yes, cancel it!';
+                break;
+            case 'duplicate':
+                title = 'Are you sure?';
+                text = 'You are about to duplicate this event.';
+                confirmButtonText = 'Yes, duplicate it!';
+                break;
+            case 'export':
+                title = 'Are you sure?';
+                text = 'You are about to export the attendees for this event.';
+                confirmButtonText = 'Yes, export them!';
+                break;
+            case 'notify':
+                title = 'Are you sure?';
+                text = 'You are about to notify the members of this event.';
+                confirmButtonText = 'Yes, notify them!';
+                break;
+            default:
+                return;
+        }
+
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: confirmButtonText
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>
+{% endblock javascript %}

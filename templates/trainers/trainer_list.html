@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<style>
+.trainer-name-link {
+    color: #0d6efd !important;
+    text-decoration: none !important;
+    font-weight: 600;
+    transition: color 0.15s ease, text-decoration 0.15s ease;
+}
+.trainer-name-link:hover {
+    color: #0a58ca !important;
+    text-decoration: underline !important;
+}
+</style>
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Trainers
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Trainer List</h4>
+            <a href="{% url 'add_trainer' %}" class="btn btn-light btn-sm">
+                <i class="mdi mdi-plus"></i> Add Trainer
+            </a>
+        </div>
+        <div class="card-body">
+            {% csrf_token %}
+            <!-- Search form -->
+            {% include 'includes/search_form.html' %}
+
+            <div class="table-responsive">
+               <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th class="font-weight-semibold py-2"> #</th>
+                            <th class="font-weight-semibold py-2">Photo</th>
+                            <th class="font-weight-semibold py-2">Name</th>
+                            <th class="font-weight-semibold py-2">Specialization</th>
+                            <th class="font-weight-semibold py-2">Phone</th>
+                            <th class="font-weight-semibold py-2">Time Slot</th>
+                            <th class="font-weight-semibold py-2">Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trainer in trainers %}
+                        <tr>
+                            <td data-label="SR. No.">{{ forloop.counter0|add:trainers.start_index }}</td>
+
+                            <td data-label="Photo">
+                                <a href="{% url 'trainer_profile' trainer.id %}" title="View {{ trainer.name }}'s Profile">
+                                    {% if trainer.photo %}
+                                        <img src="{{ trainer.photo.url }}" alt="{{ trainer.name }}" class="img-fluid rounded-circle equipment-image" style="width: 40px; height: 40px; object-fit: cover; cursor: pointer;">
+                                    {% else %}
+                                        <img src="{% static 'images/gym-guy.jpg' %}" alt="Default" class="img-fluid rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td data-label="Name">
+                                <a href="{% url 'trainer_profile' trainer.id %}" class="trainer-name-link font-weight-bold" style="color: #0d6efd !important;" title="View Profile">
+                                    {{ trainer.name }}
+                                </a><br>
+                                <small class="text-muted">#{{ trainer.trainer_id }}</small>
+                            </td>
+                            <td data-label="Specialization">{{ trainer.specialization|default:"—" }}</td>
+                            <td data-label="Phone">{{ trainer.phone|default:"—" }}</td>
+                            <td data-label="Time Slot">{{ trainer.time_slot|default:"—" }}</td>
+                            <td data-label="Status">
+                                {% if trainer.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td data-label="Actions">
+                                <a href="{% url 'trainer_profile' trainer.id %}" class="btn btn-info btn-sm" title="View Trainer Profile"><i class="mdi mdi-eye-outline"></i></a>
+                                <a href="{% url 'edit_trainer' trainer.id %}" class="btn btn-primary btn-sm" title="Edit Trainer Details"><i class="mdi mdi-pencil-outline"></i></a>
+                                <button type="button" class="btn btn-dark btn-sm" onclick="openResetTrainerPasswordModal('{{ trainer.id }}', '{{ trainer.name|escapejs }}', '{{ trainer.phone }}', '{{ trainer.trainer_id }}')" title="Reset Credentials"><i class="mdi mdi-key-variant"></i></button>
+                                <a href="{% url 'toggle_trainer_status' trainer.id %}" class="btn btn-warning btn-sm" title="{% if trainer.is_active %}Deactivate this trainer{% else %}Activate this trainer{% endif %}">
+                                    <i class="mdi {% if trainer.is_active %}mdi-close-circle-outline{% else %}mdi-checkbox-marked-circle-outline{% endif %}"></i>
+                                </a>
+                                <a href="#" class="btn btn-danger btn-sm" title="Delete this trainer" onclick="confirmDelete('{{ trainer.id }}', '{{ trainer.name }}', '{% url 'delete_trainer' trainer.id %}')"><i class="mdi mdi-delete-outline"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if trainers.has_other_pages %}
+                {% include 'includes/pagination.html' with page_obj=trainers %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagePreviewModalLabel">Image Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" id="modalImage" class="img-fluid" alt="Equipment Image">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('.equipment-image').on('click', function() {
+        var imageUrl = $(this).attr('src');
+        var imageName = $(this).attr('alt');
+        $('#modalImage').attr('src', imageUrl);
+        $('#imagePreviewModalLabel').text(imageName);
+        var imagePreviewModal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+        imagePreviewModal.show();
+    });
+});
+
+function openResetTrainerPasswordModal(trainerId, trainerName, mobileNumber, trainerCode) {
+  const defaultSuggestion = "Fit@" + (mobileNumber && mobileNumber.length >= 4 ? mobileNumber.slice(-4) : "1234");
+  
+  Swal.fire({
+    title: '<div style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">Reset Trainer Password</div>',
+    html: `
+      <div style="text-align: left; font-size: 0.9rem; color: #475569; margin-top: 10px;">
+        <p style="margin-bottom: 12px;">Resetting login password for <strong>${trainerName}</strong> (${trainerCode}).</p>
+        <div class="form-group mb-3">
+          <label style="font-weight: 600; color: #334155; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+            <span>New Password</span>
+            <a href="#" onclick="document.getElementById('swal-new-pwd-input').value = '${defaultSuggestion}'; return false;" style="font-size: 0.8rem; color: #2563eb; text-decoration: none;">Suggest Default</a>
+          </label>
+          <input type="text" id="swal-new-pwd-input" class="form-control" value="${defaultSuggestion}" placeholder="Enter new password" style="border-radius: 8px; font-family: monospace; font-size: 0.95rem; font-weight: 600;">
+          <small class="text-muted mt-1 d-block">Leave as suggested or enter a custom password.</small>
+        </div>
+      </div>
+    `,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: '<i class="mdi mdi-lock-reset mr-1"></i> Confirm Reset',
+    cancelButtonText: 'Cancel',
+    buttonsStyling: false,
+    customClass: {
+      popup: 'rounded-4 shadow-lg border-0 p-4',
+      confirmButton: 'btn btn-primary px-4 py-2 font-weight-bold rounded-pill shadow-sm mr-2',
+      cancelButton: 'btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-bold'
+    },
+    preConfirm: () => {
+      const pwd = document.getElementById('swal-new-pwd-input').value.trim();
+      if (!pwd) {
+        Swal.showValidationMessage('Please enter a new password');
+        return false;
+      }
+      return pwd;
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const newPwd = result.value;
+      const csrfToken = '{{ csrf_token }}';
+      
+      const formData = new FormData();
+      formData.append('new_password', newPwd);
+      formData.append('csrfmiddlewaretoken', csrfToken);
+      
+      Swal.fire({
+        title: 'Updating Password...',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+      });
+      
+      fetch(`/trainers/reset-password/${trainerId}/`, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          Swal.fire({
+            title: '<div style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">Password Reset Successfully!</div>',
+            icon: 'success',
+            html: `
+              <div style="text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-top: 10px; font-size: 0.9rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #64748b;">Trainer:</span>
+                  <strong>${data.name}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #64748b;">Username / ID:</span>
+                  <span style="font-family: monospace; font-weight: 700; color: #2563eb;">${data.username}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #64748b;">Mobile:</span>
+                  <span>${data.mobile || 'N/A'}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
+                  <span style="color: #64748b; font-weight: 600;">New Password:</span>
+                  <span style="font-family: monospace; font-size: 1rem; font-weight: 700; color: #dc2626; background: #fef2f2; padding: 2px 8px; border-radius: 6px;">${data.new_password}</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 16px;">
+                <button type="button" id="copy-trainer-pwd-btn" onclick="copyResetTrainerText('${data.share_text.replace(/'/g, "\\'")}')" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #2563eb; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
+                  <i class="mdi mdi-content-copy"></i>
+                  <span id="copy-trainer-pwd-text">Copy Credentials</span>
+                </button>
+                ${data.mobile ? `
+                <a href="https://wa.me/91${data.mobile}?text=${encodeURIComponent(data.share_text)}" target="_blank" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #16a34a; color: #fff; text-decoration: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem;">
+                  <i class="mdi mdi-whatsapp"></i>
+                  <span>Send WhatsApp</span>
+                </a>` : ''}
+              </div>
+            `,
+            confirmButtonText: 'Done',
+            buttonsStyling: false,
+            customClass: {
+              popup: 'rounded-4 shadow-lg border-0 p-4',
+              confirmButton: 'btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-bold mt-2'
+            }
+          });
+        } else {
+          Swal.fire('Error', data.message || 'Could not reset password', 'error');
+        }
+      })
+      .catch(err => {
+        Swal.fire('Error', 'An error occurred while resetting password', 'error');
+      });
+    }
+  });
+}
+
+function copyResetTrainerText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-trainer-pwd-text');
+    if (btn) btn.textContent = 'Copied!';
+  }).catch(() => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    const btn = document.getElementById('copy-trainer-pwd-text');
+    if (btn) btn.textContent = 'Copied!';
+  });
+}
+</script>
+{% endblock extra_js %}

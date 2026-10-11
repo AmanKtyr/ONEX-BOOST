@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Edit Sub-Admin</h4>
+                    <form class="form-material m-t-40" method="post" action="{% url 'edit_subadmin' sub_admin.id %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ sub_admin.name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ sub_admin.email }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select class="form-control" id="role" name="role" required>
+                                {% for role_value, role_display in ROLE_CHOICES %}
+                                <option value="{{ role_value }}" {% if sub_admin.role == role_value %}selected{% endif %}>{{ role_display }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Photo</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" name="photo" id="id_photo">
+                                <button type="button" class="btn btn-outline-primary capture-btn" data-target="id_photo">
+                                    <i class="mdi mdi-camera"></i> 
+                                </button>
+                            </div>
+                            <div id="preview_id_photo" class="mt-2" style="display: {% if sub_admin.photo %}block{% else %}none{% endif %};">
+                                <img src="{% if sub_admin.photo %}{{ sub_admin.photo.url }}{% endif %}" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Page Access</label>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Module</th>
+                                            <th class="text-center">
+                                                View<br>
+                                                <input type="checkbox" id="select-all-view">
+                                            </th>
+                                            <th class="text-center">
+                                                Add<br>
+                                                <input type="checkbox" id="select-all-add">
+                                            </th>
+                                            <th class="text-center">
+                                                Change<br>
+                                                <input type="checkbox" id="select-all-change">
+                                            </th>
+                                            <th class="text-center">
+                                                Delete<br>
+                                                <input type="checkbox" id="select-all-delete">
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for app, perms in app_permissions.items %}
+                                        <tr>
+                                            <td>{{ app|title }}</td>
+                                            <td class="text-center">
+                                                {% for p in perms %}{% if 'view' in p.codename %}
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input view-perm" name="permissions" value="{{ p.id }}" {% if p.codename in assigned_permissions %}checked{% endif %}>
+                                                </div>
+                                                {% endif %}{% endfor %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% for p in perms %}{% if 'add' in p.codename %}
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input add-perm" name="permissions" value="{{ p.id }}" {% if p.codename in assigned_permissions %}checked{% endif %}>
+                                                </div>
+                                                {% endif %}{% endfor %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% for p in perms %}{% if 'change' in p.codename %}
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input change-perm" name="permissions" value="{{ p.id }}" {% if p.codename in assigned_permissions %}checked{% endif %}>
+                                                </div>
+                                                {% endif %}{% endfor %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% for p in perms %}{% if 'delete' in p.codename %}
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input delete-perm" name="permissions" value="{{ p.id }}" {% if p.codename in assigned_permissions %}checked{% endif %}>
+                                                </div>
+                                                {% endif %}{% endfor %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/permissions.js' %}"></script>
+{% endblock %}

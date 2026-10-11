@@ -1,0 +1,115 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ system_setting.platform_name|default:"ONEXIVA" }} | Super Admin{% endblock title %}</title>
+  <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}" /> 
+  <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}" /> 
+  <link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}" /> 
+  <link rel="stylesheet" href="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}" /> 
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" /> 
+  <link rel="stylesheet" href="{% static 'css/customstyle.css' %}?v=3.7" /> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/dashboard_modern.css' %}?v=3.7">
+  {% if system_setting and system_setting.platform_favicon %}
+    <link rel="shortcut icon" href="{{ system_setting.platform_favicon.url }}" />
+  {% else %}
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+  {% endif %}
+  
+  <!-- Critical Anti-FOUC Styles & Theme Tokens -->
+  <style>
+    :root {
+      --primary-color: #1e40af !important;
+      --primary-hover: #1d4ed8 !important;
+      --primary-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+      --sidebar-gradient: linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%) !important;
+    }
+    .bg-primary {
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+      border-color: #1e40af !important;
+    }
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active {
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
+      border-color: #1d4ed8 !important;
+      box-shadow: 0 4px 14px rgba(30, 64, 175, 0.35) !important;
+    }
+    .avatar-wrapper { width: 32px !important; height: 32px !important; min-width: 32px !important; flex-shrink: 0 !important; display: inline-block !important; }
+    .avatar-wrapper img { width: 32px !important; height: 32px !important; max-width: 32px !important; max-height: 32px !important; object-fit: cover !important; border-radius: 50% !important; display: block !important; }
+    .sidebar-brand.brand-logo img { max-height: 45px !important; max-width: 140px !important; width: auto !important; object-fit: contain !important; }
+    .sidebar-brand.brand-logo-mini img { max-height: 35px !important; max-width: 35px !important; width: auto !important; object-fit: contain !important; }
+    .nav-profile-img { width: 32px !important; height: 32px !important; max-width: 32px !important; max-height: 32px !important; object-fit: cover !important; border-radius: 50% !important; }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    {% include 'superadmin/includes/sidebar.html' %}
+    <div class="container-fluid page-body-wrapper">
+      {% include 'superadmin/includes/top-nav.html' %}
+      <div class="main-panel">
+        <div class="content-wrapper px-0 pb-0 pt-3">
+
+          {% block content %}
+
+          {% endblock content %}
+        </div>
+        {% include 'includes/footer.html' %}
+      </div>
+    </div>
+  </div>
+
+  <!-- plugins:js --> 
+  <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script> 
+  <!-- endinject --> 
+  <!-- Plugin js for this page --> 
+  <script src="{% static 'vendors/chart.js/Chart.min.js' %}"></script> 
+  <script src="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script> 
+  <script src="{% static 'vendors/flot/jquery.flot.js' %}"></script> 
+  <script src="{% static 'vendors/flot/jquery.flot.resize.js' %}"></script> 
+  <script src="{% static 'vendors/flot/jquery.flot.categories.js' %}"></script> 
+  <script src="{% static 'vendors/flot/jquery.flot.fillbetween.js' %}"></script> 
+  <script src="{% static 'vendors/flot/jquery.flot.stack.js' %}"></script> 
+  <script src="{% static 'vendors/flot/jquery.flot.pie.js' %}"></script> 
+  <!-- End plugin js for this page --> 
+  <!-- inject:js --> 
+  <script src="{% static 'js/off-canvas.js' %}"></script> 
+  <script src="{% static 'js/hoverable-collapse.js' %}"></script> 
+  <script src="{% static 'js/misc.js' %}"></script> 
+  <!-- endinject --> 
+  <!-- Custom js for this page --> 
+  <script src="{% static 'js/dashboard.js' %}"></script>
+  <script src="{% static 'js/tabs.js' %}"></script>
+  <script src="{% static 'js/typeahead.js' %}"></script>
+  <script src="{% static 'js/select2.js' %}"></script>
+  <script src="{% static 'js/validation.js' %}"></script>
+  <script src="{% static 'js/form-navigation.js' %}"></script>
+  <script src="{% static 'js/address-api.js' %}"></script>
+  <script src="{% static 'js/profession-autocomplete.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/delete_confirmation.js' %}"></script>
+  <!-- End custom js for this page-->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  {% include 'includes/swal_messages.html' %}
+  {% block javascript %}
+  {% endblock javascript %}
+  {% block scripts %}
+  {% endblock scripts %}
+  </body>
+
+</html>

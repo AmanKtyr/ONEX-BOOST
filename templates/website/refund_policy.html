@@ -1,0 +1,130 @@
+{% extends 'website/base_website.html' %}
+{% load static %}
+
+{% block title %}Refund Policy | ONEXIVAGym Management Software — Billing & Cancellation Terms{% endblock %}
+
+{% block seo %}
+<meta name="description" content="Understand ONEXIVA's refund and cancellation policy for gym management software subscriptions. Transparent billing, fair review process, and clear eligibility criteria for refund requests.">
+<meta name="keywords" content="ONEXIVArefund policy, gym software refund, gym management software cancellation policy, fitness software refund terms, ONEXIVAbilling refund">
+<meta name="author" content="ONEXIVAby BhattSquare">
+<meta name="robots" content="index, follow">
+{% endblock %}
+
+{% block canonical %}
+<link rel="canonical" href="https://fitstack.nextgenapplication.com/refund-policy/">
+{% endblock %}
+
+{% block og_tags %}
+<meta property="og:site_name" content="ONEXIVA">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fitstack.nextgenapplication.com/refund-policy/">
+<meta property="og:title" content="Refund Policy — ONEXIVAGym Management Software">
+<meta property="og:description" content="Transparent refund policy for ONEXIVAgym software subscriptions. Learn how refund requests are reviewed and processed.">
+<meta property="og:locale" content="en_IN">
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <img src="{% static 'images/hero_image_gym.png' %}" alt="ONEXIVArefund policy" class="page-hero-media">
+    <div class="brand-container page-hero-content">
+        <div class="max-w-4xl site-reveal">
+            <span class="brand-eyebrow brand-eyebrow-dark">
+                <i class="fa-solid fa-receipt"></i>
+                Refund policy
+            </span>
+            <h1 class="brand-heading mt-6">A clear outline of how refund requests are handled.</h1>
+            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
+                Transparency matters. This page describes the general approach ONEXIVAfollows when evaluating refund-related requests.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="brand-section">
+    <div class="brand-container docs-shell">
+        <aside class="docs-side site-reveal">
+            <div class="brand-card docs-card">
+                <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500 mb-4">Quick navigation</p>
+                <nav id="toc-nav" class="docs-nav">
+                    <a href="#policy">General policy</a>
+                    <a href="#eligibility">Eligibility</a>
+                    <a href="#process">Refund process</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+            </div>
+        </aside>
+
+        <div class="docs-content">
+            <section id="policy" class="brand-card docs-card site-reveal">
+                <h2><span class="docs-index">1</span>General policy</h2>
+                <p>ONEXIVAaims to handle billing and service concerns fairly and transparently. Refund outcomes may depend on plan type, timing, service status, and the nature of the request.</p>
+                <p>Customers are encouraged to contact ONEXIVApromptly if there is a billing concern, duplicate charge, or service issue requiring review.</p>
+            </section>
+
+            <section id="eligibility" class="brand-card docs-card site-reveal">
+                <h2><span class="docs-index">2</span>Eligibility and review factors</h2>
+                <ul>
+                    <li>How long ago the charge occurred.</li>
+                    <li>Whether the request relates to an initial purchase, renewal, duplicate transaction, or service issue.</li>
+                    <li>Whether meaningful service usage or implementation work has already taken place.</li>
+                    <li>Whether there is a documented technical or operational issue requiring case-by-case review.</li>
+                </ul>
+                <div class="grid sm:grid-cols-2 gap-4 mt-6">
+                    <div class="calculator-stat">
+                        <div class="font-bold">Often reviewed positively</div>
+                        <p class="text-sm mt-2">Duplicate payments, incorrect billing, or unresolved service issues reported quickly.</p>
+                    </div>
+                    <div class="calculator-stat">
+                        <div class="font-bold">info@bhattsquare.comewinfo@bhattsquare.com
+                        <p class="text-sm mt-2">Requests made long after purchase or after substantial implementation work has already been completed.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="process" class="brand-card docs-card site-reveal">
+                <h2><span class="docs-index">3</span>Refund process</h2>
+                <ul>
+                    <li>Contact ONEXIVAsupport with the billing concern and relevant transaction details.</li>
+                    <li>Our team reviews the request and may ask for supporting context.</li>
+                    <li>If approved, the refund is initiated through the relevant payment channel.</li>
+                    <li>Processing timelines can vary depending on the payment provider.</li>
+                </ul>
+            </section>
+
+            <section id="contact" class="brand-card docs-card site-reveal">
+                <h2><span class="docs-index">4</span>Contact</h2>
+                <p>For refund and billing questions, please contact our team directly.</p>
+                <ul>
+                    <li>Email: <a href="mailto:bhattsquare1@gmail.com">bhattsquare1@gmail.com</a></li>
+                    <li>Phone: <a href="tel:+919205983996">+91 92059 83996</a></li>
+                    <li>WhatsApp: <a href="https://wa.me/916392348731?text=Hello%20ONEXIVA%2C%20I%20have%20a%20billing%20question.">Chat with support</a></li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll("#toc-nav a");
+
+        function onScroll() {
+            const scrollPos = window.scrollY + 140;
+            sections.forEach((section) => {
+                if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+                    const id = section.getAttribute("id");
+                    navLinks.forEach((link) => {
+                        link.classList.toggle("toc-active", link.getAttribute("href") === `#${id}`);
+                    });
+                }
+            });
+        }
+
+        window.addEventListener("scroll", onScroll);
+        onScroll();
+    });
+</script>
+{% endblock %}

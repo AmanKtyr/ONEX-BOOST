@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'workout_plans' %}" class="text-decoration-none">
+                <i class="mdi mdi-weight-lifter mdi-18px"></i> Workout Plans
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-pencil-circle-outline mdi-18px"></i> Edit Workout Plan
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Edit Workout Plan</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+                {{ form.media }}
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_name" class="form-label">Name</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_difficulty" class="form-label">Difficulty</label>
+                        {{ form.difficulty }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_duration_days" class="form-label">Duration (Days)</label>
+                        {{ form.duration_days }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_created_by" class="form-label">Created By</label>
+                        {{ form.created_by }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_image" class="form-label">Image</label>
+                        {{ form.image }}
+                        {% if form.instance.image %}
+                            <img src="{{ form.instance.image.url }}" alt="{{ form.instance.name }}" style="max-width: 200px; margin-top: 10px;" class="d-block">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_document" class="form-label">Document (PDF/Image)</label>
+                        {{ form.document }}
+                        {% if form.instance.document %}
+                            <a href="{{ form.instance.document.url }}" target="_blank" class="d-block mt-2">Current Document</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="id_description" class="form-label">Description</label>
+                    {{ form.description }}
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                    <a href="{% url 'workout_plans' %}" class="btn btn-light">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div>
+
+
+ {% endblock %}

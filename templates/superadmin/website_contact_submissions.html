@@ -1,0 +1,469 @@
+{% extends 'superadmin/base.html' %}
+{% load static %}
+
+{% block title %} Website Inquiries | ONEXIVASuper Admin {% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-email-open-outline mdi-18px"></i> Website Inquiries
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Website Contact Submissions</h4>
+                    <div class="header-actions">
+                         <span class="badge badge-light mr-2 text-primary">{{ submissions.paginator.count }} Total Inquiries</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-md-8">
+                            <form method="GET" class="form-inline">
+                                <div class="form-group mr-2">
+                                    <select name="type" class="form-control form-control-sm" style="height: 38px;" onchange="this.form.submit()">
+                                        <option value="">All Inquiry Types</option>
+                                        <option value="demo" {% if type_filter == 'demo' %}selected{% endif %}>Schedule a Demo</option>
+                                        <option value="pricing" {% if type_filter == 'pricing' %}selected{% endif %}>Pricing Inquiry</option>
+                                        <option value="support" {% if type_filter == 'support' %}selected{% endif %}>Technical Support</option>
+                                        <option value="partnership" {% if type_filter == 'partnership' %}selected{% endif %}>Partnership</option>
+                                        <option value="other" {% if type_filter == 'other' %}selected{% endif %}>Other</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" name="q" class="form-control" placeholder="Search inquiries..." value="{{ query|default:'' }}" style="height: 38px;">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="mdi mdi-magnify"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% if query or type_filter %}
+                                <a href="{% url 'superadmin:website_contact_submissions' %}" class="btn btn-link text-muted ml-2">Clear Filters</a>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover custom-table">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="font-weight-semibold py-2"> # </th>
+                                    <th class="font-weight-semibold py-2"> Contact Person </th>
+                                    <th class="font-weight-semibold py-2"> Business Name </th>
+                                    <th class="font-weight-semibold py-2"> Type </th>
+                                    <th class="font-weight-semibold py-2"> Date </th>
+                                    <th class="font-weight-semibold py-2"> Status </th>
+                                    <th class="font-weight-semibold text-center py-2"> Actions </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for submission in submissions %}
+                                <tr id="submission-row-{{ submission.id }}" class="{% if not submission.is_read %}table-primary-faint font-weight-bold{% endif %}">
+                                    <td> {{ forloop.counter|add:submissions.start_index|add:"-1" }} </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            
+                                            <div>
+                                                <p class="mb-0">{{ submission.first_name }} {{ submission.last_name }}</p>
+                                                <small class="text-muted">{{ submission.email }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td> {{ submission.business_name }} </td>
+                                    <td>
+                                        <span class="badge badge-pill badge-light border">
+                                            {{ submission.get_inquiry_type_display }}
+                                        </span>
+                                    </td>
+                                    <td> {{ submission.created_at|date:"M d, Y H:i" }} </td>
+                                    <td id="status-cell-{{ submission.id }}">
+                                        {% if not submission.is_read %}
+                                            <span class="badge badge-pill badge-danger animate-pulse">New</span>
+                                        {% else %}
+                                            <span class="badge badge-pill badge-outline-secondary">Read</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <button type="button" class="btn btn-sm mr-1" style="background-color: #2196F3; color: white; border: none;" title="View Message" onclick="viewSubmission('{{ submission.id }}')">
+                                                <i class="mdi mdi-eye"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm" style="background-color: #f62d82; color: white; border: none;" title="Delete" onclick="deleteSubmission('{{ submission.id }}')">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <div class="mb-3">
+                                            <i class="mdi mdi-email-off-outline mdi-48px"></i>
+                                        </div>
+                                        <p>No inquiries found matching your criteria.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {% if submissions.has_other_pages %}
+                        {% include 'includes/pagination.html' with page_obj=submissions %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Submission Modal -->
+<div class="modal fade" id="viewSubmissionModal" tabindex="-1" role="dialog" aria-labelledby="viewSubmissionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between align-items-center">
+                <h5 class="modal-title fw-bold text-dark mb-0" id="viewSubmissionModalLabel">Inquiry Details</h5>
+                <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="submissionDetails">
+                <!-- Content loaded via JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-close-custom" data-bs-dismiss="modal">Close</button>
+                <a href="" id="replyEmailBtn" class="btn btn-primary px-4 d-flex align-items-center">
+                    <i class="mdi mdi-reply mr-1"></i> Reply via Email
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-table thead th {
+        border-top: none;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05rem;
+        padding: 1rem;
+        color: #495057;
+    }
+    .custom-table tbody td {
+        padding: 0.8rem 1rem;
+        vertical-align: middle;
+    }
+    .table-primary-faint {
+        background-color: rgba(113, 192, 22, 0.05);
+    }
+    .badge-outline-secondary { border: 1px solid #6c757d; color: #6c757d; }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        cursor: pointer;
+    }
+    .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: .5; }
+    }
+    /* Industrial Bento Styling for Modal */
+    .modal-content {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+    }
+    .modal-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem 1.75rem;
+    }
+    .modal-body {
+        padding: 0;
+        background-color: #f8fafc;
+    }
+    .inquiry-summary-strip {
+        background-color: #ffffff;
+        padding: 1.25rem 1.75rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .inquiry-details-container {
+        padding: 1.25rem 1.75rem;
+    }
+    .info-tile {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.85rem 1rem;
+        height: 100%;
+        transition: all 0.2s ease;
+    }
+    .info-tile:hover {
+        border-color: #71c016;
+        box-shadow: 0 4px 12px rgba(113, 192, 22, 0.08);
+    }
+    .detail-label {
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 800;
+        color: #94a3b8;
+        display: block;
+        margin-bottom: 0.4rem;
+    }
+    .detail-value {
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 0.85rem;
+        word-break: break-word;
+    }
+    .message-container {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.25rem;
+        min-height: 80px;
+    }
+    .message-text {
+        color: #475569;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
+    .copy-btn {
+        color: #cbd5e1;
+        transition: all 0.2s;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+    .copy-btn:hover {
+        color: #71c016;
+        transform: scale(1.1);
+    }
+    .modal-footer {
+        background-color: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        padding: 1rem 1.75rem;
+        display: flex;
+        gap: 10px;
+    }
+    .btn-close-custom {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #64748b !important;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 0.4rem 1.25rem;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+    .btn-close-custom:hover {
+        background: #e2e8f0;
+        color: #1e293b !important;
+    }
+    .badge-type {
+        background-color: #71c016;
+        color: white;
+        font-size: 0.6rem;
+        padding: 0.4em 0.7em;
+        border-radius: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 800;
+    }
+    .rounded-xl { border-radius: 1rem !important; }
+</style>
+
+<script>
+    // Store submissions data in a JS object for quick viewing
+    const submissionsData = {
+        {% for submission in submissions %}
+        "{{ submission.id }}": {
+            "name": "{{ submission.first_name }} {{ submission.last_name }}",
+            "email": "{{ submission.email }}",
+            "phone": "{{ submission.phone }}",
+            "business": "{{ submission.business_name }}",
+            "type": "{{ submission.get_inquiry_type_display }}",
+            "referral": "{{ submission.referral_source|default:'N/A' }}",
+            "message": `{{ submission.message|escapejs }}`,
+            "date": "{{ submission.created_at|date:'M d, Y H:i' }}",
+            "is_read": {{ submission.is_read|yesno:"true,false" }}
+        },
+        {% endfor %}
+    };
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+            Toast.fire({
+                icon: 'success',
+                title: 'Copied to clipboard'
+            });
+        });
+    }
+
+    function viewSubmission(id) {
+        const data = submissionsData[id];
+        if (!data) return;
+
+        const detailsHtml = `
+            <div class="inquiry-summary-strip">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="badge badge-type mb-2" style="font-size: 0.55rem;">${data.type}</span>
+                        <h5 class="fw-bold mb-1 text-dark">${data.name}</h5>
+                        <p class="text-muted mb-0" style="font-size: 0.75rem;"><i class="mdi mdi-office-building mr-1"></i>${data.business}</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="text-muted uppercase font-weight-bold" style="font-size: 0.55rem; letter-spacing: 0.05em;">Received</div>
+                        <div class="fw-bold text-dark" style="font-size: 0.75rem;">${data.date}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="inquiry-details-container">
+                <div class="row g-2 mb-3">
+                    <div class="col-12">
+                        <div class="info-tile">
+                            <span class="detail-label"><i class="mdi mdi-email-outline mr-1"></i> Email Address</span>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="mailto:${data.email}" class="detail-value text-primary text-decoration-none">${data.email}</a>
+                                <i class="mdi mdi-content-copy copy-btn" onclick="copyToClipboard('${data.email}')"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="info-tile">
+                            <span class="detail-label"><i class="mdi mdi-phone-outline mr-1"></i> Phone Number</span>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="tel:${data.phone}" class="detail-value text-success text-decoration-none">${data.phone}</a>
+                                <i class="mdi mdi-content-copy copy-btn" onclick="copyToClipboard('${data.phone}')"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="info-tile">
+                            <span class="detail-label"><i class="mdi mdi-bullseye-arrow mr-1"></i> Referral Source</span>
+                            <div class="detail-value text-dark">${data.referral}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 p-0">
+                    <span class="detail-label mb-3">Message Content</span>
+                    <div class="message-container">
+                        <div class="message-text">${data.message}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('submissionDetails').innerHTML = detailsHtml;
+        document.getElementById('replyEmailBtn').href = `mailto:${data.email}?subject=Re: Inquiry about ${data.business}`;
+        
+        var myModal = new bootstrap.Modal(document.getElementById('viewSubmissionModal'));
+        myModal.show();
+
+        // Mark as read if not already read
+        if (!data.is_read) {
+            markAsRead(id);
+        }
+    }
+
+    function markAsRead(id) {
+        fetch(`{% url 'superadmin:mark_read' 0 %}`.replace('0', id), {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Update UI
+                const row = document.getElementById(`submission-row-${id}`);
+                if (row) {
+                    row.classList.remove('table-primary-faint', 'font-weight-bold');
+                }
+                const statusCell = document.getElementById(`status-cell-${id}`);
+                if (statusCell) {
+                    statusCell.innerHTML = '<span class="badge badge-pill badge-outline-secondary">Read</span>';
+                }
+                submissionsData[id].is_read = true;
+            }
+        });
+    }
+
+    function deleteSubmission(id) {
+        Swal.fire({
+            title: 'Delete Inquiry?',
+            text: "This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                popup: 'rounded-xl',
+                confirmButton: 'rounded-lg px-4 py-2',
+                cancelButton: 'rounded-lg px-4 py-2'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`{% url 'superadmin:delete_submission' 0 %}`.replace('0', id), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const row = document.getElementById(`submission-row-${id}`);
+                        if (row) {
+                            row.style.transition = 'all 0.4s ease';
+                            row.style.transform = 'translateX(20px)';
+                            row.style.opacity = '0';
+                            setTimeout(() => row.remove(), 400);
+                        }
+                        
+                        Swal.fire({
+                           title: 'Deleted!',
+                           text: 'Inquiry has been removed.',
+                           icon: 'success',
+                           timer: 1500,
+                           showConfirmButton: false
+                        });
+                    }
+                });
+            }
+        })
+    }
+</script>
+{% endblock content %}

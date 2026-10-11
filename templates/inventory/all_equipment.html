@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}All Equipment{% endblock title %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'inventory:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-store-outline mdi-18px"></i> Inventory Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-dumbbell mdi-18px"></i> All Equipment
+        </li>
+    </ol>
+</nav>
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="mdi mdi-dumbbell"></i> All Equipment
+            </h4>
+            <div class="d-flex">
+                <a href="{% url 'inventory:add_equipment' %}" class="btn btn-light btn-sm me-2">
+                    <i class="mdi mdi-plus"></i> Add New Equipment
+                </a>
+                <a href="{% url 'inventory:maintenance_log' %}" class="btn btn-info btn-sm">
+                    <i class="mdi mdi-wrench"></i> Maintenance Log
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- =========================================================================
+                 SMART AUTO-FILTER TOOLBAR
+                 ========================================================================= -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <form method="get" action="{% url 'inventory:all_equipment' %}" id="equipmentFilterForm">
+                        {% csrf_token %}
+                        <div class="filter-card-box">
+                            <div class="row g-2 g-md-3 align-items-end">
+                                
+                                <!-- 1. Live Search Input -->
+                                <div class="col-xl-5 col-lg-5 col-md-6 col-12">
+                                    <label for="equipment_search" class="filter-label">Search Equipment</label>
+                                    <div class="filter-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
+                                        <i class="mdi mdi-magnify filter-search-icon" style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 17px; line-height: 1; z-index: 4; margin: 0;"></i>
+                                        <input
+                                            type="text"
+                                            name="q"
+                                            id="equipment_search"
+                                            class="form-control filter-control filter-search-input"
+                                            placeholder="Search by name or serial..."
+                                            value="{{ request.GET.q|default:'' }}"
+                                            autocomplete="off"
+                                            style="padding-left: 35px; padding-right: 32px;"
+                                        />
+                                        <button type="button" class="filter-clear-btn" id="clearEquipmentSearchBtn" title="Clear search text" style="position: absolute; right: 9px; top: 50%; transform: translateY(-50%); background: transparent; border: none; outline: none; box-shadow: none; color: #9ca3af; font-size: 17px; cursor: pointer; padding: 0; line-height: 1; z-index: 5; {% if not request.GET.q %}display: none;{% endif %}">
+                                            <i class="mdi mdi-close-circle"></i>
+                                        </button>
+                                        <div class="filter-spinner" id="equipmentSearchSpinner"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Category Select Dropdown -->
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-12">
+                                    <label for="equipment_category" class="filter-label">Category</label>
+                                    <select name="category" id="equipment_category" class="form-control filter-control">
+                                        <option value="">All Categories</option>
+                                        {% for cat in categories %}
+                                            <option value="{{ cat }}" {% if request.GET.category == cat %}selected{% endif %}>{{ cat }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <!-- 3. Status Select Dropdown -->
+                                <div class="col-xl-3 col-lg-3 col-md-8 col-8">
+                                    <label for="equipment_status" class="filter-label">Status</label>
+                                    <select name="status" id="equipment_status" class="form-control filter-control">
+                                        <option value="">All Statuses</option>
+                                        <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+                                        <option value="under_maintenance" {% if request.GET.status == 'under_maintenance' %}selected{% endif %}>Under Maintenance</option>
+                                        <option value="retired" {% if request.GET.status == 'retired' %}selected{% endif %}>Retired</option>
+                                    </select>
+                                </div>
+
+                                <!-- 4. Reset / Reload Button -->
+                                <div class="col-xl-1 col-lg-1 col-md-4 col-4">
+                                    <button type="button" class="btn btn-secondary w-100 filter-control filter-reset-btn" id="resetEquipmentFilterBtn" title="Reset all filters">
+                                        <i class="mdi mdi-reload font-weight-bold"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <!-- Equipment Table -->
+                <div class="table-responsive" id="equipmentTableContainer">
+                    <table class="table table-hover table-sm table-stack-on-mobile">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Image</th>
+                                <th>Equipment Name</th>
+                                <th>Category</th>
+                                <th>Serial Number</th>
+                                <th>Purchase Date</th>
+                                <th>Warranty End</th>
+                                <th>Location</th>
+                                <th>Condition</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for equipment in equipments %}
+                                <tr>
+                                    <td data-label="#" >{{ forloop.counter }}</td>
+                                    <td data-label="Image">
+                                        {% if equipment.image %}
+                                            <img src="{{ equipment.image.url }}" alt="{{ equipment.name }}" class="img-thumbnail equipment-image" style="width: 50px; height: 50px; cursor: pointer;">
+                                        {% else %}
+                                            <div class="no-image-placeholder">No Image</div>
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="Equipment Name">
+                                        <strong>{{ equipment.name }}</strong>
+                                        {% if equipment.model %}
+                                            <br><small class="text-muted">Model: {{ equipment.model }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="Category">{{ equipment.get_category_display|default:equipment.category }}</td>
+                                    <td data-label="Serial Number">{{ equipment.serial_number|default:"-" }}</td>
+                                    <td data-label="Purchase Date">{{ equipment.purchase_date|date:"d M Y"|default:"-" }}</td>
+                                    <td data-label="Warranty End">
+                                        {% if equipment.warranty_end_date %}
+                                            {{ equipment.warranty_end_date|date:"d M Y" }}
+                                        {% elif equipment.warranty_period %}
+                                            {{ equipment.warranty_period }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="Location">{{ equipment.location|default:"-" }}</td>
+                                    <td data-label="Condition">
+                                        <span class="badge 
+                                            {% if equipment.condition == 'new' or equipment.condition == 'excellent' %}bg-success
+                                            {% elif equipment.condition == 'good' %}bg-info
+                                            {% elif equipment.condition == 'fair' %}bg-warning
+                                            {% else %}bg-danger{% endif %}">
+                                            {{ equipment.get_condition_display }}
+                                        </span>
+                                    </td>
+                                    <td data-label="Status">
+                                        <span class="badge 
+                                            {% if equipment.status == 'active' %}bg-success
+                                            {% elif equipment.status == 'under_maintenance' %}bg-warning
+                                            {% else %}bg-danger{% endif %}">
+                                            {{ equipment.get_status_display }}
+                                        </span>
+                                    </td>
+                                    
+                                    <td data-label="Actions">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'inventory:edit_equipment' id=equipment.id %}" class="btn btn-sm btn-outline-primary" title="Edit Equipment">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Delete Equipment" onclick="confirmDelete('{{ equipment.id }}', '{{ equipment.name|escapejs }}', '{% url 'inventory:delete_equipment' equipment.id %}')">
+                                                <i class="mdi mdi-delete-outline"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="11" class="text-center py-5 text-muted">
+                                        <i class="mdi mdi-dumbbell text-muted mb-2" style="font-size: 40px; display: block;"></i>
+                                        <h6 class="font-weight-bold text-dark mb-1">No equipment found</h6>
+                                        <p class="small text-muted mb-0">No equipment records match your current filter criteria.</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Equipment Pagination -->
+            <div id="equipmentPaginationContainer" class="mt-3">
+                {% if equipments.has_other_pages %}
+                    {% include 'includes/pagination.html' with page_obj=equipments %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagePreviewModalLabel">Image Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" id="modalImage" class="img-fluid" alt="Equipment Image">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    function initImagePreview() {
+        $('.equipment-image').off('click').on('click', function() {
+            var imageUrl = $(this).attr('src');
+            var imageName = $(this).attr('alt');
+            $('#modalImage').attr('src', imageUrl);
+            $('#imagePreviewModalLabel').text(imageName);
+            var imagePreviewModal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+            imagePreviewModal.show();
+        });
+    }
+    initImagePreview();
+
+    const filterForm = document.getElementById("equipmentFilterForm");
+    const searchInput = document.getElementById("equipment_search");
+    const clearSearchBtn = document.getElementById("clearEquipmentSearchBtn");
+    const searchSpinner = document.getElementById("equipmentSearchSpinner");
+    const categorySelect = document.getElementById("equipment_category");
+    const statusSelect = document.getElementById("equipment_status");
+    const resetBtn = document.getElementById("resetEquipmentFilterBtn");
+    const tableContainer = document.getElementById("equipmentTableContainer");
+    const paginationContainer = document.getElementById("equipmentPaginationContainer");
+
+    let debounceTimer = null;
+    let currentAbortController = null;
+
+    function toggleClearBtn() {
+        if (clearSearchBtn) {
+            clearSearchBtn.style.display = (searchInput && searchInput.value.trim().length > 0) ? "block" : "none";
+        }
+    }
+
+    function buildFilterUrl() {
+        const baseUrl = filterForm.getAttribute("action") || window.location.pathname;
+        const params = new URLSearchParams();
+
+        const qVal = (searchInput?.value || "").trim();
+        const catVal = categorySelect?.value || "";
+        const statusVal = statusSelect?.value || "";
+
+        if (qVal) params.set("q", qVal);
+        if (catVal) params.set("category", catVal);
+        if (statusVal) params.set("status", statusVal);
+
+        const queryString = params.toString();
+        return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    }
+
+    function runFilterRequest(url) {
+        if (currentAbortController) currentAbortController.abort();
+        currentAbortController = new AbortController();
+
+        if (searchSpinner) searchSpinner.style.display = "block";
+        if (clearSearchBtn) clearSearchBtn.style.display = "none";
+        if (tableContainer) tableContainer.classList.add("is-filtering");
+
+        fetch(url, {
+            signal: currentAbortController.signal,
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Network error");
+            return res.text();
+        })
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const newTable = doc.querySelector("#equipmentTableContainer");
+            if (newTable && tableContainer) {
+                tableContainer.innerHTML = newTable.innerHTML;
+            }
+            const newPagination = doc.querySelector("#equipmentPaginationContainer");
+            if (newPagination && paginationContainer) {
+                paginationContainer.innerHTML = newPagination.innerHTML;
+            }
+            window.history.replaceState(null, "", url);
+            initImagePreview();
+        })
+        .catch(err => {
+            if (err.name !== "AbortError") {
+                filterForm.submit();
+            }
+        })
+        .finally(() => {
+            if (searchSpinner) searchSpinner.style.display = "none";
+            toggleClearBtn();
+            if (tableContainer) tableContainer.classList.remove("is-filtering");
+        });
+    }
+
+    function triggerAutoFilter(delay = 350) {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        toggleClearBtn();
+
+        debounceTimer = setTimeout(() => {
+            const targetUrl = buildFilterUrl();
+            runFilterRequest(targetUrl);
+        }, delay);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            triggerAutoFilter(350);
+        });
+        searchInput.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                triggerAutoFilter(0);
+            }
+        });
+    }
+
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener("click", function() {
+            if (searchInput) {
+                searchInput.value = "";
+                searchInput.focus();
+            }
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (categorySelect) {
+        categorySelect.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener("click", function() {
+            if (searchInput) searchInput.value = "";
+            if (categorySelect) categorySelect.value = "";
+            if (statusSelect) statusSelect.value = "";
+            toggleClearBtn();
+            const baseUrl = filterForm.getAttribute("action") || window.location.pathname;
+            runFilterRequest(baseUrl);
+        });
+    }
+});
+</script>
+{% endblock extra_js %}

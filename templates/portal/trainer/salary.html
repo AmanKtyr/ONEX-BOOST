@@ -1,0 +1,442 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}My Salary & Payslips - Coach {{ trainer.name }} - ONEXIVAGYM{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}" />
+<style>
+  .salary-kpi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .salary-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  }
+  .salary-kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .filter-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.15rem 1.35rem;
+  }
+  .filter-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .filter-control {
+    height: 38px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    font-size: 0.875rem;
+  }
+  .filter-submit-btn {
+    height: 38px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    white-space: nowrap !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 1.35rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+  .filter-submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+  }
+  .payslip-download-btn {
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  /* Table Action Payslip Button Fix */
+  .table td .table-payslip-btn,
+  .table-payslip-btn {
+    width: auto !important;
+    min-width: 86px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 0.85rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    white-space: nowrap !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+  }
+  .table td .table-payslip-btn:hover,
+  .table-payslip-btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3) !important;
+  }
+  .table tr.table-active {
+    background-color: #f1f5f9 !important;
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'trainer_portal:dashboard' %}" class="text-decoration-none">
+        <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <i class="mdi mdi-cash-multiple mdi-18px"></i> My Salary & Payslips
+    </li>
+  </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+  <div class="card shadow-sm border-0">
+    <!-- Header -->
+    <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+      <div>
+        <h4 class="mb-0 font-weight-bold">My Salary & Compensation Statement</h4>
+        <small class="text-white-50">Coach {{ trainer.name }} &bull; Trainer ID: #{{ trainer.trainer_id }}</small>
+      </div>
+      {% if salary and salary.id %}
+        <div class="mt-2 mt-md-0">
+          <a href="{% url 'trainer_portal:payslip' salary.id %}" target="_blank" class="btn btn-light btn-sm font-weight-bold text-primary shadow-sm payslip-download-btn">
+            <i class="mdi mdi-file-document-outline mr-1 me-1"></i> Download / Print Payslip
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+
+      <!-- Month & Year Filter Bar -->
+      <div class="filter-box mb-4 shadow-sm">
+        <form method="get" action="{% url 'trainer_portal:salary' %}" class="row g-2 g-md-3 align-items-end">
+          <div class="col-xl-4 col-lg-4 col-md-5 col-sm-6 col-12">
+            <label class="filter-label">
+              <i class="mdi mdi-calendar-month text-primary mr-1"></i> Select Month
+            </label>
+            <select name="month" class="form-control filter-control" onchange="this.form.submit()">
+              {% for m_num, m_name in months %}
+                <option value="{{ m_num }}" {% if m_num == selected_month %}selected{% endif %}>{{ m_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+            <label class="filter-label">
+              <i class="mdi mdi-calendar-range text-primary mr-1"></i> Select Year
+            </label>
+            <select name="year" class="form-control filter-control" onchange="this.form.submit()">
+              {% for y in years %}
+                <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-xl-auto col-lg-auto col-md-3 col-12">
+            <button type="submit" class="btn btn-primary filter-submit-btn shadow-sm">
+              <i class="mdi mdi-filter-variant"></i>
+              <span>View Statement</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Current Statement KPI Overview -->
+      <div class="row g-3 mb-4">
+        <!-- 1. Net Payable -->
+        <div class="col-xl-3 col-md-6 mb-3">
+          <div class="salary-kpi-card border-primary">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="text-muted small text-uppercase font-weight-bold">Net Salary ({{ selected_month_name }})</span>
+                <h3 class="font-weight-bold text-primary mb-0 mt-1">₹{{ salary.net_salary|floatformat:2|intcomma }}</h3>
+              </div>
+              <div class="salary-kpi-icon bg-primary text-white">
+                <i class="mdi mdi-cash-multiple"></i>
+              </div>
+            </div>
+            <div class="mt-2">
+              {% if salary.status == 'paid' %}
+                <span class="badge bg-success text-white"><i class="mdi mdi-check-all me-1"></i> Disbursed / Paid</span>
+              {% elif salary.status == 'approved' %}
+                <span class="badge bg-primary text-white"><i class="mdi mdi-check me-1"></i> Approved for Payout</span>
+              {% else %}
+                <span class="badge bg-secondary text-white"><i class="mdi mdi-clock-outline me-1"></i> Calculation in Progress</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Earned Base Salary -->
+        <div class="col-xl-3 col-md-6 mb-3">
+          <div class="salary-kpi-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="text-muted small text-uppercase font-weight-bold">Earned Base Salary</span>
+                <h3 class="font-weight-bold text-dark mb-0 mt-1">₹{{ salary.base_salary_earned|floatformat:2|intcomma }}</h3>
+              </div>
+              <div class="salary-kpi-icon bg-light text-primary">
+                <i class="mdi mdi-briefcase-check-outline"></i>
+              </div>
+            </div>
+            <small class="text-muted">
+              {{ salary.payable_days|floatformat:1 }} / {{ salary.total_days }} days worked (Base: ₹{{ salary.base_salary|floatformat:2|intcomma }})
+            </small>
+          </div>
+        </div>
+
+        <!-- 3. PT Client Commission -->
+        <div class="col-xl-3 col-md-6 mb-3">
+          <div class="salary-kpi-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="text-muted small text-uppercase font-weight-bold">PT Commission</span>
+                <h3 class="font-weight-bold text-info mb-0 mt-1">+₹{{ salary.pt_commission|floatformat:2|intcomma }}</h3>
+              </div>
+              <div class="salary-kpi-icon bg-light text-info">
+                <i class="mdi mdi-account-star-outline"></i>
+              </div>
+            </div>
+            <small class="text-muted">
+              {{ salary.pt_clients_count }} Active PT Client{{ salary.pt_clients_count|pluralize }} this month
+            </small>
+          </div>
+        </div>
+
+        <!-- 4. Bonus & Deductions -->
+        <div class="col-xl-3 col-md-6 mb-3">
+          <div class="salary-kpi-card">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="text-muted small text-uppercase font-weight-bold">Bonus & Deductions</span>
+                <h3 class="font-weight-bold text-dark mb-0 mt-1">
+                  {% if salary.bonus > 0 %}<span class="text-success">+₹{{ salary.bonus|floatformat:0 }}</span>{% endif %}
+                  {% if salary.deductions > 0 %}<span class="text-danger">-₹{{ salary.deductions|floatformat:0 }}</span>{% endif %}
+                  {% if salary.bonus == 0 and salary.deductions == 0 %}<span class="text-muted">₹0.00</span>{% endif %}
+                </h3>
+              </div>
+              <div class="salary-kpi-icon bg-light text-warning">
+                <i class="mdi mdi-tune"></i>
+              </div>
+            </div>
+            <small class="text-muted">
+              {% if salary.remarks %}{{ salary.remarks|truncatechars:35 }}{% else %}No adjustments{% endif %}
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Breakdown & Disbursal Card -->
+      <div class="card border mb-4">
+        <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 font-weight-bold text-dark">
+            <i class="mdi mdi-clipboard-text-outline mr-1 me-1 text-primary"></i>
+            {{ selected_month_name }} {{ selected_year }} Statement Details
+          </h6>
+          {% if salary and salary.id %}
+            <a href="{% url 'trainer_portal:payslip' salary.id %}" target="_blank" class="btn btn-outline-primary btn-sm font-weight-bold shadow-xs" style="border-radius: 6px; padding: 0.35rem 0.85rem; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 6px; background-color: #ffffff;">
+              <i class="mdi mdi-printer"></i>
+              <span>Print / Download Invoice</span>
+            </a>
+          {% endif %}
+        </div>
+        <div class="card-body p-3">
+          
+          <!-- Attendance Days Breakdown -->
+          <div class="mb-3">
+            <div class="text-muted small font-weight-bold text-uppercase mb-2">Attendance Days Breakdown</div>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-success text-white p-2">Present Days: <strong>{{ salary.present_days|floatformat:1 }}</strong></span>
+              <span class="badge bg-info text-white p-2">Half Days (0.5x): <strong>{{ salary.half_days }}</strong></span>
+              <span class="badge bg-primary text-white p-2">Approved Paid Leaves: <strong>{{ salary.paid_leave_days|floatformat:1 }}</strong></span>
+              <span class="badge bg-warning text-dark p-2">Unpaid Leaves: <strong>{{ salary.unpaid_leave_days|floatformat:1 }}</strong></span>
+              <span class="badge bg-danger text-white p-2">Absent Days: <strong>{{ salary.absent_days|floatformat:1 }}</strong></span>
+              <span class="badge bg-dark text-white p-2">Total Payable Days: <strong>{{ salary.payable_days|floatformat:1 }} / {{ salary.total_days }}</strong></span>
+            </div>
+          </div>
+
+          <!-- Earnings vs Deductions Table -->
+          <div class="row">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <div class="border rounded p-3 h-100">
+                <h6 class="font-weight-bold text-success border-bottom pb-2">
+                  <i class="mdi mdi-plus-circle-outline mr-1 me-1"></i> Earnings Breakdown
+                </h6>
+                <div class="d-flex justify-content-between py-1 border-bottom small">
+                  <span class="text-muted">Base Fixed Salary Rate:</span>
+                  <strong>₹{{ salary.base_salary|floatformat:2|intcomma }}</strong>
+                </div>
+                <div class="d-flex justify-content-between py-1 border-bottom small">
+                  <span>Earned Base ({{ salary.payable_days|floatformat:1 }}/{{ salary.total_days }} days):</span>
+                  <strong>₹{{ salary.base_salary_earned|floatformat:2|intcomma }}</strong>
+                </div>
+                <div class="d-flex justify-content-between py-1 border-bottom small">
+                  <span>PT Commission ({{ salary.pt_clients_count }} clients):</span>
+                  <strong class="text-info">+₹{{ salary.pt_commission|floatformat:2|intcomma }}</strong>
+                </div>
+                {% if salary.bonus > 0 %}
+                <div class="d-flex justify-content-between py-1 border-bottom small">
+                  <span>Incentive / Performance Bonus:</span>
+                  <strong class="text-success">+₹{{ salary.bonus|floatformat:2|intcomma }}</strong>
+                </div>
+                {% endif %}
+                <div class="d-flex justify-content-between pt-2 font-weight-bold">
+                  <span>Total Gross Earnings:</span>
+                  <span class="text-dark">₹{{ salary.total_earnings|floatformat:2|intcomma }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="border rounded p-3 h-100">
+                <h6 class="font-weight-bold text-danger border-bottom pb-2">
+                  <i class="mdi mdi-minus-circle-outline mr-1 me-1"></i> Deductions & Payout Info
+                </h6>
+                {% if salary.deductions > 0 %}
+                <div class="d-flex justify-content-between py-1 border-bottom small">
+                  <span>Deductions / Penalties:</span>
+                  <strong class="text-danger">-₹{{ salary.deductions|floatformat:2|intcomma }}</strong>
+                </div>
+                {% else %}
+                <div class="py-1 border-bottom small text-muted">No deductions applied for this period.</div>
+                {% endif %}
+                {% if salary.remarks %}
+                <div class="py-1 border-bottom small">
+                  <span class="text-muted">Notes / Remarks:</span>
+                  <div class="font-italic text-dark">{{ salary.remarks }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- Payment Status details -->
+                <div class="mt-3 pt-2 border-top">
+                  <div class="small">
+                    <span class="text-muted">Payment Mode:</span>
+                    <strong>{{ salary.get_payment_mode_display|default:"Pending Disbursal" }}</strong>
+                  </div>
+                  {% if salary.transaction_id %}
+                  <div class="small mt-1">
+                    <span class="text-muted">Transaction / Cheque ID:</span>
+                    <code>{{ salary.transaction_id }}</code>
+                  </div>
+                  {% endif %}
+                  {% if salary.payment_date %}
+                  <div class="small mt-1">
+                    <span class="text-muted">Payment Date:</span>
+                    <strong>{{ salary.payment_date|date:"d M, Y" }}</strong>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Salary History & Archive Table -->
+      <div class="card border">
+        <div class="card-header bg-light py-2 px-3">
+          <h6 class="mb-0 font-weight-bold text-dark">
+            <i class="mdi mdi-history mr-1 me-1 text-primary"></i>
+            Salary Statement History & Downloads
+          </h6>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover table-sm align-middle mb-0">
+            <thead class="bg-light">
+              <tr>
+                <th class="py-2">Period</th>
+                <th class="py-2">Base Salary</th>
+                <th class="py-2">Payable Days</th>
+                <th class="py-2">Earned Base</th>
+                <th class="py-2">PT Comm</th>
+                <th class="py-2">Bonus / Deduct</th>
+                <th class="py-2">Net Salary</th>
+                <th class="py-2 text-center">Status</th>
+                <th class="py-2 text-center">Payslip</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in salary_history %}
+                <tr {% if s.month == selected_month and s.year == selected_year %}class="table-active"{% endif %}>
+                  <td>
+                    <strong>{{ s.month }}/{{ s.year }}</strong>
+                  </td>
+                  <td>₹{{ s.base_salary|floatformat:2|intcomma }}</td>
+                  <td>{{ s.payable_days|floatformat:1 }} / {{ s.total_days }}</td>
+                  <td>₹{{ s.base_salary_earned|floatformat:2|intcomma }}</td>
+                  <td>
+                    {% if s.pt_commission > 0 %}
+                      <span class="text-info font-weight-bold">+₹{{ s.pt_commission|floatformat:2|intcomma }}</span>
+                    {% else %}
+                      <span class="text-muted">₹0.00</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if s.bonus > 0 %}<span class="text-success">+₹{{ s.bonus|floatformat:2 }}</span>{% endif %}
+                    {% if s.deductions > 0 %}<span class="text-danger">-₹{{ s.deductions|floatformat:2 }}</span>{% endif %}
+                    {% if s.bonus == 0 and s.deductions == 0 %}<span class="text-muted">₹0.00</span>{% endif %}
+                  </td>
+                  <td>
+                    <strong class="text-dark">₹{{ s.net_salary|floatformat:2|intcomma }}</strong>
+                  </td>
+                  <td class="text-center" data-label="Status">
+                    {% if s.status == 'paid' %}
+                      <span class="badge badge-success bg-success text-white px-2 py-1"><i class="mdi mdi-check-all mr-1"></i> Paid</span>
+                    {% elif s.status == 'approved' %}
+                      <span class="badge badge-primary bg-primary text-white px-2 py-1"><i class="mdi mdi-check mr-1"></i> Approved</span>
+                    {% else %}
+                      <span class="badge badge-secondary bg-secondary text-white px-2 py-1"><i class="mdi mdi-pencil-outline mr-1"></i> Draft</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center" data-label="Payslip">
+                    <a href="{% url 'trainer_portal:payslip' s.id %}" target="_blank" class="btn btn-primary btn-sm btn-action-text table-payslip-btn shadow-sm" title="Download / Print Official Payslip">
+                      <i class="mdi mdi-download"></i>
+                      <span>Payslip</span>
+                    </a>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="9" class="text-center py-4 text-muted">
+                    No past salary records found.
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock content %}

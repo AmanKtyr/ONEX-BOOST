@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-file-document-outline mdi-18px"></i> Invoices
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Invoices List</h4>
+            <a href="{% url 'billing:trash_invoices' %}" class="btn btn-danger btn-sm"><i class="mdi mdi-delete-empty"></i> Trash</a>
+        </div>
+        <div class="card-body">
+            <!-- =========================================================================
+                 SMART AUTO-FILTER TOOLBAR
+                 ========================================================================= -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <form method="get" action="{% url 'billing:invoices_list' %}" id="invoiceFilterForm">
+                        <div class="filter-card-box">
+                            <div class="row g-2 g-md-3 align-items-end">
+                                
+                                <!-- 1. Live Search Input -->
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-12">
+                                    <label for="invoice_search" class="filter-label">Search Invoices</label>
+                                    <div class="filter-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
+                                        <i class="mdi mdi-magnify filter-search-icon" style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 17px; line-height: 1; z-index: 4; margin: 0;"></i>
+                                        <input
+                                            type="text"
+                                            name="q"
+                                            id="invoice_search"
+                                            class="form-control filter-control filter-search-input"
+                                            placeholder="Name, phone, member ID..."
+                                            value="{{ query|default:'' }}"
+                                            autocomplete="off"
+                                            style="padding-left: 35px; padding-right: 32px;"
+                                        />
+                                        <button type="button" class="filter-clear-btn" id="clearInvoiceSearchBtn" title="Clear search text" style="position: absolute; right: 9px; top: 50%; transform: translateY(-50%); background: transparent; border: none; outline: none; box-shadow: none; color: #9ca3af; font-size: 17px; cursor: pointer; padding: 0; line-height: 1; z-index: 5; {% if not query %}display: none;{% endif %}">
+                                            <i class="mdi mdi-close-circle"></i>
+                                        </button>
+                                        <div class="filter-spinner" id="invoiceSearchSpinner"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Status Select Dropdown -->
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-12">
+                                    <label for="invoice_status" class="filter-label">Status</label>
+                                    <select
+                                        name="status"
+                                        id="invoice_status"
+                                        class="form-control filter-control"
+                                    >
+                                        <option value="">All Statuses</option>
+                                        <option value="paid" {% if status_filter == 'paid' %}selected{% endif %}>Paid</option>
+                                        <option value="unpaid" {% if status_filter == 'unpaid' %}selected{% endif %}>Unpaid</option>
+                                    </select>
+                                </div>
+
+                                <!-- 3. Date From -->
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-6">
+                                    <label for="from_date" class="filter-label">From</label>
+                                    <input
+                                        type="date"
+                                        name="from_date"
+                                        id="from_date"
+                                        class="form-control filter-control"
+                                        value="{{ from_date|default:'' }}"
+                                    />
+                                </div>
+
+                                <!-- 4. Date To -->
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-6">
+                                    <label for="to_date" class="filter-label">To</label>
+                                    <input
+                                        type="date"
+                                        name="to_date"
+                                        id="to_date"
+                                        class="form-control filter-control"
+                                        value="{{ to_date|default:'' }}"
+                                    />
+                                </div>
+
+                                <!-- 5. Reset / Reload Button -->
+                                <div class="col-xl-1 col-lg-1 col-md-4 col-12">
+                                    <button type="button" class="btn btn-secondary w-100 filter-control filter-reset-btn" id="resetInvoiceFilterBtn" title="Reset all filters">
+                                        <i class="mdi mdi-reload font-weight-bold"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive" id="invoicesTableContainer">
+                <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th class="font-weight-semibold py-2">#</th>
+                            <th class="font-weight-semibold py-2">Invoice No</th>
+                            <th class="font-weight-semibold py-2">Profile</th>
+                            <th class="font-weight-semibold py-2">Member Name</th>
+                            <th class="font-weight-semibold py-2">Plan</th>
+                            <th class="font-weight-semibold py-2">Amount</th>
+                            <th class="font-weight-semibold py-2">Date</th>
+                            <th class="font-weight-semibold py-2">Status</th>
+                            <th class="font-weight-semibold py-2 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invoice in invoices %}
+                        <tr>
+                            <td data-label="Sr. No.">{{ invoices.start_index|add:forloop.counter0 }}</td>
+                            <td data-label="Invoice No">#{{ invoice.invoice_id }}</td>
+                           <td data-label="Profile">
+                                <img src="{% if invoice.member__profile_picture %}{{ invoice.member__profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}"
+                                    class="rounded-circle border" style="width: 40px; height: 40px; object-fit: cover;"
+                                    alt="{{ invoice.member__first_name }} {{ invoice.member__last_name }}">
+                            </td>
+                            <td data-label="Name">
+                                {% if invoice.member_id %}
+                                    <strong> <a href="{% url 'member_profile' invoice.member_id %}" class="text-decoration-none">{{ invoice.member__first_name }} {{ invoice.member__last_name }}</a></strong><br>
+                                    <small class="text-muted">#{{ invoice.member__member_id }}</small>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td data-label="Plan">
+                                {% if invoice.type == 'membership' %}
+                                    Membership Plan
+                                {% elif invoice.type == 'pt' %}
+                                    Personal Training
+                                {% endif %}
+                            </td>
+                            <td data-label="Amount">₹{{ invoice.amount|floatformat:2 }}</td>
+                            <td data-label="Date">{{ invoice.date|date:"d-m-Y" }}</td>
+                            <td data-label="Status">
+                                {% if invoice.due_amount <= 0 %}
+                                    <span class="badge-status badge-status-active"><i class="mdi mdi-check-circle-outline me-1"></i> Paid</span>
+                                {% else %}
+                                    <span class="badge-status badge-status-expired"><i class="mdi mdi-alert-circle-outline me-1"></i> Due ₹{{ invoice.due_amount|floatformat:0 }}</span>
+                                {% endif %}
+                            </td>
+                            <td data-label="Actions" class="text-center">
+                                {% if invoice.type == 'membership' %}
+                                    <a href="{% url 'billing:invoice' invoice.member_id invoice.invoice_id %}" class="btn btn-primary btn-sm" title="View Invoice"><i class="mdi mdi-eye-outline"></i></a>
+                                    <a href="#" class="btn btn-danger btn-sm" title="Delete this invoice" onclick="confirmDelete('{{ invoice.invoice_id }}', '{{ invoice.invoice_id }}', '{% url 'billing:delete_invoice' 'membership' invoice.invoice_id %}')"><i class="mdi mdi-delete-outline"></i></a>
+                                {% elif invoice.type == 'pt' %}
+                                    <a href="{% url 'billing:pt_invoice' invoice.member_id invoice.invoice_id %}" class="btn btn-primary btn-sm" title="View PT Invoice"><i class="mdi mdi-eye-outline"></i></a>
+                                    <a href="#" class="btn btn-danger btn-sm" title="Delete this invoice" onclick="confirmDelete('{{ invoice.invoice_id }}', '{{ invoice.invoice_id }}', '{% url 'billing:delete_invoice' 'pt' invoice.invoice_id %}')"><i class="mdi mdi-delete-outline"></i></a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center py-5 text-muted">
+                                <i class="mdi mdi-file-document-outline mb-2 text-muted" style="font-size: 40px; display: block;"></i>
+                                <h6 class="font-weight-bold text-dark mb-1">No invoices found</h6>
+                                <p class="small text-muted mb-0">No invoice records match your current filter criteria.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div id="invoicesPaginationContainer">
+            {% if invoices.has_other_pages %}
+                {% include 'includes/pagination.html' with page_obj=invoices %}
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const filterForm = document.getElementById("invoiceFilterForm");
+    const searchInput = document.getElementById("invoice_search");
+    const clearSearchBtn = document.getElementById("clearInvoiceSearchBtn");
+    const searchSpinner = document.getElementById("invoiceSearchSpinner");
+    const statusSelect = document.getElementById("invoice_status");
+    const fromDateInput = document.getElementById("from_date");
+    const toDateInput = document.getElementById("to_date");
+    const resetBtn = document.getElementById("resetInvoiceFilterBtn");
+    const tableContainer = document.getElementById("invoicesTableContainer");
+    const paginationContainer = document.getElementById("invoicesPaginationContainer");
+
+    let debounceTimer = null;
+    let currentAbortController = null;
+
+    function toggleClearBtn() {
+        if (clearSearchBtn) {
+            clearSearchBtn.style.display = (searchInput && searchInput.value.trim().length > 0) ? "block" : "none";
+        }
+    }
+
+    function buildFilterUrl() {
+        const baseUrl = filterForm.getAttribute("action") || window.location.pathname;
+        const params = new URLSearchParams();
+
+        const qVal = (searchInput?.value || "").trim();
+        const statusVal = statusSelect?.value || "";
+        const fromVal = fromDateInput?.value || "";
+        const toVal = toDateInput?.value || "";
+
+        if (qVal) params.set("q", qVal);
+        if (statusVal) params.set("status", statusVal);
+        if (fromVal) params.set("from_date", fromVal);
+        if (toVal) params.set("to_date", toVal);
+
+        const queryString = params.toString();
+        return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    }
+
+    function runFilterRequest(url) {
+        if (currentAbortController) currentAbortController.abort();
+        currentAbortController = new AbortController();
+
+        if (searchSpinner) searchSpinner.style.display = "block";
+        if (clearSearchBtn) clearSearchBtn.style.display = "none";
+        if (tableContainer) tableContainer.classList.add("is-filtering");
+
+        fetch(url, {
+            signal: currentAbortController.signal,
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Network error");
+            return res.text();
+        })
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const newTable = doc.querySelector("#invoicesTableContainer");
+            if (newTable && tableContainer) {
+                tableContainer.innerHTML = newTable.innerHTML;
+            }
+            const newPagination = doc.querySelector("#invoicesPaginationContainer");
+            if (newPagination && paginationContainer) {
+                paginationContainer.innerHTML = newPagination.innerHTML;
+            }
+            window.history.replaceState(null, "", url);
+        })
+        .catch(err => {
+            if (err.name !== "AbortError") {
+                filterForm.submit();
+            }
+        })
+        .finally(() => {
+            if (searchSpinner) searchSpinner.style.display = "none";
+            toggleClearBtn();
+            if (tableContainer) tableContainer.classList.remove("is-filtering");
+        });
+    }
+
+    function triggerAutoFilter(delay = 350) {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        toggleClearBtn();
+
+        debounceTimer = setTimeout(() => {
+            const targetUrl = buildFilterUrl();
+            runFilterRequest(targetUrl);
+        }, delay);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            triggerAutoFilter(350);
+        });
+        searchInput.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                triggerAutoFilter(0);
+            }
+        });
+    }
+
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener("click", function() {
+            if (searchInput) {
+                searchInput.value = "";
+                searchInput.focus();
+            }
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (fromDateInput) {
+        fromDateInput.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (toDateInput) {
+        toDateInput.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener("click", function() {
+            if (searchInput) searchInput.value = "";
+            if (statusSelect) statusSelect.value = "";
+            if (fromDateInput) fromDateInput.value = "";
+            if (toDateInput) toDateInput.value = "";
+            toggleClearBtn();
+            const baseUrl = filterForm.getAttribute("action") || window.location.pathname;
+            runFilterRequest(baseUrl);
+        });
+    }
+});
+</script>
+{% endblock %}

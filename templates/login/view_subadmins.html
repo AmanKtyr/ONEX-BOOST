@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Staff & Sub-Admins
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div class="d-flex align-items-center mb-3 mb-md-0">
+                <h4 class="mb-0 mr-2 me-2">Staff & Sub-Admins Directory</h4>
+                <span class="badge bg-light text-primary px-2 py-1">{{ sub_admins|length }}</span>
+            </div>
+            <div class="d-flex">
+                <a href="{% url 'add_gym_subadmin' %}" class="btn btn-light btn-sm d-flex align-items-center font-weight-bold">
+                    <i class="mdi mdi-plus mr-1 me-1"></i> Add Sub-Admin
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th class="font-weight-semibold py-2">Photo</th>
+                            <th class="font-weight-semibold py-2">Staff Name</th>
+                            <th class="font-weight-semibold py-2">Username</th>
+                            <th class="font-weight-semibold py-2">Email Address</th>
+                            <th class="font-weight-semibold py-2">Phone</th>
+                            <th class="font-weight-semibold py-2">Assigned Role</th>
+                            <th class="font-weight-semibold text-center py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub_admin in sub_admins %}
+                        <tr>
+                            <td data-label="Photo">
+                                <img src="{% if sub_admin.photo %}{{ sub_admin.photo.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                                     alt="{{ sub_admin.user.username }}" 
+                                     class="rounded-circle border" 
+                                     style="width: 40px; height: 40px; object-fit: cover;">
+                            </td>
+                            <td data-label="Staff Name">
+                                <strong>{{ sub_admin.user.get_full_name|default:sub_admin.user.username }}</strong>
+                                {% if sub_admin.user.get_full_name %}
+                                    <div class="text-muted small">@{{ sub_admin.user.username }}</div>
+                                {% endif %}
+                            </td>
+                            <td data-label="Username">
+                                <code class="text-primary font-weight-bold">{{ sub_admin.user.username }}</code>
+                            </td>
+                            <td data-label="Email">
+                                <span class="text-muted">{{ sub_admin.user.email|default:'—' }}</span>
+                            </td>
+                            <td data-label="Phone">
+                                <span>{{ sub_admin.phone_number|default:'—' }}</span>
+                            </td>
+                            <td data-label="Role">
+                                <span class="badge bg-light text-primary px-2 py-1 font-weight-semibold">
+                                    {{ sub_admin.get_role_display|default:sub_admin.role|capfirst }}
+                                </span>
+                            </td>
+                            <td data-label="Actions" class="text-center" style="white-space: nowrap;">
+                                <a href="{% url 'edit_subadmin' sub_admin.id %}" class="btn btn-primary btn-sm mr-1 me-1" title="Edit Sub-Admin">
+                                    <i class="mdi mdi-pencil-outline"></i>
+                                </a>
+                                <a href="{% url 'delete_subadmin' sub_admin.id %}" class="btn btn-danger btn-sm" 
+                                   onclick="return confirm('Are you sure you want to delete sub-admin {{ sub_admin.user.username }}? This action cannot be undone.');" 
+                                   title="Delete Sub-Admin">
+                                    <i class="mdi mdi-delete-outline"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="d-flex flex-column align-items-center justify-content-center">
+                                    <div class="mb-3 p-3 bg-light rounded-circle text-muted">
+                                        <i class="mdi mdi-account-off-outline mdi-36px"></i>
+                                    </div>
+                                    <h5 class="font-weight-bold text-dark mb-1">No Sub-Admins Created Yet</h5>
+                                    <p class="text-muted small mb-3">Add delegated managers, trainers, and receptionists to help run your gym branch.</p>
+                                    <a href="{% url 'add_gym_subadmin' %}" class="btn btn-primary btn-sm font-weight-bold">
+                                        <i class="mdi mdi-plus mr-1"></i> Add Sub-Admin
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

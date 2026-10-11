@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gym Profile - Settings{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <span class="text-muted">Settings</span>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-domain mdi-18px"></i> Gym Profile
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card mb-4">
+        <!-- Main Card Header -->
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <h4 class="mb-0 mr-2 me-2">Gym Branch Profile</h4>
+                <span class="badge bg-light text-primary px-2 py-1 ml-2">#{{ gym.gym_id|default:gym.id }}</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'settings:payment_setting' %}" class="btn btn-outline-light btn-sm mr-2 me-2 font-weight-bold">
+                    <i class="mdi mdi-bank mr-1"></i> Payment Settings
+                </a>
+                <a href="{% url 'settings:general_settings' %}" class="btn btn-light btn-sm font-weight-bold">
+                    <i class="mdi mdi-pencil-outline mr-1"></i> Update Profile
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Brand Overview Banner -->
+            <div class="p-3 p-md-4 mb-4 rounded border bg-light">
+                <div class="row align-items-center">
+                    <div class="col-auto text-center mb-3 mb-md-0">
+                        {% if gym.logo %}
+                            <img src="{{ gym.logo.url }}" alt="{{ gym.name }}" 
+                                 class="rounded-circle border shadow-sm" 
+                                 style="width: 85px; height: 85px; object-fit: cover;"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                            <div class="rounded-circle text-white font-weight-bold align-items-center justify-content-center shadow-sm"
+                                 style="display: none; width: 85px; height: 85px; font-size: 28px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);">
+                                {{ gym.name|slice:":2"|upper|default:"GY" }}
+                            </div>
+                        {% else %}
+                            <div class="rounded-circle text-white font-weight-bold d-inline-flex align-items-center justify-content-center shadow-sm"
+                                 style="width: 85px; height: 85px; font-size: 28px; background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);">
+                                {{ gym.name|slice:":2"|upper|default:"GY" }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
+                            <h3 class="font-weight-bold text-dark mb-0 mr-2">{{ gym.name }}</h3>
+                            {% if gym.gst_enabled %}
+                                <span class="badge badge-success px-2 py-1"><i class="mdi mdi-check-circle-outline mr-1"></i>GST Registered</span>
+                            {% endif %}
+                            {% if gym.attendance_code_required %}
+                                <span class="badge badge-info px-2 py-1"><i class="mdi mdi-shield-key-outline mr-1"></i>QR Code Auth</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted mb-2 font-italic">{{ gym.slogan|default:"Empowering fitness, health, and strength." }}</p>
+                        <div class="d-flex align-items-center flex-wrap gap-3 text-muted small">
+                            <span><i class="mdi mdi-map-marker text-primary mr-1"></i>{{ gym.city|default:"City" }}, {{ gym.state|default:"State" }}</span>
+                            <span><i class="mdi mdi-phone text-success mr-1"></i>{{ gym.phone|default:"N/A" }}</span>
+                            <span><i class="mdi mdi-email text-info mr-1"></i>{{ gym.email|default:"N/A" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Information Cards -->
+            <div class="row">
+                <!-- 1. Branch Location & Physical Details -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card border h-100 shadow-sm">
+                        <div class="card-header bg-light py-2 px-3 d-flex align-items-center">
+                            <i class="mdi mdi-map-marker-radius-outline text-primary mr-2 mdi-18px"></i>
+                            <h6 class="mb-0 font-weight-bold text-dark">Location & Physical Address</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <table class="table table-borderless table-sm mb-0">
+                                <tbody>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold" style="width: 38%;">Gym Name:</th>
+                                        <td class="font-weight-bold text-dark">{{ gym.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">Slogan / Tagline:</th>
+                                        <td>{{ gym.slogan|default:"—" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">Address:</th>
+                                        <td>{{ gym.address|default:"—" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">Area / Sector:</th>
+                                        <td>{{ gym.area|default:"—" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">City:</th>
+                                        <td>{{ gym.city|default:"—" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">State:</th>
+                                        <td>{{ gym.state|default:"—" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">Pincode:</th>
+                                        <td><span class="badge badge-light border">{{ gym.pincode|default:"—" }}</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Contact Channels -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card border h-100 shadow-sm">
+                        <div class="card-header bg-light py-2 px-3 d-flex align-items-center">
+                            <i class="mdi mdi-phone-classic text-success mr-2 mdi-18px"></i>
+                            <h6 class="mb-0 font-weight-bold text-dark">Contact Channels</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <table class="table table-borderless table-sm mb-0">
+                                <tbody>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold" style="width: 38%;">Primary Mobile:</th>
+                                        <td>
+                                            {% if gym.phone %}
+                                                <a href="tel:{{ gym.phone }}" class="text-decoration-none font-weight-bold text-success">
+                                                    <i class="mdi mdi-phone mr-1"></i>{{ gym.phone }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">Landline:</th>
+                                        <td>{{ gym.landline|default:"—" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">Email Address:</th>
+                                        <td>
+                                            {% if gym.email %}
+                                                <a href="mailto:{{ gym.email }}" class="text-decoration-none text-primary">
+                                                    <i class="mdi mdi-email-outline mr-1"></i>{{ gym.email }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">Official Website:</th>
+                                        <td>
+                                            {% if gym.website %}
+                                                <a href="{{ gym.website }}" target="_blank" class="text-decoration-none text-info">
+                                                    <i class="mdi mdi-open-in-new mr-1"></i>{{ gym.website }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Tax & GST Configuration -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card border h-100 shadow-sm">
+                        <div class="card-header bg-light py-2 px-3 d-flex align-items-center">
+                            <i class="mdi mdi-receipt-text-outline text-warning mr-2 mdi-18px"></i>
+                            <h6 class="mb-0 font-weight-bold text-dark">GST & Taxation Profile</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <table class="table table-borderless table-sm mb-0">
+                                <tbody>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold" style="width: 38%;">GST Enabled:</th>
+                                        <td>
+                                            {% if gym.gst_enabled %}
+                                                <span class="badge badge-success"><i class="mdi mdi-check"></i> Enabled</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">Disabled</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">GST Rate:</th>
+                                        <td>
+                                            {% if gym.gst_enabled %}
+                                                <span class="font-weight-bold">{{ gym.gst_rate }}%</span>
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">GST Number:</th>
+                                        <td>
+                                            {% if gym.gst_number %}
+                                                <code>{{ gym.gst_number }}</code>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Attendance & System Settings -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card border h-100 shadow-sm">
+                        <div class="card-header bg-light py-2 px-3 d-flex align-items-center">
+                            <i class="mdi mdi-cog-outline text-info mr-2 mdi-18px"></i>
+                            <h6 class="mb-0 font-weight-bold text-dark">Attendance & System Config</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <table class="table table-borderless table-sm mb-0">
+                                <tbody>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold" style="width: 38%;">QR Check-in Code:</th>
+                                        <td>
+                                            {% if gym.attendance_code_required %}
+                                                <span class="badge badge-success"><i class="mdi mdi-lock-outline mr-1"></i>Required</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">Optional / Not Required</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">Gym ID Prefix:</th>
+                                        <td>
+                                            <span class="badge badge-light border font-weight-bold">{{ gym.gym_id_prefix|default:"N/A" }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-muted font-weight-semibold">Branch Notes:</th>
+                                        <td class="text-muted small">{{ gym.note|default:"No special branch notes recorded." }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button Row -->
+            <div class="text-center mt-2 mb-3">
+                <a href="{% url 'settings:general_settings' %}" class="btn btn-primary font-weight-bold px-4 shadow-sm">
+                    <i class="mdi mdi-square-edit-outline mr-1"></i> Edit Gym Profile Settings
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

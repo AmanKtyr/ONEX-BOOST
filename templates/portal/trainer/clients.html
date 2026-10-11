@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}My Assigned Clients - Coach {{ trainer.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">My Assigned Clients</h2>
+      <p class="dashboard-hero-subtitle">Members actively subscribed to your personal training (PT) sessions</p>
+    </div>
+    <div>
+      <a href="{% url 'trainer_portal:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+        <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+
+  <div class="gym-card">
+    <div class="gym-card-header">
+      <div class="gym-card-title">
+        <i class="mdi mdi-account-group text-primary" style="font-size: 1.25rem;"></i>
+        <span>Personal Training Client Roster</span>
+      </div>
+      <span class="badge-soft badge-soft-primary">{{ clients|length }} Active Clients</span>
+    </div>
+    <div class="gym-card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th>Client</th>
+              <th>Contact Details</th>
+              <th>Membership Status</th>
+              <th>Assigned Date</th>
+              <th>Monthly Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in clients %}
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <img src="{% if c.member.profile_picture %}{{ c.member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                       alt="{{ c.member.name }}" 
+                       class="rounded-circle mr-3" 
+                       style="width: 42px; height: 42px; object-fit: cover; border: 2px solid #e2e8f0;">
+                  <div>
+                    <div class="font-weight-bold text-dark">{{ c.member.name }}</div>
+                    <div class="text-muted small">Member ID: {{ c.member.member_id }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div><i class="fas fa-phone mr-1 text-primary small"></i> {{ c.member.mobile_number }}</div>
+                {% if c.member.email %}
+                  <div class="text-muted small"><i class="fas fa-envelope mr-1 text-muted small"></i> {{ c.member.email }}</div>
+                {% endif %}
+              </td>
+              <td>
+                {% if c.member.current_status == 'Active' %}
+                  <span class="badge badge-success px-2 py-1">Active</span>
+                {% else %}
+                  <span class="badge badge-secondary px-2 py-1">Expired</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="small">{{ c.start_date|date:'d M Y'|default:'-' }}</div>
+              </td>
+              <td>
+                <span class="font-weight-bold text-dark">&#8377;{{ c.amount|default:trainer.personal_training_monthly_amount|intcomma }}</span>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center py-5 text-muted">
+                <i class="mdi mdi-account-off-outline" style="font-size: 2.5rem;"></i>
+                <div class="mt-2 font-weight-bold">No clients assigned</div>
+                <div class="small">The gym front desk will assign personal training members to your roster.</div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

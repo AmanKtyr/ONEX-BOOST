@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}My Workout Routine - {{ member.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">My Workout Routine</h2>
+      <p class="dashboard-hero-subtitle">Personalized training split and fitness programming</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <a href="{% url 'member_portal:progress' %}" class="btn btn-primary btn-sm px-3 rounded-pill font-weight-bold mr-2">
+        <i class="fas fa-clipboard-check mr-1"></i> Log Today's Workout
+      </a>
+      <a href="{% url 'member_portal:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+        <i class="fas fa-arrow-left mr-1"></i> Dashboard
+      </a>
+    </div>
+  </div>
+
+  {% if workout_plan %}
+    <!-- Workout Plan Header Card -->
+    <div class="gym-card mb-4">
+      <div class="gym-card-body" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: #ffffff; border-radius: 12px;">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+          <div>
+            <span class="badge badge-primary px-3 py-1 font-weight-bold mb-2">Active Workout Plan</span>
+            <h2 class="font-weight-bold mb-1 text-white">{{ workout_plan.name }}</h2>
+            <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
+              <span class="badge badge-warning text-dark font-weight-bold mr-2">
+                <i class="fas fa-signal mr-1"></i> Level: {{ workout_plan.get_difficulty_display|default:workout_plan.difficulty|title }}
+              </span>
+              <span class="badge badge-info text-white font-weight-bold mr-2">
+                <i class="fas fa-calendar-alt mr-1"></i> Duration: {{ workout_plan.duration_days }} Days
+              </span>
+              {% if workout_plan.created_by %}
+              <span class="badge badge-light text-dark font-weight-bold">
+                <i class="fas fa-user-shield mr-1"></i> By: {{ workout_plan.created_by }}
+              </span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="mt-3 mt-md-0 text-md-right">
+            {% if assigned_workout.assigned_date %}
+              <div class="small text-white-50">Assigned On</div>
+              <div class="font-weight-bold text-white">{{ assigned_workout.assigned_date|date:'d M Y' }}</div>
+            {% endif %}
+            {% if workout_plan.document %}
+              <a href="{{ workout_plan.document.url }}" target="_blank" class="btn btn-sm btn-light mt-2 rounded-pill font-weight-bold">
+                <i class="fas fa-file-download mr-1"></i> Download PDF Routine
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      {% if workout_plan.image %}
+      <div class="col-lg-4 mb-4">
+        <div class="gym-card h-100">
+          <div class="gym-card-header">
+            <h5 class="gym-card-title"><i class="fas fa-image text-primary"></i> Plan Reference</h5>
+          </div>
+          <div class="gym-card-body text-center">
+            <img src="{{ workout_plan.image.url }}" alt="{{ workout_plan.name }}" class="img-fluid rounded shadow-sm" style="max-height: 380px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="{% if workout_plan.image %}col-lg-8{% else %}col-12{% endif %} mb-4">
+        <div class="gym-card h-100">
+          <div class="gym-card-header">
+            <h5 class="gym-card-title">
+              <i class="fas fa-dumbbell text-primary"></i> Workout Plan Details & Split
+            </h5>
+          </div>
+          <div class="gym-card-body">
+            {% if workout_plan.description %}
+              <div class="workout-content" style="line-height: 1.8; color: #334155;">
+                {{ workout_plan.description|safe }}
+              </div>
+            {% else %}
+              <div class="text-center py-4 text-muted">
+                <p class="mb-0">Full detailed exercise split instructions are available from your gym trainer.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% else %}
+    <div class="gym-card p-5 text-center">
+      <div class="text-muted mb-2"><i class="mdi mdi-dumbbell" style="font-size: 3rem; color: #94a3b8;"></i></div>
+      <h4 class="font-weight-bold text-dark">No Workout Plan Assigned</h4>
+      <p class="text-muted mb-4" style="max-width: 450px; margin: 0 auto;">
+        You currently do not have an active workout routine. Please reach out to your gym trainer or front desk to have one personalized for you.
+      </p>
+      <a href="{% url 'member_portal:dashboard' %}" class="btn btn-primary btn-sm px-4 rounded-pill font-weight-bold">
+        Back to Dashboard
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,600 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}My Gym Dashboard - {{ member.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <!-- HERO / PAGE HEADER -->
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">Welcome back, {{ member.first_name }}!</h2>
+      <p class="dashboard-hero-subtitle">Track your membership, fitness progress, workouts, and attendance</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <div class="dashboard-status-badge">
+        <span class="pulse-dot"></span>
+        <span class="text-muted">Member ID:</span>
+        <strong class="text-dark">{{ member.member_id }}</strong>
+        <span class="text-muted">|</span>
+        <span class="text-muted"><i class="far fa-clock mr-1"></i>{% now 'd M Y' %}</span>
+      </div>
+      <button class="btn-sync-refresh" onclick="location.reload();" title="Refresh Dashboard Data">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  {% if not is_active and latest_membership %}
+    <div class="alert alert-danger shadow-sm border-0 mb-4 p-3 d-flex align-items-center justify-content-between flex-wrap rounded-3" style="background-color: #fef2f2; border-left: 4px solid #dc2626 !important;">
+      <div class="d-flex align-items-center mb-2 mb-md-0">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; color: #dc2626; margin-right: 14px; font-size: 20px; flex-shrink: 0;">
+          <i class="mdi mdi-alert-circle"></i>
+        </div>
+        <div>
+          <h6 class="font-weight-bold text-danger mb-0" style="font-size: 14.5px;">Membership Plan Expired</h6>
+          <p class="text-muted mb-0 small">Your plan <strong>{{ latest_membership.plan.title }}</strong> expired on {{ end_date|date:'d M Y'|default:'recently' }}. Please renew at the reception or contact gym administration to restore full floor access.</p>
+        </div>
+      </div>
+      <a href="{% url 'member_portal:billing' %}" class="btn btn-sm btn-danger px-3 font-weight-bold shadow-sm" style="border-radius: 6px;">
+        <i class="mdi mdi-refresh mr-1"></i> View Plan & Billing
+      </a>
+    </div>
+  {% elif days_left <= 4 and is_active %}
+    <div class="alert alert-warning shadow-sm border-0 mb-4 p-3 d-flex align-items-center justify-content-between flex-wrap rounded-3" style="background-color: #fffbeb; border-left: 4px solid #d97706 !important;">
+      <div class="d-flex align-items-center mb-2 mb-md-0">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #fef3c7; display: flex; align-items: center; justify-content: center; color: #d97706; margin-right: 14px; font-size: 20px; flex-shrink: 0;">
+          <i class="mdi mdi-clock-alert-outline"></i>
+        </div>
+        <div>
+          <h6 class="font-weight-bold text-dark mb-0" style="font-size: 14.5px;">Membership Expiring Soon &bull; {{ days_left }} Day{{ days_left|pluralize }} Remaining</h6>
+          <p class="text-muted mb-0 small">Your <strong>{{ latest_membership.plan.title }}</strong> plan will conclude on {{ end_date|date:'d M Y' }}. Renew early to avoid interruption in your fitness streak!</p>
+        </div>
+      </div>
+      <a href="{% url 'member_portal:billing' %}" class="btn btn-sm btn-warning px-3 font-weight-bold shadow-sm" style="border-radius: 6px; background-color: #f59e0b; border-color: #f59e0b; color: #ffffff;">
+        <i class="mdi mdi-receipt-text-check mr-1"></i> Membership Details
+      </a>
+    </div>
+  {% endif %}
+
+  <!-- MEMBER GYM ATTENDANCE & WORKOUT CHECK-IN DESK (NATIVE PORTAL GYM-CARD) -->
+  <div class="gym-card mb-4">
+    <div class="gym-card-header d-flex align-items-center justify-content-between flex-wrap">
+      <div class="gym-card-title">
+        <i class="mdi mdi-dumbbell text-primary" style="font-size: 1.25rem;"></i>
+        <span>Gym Floor Check-In</span>
+        <small class="text-muted ml-2 font-weight-normal d-none d-md-inline">&bull; {{ gym.name }} &bull; Member Daily Attendance</small>
+      </div>
+      <div class="mt-2 mt-sm-0">
+        {% if is_checked_in %}
+          <span class="badge-soft badge-soft-success">
+            <span class="attendance-radar-dot"></span> Inside Gym (Workout in Progress)
+          </span>
+        {% elif today_attendance %}
+          <span class="badge-soft badge-soft-primary">
+            <i class="fas fa-check-circle mr-1"></i> Workout Completed Today
+          </span>
+        {% else %}
+          <span class="badge-soft badge-soft-secondary">
+            <i class="fas fa-moon mr-1"></i> Not Checked In Today
+          </span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="gym-card-body py-3 px-4">
+      <div class="row align-items-center">
+        <!-- Left: Clock & Metrics -->
+        <div class="col-lg-7 col-md-8 mb-3 mb-md-0">
+          <div class="d-flex align-items-center flex-wrap">
+            {% if is_checked_in %}
+              <div class="mr-4 pr-3 border-right mb-2">
+                <div class="h2 font-weight-bold text-success mb-0" id="live-member-timer" data-start="{{ active_attendance.check_in_time.isoformat }}" style="font-variant-numeric: tabular-nums; font-family: 'Plus Jakarta Sans', monospace; line-height: 1.1;">00:00:00</div>
+                <small class="text-muted font-weight-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.04em;">
+                  <i class="fas fa-stopwatch text-success mr-1"></i> Active Workout Duration
+                </small>
+              </div>
+              <div class="d-flex align-items-center flex-wrap">
+                <div class="mr-4 mb-2">
+                  <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Check-In Time</span>
+                  <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ active_attendance.check_in_time|time:'g:i A' }}</span>
+                </div>
+                <div class="mr-3 mb-2">
+                  <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Today's Workout Time</span>
+                  <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ today_duration_str }}</span>
+                </div>
+              </div>
+            {% else %}
+              <div class="mr-4 pr-3 border-right mb-2">
+                <div class="h2 font-weight-bold text-dark mb-0" id="live-member-clock" style="font-variant-numeric: tabular-nums; font-family: 'Plus Jakarta Sans', monospace; line-height: 1.1;">--:--:--</div>
+                <small class="text-muted font-weight-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.04em;">
+                  <i class="far fa-clock text-primary mr-1"></i> Current Time
+                </small>
+              </div>
+              <div class="d-flex align-items-center flex-wrap">
+                {% if today_attendance %}
+                  <div class="mr-4 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Last In</span>
+                    <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ today_attendance.check_in_time|time:'g:i A' }}</span>
+                  </div>
+                  <div class="mr-4 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Last Out</span>
+                    <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ today_attendance.check_out_time|time:'g:i A'|default:'-' }}</span>
+                  </div>
+                  <div class="mr-3 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Total Time</span>
+                    <span class="font-weight-bold text-primary" style="font-size: 1rem;">{{ today_duration_str }}</span>
+                  </div>
+                {% else %}
+                  <div class="mr-4 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Status</span>
+                    <span class="badge-soft badge-soft-warning font-weight-bold">Ready to Workout</span>
+                  </div>
+                  <div class="mr-3 mb-2">
+                    <span class="text-muted small d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">Plan</span>
+                    <span class="font-weight-bold text-dark" style="font-size: 1rem;">{{ latest_membership.plan.name|default:'Standard Membership' }}</span>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Right: Action Button -->
+        <div class="col-lg-5 col-md-4 text-md-right mt-2 mt-md-0">
+          {% if is_active %}
+            <form method="post" action="{% url 'member_portal:attendance_action' %}" id="member-attendance-form" class="m-0 d-inline-block">
+              {% csrf_token %}
+              {% if is_checked_in %}
+                <input type="hidden" name="action" value="checkout">
+                <button type="button" class="btn btn-danger font-weight-bold px-4 py-2 rounded-pill shadow-sm" id="btn-member-out-trigger" onclick="confirmMemberCheckOut();">
+                  <i class="mdi mdi-logout-variant mr-1"></i> Check Out (Finish Workout)
+                </button>
+              {% else %}
+                <input type="hidden" name="action" value="checkin">
+                <button type="submit" class="btn btn-success font-weight-bold px-4 py-2 rounded-pill shadow-sm" id="btn-member-in-trigger">
+                  <i class="mdi mdi-login-variant mr-1"></i> {% if today_attendance %}Check In Again{% else %}Check In (Start Workout){% endif %}
+                </button>
+              {% endif %}
+            </form>
+          {% else %}
+            <button type="button" class="btn btn-outline-danger font-weight-bold px-4 py-2 rounded-pill shadow-sm" onclick="showInactiveNotice();" title="Membership Inactive - Click for details">
+              <i class="fas fa-ban mr-1"></i> Membership Inactive
+            </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP KPI CARDS -->
+  <div class="row">
+    <!-- Membership Status Card -->
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="kpi-card {% if is_active %}kpi-primary{% elif latest_membership.is_frozen %}kpi-info{% else %}kpi-danger{% endif %}">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Membership Plan</span>
+            <div class="kpi-icon-wrap {% if is_active %}kpi-icon-primary{% elif latest_membership.is_frozen %}kpi-icon-info{% else %}kpi-icon-danger{% endif %}">
+              <i class="fas fa-id-card"></i>
+            </div>
+          </div>
+          <div class="kpi-value" style="font-size: 1.35rem;">
+            {{ latest_membership.plan.title|default:'No Active Plan' }}
+          </div>
+        </div>
+        <div class="kpi-meta">
+          {% if is_active %}
+            <span class="kpi-meta-badge kpi-badge-success">
+              <i class="fas fa-check-circle mr-1"></i> Active ({{ days_left }} Days Left)
+            </span>
+          {% elif latest_membership.is_frozen %}
+            <span class="kpi-meta-badge kpi-badge-info">
+              <i class="fas fa-snowflake mr-1"></i> Plan Frozen
+            </span>
+          {% else %}
+            <span class="kpi-meta-badge kpi-badge-danger">
+              <i class="fas fa-exclamation-circle mr-1"></i> Expired
+            </span>
+          {% endif %}
+          <span class="kpi-meta-desc">Expires: {{ end_date|date:'d M Y'|default:'N/A' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Card -->
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="kpi-card kpi-success">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Attendance (This Month)</span>
+            <div class="kpi-icon-wrap kpi-icon-success">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ current_month_checkins }} <span style="font-size: 0.9rem; font-weight: 500;">Sessions</span></div>
+        </div>
+        <div class="kpi-meta">
+          {% if is_checked_in %}
+            <span class="kpi-meta-badge kpi-badge-success">
+              <i class="fas fa-dot-circle mr-1 text-success"></i> Inside (since {{ active_attendance.check_in_time|time:'g:i A' }})
+            </span>
+          {% elif today_attendance %}
+            <span class="kpi-meta-badge kpi-badge-primary">
+              <i class="fas fa-check mr-1"></i> Completed ({{ today_duration_str }})
+            </span>
+          {% else %}
+            <span class="kpi-meta-badge kpi-badge-warning">
+              <i class="fas fa-clock mr-1"></i> Not Checked In Today
+            </span>
+          {% endif %}
+          <a href="{% url 'member_portal:attendance' %}" class="kpi-meta-desc text-primary font-weight-bold">View Log &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing & Dues Card -->
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="kpi-card {% if due_amount > 0 %}kpi-danger{% else %}kpi-warning{% endif %}">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Pending Dues</span>
+            <div class="kpi-icon-wrap {% if due_amount > 0 %}kpi-icon-danger{% else %}kpi-icon-warning{% endif %}">
+              <i class="fas fa-rupee-sign"></i>
+            </div>
+          </div>
+          <div class="kpi-value">&#8377;{{ due_amount|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          {% if due_amount > 0 %}
+            <span class="kpi-meta-badge kpi-badge-danger">
+              <i class="fas fa-exclamation-triangle mr-1"></i> Payment Due
+            </span>
+          {% else %}
+            <span class="kpi-meta-badge kpi-badge-success">
+              <i class="fas fa-check-circle mr-1"></i> All Dues Cleared
+            </span>
+          {% endif %}
+          <a href="{% url 'member_portal:billing' %}" class="kpi-meta-desc text-primary font-weight-bold">Invoices &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKOUT TRACKING & BODY PROGRESS BANNER (THEME ALIGNED ONEXIVACARD) -->
+  <div class="gym-card mb-4" style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border: 1px solid #bfdbfe; position: relative; overflow: hidden;">
+    <div style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); opacity: 0.06; font-size: 130px; pointer-events: none; line-height: 1; color: #2563eb;">
+      <i class="fas fa-chart-line"></i>
+    </div>
+    <div class="p-4 position-relative" style="z-index: 2;">
+      <div class="row align-items-center">
+        <div class="col-lg-8 mb-3 mb-lg-0">
+          <div class="mb-2">
+            <span class="badge-soft badge-soft-primary">
+              <i class="fas fa-fire text-warning mr-1"></i> Interactive Workout Tracker & Body Metrics
+            </span>
+          </div>
+          <h3 class="font-weight-bold mb-1 text-dark" style="font-size: 1.3rem;">Log Daily Workouts & Track Body Metrics</h3>
+          <p class="mb-0 text-muted small" style="max-width: 620px;">
+            Log sets, reps, weight lifted (kg), energy ratings, and track your body weight & tape measurements with interactive visual charts.
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-right">
+          <a href="{% url 'member_portal:progress' %}" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill shadow-sm" style="font-size: 0.9rem;">
+            <i class="fas fa-chart-line mr-1"></i> Open Progress Journal &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUTINES & PLANS ROW -->
+  <div class="row">
+    <!-- Assigned Workout Card -->
+    <div class="col-lg-6 mb-4">
+      <div class="gym-card h-100">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="mdi mdi-dumbbell text-primary" style="font-size: 1.25rem;"></i>
+            <span>Assigned Workout Routine</span>
+          </div>
+          <a href="{% url 'member_portal:workout_plan' %}" class="badge-soft badge-soft-primary">
+            Full Routine &rarr;
+          </a>
+        </div>
+        <div class="gym-card-body">
+          {% if assigned_workout and assigned_workout.workout_plan %}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h4 class="font-weight-bold text-dark mb-1">{{ assigned_workout.workout_plan.name }}</h4>
+                <div class="d-flex flex-wrap gap-2 align-items-center mt-1">
+                  <span class="badge badge-warning text-dark font-weight-bold mr-1">
+                    {{ assigned_workout.workout_plan.get_difficulty_display|default:assigned_workout.workout_plan.difficulty|title }}
+                  </span>
+                  <span class="badge badge-light border text-muted">
+                    {{ assigned_workout.workout_plan.duration_days }} Days
+                  </span>
+                </div>
+              </div>
+              {% if assigned_workout.workout_plan.document %}
+                <a href="{{ assigned_workout.workout_plan.document.url }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">
+                  <i class="fas fa-file-pdf mr-1"></i> PDF
+                </a>
+              {% endif %}
+            </div>
+            <div class="text-muted small mb-3" style="max-height: 80px; overflow: hidden; line-height: 1.6;">
+              {{ assigned_workout.workout_plan.description|striptags|truncatewords:25|default:'Custom fitness training routine crafted for maximum results.' }}
+            </div>
+            <div class="border-top pt-2 d-flex justify-content-between align-items-center">
+              <span class="small text-muted">Assigned: {{ assigned_workout.assigned_date|date:'d M Y' }}</span>
+              <a href="{% url 'member_portal:workout_plan' %}" class="btn btn-sm btn-primary rounded-pill px-3 font-weight-bold">
+                View Workout Details
+              </a>
+            </div>
+          {% else %}
+            <div class="text-center py-4">
+              <i class="mdi mdi-dumbbell text-muted mb-2" style="font-size: 2.5rem;"></i>
+              <h5 class="text-dark font-weight-bold">No Workout Assigned</h5>
+              <p class="text-muted small mb-0">Ask your gym trainer or front desk to set up your workout routine.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Assigned Diet Card -->
+    <div class="col-lg-6 mb-4">
+      <div class="gym-card h-100">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="mdi mdi-food-apple-outline text-success" style="font-size: 1.25rem;"></i>
+            <span>Nutrition & Diet Plan</span>
+          </div>
+          <a href="{% url 'member_portal:diet_plan' %}" class="badge-soft badge-soft-success">
+            Full Diet &rarr;
+          </a>
+        </div>
+        <div class="gym-card-body">
+          {% if assigned_diet and assigned_diet.diet_plan %}
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h4 class="font-weight-bold text-dark mb-1">{{ assigned_diet.diet_plan.name }}</h4>
+                <div class="d-flex flex-wrap gap-2 align-items-center mt-1">
+                  <span class="badge badge-success text-white font-weight-bold mr-1">
+                    {{ assigned_diet.diet_plan.get_target_display|default:assigned_diet.diet_plan.target|title }}
+                  </span>
+                  <span class="badge badge-light border text-muted">
+                    {{ assigned_diet.diet_plan.duration_days }} Days
+                  </span>
+                </div>
+              </div>
+              {% if assigned_diet.diet_plan.document %}
+                <a href="{{ assigned_diet.diet_plan.document.url }}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill">
+                  <i class="fas fa-file-pdf mr-1"></i> PDF
+                </a>
+              {% endif %}
+            </div>
+            <div class="text-muted small mb-3" style="max-height: 80px; overflow: hidden; line-height: 1.6;">
+              {{ assigned_diet.diet_plan.description|striptags|truncatewords:25|default:'Custom meal schedule formulated to match your daily activity.' }}
+            </div>
+            <div class="border-top pt-2 d-flex justify-content-between align-items-center">
+              <span class="small text-muted">Assigned: {{ assigned_diet.assigned_date|date:'d M Y' }}</span>
+              <a href="{% url 'member_portal:diet_plan' %}" class="btn btn-sm btn-success rounded-pill px-3 font-weight-bold">
+                View Diet Details
+              </a>
+            </div>
+          {% else %}
+            <div class="text-center py-4">
+              <i class="mdi mdi-food-apple-outline text-muted mb-2" style="font-size: 2.5rem;"></i>
+              <h5 class="text-dark font-weight-bold">No Diet Plan Assigned</h5>
+              <p class="text-muted small mb-0">Ask your gym trainer or nutritionist to assign a meal plan.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERSONAL TRAINER & RECENT CHECK-INS -->
+  <div class="row">
+    <!-- Personal Trainer Card -->
+    {% if pt_assignment and pt_assignment.trainer %}
+    <div class="col-lg-5 mb-4">
+      <div class="gym-card h-100 mb-0">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="fas fa-user-tie text-primary"></i>
+            <span>Personal Trainer</span>
+          </div>
+          <span class="badge-soft badge-soft-success">
+            <i class="fas fa-check-circle mr-1"></i> Active Coach
+          </span>
+        </div>
+        <div class="gym-card-body d-flex flex-column justify-content-center text-center py-4">
+          <div class="mb-3 position-relative d-inline-block mx-auto">
+            <img src="{% if pt_assignment.trainer.photo %}{{ pt_assignment.trainer.photo.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                 onerror="this.src='{% static 'images/member_dp.jpg' %}';"
+                 alt="{{ pt_assignment.trainer.name }}" 
+                 class="rounded-circle shadow-sm" 
+                 style="width: 76px; height: 76px; object-fit: cover; border: 3px solid #e2e8f0; background: #f8fafc;">
+          </div>
+          <h4 class="font-weight-bold text-dark mb-1" style="font-size: 1.15rem; letter-spacing: -0.01em;">
+            {{ pt_assignment.trainer.name }}
+          </h4>
+          <div class="mb-3">
+            <span class="badge-soft badge-soft-primary font-weight-semibold mr-1">
+              <i class="fas fa-dumbbell mr-1"></i> {{ pt_assignment.trainer.get_specialization_display|default:pt_assignment.trainer.specialization }}
+            </span>
+            {% if pt_end_date %}
+              <span class="badge-soft badge-soft-success">
+                <i class="fas fa-clock mr-1"></i> {{ pt_days_left }}d left
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="p-3 rounded-lg mx-auto w-100 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0; max-width: 380px;">
+            <div class="d-flex justify-content-around align-items-center text-muted small">
+              {% if pt_assignment.trainer.phone %}
+                <a href="tel:{{ pt_assignment.trainer.phone }}" class="text-decoration-none text-dark font-weight-semibold d-inline-flex align-items-center">
+                  <i class="fas fa-phone-alt text-primary mr-2"></i> {{ pt_assignment.trainer.phone }}
+                </a>
+              {% endif %}
+              {% if pt_assignment.trainer.phone and pt_assignment.trainer.email %}
+                <span class="text-muted">|</span>
+              {% endif %}
+              {% if pt_assignment.trainer.email %}
+                <a href="mailto:{{ pt_assignment.trainer.email }}" class="text-decoration-none text-dark font-weight-semibold d-inline-flex align-items-center">
+                  <i class="fas fa-envelope text-primary mr-2"></i> {{ pt_assignment.trainer.email }}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center gap-2 flex-wrap">
+            <a href="{% url 'member_portal:personal_training' %}" class="btn btn-sm btn-primary rounded-pill px-3 font-weight-bold">
+              <i class="fas fa-chart-line mr-1"></i> Track PT Details
+            </a>
+            {% if pt_assignment.trainer.phone %}
+            <a href="https://wa.me/91{{ pt_assignment.trainer.phone }}?text=Hi%20Coach%20{{ pt_assignment.trainer.name|urlencode }}%2C%20I%20have%20a%20question%20regarding%20my%20gym%20training." 
+               target="_blank" 
+               class="btn btn-sm btn-outline-success rounded-pill px-3 font-weight-bold">
+              <i class="fab fa-whatsapp mr-1"></i> WhatsApp
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Attendance Logs Table -->
+    <div class="{% if pt_assignment and pt_assignment.trainer %}col-lg-7{% else %}col-12{% endif %} mb-4">
+      <div class="gym-card h-100 mb-0">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="fas fa-history text-primary"></i>
+            <span>Recent Check-ins</span>
+          </div>
+          <a href="{% url 'member_portal:attendance' %}" class="small font-weight-bold text-primary">
+            View All Log &rarr;
+          </a>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Check-In Time</th>
+                  <th>Check-Out</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for log in recent_checkins %}
+                <tr>
+                  <td class="font-weight-bold text-dark">{{ log.check_in_time|date:'d M Y' }}</td>
+                  <td>
+                    <span class="text-dark font-weight-semibold">
+                      <i class="far fa-clock mr-1 text-muted"></i>{{ log.check_in_time|time:'g:i A' }}
+                    </span>
+                  </td>
+                  <td>{{ log.check_out_time|time:'g:i A'|default:'-' }}</td>
+                  <td>
+                    {% if log.duration %}
+                      <span class="badge badge-light border font-weight-bold">{{ log.duration }}</span>
+                    {% elif not log.check_out_time %}
+                      <span class="badge badge-success px-2 py-1">In Gym</span>
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td><span class="badge-soft badge-soft-success"><i class="fas fa-check mr-1"></i> Verified</span></td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center py-4 text-muted">No recent attendance recorded yet.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Digital Clock for Idle state
+function updateMemberClock() {
+    const el = document.getElementById('live-member-clock');
+    if (!el) return;
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+setInterval(updateMemberClock, 1000);
+updateMemberClock();
+
+// Live Workout Timer for Active Check-in
+const memberTimerEl = document.getElementById('live-member-timer');
+if (memberTimerEl && memberTimerEl.dataset.start) {
+    const startTime = new Date(memberTimerEl.dataset.start).getTime();
+    function tickMemberTimer() {
+        const now = new Date().getTime();
+        let diffSecs = Math.max(0, Math.floor((now - startTime) / 1000));
+        const hrs = String(Math.floor(diffSecs / 3600)).padStart(2, '0');
+        diffSecs %= 3600;
+        const mins = String(Math.floor(diffSecs / 60)).padStart(2, '0');
+        const secs = String(diffSecs % 60).padStart(2, '0');
+        memberTimerEl.textContent = `${hrs}:${mins}:${secs}`;
+    }
+    setInterval(tickMemberTimer, 1000);
+    tickMemberTimer();
+}
+
+// SweetAlert Check Out Confirmation
+function confirmMemberCheckOut() {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Finish Workout?',
+            text: 'Are you sure you want to check out and complete your gym session?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: '<i class="fas fa-sign-out-alt mr-1"></i> Yes, Check Out',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.getElementById('member-attendance-form');
+                const btn = document.getElementById('btn-member-out-trigger');
+                if (btn) btn.disabled = true;
+                form.submit();
+            }
+        });
+    } else {
+        if (confirm('Are you sure you want to check out?')) {
+            document.getElementById('member-attendance-form').submit();
+        }
+    }
+}
+
+// Notice for Inactive/Expired Member Clicking Button
+function showInactiveNotice() {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Membership Inactive',
+            text: 'Your gym membership is currently expired or inactive. Please contact the front desk or renew your membership plan to mark attendance.',
+            icon: 'warning',
+            confirmButtonColor: '#4599cd',
+            confirmButtonText: 'Understood'
+        });
+    } else {
+        alert('Your gym membership is currently expired or inactive. Please contact the front desk.');
+    }
+}
+</script>
+{% endblock %}

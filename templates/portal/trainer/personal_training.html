@@ -1,0 +1,426 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}Personal Training Tracking - Coach {{ trainer.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">Personal Training Management</h2>
+      <p class="dashboard-hero-subtitle">Track your 1-on-1 personal coaching assignments, validity timelines, and client progress</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <a href="{% url 'trainer_portal:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+        <i class="fas fa-arrow-left mr-1"></i> Dashboard
+      </a>
+      <a href="{% url 'trainer_portal:clients' %}" class="btn btn-primary btn-sm px-3 rounded-pill font-weight-bold">
+        <i class="fas fa-users mr-1"></i> Client Roster
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY CARDS -->
+  <div class="row">
+    <!-- Active PT Clients -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-primary">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Active PT Clients</span>
+            <div class="kpi-icon-wrap kpi-icon-primary">
+              <i class="fas fa-user-check"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ total_active_clients }} <span style="font-size: 0.9rem; font-weight: 500;">Active</span></div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-primary">
+            <i class="fas fa-dumbbell mr-1"></i> In Training
+          </span>
+          <span class="kpi-meta-desc">Total all-time: {{ total_records_count }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trainer Fees Accrued -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-success">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Total Trainer Fees</span>
+            <div class="kpi-icon-wrap kpi-icon-success">
+              <i class="fas fa-rupee-sign"></i>
+            </div>
+          </div>
+          <div class="kpi-value">&#8377;{{ total_trainer_fees|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-success">
+            <i class="fas fa-wallet mr-1"></i> Fee Allocation
+          </span>
+          <span class="kpi-meta-desc">Coaching compensation</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Duration Coached -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-info">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Total Coaching Months</span>
+            <div class="kpi-icon-wrap kpi-icon-info">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ total_months_coached }} <span style="font-size: 0.9rem; font-weight: 500;">Months</span></div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-info">
+            <i class="fas fa-clock mr-1"></i> Duration
+          </span>
+          <span class="kpi-meta-desc">Aggregate client packages</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Client Dues -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card {% if total_due_amount > 0 %}kpi-danger{% else %}kpi-warning{% endif %}">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Pending Client Dues</span>
+            <div class="kpi-icon-wrap {% if total_due_amount > 0 %}kpi-icon-danger{% else %}kpi-icon-warning{% endif %}">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+          </div>
+          <div class="kpi-value">&#8377;{{ total_due_amount|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          {% if total_due_amount > 0 %}
+            <span class="kpi-meta-badge kpi-badge-danger">
+              <i class="fas fa-times-circle mr-1"></i> Action Required
+            </span>
+            <span class="kpi-meta-desc">Outstanding PT balance</span>
+          {% else %}
+            <span class="kpi-meta-badge kpi-badge-success">
+              <i class="fas fa-check-circle mr-1"></i> All Clear
+            </span>
+            <span class="kpi-meta-desc">No outstanding balance</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER TABS & SEARCH -->
+  <div class="gym-card mb-4">
+    <div class="gym-card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+      <ul class="nav nav-pills" id="ptTabs" role="tablist" style="gap: 8px;">
+        <li class="nav-item">
+          <a class="nav-link active rounded-pill px-3 py-1 font-weight-bold" id="active-tab" data-toggle="pill" href="#active-pt" role="tab" style="font-size: 0.85rem;">
+            <i class="fas fa-running mr-1 text-success"></i> Active Packages ({{ active_pt_records|length }})
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link rounded-pill px-3 py-1 font-weight-bold" id="all-tab" data-toggle="pill" href="#all-pt" role="tab" style="font-size: 0.85rem;">
+            <i class="fas fa-list mr-1 text-primary"></i> All History ({{ all_records|length }})
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link rounded-pill px-3 py-1 font-weight-bold" id="expired-tab" data-toggle="pill" href="#expired-pt" role="tab" style="font-size: 0.85rem;">
+            <i class="fas fa-history mr-1 text-muted"></i> Completed / Expired ({{ expired_pt_records|length }})
+          </a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center">
+        <input type="text" id="ptClientSearch" class="form-control form-control-sm rounded-pill px-3" placeholder="Filter by client name or ID..." style="max-width: 250px;">
+      </div>
+    </div>
+
+    <div class="tab-content" id="ptTabContent">
+      <!-- ACTIVE PT TAB -->
+      <div class="tab-pane fade show active" id="active-pt" role="tabpanel">
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0 pt-table align-middle">
+              <thead class="bg-light">
+                <tr>
+                  <th class="pl-4">Client</th>
+                  <th>Duration</th>
+                  <th>Timeline</th>
+                  <th>Package Progress</th>
+                  <th>Trainer Fee</th>
+                  <th>Payment Status</th>
+                  <th class="text-right pr-4">Quick Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in active_pt_records %}
+                <tr class="pt-row" data-name="{{ item.member.name|lower }} {{ item.member.member_id|lower }}">
+                  <td class="pl-4">
+                    <div class="d-flex align-items-center">
+                      <img src="{% if item.member.profile_picture %}{{ item.member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                           onerror="this.src='{% static 'images/member_dp.jpg' %}';"
+                           alt="{{ item.member.name }}" 
+                           class="rounded-circle mr-3" 
+                           style="width: 44px; height: 44px; object-fit: cover; border: 2px solid #3b82f6;">
+                      <div>
+                        <div class="font-weight-bold text-dark">{{ item.member.name }}</div>
+                        <div class="text-muted small">ID: <span class="font-monospace text-primary font-weight-bold">{{ item.member.member_id }}</span></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge badge-primary px-2 py-1 font-weight-bold">{{ item.record.months }} Month{% if item.record.months > 1 %}s{% endif %}</span>
+                  </td>
+                  <td>
+                    <div class="small font-weight-bold text-dark">{{ item.record.pt_start_date|date:'d M Y' }} &rarr; {{ item.end_date|date:'d M Y' }}</div>
+                    {% if item.days_left <= 5 %}
+                      <span class="badge badge-warning px-2 py-0 small"><i class="fas fa-clock mr-1"></i>{{ item.days_left }} days left</span>
+                    {% else %}
+                      <span class="badge badge-success px-2 py-0 small"><i class="fas fa-check mr-1"></i>{{ item.days_left }} days left</span>
+                    {% endif %}
+                  </td>
+                  <td style="min-width: 140px;">
+                    <div class="d-flex align-items-center justify-content-between small text-muted mb-1">
+                      <span>Completed</span>
+                      <strong>{{ item.progress_pct }}%</strong>
+                    </div>
+                    <div class="progress" style="height: 6px; border-radius: 999px;">
+                      <div class="progress-bar bg-primary" role="progressbar" style="width: {{ item.progress_pct }}%;" aria-valuenow="{{ item.progress_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="font-weight-bold text-dark">&#8377;{{ item.record.trainer_fee|intcomma }}</div>
+                    <div class="text-muted small">Total: &#8377;{{ item.record.total_amount|intcomma }}</div>
+                  </td>
+                  <td>
+                    {% if item.due_amount > 0 %}
+                      <span class="badge badge-danger px-2 py-1 font-weight-bold">&#8377;{{ item.due_amount|intcomma }} Due</span>
+                    {% else %}
+                      <span class="badge badge-success px-2 py-1 font-weight-bold"><i class="fas fa-check mr-1"></i>Paid</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-right pr-4">
+                    <div class="d-flex justify-content-end gap-1">
+                      <a href="tel:{{ item.member.mobile_number }}" class="btn btn-sm btn-outline-primary rounded-circle" title="Call {{ item.member.name }}" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-phone small"></i>
+                      </a>
+                      <a href="https://wa.me/91{{ item.member.mobile_number }}" target="_blank" class="btn btn-sm btn-outline-success rounded-circle" title="WhatsApp" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="fab fa-whatsapp small"></i>
+                      </a>
+                      <a href="{% url 'trainer_portal:client_detail' item.member.id %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 font-weight-bold" style="font-size: 0.8rem;">
+                        Details &rarr;
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center py-5">
+                    <div class="text-muted">
+                      <i class="mdi mdi-dumbbell" style="font-size: 3rem; color: #cbd5e1;"></i>
+                      <h5 class="mt-2 font-weight-bold">No Active Personal Training Clients</h5>
+                      <p class="small text-muted mb-0">When members subscribe to your personal training packages, they will appear here.</p>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALL PT TAB -->
+      <div class="tab-pane fade" id="all-pt" role="tabpanel">
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0 pt-table align-middle">
+              <thead class="bg-light">
+                <tr>
+                  <th class="pl-4">Client</th>
+                  <th>Duration</th>
+                  <th>Timeline</th>
+                  <th>Status</th>
+                  <th>Trainer Fee</th>
+                  <th>Payment Status</th>
+                  <th class="text-right pr-4">Quick Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in all_records %}
+                <tr class="pt-row" data-name="{{ item.member.name|lower }} {{ item.member.member_id|lower }}">
+                  <td class="pl-4">
+                    <div class="d-flex align-items-center">
+                      <img src="{% if item.member.profile_picture %}{{ item.member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                           onerror="this.src='{% static 'images/member_dp.jpg' %}';"
+                           alt="{{ item.member.name }}" 
+                           class="rounded-circle mr-3" 
+                           style="width: 44px; height: 44px; object-fit: cover; border: 2px solid #e2e8f0;">
+                      <div>
+                        <div class="font-weight-bold text-dark">{{ item.member.name }}</div>
+                        <div class="text-muted small">ID: <span class="font-monospace text-primary font-weight-bold">{{ item.member.member_id }}</span></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge badge-light border px-2 py-1 font-weight-bold">{{ item.record.months }} Month{% if item.record.months > 1 %}s{% endif %}</span>
+                  </td>
+                  <td>
+                    <div class="small font-weight-bold text-dark">{{ item.record.pt_start_date|date:'d M Y' }} &rarr; {{ item.end_date|date:'d M Y' }}</div>
+                    <div class="text-muted small">Enrolled: {{ item.record.payment_date|date:'d M Y' }}</div>
+                  </td>
+                  <td>
+                    {% if item.is_current %}
+                      <span class="badge badge-success px-2 py-1 font-weight-bold"><i class="fas fa-check-circle mr-1"></i>Active</span>
+                    {% else %}
+                      <span class="badge badge-secondary px-2 py-1 font-weight-bold">Expired</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="font-weight-bold text-dark">&#8377;{{ item.record.trainer_fee|intcomma }}</div>
+                    <div class="text-muted small">Total: &#8377;{{ item.record.total_amount|intcomma }}</div>
+                  </td>
+                  <td>
+                    {% if item.due_amount > 0 %}
+                      <span class="badge badge-danger px-2 py-1 font-weight-bold">&#8377;{{ item.due_amount|intcomma }} Due</span>
+                    {% else %}
+                      <span class="badge badge-success px-2 py-1 font-weight-bold">Paid</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-right pr-4">
+                    <div class="d-flex justify-content-end gap-1">
+                      <a href="tel:{{ item.member.mobile_number }}" class="btn btn-sm btn-outline-primary rounded-circle" title="Call {{ item.member.name }}" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-phone small"></i>
+                      </a>
+                      <a href="https://wa.me/91{{ item.member.mobile_number }}" target="_blank" class="btn btn-sm btn-outline-success rounded-circle" title="WhatsApp" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="fab fa-whatsapp small"></i>
+                      </a>
+                      <a href="{% url 'trainer_portal:client_detail' item.member.id %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 font-weight-bold" style="font-size: 0.8rem;">
+                        Details &rarr;
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center py-5">
+                    <div class="text-muted">
+                      <i class="mdi mdi-history" style="font-size: 3rem; color: #cbd5e1;"></i>
+                      <h5 class="mt-2 font-weight-bold">No PT Subscriptions Recorded</h5>
+                      <p class="small text-muted mb-0">Personal training history will populate as packages are assigned to you.</p>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXPIRED PT TAB -->
+      <div class="tab-pane fade" id="expired-pt" role="tabpanel">
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0 pt-table align-middle">
+              <thead class="bg-light">
+                <tr>
+                  <th class="pl-4">Client</th>
+                  <th>Duration</th>
+                  <th>Timeline</th>
+                  <th>Status</th>
+                  <th>Trainer Fee</th>
+                  <th>Payment Status</th>
+                  <th class="text-right pr-4">Quick Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in expired_pt_records %}
+                <tr class="pt-row" data-name="{{ item.member.name|lower }} {{ item.member.member_id|lower }}">
+                  <td class="pl-4">
+                    <div class="d-flex align-items-center">
+                      <img src="{% if item.member.profile_picture %}{{ item.member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                           onerror="this.src='{% static 'images/member_dp.jpg' %}';"
+                           alt="{{ item.member.name }}" 
+                           class="rounded-circle mr-3" 
+                           style="width: 44px; height: 44px; object-fit: cover; border: 2px solid #e2e8f0;">
+                      <div>
+                        <div class="font-weight-bold text-dark">{{ item.member.name }}</div>
+                        <div class="text-muted small">ID: <span class="font-monospace text-primary font-weight-bold">{{ item.member.member_id }}</span></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge badge-light border px-2 py-1 font-weight-bold">{{ item.record.months }} Month{% if item.record.months > 1 %}s{% endif %}</span>
+                  </td>
+                  <td>
+                    <div class="small font-weight-bold text-dark">{{ item.record.pt_start_date|date:'d M Y' }} &rarr; {{ item.end_date|date:'d M Y' }}</div>
+                    <div class="text-muted small">Ended {{ item.end_date|timesince }} ago</div>
+                  </td>
+                  <td>
+                    <span class="badge badge-secondary px-2 py-1 font-weight-bold">Completed</span>
+                  </td>
+                  <td>
+                    <div class="font-weight-bold text-dark">&#8377;{{ item.record.trainer_fee|intcomma }}</div>
+                    <div class="text-muted small">Total: &#8377;{{ item.record.total_amount|intcomma }}</div>
+                  </td>
+                  <td>
+                    {% if item.due_amount > 0 %}
+                      <span class="badge badge-danger px-2 py-1 font-weight-bold">&#8377;{{ item.due_amount|intcomma }} Due</span>
+                    {% else %}
+                      <span class="badge badge-success px-2 py-1 font-weight-bold">Paid</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-right pr-4">
+                    <div class="d-flex justify-content-end gap-1">
+                      <a href="tel:{{ item.member.mobile_number }}" class="btn btn-sm btn-outline-primary rounded-circle" title="Call {{ item.member.name }}" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-phone small"></i>
+                      </a>
+                      <a href="https://wa.me/91{{ item.member.mobile_number }}" target="_blank" class="btn btn-sm btn-outline-success rounded-circle" title="WhatsApp to Renew" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="fab fa-whatsapp small"></i>
+                      </a>
+                      <a href="{% url 'trainer_portal:client_detail' item.member.id %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 font-weight-bold" style="font-size: 0.8rem;">
+                        Details &rarr;
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center py-5">
+                    <div class="text-muted">
+                      <i class="mdi mdi-check-all" style="font-size: 3rem; color: #cbd5e1;"></i>
+                      <h5 class="mt-2 font-weight-bold">No Expired PT Packages</h5>
+                      <p class="small text-muted mb-0">All current personal training clients are active!</p>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Client real-time search filter
+  document.getElementById('ptClientSearch')?.addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    document.querySelectorAll('.pt-row').forEach(row => {
+      const text = row.getAttribute('data-name') || '';
+      row.style.display = text.includes(q) ? '' : 'none';
+    });
+  });
+</script>
+{% endblock %}

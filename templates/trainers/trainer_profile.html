@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}Trainer Profile - {{ trainer.name }}{% endblock title %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'trainer_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Trainers List
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Trainer Profile
+        </li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Trainer Profile</h2>
+                <div class="d-none d-md-flex">
+                    {% if request.user|has_permission:'change_trainer' %}
+                    <a href="{% url 'edit_trainer' trainer.id %}" class="btn btn-sm btn-secondary mr-2" data-toggle="tooltip" title="Edit Trainer">
+                        <i class="mdi mdi-pencil"></i>
+                    </a>
+                    <button type="button" onclick="openResetTrainerPasswordModal('{{ trainer.id }}', '{{ trainer.name|escapejs }}', '{{ trainer.phone }}', '{{ trainer.trainer_id }}')" class="btn btn-sm btn-dark mr-2" data-toggle="tooltip" title="Reset Trainer Password">
+                        <i class="mdi mdi-key-variant"></i>
+                    </button>
+                    <a href="{% url 'toggle_trainer_status' trainer.id %}" class="btn btn-sm {% if trainer.is_active %}btn-warning{% else %}btn-success{% endif %} mr-2" data-toggle="tooltip" title="{% if trainer.is_active %}Deactivate Trainer{% else %}Activate Trainer{% endif %}">
+                        <i class="mdi {% if trainer.is_active %}mdi-pause{% else %}mdi-play{% endif %}"></i>
+                    </a>
+                    {% endif %}
+                    {% if request.user|has_permission:'delete_trainer' %}
+                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ trainer.id }}', '{{ trainer.name|escapejs }}', '{% url 'delete_trainer' trainer.id %}', '{% url 'trainer_list' %}')" data-toggle="tooltip" title="Delete">
+                        <i class="mdi mdi-delete-outline"></i>
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="d-md-none">
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle font-weight-bold shadow-sm" type="button" id="trainerActionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="mdi mdi-settings mr-1"></i> Actions
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow-lg border-0 rounded-lg" aria-labelledby="trainerActionsDropdown">
+                            <h6 class="dropdown-header text-uppercase font-weight-bold text-muted">Manage Trainer</h6>
+                            {% if request.user|has_permission:'change_trainer' %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'edit_trainer' trainer.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-pencil text-secondary"></i></div> Edit Trainer
+                            </a>
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="#" onclick="openResetTrainerPasswordModal('{{ trainer.id }}', '{{ trainer.name|escapejs }}', '{{ trainer.phone }}', '{{ trainer.trainer_id }}'); return false;">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-key-variant text-dark"></i></div> Reset Password
+                            </a>
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'toggle_trainer_status' trainer.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi {% if trainer.is_active %}mdi-pause text-warning{% else %}mdi-play text-success{% endif %}"></i></div>
+                                {% if trainer.is_active %}Deactivate Trainer{% else %}Activate Trainer{% endif %}
+                            </a>
+                            {% endif %}
+                            {% if request.user|has_permission:'delete_trainer' %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item py-2 d-flex align-items-center text-danger font-weight-bold" href="#" onclick="confirmDelete('{{ trainer.id }}', '{{ trainer.name|escapejs }}', '{% url 'delete_trainer' trainer.id %}', '{% url 'trainer_list' %}')">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-delete-outline text-danger"></i></div> Delete Trainer
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="border-bottom text-center pb-4">
+                            {% if trainer.photo %}
+                                <img src="{{ trainer.photo.url }}" alt="profile" class="img-lg rounded-circle mb-3 shadow-sm" style="width: 120px; height: 120px; object-fit: cover; cursor: pointer;" onclick="showImage('{{ trainer.photo.url }}')"/>
+                            {% else %}
+                                <img src="{% static 'images/trainer_dp.png' %}" alt="profile" class="img-lg rounded-circle mb-3 shadow-sm" style="width: 120px; height: 120px; object-fit: cover; background: #ffffff;"/>
+                            {% endif %}
+                            <h4 class="font-weight-bold">{{ trainer.name }}</h4>
+                            <p class="text-muted mb-2">#{{ trainer.trainer_id }}</p>
+                           
+                            <!-- Quick Action Buttons -->
+                            <div class="d-flex justify-content-center mt-3">
+                                {% if trainer.phone %}
+                                <a href="tel:{{ trainer.phone }}" class="btn btn-outline-primary btn-sm mr-2 d-flex align-items-center rounded-pill px-3 shadow-sm" style="transition: all 0.2s ease-in-out;" data-toggle="tooltip" title="Call Trainer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    <i class="mdi mdi-phone mr-1 mdi-18px"></i> Call
+                                </a>
+                                <a href="https://wa.me/91{{ trainer.phone }}?text=Hello%20*{{ trainer.name|urlencode }}*,%20greetings%20from%20*{{ trainer.gym.name|urlencode }}*!" target="_blank" class="btn btn-outline-success btn-sm d-flex align-items-center rounded-pill px-3 shadow-sm" style="transition: all 0.2s ease-in-out;" data-toggle="tooltip" title="WhatsApp Message" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    <i class="mdi mdi-whatsapp mr-1 mdi-18px"></i> WhatsApp
+                                </a>
+                                {% else %}
+                                <button type="button" class="btn btn-outline-secondary btn-sm mr-2 d-flex align-items-center rounded-pill px-3 shadow-sm" disabled>
+                                    <i class="mdi mdi-phone mr-1 mdi-18px"></i> Call
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center rounded-pill px-3 shadow-sm" disabled>
+                                    <i class="mdi mdi-whatsapp mr-1 mdi-18px"></i> WhatsApp
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="py-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="mdi mdi-checkbox-marked-circle-outline mr-2 text-primary"></i>Status</span>
+                                <span class="text-muted">
+                                    <span class="badge {% if trainer.is_active %}badge-success{% else %}badge-danger{% endif %}">
+                                        {% if trainer.is_active %}Active{% else %}Inactive{% endif %}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="mdi mdi-phone mr-2 text-primary"></i>Phone</span>
+                                <span><a href="tel:{{ trainer.phone }}" class="text-decoration-none text-dark font-weight-bold hover-primary">{{ trainer.phone|default:"—" }}</a></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="mdi mdi-email-outline mr-2 text-primary"></i>Mail</span>
+                                <span><a href="mailto:{{ trainer.email }}" class="text-decoration-none text-dark font-weight-bold hover-primary">{{ trainer.email|default:"—" }}</a></span>
+                            </div>
+                        </div>
+
+                        <div class="py-4 border-top">
+                            <h5 class="mb-3">Employment Info</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="mdi mdi-dumbbell mr-2 text-primary"></i>Specialization</span>
+                                <span class="text-muted font-weight-bold">{{ trainer.get_specialization_display|default:trainer.specialization|default:"General Fitness" }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="mdi mdi-clock-outline mr-2 text-primary"></i>Time Slot</span>
+                                <span class="text-muted font-weight-bold">{{ trainer.time_slot|default:"Flexible" }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><i class="mdi mdi-calendar-check mr-2 text-primary"></i>Joining Date</span>
+                                <span class="text-muted font-weight-bold">{{ trainer.joining_date|date:"d M, Y"|default:"—" }}</span>
+                            </div>
+                        </div>
+
+                        <div class="py-4 border-top">
+                            <h5 class="mb-3">Salary & PT Charges</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="mdi mdi-cash-multiple mr-2 text-primary"></i>Monthly Base Salary</span>
+                                <span class="text-dark font-weight-bold">₹{{ trainer.salary|default:"0" }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="mdi mdi-account-group mr-2 text-primary"></i>PT Monthly Rate</span>
+                                <span class="text-dark font-weight-bold">₹{{ trainer.personal_training_monthly_amount|default:"0" }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><i class="mdi mdi-wallet-outline mr-2 text-primary"></i>Est. Monthly Earning</span>
+                                <span class="text-success font-weight-bold">₹{{ total_estimated_monthly_income|floatformat:2 }}</span>
+                            </div>
+                        </div>
+
+                        <div class="py-4 border-top">
+                            <h5 class="mb-3">Attendance Overview</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="mdi mdi-map-marker-radius mr-2 text-primary"></i>Current Duty</span>
+                                <span class="badge {% if latest_attendance and latest_attendance.status == 'inside' %}badge-success{% else %}badge-secondary{% endif %}">
+                                    {% if latest_attendance and latest_attendance.status == 'inside' %}Inside Gym{% else %}Outside Gym{% endif %}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="mdi mdi-calendar-month mr-2 text-primary"></i>Days Present (Month)</span>
+                                <span class="text-muted font-weight-bold">{{ month_present_days }} Days</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><i class="mdi mdi-clock-time-four-outline mr-2 text-primary"></i>Total Hours</span>
+                                <span class="text-muted font-weight-bold">{{ month_total_hours }} hrs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <div class="mt-4 py-2">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="personal-tab" data-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="true">Personal Details</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pt-clients-tab" data-toggle="tab" href="#pt-clients" role="tab" aria-controls="pt-clients" aria-selected="false">PT Clients ({{ total_clients_count }})</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab" aria-controls="attendance" aria-selected="false">Attendance History</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="leaves-tab" data-toggle="tab" href="#leaves" role="tab" aria-controls="leaves" aria-selected="false">Leaves ({{ leave_records.count }})</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="salary-tab" data-toggle="tab" href="#salary" role="tab" aria-controls="salary" aria-selected="false">Compensation & Payouts</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                
+                                <!-- TAB 1: Personal Details -->
+                                <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                                    <div class="py-3">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Specialization:</strong> {{ trainer.get_specialization_display|default:trainer.specialization|default:"General Fitness" }}</p>
+                                                <p><strong>Time Slot / Shift:</strong> {{ trainer.time_slot|default:"Flexible / All Day" }}</p>
+                                                <p><strong>Salary (Monthly):</strong> ₹{{ trainer.salary|default:"0" }}</p>
+                                                <p><strong>PT Charge (Monthly):</strong> ₹{{ trainer.personal_training_monthly_amount|default:"0" }}</p>
+                                                <p><strong>Status:</strong> <span class="badge {% if trainer.is_active %}badge-success{% else %}badge-danger{% endif %}">{% if trainer.is_active %}Active Coach{% else %}Inactive{% endif %}</span></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Address:</strong></p>
+                                                <p>{{ trainer.address|default:"None" }}</p>
+                                                <p><strong>Joining Date:</strong> {{ trainer.joining_date|date:"d M, Y"|default:"None" }}</p>
+                                                <p><strong>Tenure:</strong> {{ tenure_str }}</p>
+                                                <p><strong>Trainer Code:</strong> #{{ trainer.trainer_id }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- TAB 2: PT Clients -->
+                                <div class="tab-pane fade" id="pt-clients" role="tabpanel" aria-labelledby="pt-clients-tab">
+                                    <div class="py-3">
+                                        <h4>Personal Training Clients</h4>
+                                        {% if pt_clients %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Member</th>
+                                                            <th>Mobile</th>
+                                                            <th>Start Date</th>
+                                                            <th>End Date</th>
+                                                            <th>Months</th>
+                                                            <th>Fee</th>
+                                                            <th>Paid</th>
+                                                            <th>Due</th>
+                                                            <th>Status</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for pt in pt_clients %}
+                                                        <tr>
+                                                            <td>
+                                                                <a href="{% url 'member_profile' pt.member.id %}" class="font-weight-bold text-dark text-decoration-none hover-primary">
+                                                                    {{ pt.member.first_name }} {{ pt.member.last_name }}
+                                                                </a><br>
+                                                                <small class="text-muted">#{{ pt.member.member_id }}</small>
+                                                            </td>
+                                                            <td>{{ pt.member.mobile_number }}</td>
+                                                            <td>{{ pt.pt_start_date|date:"d-m-Y" }}</td>
+                                                            <td>{{ pt.get_end_date|date:"d-m-Y" }}</td>
+                                                            <td>{{ pt.months }}</td>
+                                                            <td>₹{{ pt.trainer_fee }}</td>
+                                                            <td>₹{{ pt.paid_amount }}</td>
+                                                            <td>₹{{ pt.due_amount }}</td>
+                                                            <td>
+                                                                <span class="badge {% if pt.status == 'active' %}badge-success{% else %}badge-secondary{% endif %}">
+                                                                    {{ pt.get_status_display }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <a href="{% url 'member_profile' pt.member.id %}" class="btn btn-primary btn-sm" title="View Member Profile"><i class="fas fa-eye"></i></a>
+                                                                {% if pt.member.mobile_number %}
+                                                                <a href="https://wa.me/91{{ pt.member.mobile_number }}?text=Hello%20*{{ pt.member.first_name|urlencode }}*,%20regarding%20your%20Personal%20Training%20sessions%20with%20Coach%20*{{ trainer.name|urlencode }}*." target="_blank" class="btn btn-success btn-sm" title="WhatsApp Member"><i class="mdi mdi-whatsapp"></i></a>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">No personal training clients assigned to this trainer yet.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- TAB 3: Attendance History -->
+                                <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
+                                    <div class="py-3">
+                                        <h4>Attendance History</h4>
+                                        {% if attendance_records %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Check-In</th>
+                                                            <th>Check-Out</th>
+                                                            <th>Duration</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for att in attendance_records %}
+                                                        <tr>
+                                                            <td>{{ att.check_in_time|date:"d-m-Y" }}</td>
+                                                            <td>{{ att.check_in_time|time:"h:i A" }}</td>
+                                                            <td>{{ att.check_out_time|time:"h:i A"|default:"Not Checked Out" }}</td>
+                                                            <td>{{ att.duration|default:"In Progress" }}</td>
+                                                            <td>
+                                                                <span class="badge {% if att.status == 'inside' %}badge-success{% else %}badge-secondary{% endif %}">
+                                                                    {{ att.get_status_display }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">No attendance records found for this trainer.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- TAB 4: Leave Records -->
+                                <div class="tab-pane fade" id="leaves" role="tabpanel" aria-labelledby="leaves-tab">
+                                    <div class="py-3">
+                                        <h4>Leave History</h4>
+                                        {% if leave_records %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Leave Type</th>
+                                                            <th>Start Date</th>
+                                                            <th>End Date</th>
+                                                            <th>Days</th>
+                                                            <th>Reason</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for leave in leave_records %}
+                                                        <tr>
+                                                            <td>{{ leave.get_leave_type_display }}</td>
+                                                            <td>{{ leave.start_date|date:"d-m-Y" }}</td>
+                                                            <td>{{ leave.end_date|date:"d-m-Y" }}</td>
+                                                            <td>{{ leave.duration_days }}</td>
+                                                            <td>{{ leave.reason|default:"—" }}</td>
+                                                            <td>
+                                                                <span class="badge {% if leave.status == 'approved' %}badge-success{% elif leave.status == 'pending' %}badge-warning{% else %}badge-danger{% endif %}">
+                                                                    {{ leave.get_status_display }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">No leave applications recorded for this trainer.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- TAB 5: Compensation & Payouts -->
+                                <div class="tab-pane fade" id="salary" role="tabpanel" aria-labelledby="salary-tab">
+                                    <div class="py-3">
+                                        <h4>Compensation & Payout Structure</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width: 35%;">Monthly Base Salary</th>
+                                                        <td>₹{{ trainer.salary|default:"0" }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Standard PT Rate (Per Member)</th>
+                                                        <td>₹{{ trainer.personal_training_monthly_amount|default:"0" }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Active PT Clients</th>
+                                                        <td>{{ active_clients_count }} Member(s)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Active PT Monthly Earnings</th>
+                                                        <td>₹{{ active_pt_monthly_earnings|floatformat:2 }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Total Estimated Monthly Earnings</th>
+                                                        <td><strong class="text-success">₹{{ total_estimated_monthly_income|floatformat:2 }}</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Portal Login Username</th>
+                                                        <td><code>{% if trainer.user %}{{ trainer.user.username }}{% else %}{{ trainer.trainer_id }}{% endif %}</code></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagePreviewModalLabel">Trainer Photo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" id="modalImage" class="img-fluid rounded" alt="Trainer Image">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'js/delete_confirmation.js' %}"></script>
+
+<script>
+function showImage(src) {
+    document.getElementById("modalImage").src = src;
+    $('#imagePreviewModal').modal('show');
+}
+
+function openResetTrainerPasswordModal(trainerId, trainerName, mobileNumber, trainerCode) {
+    const defaultSuggestion = "Fit@" + (mobileNumber && mobileNumber.length >= 4 ? mobileNumber.slice(-4) : "1234");
+    
+    Swal.fire({
+        title: '<div style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">Reset Trainer Password</div>',
+        html: `
+            <div style="text-align: left; font-size: 0.9rem; color: #475569; margin-top: 10px;">
+                <p style="margin-bottom: 12px;">Resetting login password for <strong>${trainerName}</strong> (${trainerCode}).</p>
+                <div class="form-group mb-3">
+                    <label style="font-weight: 600; color: #334155; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+                        <span>New Password</span>
+                        <a href="#" onclick="document.getElementById('swal-new-pwd-input').value = '${defaultSuggestion}'; return false;" style="font-size: 0.8rem; color: #2563eb; text-decoration: none;">Suggest Default</a>
+                    </label>
+                    <input type="text" id="swal-new-pwd-input" class="form-control" value="${defaultSuggestion}" placeholder="Enter new password" style="border-radius: 8px; font-family: monospace; font-size: 0.95rem; font-weight: 600;">
+                    <small class="text-muted mt-1 d-block">Leave as suggested or enter a custom password.</small>
+                </div>
+            </div>
+        `,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: '<i class="mdi mdi-lock-reset mr-1"></i> Confirm Reset',
+        cancelButtonText: 'Cancel',
+        buttonsStyling: false,
+        customClass: {
+            popup: 'rounded-4 shadow-lg border-0 p-4',
+            confirmButton: 'btn btn-primary px-4 py-2 font-weight-bold rounded-pill shadow-sm mr-2',
+            cancelButton: 'btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-bold'
+        },
+        preConfirm: () => {
+            const pwd = document.getElementById('swal-new-pwd-input').value.trim();
+            if (!pwd) {
+                Swal.showValidationMessage('Password cannot be empty');
+                return false;
+            }
+            return pwd;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const newPassword = result.value;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+
+            fetch(`/trainers/reset-password/${trainerId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({
+                    'new_password': newPassword
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: '<div style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">Password Reset Successfully!</div>',
+                        icon: 'success',
+                        html: `
+                            <div style="text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-top: 10px; font-size: 0.9rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="color: #64748b;">Trainer:</span>
+                                    <strong>${data.name}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="color: #64748b;">Username / ID:</span>
+                                    <span style="font-family: monospace; font-weight: 700; color: #2563eb;">${data.username}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="color: #64748b;">Mobile:</span>
+                                    <span>${data.mobile || 'N/A'}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
+                                    <span style="color: #64748b; font-weight: 600;">New Password:</span>
+                                    <span style="font-family: monospace; font-size: 1rem; font-weight: 700; color: #dc2626; background: #fef2f2; padding: 2px 8px; border-radius: 6px;">${data.new_password}</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 16px;">
+                                <button type="button" id="copy-trainer-pwd-btn" onclick="copyResetTrainerText('${data.share_text.replace(/'/g, "\'")}')" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #2563eb; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
+                                    <i class="mdi mdi-content-copy"></i>
+                                    <span id="copy-trainer-pwd-text">Copy Credentials</span>
+                                </button>
+                                ${data.mobile ? `
+                                <a href="https://wa.me/91${data.mobile}?text=${encodeURIComponent(data.share_text)}" target="_blank" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #16a34a; color: #fff; text-decoration: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem;">
+                                    <i class="mdi mdi-whatsapp"></i>
+                                    <span>Send WhatsApp</span>
+                                </a>` : ''}
+                            </div>
+                        `,
+                        confirmButtonText: 'Done',
+                        buttonsStyling: false,
+                        customClass: {
+                            popup: 'rounded-4 shadow-lg border-0 p-4',
+                            confirmButton: 'btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-bold mt-2'
+                        }
+                    });
+                } else {
+                    Swal.fire('Error', data.message || 'Failed to reset password.', 'error');
+                }
+            })
+            .catch(err => {
+                Swal.fire('Network Error', 'Could not contact server to reset password.', 'error');
+            });
+        }
+    });
+}
+
+function copyResetTrainerText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-trainer-pwd-text');
+        if (btn) btn.textContent = 'Copied!';
+    }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        const btn = document.getElementById('copy-trainer-pwd-text');
+        if (btn) btn.textContent = 'Copied!';
+    });
+}
+</script>
+{% endblock extra_js %}

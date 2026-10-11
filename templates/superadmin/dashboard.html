@@ -1,0 +1,532 @@
+{% extends 'superadmin/base.html' %}
+{% load static humanize %}
+
+{% block title %}Super Admin Dashboard | {{ system_setting.platform_name|default:"ONEXIVA" }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <!-- HERO / PAGE HEADER (Exact Match to Gym Dashboard) -->
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">Dashboard Overview</h2>
+      <p class="dashboard-hero-subtitle">Real-time platform performance & superadmin analytics</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <div class="dashboard-status-badge">
+        <span class="pulse-dot"></span>
+        <span>System Live</span>
+        <span class="text-muted">|</span>
+        <span class="text-muted"><i class="far fa-clock mr-1"></i>{% now 'd M Y, H:i' %}</span>
+      </div>
+      <button class="btn-sync-refresh" onclick="location.reload();" title="Refresh Dashboard Data">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  {% if pending_upgrade_count > 0 %}
+  <div class="alert alert-warning shadow-sm border-0 d-flex align-items-center justify-content-between flex-wrap p-3 mb-4 rounded-xl" style="border-left: 5px solid #f59e0b !important; background: #fffbeb; border-radius: 12px;">
+    <div class="d-flex align-items-center mb-2 mb-md-0">
+      <div class="p-2 rounded-circle bg-warning text-dark mr-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+        <i class="fas fa-rocket text-dark"></i>
+      </div>
+      <div>
+        <div class="font-weight-bold" style="color: #b45309 !important; font-size: 0.98rem;">
+          {{ pending_upgrade_count }} New SaaS Subscription Upgrade Request{{ pending_upgrade_count|pluralize }}!
+        </div>
+        <div class="small text-muted">
+          {% for u_req in pending_upgrade_requests|slice:":3" %}
+            <strong>{{ u_req.gym.name }}</strong> wants to upgrade to <span class="badge badge-primary px-2 py-0.5">{{ u_req.target_plan.name }}</span> (Phone: {{ u_req.contact_phone }}){% if not forloop.last %} &bull; {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <a href="{% url 'superadmin:gym_list' %}" class="btn btn-warning btn-sm font-weight-bold px-3 py-2 rounded-pill shadow-sm text-dark mr-2">
+        <i class="fas fa-external-link-alt mr-1"></i> Gym List
+      </a>
+      <a href="{% url 'superadmin:assign_subscription' %}" class="btn btn-primary btn-sm font-weight-bold px-3 py-2 rounded-pill shadow-sm">
+        <i class="fas fa-plus mr-1"></i> Assign Plan
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- TOP 4 KPI STAT CARDS (Exact Soft Tinted Modern Style) -->
+  <div class="row">
+    <!-- Total Gyms -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-primary">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Total Gyms</span>
+            <div class="kpi-icon-wrap kpi-icon-primary">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ total_gyms|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-primary">
+            <i class="fas fa-building mr-1"></i> Total Base
+          </span>
+          <span class="kpi-meta-desc">{{ total_members|intcomma }} Network Members</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Gym Subscriptions -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-success">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Active Subscriptions</span>
+            <div class="kpi-icon-wrap kpi-icon-success">
+              <i class="fas fa-check-circle"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ active_gym_subscriptions|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-success">
+            <i class="fas fa-shield-alt mr-1"></i> Active Now
+          </span>
+          <span class="kpi-meta-desc">{{ active_gyms }} Gyms Active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expired / Expiring Subscriptions -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-danger">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Expiring (15 Days)</span>
+            <div class="kpi-icon-wrap kpi-icon-danger">
+              <i class="fas fa-clock"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ expiring_soon_subscriptions|length|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-danger">
+            <i class="fas fa-exclamation-triangle mr-1"></i> Needs Renewal
+          </span>
+          <span class="kpi-meta-desc">Follow-up</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Platform Revenue & Dues -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-warning">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Platform Revenue</span>
+            <div class="kpi-icon-wrap kpi-icon-warning">
+              <i class="fas fa-rupee-sign"></i>
+            </div>
+          </div>
+          <div class="kpi-value">₹{{ total_platform_revenue|floatformat:0|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-warning">
+            <i class="fas fa-chart-line mr-1"></i> Due: ₹{{ total_due_amount|floatformat:0 }}
+          </span>
+          <span class="kpi-meta-desc">Total collected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS BAR (Exact Match to Gym Dashboard) -->
+  <div class="gym-card mb-4">
+    <div class="gym-card-header">
+      <div class="gym-card-title">
+        <i class="fas fa-bolt text-warning"></i>
+        <span>Quick Actions</span>
+      </div>
+      <span class="badge-soft badge-soft-secondary">Frequent Operations</span>
+    </div>
+    <div class="gym-card-body p-3">
+      <div class="quick-action-grid">
+        <a href="{% url 'superadmin:add_gym' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-member">
+            <i class="fas fa-plus"></i>
+          </div>
+          <span class="quick-action-label">Add Gym</span>
+        </a>
+        <a href="{% url 'superadmin:gym_list' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-attendance">
+            <i class="fas fa-dumbbell"></i>
+          </div>
+          <span class="quick-action-label">All Gyms</span>
+        </a>
+        <a href="{% url 'superadmin:assign_subscription' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-payment">
+            <i class="fas fa-tag"></i>
+          </div>
+          <span class="quick-action-label">Assign Plan</span>
+        </a>
+        <a href="{% url 'superadmin:submit_due' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-expense">
+            <i class="fas fa-hand-holding-usd"></i>
+          </div>
+          <span class="quick-action-label">Collect Due</span>
+        </a>
+        <a href="{% url 'superadmin:subscription_plan_list' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-workout">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <span class="quick-action-label">Plans</span>
+        </a>
+        <a href="{% url 'superadmin:billing_history' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-trainers">
+            <i class="fas fa-file-invoice-dollar"></i>
+          </div>
+          <span class="quick-action-label">Invoices</span>
+        </a>
+        <a href="{% url 'superadmin:website_contact_submissions' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-enquiry">
+            <i class="fas fa-envelope-open-text"></i>
+          </div>
+          <span class="quick-action-label">Leads {% if unread_inquiries_count > 0 %}({{ unread_inquiries_count }}){% endif %}</span>
+        </a>
+        <a href="{% url 'superadmin:create_notification' %}" class="quick-action-item">
+          <div class="quick-action-icon qa-member" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9;">
+            <i class="fas fa-bullhorn"></i>
+          </div>
+          <span class="quick-action-label">Broadcast</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS CHARTS SECTION -->
+  <div class="row mb-4">
+    <!-- Revenue Trend Chart -->
+    <div class="col-lg-8 mb-4 mb-lg-0">
+      <div class="gym-card h-100">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="mdi mdi-chart-line text-success"></i>
+            <span>Platform Revenue Trajectory (Last 6 Months)</span>
+          </div>
+          <span class="badge-soft badge-soft-success font-weight-bold">
+            <i class="mdi mdi-currency-inr mr-1"></i> SaaS Collections
+          </span>
+        </div>
+        <div class="gym-card-body p-3">
+          <div style="position: relative; height: 260px; width: 100%;">
+            <canvas id="revenueTrendChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Subscription Plans Breakdown -->
+    <div class="col-lg-4">
+      <div class="gym-card h-100">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="mdi mdi-chart-arc text-primary"></i>
+            <span>Plan Market Share</span>
+          </div>
+          <span class="badge-soft badge-soft-primary font-weight-bold">Active Gyms</span>
+        </div>
+        <div class="gym-card-body p-3 d-flex flex-column align-items-center justify-content-center">
+          <div style="position: relative; height: 210px; width: 100%;">
+            <canvas id="planDistributionChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT SECTION -->
+  <div class="row">
+    <!-- Left Column: Expiring Subscriptions & Recent Payments -->
+    <div class="col-lg-8">
+      <!-- Expiring Subscriptions Alert Card -->
+      <div class="gym-card mb-4">
+        <div class="gym-card-header">
+          <div class="gym-card-title text-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Gym Subscriptions Expiring Soon (Next 15 Days)</span>
+          </div>
+          <span class="badge-soft badge-soft-danger">{{ expiring_soon_subscriptions|length }} Alert{% if expiring_soon_subscriptions|length != 1 %}s{% endif %}</span>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="table modern-table mb-0">
+              <thead>
+                <tr>
+                  <th>Gym Name</th>
+                  <th>Current Plan</th>
+                  <th>Expiry Date</th>
+                  <th>Status</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sub in expiring_soon_subscriptions %}
+                <tr>
+                  <td>
+                    <strong><a href="{% url 'superadmin:gym_profile' sub.gym.id %}" class="member-info-name">{{ sub.gym.name }}</a></strong>
+                    <span class="member-info-id">{{ sub.gym.phone|default:"No phone" }}</span>
+                  </td>
+                  <td>
+                    <span class="badge-soft badge-soft-info">{{ sub.subscription.name }}</span>
+                  </td>
+                  <td>{{ sub.end_date|date:"d M, Y" }}</td>
+                  <td>
+                    <span class="badge-soft badge-soft-warning font-weight-bold">Expires Soon</span>
+                  </td>
+                  <td class="text-center">
+                    <a href="{% url 'superadmin:assign_subscription' %}?gym_id={{ sub.gym.id }}" class="btn btn-sm btn-primary py-1 px-3 rounded-pill font-weight-bold">
+                      <i class="fas fa-sync-alt mr-1"></i> Renew Plan
+                    </a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center py-4 text-muted">
+                    <i class="fas fa-check-circle text-success mr-1"></i> No gym SaaS subscriptions expiring in the next 15 days.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Platform Payments Feed -->
+      <div class="gym-card mb-4">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="fas fa-history text-primary"></i>
+            <span>Recent Platform Payments Received</span>
+          </div>
+          <a href="{% url 'superadmin:billing_history' %}" class="badge-soft badge-soft-primary" style="text-decoration: none;">View All Billing</a>
+        </div>
+        <div class="gym-card-body p-0">
+          <div class="table-responsive">
+            <table class="table modern-table mb-0">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Gym Name</th>
+                  <th>Type</th>
+                  <th>Amount Paid</th>
+                  <th>Mode</th>
+                  <th class="text-center">Invoice</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in recent_transactions %}
+                <tr>
+                  {% if item.is_subscription %}
+                    <td>{{ item.start_date|date:"d M, Y" }}</td>
+                    <td>
+                      <strong><a href="{% url 'superadmin:gym_profile' item.gym.id %}" class="member-info-name">{{ item.gym.name }}</a></strong>
+                    </td>
+                    <td>
+                      <span class="badge-soft badge-soft-primary">Subscription: {{ item.subscription.name }}</span>
+                    </td>
+                    <td class="font-weight-bold text-success">₹{{ item.paid_amount|floatformat:2 }}</td>
+                    <td><span class="badge-soft badge-soft-secondary">{{ item.get_payment_mode_display }}</span></td>
+                    <td class="text-center">
+                      <a href="{% url 'superadmin:invoice' item.id %}" target="_blank" class="btn-icon-action" title="Invoice PDF">
+                        <i class="fas fa-file-pdf text-danger"></i>
+                      </a>
+                    </td>
+                  {% else %}
+                    <td>{{ item.payment_date|date:"d M, Y" }}</td>
+                    <td>
+                      <strong><a href="{% url 'superadmin:gym_profile' item.gym.id %}" class="member-info-name">{{ item.gym.name }}</a></strong>
+                    </td>
+                    <td>
+                      <span class="badge-soft badge-soft-success">Due Clearance</span>
+                    </td>
+                    <td class="font-weight-bold text-success">₹{{ item.amount|floatformat:2 }}</td>
+                    <td><span class="badge-soft badge-soft-secondary">{{ item.get_payment_mode_display }}</span></td>
+                    <td class="text-center">
+                      <span class="badge-soft badge-soft-success"><i class="fas fa-check mr-1"></i> Paid</span>
+                    </td>
+                  {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="6" class="text-center py-4 text-muted">No recent platform payments recorded.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Leads & Overview -->
+    <div class="col-lg-4">
+      <!-- Recent Website Leads Card -->
+      <div class="gym-card mb-4">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="fas fa-envelope-open-text text-info"></i>
+            <span>Recent Website Leads</span>
+          </div>
+          <a href="{% url 'superadmin:website_contact_submissions' %}" class="badge-soft badge-soft-info" style="text-decoration: none;">View All</a>
+        </div>
+        <div class="gym-card-body p-0">
+          <ul class="list-group list-group-flush">
+            {% for inq in recent_inquiries %}
+            <li class="list-group-item px-3 py-3 border-bottom">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <strong class="text-dark font-weight-bold">{{ inq.first_name }} {{ inq.last_name }}</strong>
+                <span class="badge-soft badge-soft-secondary">{{ inq.get_inquiry_type_display }}</span>
+              </div>
+              <div class="small text-muted mb-2">
+                <div><i class="fas fa-building mr-1 text-muted"></i> {{ inq.business_name|default:"Prospective Gym" }}</div>
+                <div><i class="fas fa-phone mr-1 text-muted"></i> {{ inq.phone }}</div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">{{ inq.created_at|date:"d M, H:i" }}</small>
+                <div class="action-buttons-wrap">
+                  <a href="tel:{{ inq.phone }}" class="btn-icon-action" title="Call"><i class="fas fa-phone text-primary"></i></a>
+                  <a href="https://wa.me/91{{ inq.phone }}?text=Hello%20{{ inq.first_name }},%20greetings%20from%20ONEXIVA!" target="_blank" class="btn-icon-action" title="WhatsApp"><i class="fab fa-whatsapp text-success"></i></a>
+                </div>
+              </div>
+            </li>
+            {% empty %}
+            <li class="list-group-item text-center py-4 text-muted">
+              No website inquiries received yet.
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Gym Network Health Card -->
+      <div class="gym-card mb-4">
+        <div class="gym-card-header">
+          <div class="gym-card-title">
+            <i class="fas fa-chart-pie text-primary"></i>
+            <span>Gym Network Health</span>
+          </div>
+        </div>
+        <div class="gym-card-body p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <span class="text-muted font-weight-bold">Active Gym Accounts</span>
+            <span class="badge-soft badge-soft-success font-weight-bold">{{ active_gyms }} Gyms</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <span class="text-muted font-weight-bold">Frozen Accounts</span>
+            <span class="badge-soft badge-soft-danger font-weight-bold">{{ frozen_gyms }} Gyms</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <span class="text-muted font-weight-bold">Active SaaS Subscriptions</span>
+            <span class="badge-soft badge-soft-info font-weight-bold">{{ active_gym_subscriptions }} Active</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2">
+            <span class="text-muted font-weight-bold">Pending Gym Dues</span>
+            <span class="font-weight-bold {% if total_due_amount > 0 %}text-danger{% else %}text-success{% endif %}">₹{{ total_due_amount|floatformat:2 }}</span>
+          </div>
+          <div class="mt-3">
+            <a href="{% url 'superadmin:gym_list' %}" class="btn btn-outline-primary btn-block btn-sm rounded-pill font-weight-bold py-2 shadow-sm">
+              <i class="fas fa-list mr-1"></i> Browse All Gyms
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function() {
+    // 1. Revenue Trajectory Line Chart
+    var revCtx = document.getElementById('revenueTrendChart');
+    if (revCtx) {
+      var revLabels = {{ months_labels_json|safe }};
+      var revData = {{ revenue_chart_data_json|safe }};
+      new Chart(revCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: revLabels,
+          datasets: [{
+            label: 'Revenue (₹)',
+            data: revData,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.12)',
+            borderWidth: 2.5,
+            fill: true,
+            lineTension: 0.35,
+            pointBackgroundColor: '#10b981',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          legend: { display: false },
+          scales: {
+            yAxes: [{
+              gridLines: { color: 'rgba(0, 0, 0, 0.05)', drawBorder: false },
+              ticks: {
+                beginAtZero: true,
+                callback: function(val) { return '₹' + val.toLocaleString(); },
+                fontColor: '#8a92a6'
+              }
+            }],
+            xAxes: [{
+              gridLines: { display: false },
+              ticks: { fontColor: '#8a92a6' }
+            }]
+          },
+          tooltips: {
+            callbacks: {
+              label: function(item) { return ' Collections: ₹' + Number(item.yLabel).toLocaleString(); }
+            }
+          }
+        }
+      });
+    }
+
+    // 2. Plan Distribution Doughnut Chart
+    var planCtx = document.getElementById('planDistributionChart');
+    if (planCtx) {
+      var planLabels = {{ plan_dist_labels_json|safe }};
+      var planData = {{ plan_dist_counts_json|safe }};
+      new Chart(planCtx.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: planLabels && planLabels.length ? planLabels : ['No Active Plans'],
+          datasets: [{
+            data: planData && planData.length ? planData : [1],
+            backgroundColor: planData && planData.length ? ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'] : ['#e2e8f0'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutoutPercentage: 68,
+          legend: {
+            position: 'bottom',
+            labels: { boxWidth: 12, fontColor: '#4b5563', padding: 12 }
+          }
+        }
+      });
+    }
+  })();
+</script>
+{% endblock scripts %}

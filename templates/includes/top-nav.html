@@ -1,0 +1,360 @@
+{% load static custom_tags %}
+<nav class="navbar col-lg-12 col-12 p-lg-0 fixed-top d-flex flex-row">
+  <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between" style="height: 60px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important; box-shadow: 0 3px 12px rgba(30, 64, 175, 0.28);"> 
+    
+    <!-- Mini Brand Logo (Mobile) -->
+    <a class="navbar-brand brand-logo-mini align-self-center d-lg-none" href="{% if is_member %}{% url 'member_portal:dashboard' %}{% elif is_trainer %}{% url 'trainer_portal:dashboard' %}{% elif is_superadmin %}{% url 'superadmin:dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}">
+      {% if gym and gym.logo %}
+        <img src="{{ gym.logo.url }}" alt="{{ gym.name }} Logo" class="img-fluid rounded-circle" style="width: 38px; height: 38px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 0 8px rgba(0,0,0,0.15);">
+      {% else %}
+        <img src="{% static 'images/face16.png' %}" alt="Logo" class="img-fluid rounded-circle" style="width: 38px; height: 38px; object-fit: cover; border: 2px solid #fff;">
+      {% endif %}
+    </a>
+
+    <ul class="navbar-nav">
+      
+    </ul>
+
+    <!-- Right Side Actions & Profile -->
+    <ul class="navbar-nav navbar-nav-right ml-auto d-flex align-items-center mb-0">
+      
+      <!-- Quick Actions (Only for Admin / Staff with permissions) -->
+      {% if not is_member and not is_trainer %}
+      <li class="nav-item dropdown d-none d-xl-flex border-0 mr-2">
+        <a class="nav-link dropdown-toggle text-white font-weight-bold d-flex align-items-center topbar-nav-link" id="quickActionsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 13px; text-decoration: none;">
+          <i class="mdi mdi-flash text-warning mr-1" style="font-size: 18px; vertical-align: middle;"></i>
+          <span>Quick Actions</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="quickActionsDropdown" style="min-width: 200px;">
+          {% if request.user|has_permission:'add_enquiry' %}
+          <a class="dropdown-item" href="{% url 'add_new_enquiry' %}"> 
+            <i class="mdi mdi-comment-question-outline mr-2 text-danger"></i> Add New Enquiry
+          </a>
+          {% endif %}
+          {% if request.user|has_permission:'add_member' %}
+          <a class="dropdown-item" href="{% url 'add_new_member' %}"> 
+            <i class="mdi mdi-account-plus-outline mr-2 text-success"></i> Add New Member 
+          </a>
+          {% endif %}
+          {% if request.user|has_permission:'add_trainer' %}
+          <a class="dropdown-item" href="{% url 'add_trainer' %}"> 
+            <i class="mdi mdi-account-star-outline mr-2 text-primary"></i> Add New Trainer 
+          </a>
+          {% endif %}
+          {% if request.user|has_permission:'view_payment' %}
+          <a class="dropdown-item" href="{% url 'billing:submit_due' %}"> 
+            <i class="mdi mdi-receipt mr-2 text-warning"></i> Make a Bill 
+          </a>
+          {% endif %}
+        </div>
+      </li>
+      {% endif %}
+
+      <!-- QR Code Attendance & Turnstile Pass -->
+      <li class="nav-item d-flex align-items-center px-1">
+        <a class="nav-link p-0 d-flex align-items-center topbar-nav-icon-link"
+           href="javascript:void(0);"
+           title="Attendance QR & Turnstile Pass"
+           data-bs-toggle="modal"
+           data-bs-target="#topbarAttendanceQrModal"
+           data-toggle="modal"
+           data-target="#topbarAttendanceQrModal">
+            <i class="mdi mdi-qrcode-scan" style="font-size: 20px; color: #ffffff;"></i>
+        </a>
+      </li>
+
+      <!-- Notification Bell Drawer Trigger -->
+      <li class="nav-item position-relative d-flex align-items-center px-2">
+        <a class="nav-link cursor-pointer d-flex align-items-center justify-content-center p-0" href="javascript:void(0);" onclick="openNotificationDrawer()" title="Notifications" style="text-decoration: none; position: relative;">
+          <div class="nav-bell-circle">
+            <i class="mdi mdi-bell" style="font-size: 18px; color: #ffffff; line-height: 1;"></i>
+          </div>
+          {% if unread_notifications_count > 0 %}
+            <span class="count-symbol" id="navNotifCountDot" style="background-color: #ef4444; width: 10px; height: 10px; position: absolute; top: -1px; right: -1px; border-radius: 50%; border: 2px solid #ffffff;"></span>
+          {% endif %}
+        </a>
+      </li>
+  
+      <!-- User Profile & Clean Inline Role Badge -->
+      <li class="nav-item nav-profile dropdown border-0 pl-2 pr-1 pr-sm-2">
+        <a class="nav-link dropdown-toggle text-white d-flex align-items-center topbar-profile-trigger p-1" id="profileDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+          <!-- Avatar -->
+          {% if user_avatar_url %}
+            <img class="nav-profile-img" alt="{{ user_display_name }}" src="{{ user_avatar_url }}" width="32" height="32" style="width: 32px !important; height: 32px !important; max-width: 32px !important; max-height: 32px !important; object-fit: cover; border-radius: 50%;" />
+          {% else %}
+            <img class="nav-profile-img" alt="{{ user_display_name }}" src="{% static 'images/face16.png' %}" width="32" height="32" style="width: 32px !important; height: 32px !important; max-width: 32px !important; max-height: 32px !important; object-fit: cover; border-radius: 50%;" />
+          {% endif %}
+          
+          <!-- Name & Role Badge in one clean row -->
+          <span class="profile-name font-weight-bold text-white ml-2 text-truncate" style="font-size: 13.5px; max-width: 120px;">
+            {{ user_display_name }}
+          </span>
+          <span class="topbar-role-badge {{ user_role_badge_class }} ml-2">
+            {{ user_role_label }}
+          </span>
+        </a>
+
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown" style="min-width: 230px;">
+          <div class="px-3 py-2 border-bottom bg-light">
+            <div class="font-weight-bold text-dark text-truncate" style="font-size: 13px;">{{ user_full_name|default:user_display_name }}</div>
+            <div class="d-flex align-items-center mt-1">
+              <span class="topbar-role-badge {{ user_role_badge_class }}">{{ user_role_label }}</span>
+              {% if gym %}
+                <small class="text-muted ml-2 text-truncate font-weight-bold" style="font-size: 11px;" title="{{ gym.name }}">{{ gym.name }}</small>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Role-specific items -->
+          {% if is_member %}
+            <a class="dropdown-item" href="{% url 'member_portal:dashboard' %}">
+              <i class="mdi mdi-view-dashboard text-primary mr-2"></i> Dashboard
+            </a>
+            <a class="dropdown-item" href="{% url 'member_portal:profile' %}">
+              <i class="mdi mdi-account text-primary mr-2"></i> My Profile
+            </a>
+            <a class="dropdown-item" href="{% url 'member_portal:billing' %}">
+              <i class="mdi mdi-receipt text-primary mr-2"></i> Billing & Receipts
+            </a>
+            <a class="dropdown-item" href="{% url 'member_portal:workout_plan' %}">
+              <i class="mdi mdi-dumbbell text-primary mr-2"></i> Workout & Diet
+            </a>
+          {% elif is_trainer %}
+            <a class="dropdown-item" href="{% url 'trainer_portal:dashboard' %}">
+              <i class="mdi mdi-view-dashboard text-primary mr-2"></i> Dashboard
+            </a>
+            <a class="dropdown-item" href="{% url 'trainer_portal:profile' %}">
+              <i class="mdi mdi-account text-primary mr-2"></i> My Profile
+            </a>
+            <a class="dropdown-item" href="{% url 'trainer_portal:clients' %}">
+              <i class="mdi mdi-account-multiple text-primary mr-2"></i> My Clients
+            </a>
+          {% elif is_gym_admin %}
+            <a class="dropdown-item" href="{% url 'settings:my_subscription' %}">
+              <i class="mdi mdi-crown text-warning mr-2"></i> SaaS Subscription & Quotas
+            </a>
+            <a class="dropdown-item" href="{% url 'settings:gym_profile' %}">
+              <i class="mdi mdi-settings text-primary mr-2"></i> Gym Settings
+            </a>
+            <a class="dropdown-item" href="{% url 'add_gym_subadmin' %}">
+              <i class="mdi mdi-account-plus text-primary mr-2"></i> Add Subadmin
+            </a>
+            <a class="dropdown-item" href="{% url 'view_subadmins' %}">
+              <i class="mdi mdi-account-multiple text-primary mr-2"></i> View Subadmins
+            </a>
+            <a class="dropdown-item" href="{% url 'help' %}">
+              <i class="mdi mdi-help-circle-outline text-primary mr-2"></i> Help Center
+            </a>
+          {% elif is_subadmin %}
+            <a class="dropdown-item" href="{% url 'dashboard' %}">
+              <i class="mdi mdi-view-dashboard text-primary mr-2"></i> Dashboard
+            </a>
+            <a class="dropdown-item" href="{% url 'help' %}">
+              <i class="mdi mdi-help-circle-outline text-primary mr-2"></i> Help Center
+            </a>
+          {% elif is_superadmin %}
+            <a class="dropdown-item" href="{% url 'superadmin:dashboard' %}">
+              <i class="mdi mdi-shield-crown text-primary mr-2"></i> Superadmin Console
+            </a>
+            <a class="dropdown-item" href="{% url 'superadmin:gym_list' %}">
+              <i class="mdi mdi-domain text-primary mr-2"></i> Manage Gyms
+            </a>
+          {% else %}
+            <a class="dropdown-item" href="{% url 'dashboard' %}">
+              <i class="mdi mdi-view-dashboard text-primary mr-2"></i> Dashboard
+            </a>
+          {% endif %}
+
+          <div class="dropdown-divider my-1"></div>
+
+          <a class="dropdown-item text-danger font-weight-bold" href="{% url 'logout' %}">
+            <i class="mdi mdi-logout text-danger mr-2"></i> Logout
+          </a>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Mobile Offcanvas Toggler -->
+    <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center border-0 bg-transparent" type="button" data-toggle="offcanvas" aria-label="Toggle navigation">
+      <span class="mdi mdi-menu text-white" style="font-size: 24px;"></span>
+    </button>
+  </div>
+</nav>
+
+<style>
+/* Clean Navbar Layout */
+.navbar .navbar-menu-wrapper {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.navbar-nav .nav-item {
+  border: none !important;
+  margin: 0;
+}
+
+/* Neutralize style.css dark grey 34px circle on all dropdown toggle icons (single and double colon) */
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-toggle i,
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item .dropdown-toggle i,
+.navbar .navbar-menu-wrapper .navbar-nav .dropdown-toggle i {
+  font-size: inherit;
+  line-height: inherit;
+}
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-toggle i:before,
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-toggle i::before,
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item .dropdown-toggle i:before,
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item .dropdown-toggle i::before,
+.navbar .navbar-menu-wrapper .navbar-nav .dropdown-toggle i:before,
+.navbar .navbar-menu-wrapper .navbar-nav .dropdown-toggle i::before {
+  width: auto !important;
+  height: auto !important;
+  background: transparent !important;
+  line-height: inherit !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Subtle, native hover feedback for Quick Actions */
+.topbar-nav-link {
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  transition: background 0.18s ease, color 0.18s ease !important;
+}
+.topbar-nav-link:hover,
+.nav-item.show .topbar-nav-link {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Subtle, native hover feedback for icon buttons (QR) */
+.topbar-nav-icon-link {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  justify-content: center;
+  transition: background 0.18s ease, transform 0.15s ease !important;
+}
+.topbar-nav-icon-link:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-1px);
+}
+
+/* Bell Circle with smooth hover */
+.nav-bell-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease;
+}
+.nav-bell-circle:hover {
+  background: rgba(255, 255, 255, 0.32) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
+}
+
+/* Subtle, native hover feedback for Profile */
+.topbar-profile-trigger {
+  border-radius: 20px !important;
+  transition: background 0.18s ease !important;
+}
+.topbar-profile-trigger:hover,
+.nav-item.show .topbar-profile-trigger {
+  background: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* User Avatar */
+.nav-profile-img {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
+  flex-shrink: 0;
+}
+
+/* Profile Name */
+.nav-profile .profile-name {
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  line-height: 1.2 !important;
+  display: inline-block;
+}
+
+/* Topbar Role Badge - Clean, compact, native pill */
+.topbar-role-badge {
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em;
+  padding: 2.5px 8px !important;
+  border-radius: 10px !important;
+  text-transform: uppercase !important;
+  line-height: 1.2 !important;
+  display: inline-block !important;
+  vertical-align: middle;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Caret styling */
+.nav-profile .dropdown-toggle:after,
+#quickActionsDropdown:after {
+  margin-left: 6px !important;
+  vertical-align: 1px !important;
+  color: #ffffff !important;
+}
+
+/* Dropdown Menu Clean Elevation */
+.navbar-dropdown {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 10px !important;
+  padding: 6px !important;
+  margin-top: 8px !important;
+  background: #ffffff !important;
+}
+.navbar-dropdown .dropdown-item {
+  border-radius: 6px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #334155 !important;
+  transition: all 0.15s ease !important;
+}
+.navbar-dropdown .dropdown-item:hover {
+  background: #f1f5f9 !important;
+  color: #0284c7 !important;
+}
+.navbar-dropdown .dropdown-item.text-danger:hover {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .navbar .navbar-menu-wrapper {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .nav-profile .profile-name {
+    max-width: 75px !important;
+  }
+  .topbar-role-badge {
+    font-size: 9px !important;
+    padding: 1.5px 6px !important;
+  }
+}
+</style>
+
+{% include 'includes/notification_drawer.html' %}
+{% include 'includes/topbar_qr_modal.html' %}

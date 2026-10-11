@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h1>Debug Page</h1>
+    <h2>WhatsApp Configuration</h2>
+    <ul>
+        {% for key, value in whatsapp_config.items %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul>
+     Gym ID: <h2>{{ request.session.gym_id }}</h2>
+     Gym Name: <h2>{{ request.session.gym_name }}</h2>
+     Gym Phone: <h2>{{ request.session.gym_phone }}</h2>
+     Gym Logo: <h2>{{ request.session.gym_logo }}</h2>
+     
+{% endblock %}

@@ -1,0 +1,1168 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'member_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Members List
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Member Profile
+        </li>
+
+    </ol>
+</nav>  
+<!-- Freeze Membership Modal -->
+{% if membership_history %}
+<div class="modal fade" id="freezeMembershipModal" tabindex="-1" role="dialog" aria-labelledby="freezeMembershipModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="freezeMembershipModalLabel">Freeze Membership</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="freezeForm" action="{% url 'freeze_membership' membership_history.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="reason">Reason for Freezing</label>
+                        <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Enter reason for freezing membership" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" form="freezeForm" class="btn btn-warning">Freeze</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Member Profile</h2>
+                <div class="d-none d-md-flex">
+                    {% if request.user|has_permission:'change_member' %}
+                    <a href="{% url 'edit_member' member.id %}" class="btn btn-sm btn-secondary mr-2" data-toggle="tooltip" title="Edit Member">
+                        <i class="mdi mdi-pencil"></i>
+                    </a>
+                    {% if not membership_history %}
+                    <a href="{% url 'assign_membership_plan' member.id %}" class="btn btn-sm btn-success mr-2" data-toggle="tooltip" title="Assign Membership Plan">
+                        <i class="mdi mdi-file-document-box-plus-outline"></i>
+                    </a>
+                    {% elif is_plan_active %}
+                    <a href="{% url 'update_membership_plan' member.id membership_history.id %}" class="btn btn-sm btn-secondary mr-2" data-toggle="tooltip" title="Upgrade Membership Plan">
+                        <i class="mdi mdi-arrow-up-bold-circle-outline"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'assign_membership_plan' member.id %}" class="btn btn-sm btn-success mr-2" data-toggle="tooltip" title="Renew Membership Plan">
+                        <i class="mdi mdi-autorenew"></i>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'assign_pt_trainer' member.id %}" class="btn btn-sm btn-danger mr-2" data-toggle="tooltip" title="Assign Personal Trainer">
+                        <i class="mdi mdi-account-plus"></i>
+                    </a>
+                    {% endif %}
+                    {% if request.user|has_permission:'change_member' or request.user|has_permission:'change_dietplan' %}
+                    <a href="{% url 'assign_diet_plan' member.id %}" class="btn btn-sm btn-info mr-2" data-toggle="tooltip" title="Assign Diet Plan">
+                        <i class="mdi mdi-food"></i>
+                    </a>
+                    {% endif %}
+                    {% if request.user|has_permission:'change_member' or request.user|has_permission:'change_workoutplan' %}
+                    <a href="{% url 'assign_workout_plan' member.id %}" class="btn btn-sm btn-warning mr-2" data-toggle="tooltip" title="Assign Workout Plan">
+                        <i class="mdi mdi-dumbbell"></i>
+                    </a>
+                    {% endif %}
+                    {% if request.user|has_permission:'add_payment' %}
+                    <a href="{% url 'billing:pay_due_payment' member.id %}" class="btn btn-sm btn-info mr-2" data-toggle="tooltip" title="Submit Due Payment">
+                        <i class="mdi mdi-currency-usd"></i> 
+                    </a>
+                    {% endif %}
+                    {% if request.user|has_permission:'change_member' or request.user.is_superuser or request.user.gymadmin %}
+                    <button type="button" onclick="openResetMemberPasswordModal('{{ member.id }}', '{{ member.name|escapejs }}', '{{ member.mobile_number }}', '{{ member.member_id }}')" class="btn btn-sm btn-dark mr-2" data-toggle="tooltip" title="Reset Member Password">
+                        <i class="mdi mdi-key-variant"></i>
+                    </button>
+                    {% endif %}
+                    {% if request.user|has_permission:'delete_member' %}
+                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ member.id }}', '{{ member.first_name }} {{ member.last_name }}', '{% url 'delete_member' member.id %}', '{% url 'member_list' %}')" data-toggle="tooltip" title="Delete">
+                        <i class="mdi mdi-delete-outline"></i>
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="d-md-none">
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle font-weight-bold shadow-sm" type="button" id="memberActionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="mdi mdi-settings mr-1"></i> Actions
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow-lg border-0 rounded-lg" aria-labelledby="memberActionsDropdown">
+                            <h6 class="dropdown-header text-uppercase font-weight-bold text-muted">Manage Member</h6>
+                            {% if request.user|has_permission:'change_member' %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'edit_member' member.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-pencil text-secondary"></i></div> Edit Member
+                            </a>
+                            {% if not membership_history %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'assign_membership_plan' member.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-file-document-box-plus-outline text-success"></i></div> Assign Membership Plan
+                            </a>
+                            {% elif is_plan_active %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'update_membership_plan' member.id membership_history.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-arrow-up-bold-circle-outline text-secondary"></i></div> Upgrade Membership Plan
+                            </a>
+                            {% else %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'assign_membership_plan' member.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-autorenew text-success"></i></div> Renew Membership Plan
+                            </a>
+                            {% endif %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'assign_pt_trainer' member.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-account-plus text-danger"></i></div> Assign Personal Trainer
+                            </a>
+                            {% endif %}
+                            {% if request.user|has_permission:'change_member' or request.user|has_permission:'change_dietplan' %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'assign_diet_plan' member.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-food text-info"></i></div> Assign Diet Plan
+                            </a>
+                            {% endif %}
+                            {% if request.user|has_permission:'change_member' or request.user|has_permission:'change_workoutplan' %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'assign_workout_plan' member.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-dumbbell text-warning"></i></div> Assign Workout Plan
+                            </a>
+                            {% endif %}
+                            {% if request.user|has_permission:'add_payment' %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'billing:pay_due_payment' member.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-currency-usd text-info"></i></div> Submit Due Payment
+                            </a>
+                            {% endif %}
+                            {% if request.user|has_permission:'change_member' or request.user.is_superuser or request.user.gymadmin %}
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="#" onclick="openResetMemberPasswordModal('{{ member.id }}', '{{ member.name|escapejs }}', '{{ member.mobile_number }}', '{{ member.member_id }}'); return false;">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-key-variant text-dark"></i></div> Reset Password
+                            </a>
+                            {% endif %}
+                            {% if request.user|has_permission:'delete_member' %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item py-2 d-flex align-items-center text-danger font-weight-bold" href="#" onclick="confirmDelete('{{ member.id }}', '{{ member.first_name }} {{ member.last_name }}', '{% url 'delete_member' member.id %}', '{% url 'member_list' %}')">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-delete-outline text-danger"></i></div> Delete Member
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="border-bottom text-center pb-4">
+                            {% if member.profile_picture %}
+                                <img src="{{ member.profile_picture.url }}" alt="profile" class="img-lg rounded-circle mb-3 shadow-sm"/>
+                            {% else %}
+                                <img src="{% static 'images/member_dp.jpg' %}" alt="profile" class="img-lg rounded-circle mb-3 shadow-sm"/>
+                            {% endif %}
+                            <h4 class="font-weight-bold">{{ member.first_name }} {{ member.last_name }}</h4>
+                            <p class="text-muted mb-2">#{{ member.member_id }}</p>
+                            {% if due_amount > 0 %}
+                            <h5 class="text-danger font-weight-bold">Due: ₹{{ due_amount }}</h5>
+                            {% endif %}
+                           
+                            <!-- Quick Action Buttons -->
+                            <div class="d-flex justify-content-center mt-3">
+                                <a href="tel:{{ member.mobile_number }}" class="btn btn-outline-primary btn-sm mr-2 d-flex align-items-center rounded-pill px-3 shadow-sm" style="transition: all 0.2s ease-in-out;" data-toggle="tooltip" title="Call Member" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    <i class="mdi mdi-phone mr-1 mdi-18px"></i> Call
+                                </a>
+                                <a href="{{ member|whatsapp_profile_url:due_amount }}" target="_blank" class="btn btn-outline-success btn-sm d-flex align-items-center rounded-pill px-3 shadow-sm" style="transition: all 0.2s ease-in-out;" data-toggle="tooltip" title="{% if member.current_status == 'Expired' %}Send Expired Notice via WhatsApp{% elif due_amount > 0 %}Send Due Reminder via WhatsApp{% else %}Send WhatsApp Message{% endif %}" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    <i class="mdi mdi-whatsapp mr-1 mdi-18px"></i> WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                        <div class="py-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="mdi mdi-checkbox-marked-circle-outline mr-2 text-primary"></i>Status</span>
+                                <span class="text-muted">
+                                    <span class="badge {% if member.current_status == 'Active' %}badge-success{% elif member.current_status == 'Expired' %}badge-danger{% elif member.current_status == 'Freezed' %}badge-warning{% else %}badge-secondary{% endif %}">
+                                        {{ member.current_status }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="mdi mdi-phone mr-2 text-primary"></i>Phone</span>
+                                <span><a href="tel:{{ member.mobile_number }}" class="text-decoration-none text-dark font-weight-bold hover-primary">{{ member.mobile_number }}</a></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="mdi mdi-email-outline mr-2 text-primary"></i>Mail</span>
+                                <span><a href="mailto:{{ member.email }}" class="text-decoration-none text-dark font-weight-bold hover-primary">{{ member.email }}</a></span>
+                            </div>
+                        </div>
+                        <div class="py-4">
+                            <h5 class="mb-3">Current Membership Plan</h5>
+                            <div class="d-flex justify-content-end mb-2">
+                                {% if membership_history %}
+                                    <div class="d-flex gap-2">
+                                        {% if not membership_history.is_frozen %}
+                                            {% if is_plan_active %}
+                                                <a href="{% url 'update_membership_plan' member.id membership_history.id %}" class="btn btn-sm btn-primary mr-1" title="Upgrade Membership Plan">
+                                                    <i class="mdi mdi-arrow-up-bold-circle-outline"></i> Upgrade
+                                                </a>
+                                            {% else %}
+                                                <a href="{% url 'assign_membership_plan' member.id %}" class="btn btn-sm btn-success mr-1" title="Renew Membership Plan">
+                                                    <i class="mdi mdi-autorenew"></i> Renew
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if membership_history.is_frozen %}
+                                            <form action="{% url 'unfreeze_membership' membership_history.id %}" method="post" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-success" data-toggle="tooltip" title="Unfreeze Membership">
+                                                    <i class="mdi mdi-play"></i> Unfreeze
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#freezeMembershipModal" title="Freeze Membership">
+                                                <i class="mdi mdi-pause"></i> Freeze
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if membership_history %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-trophy-award mr-2 text-primary"></i>Plan</span>
+                                    <span class="text-muted font-weight-bold">{{ membership_plan.title }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-calendar-clock mr-2 text-primary"></i>End Date</span>
+                                    <span class="text-muted">{{ membership_history.get_end_date|date:"d-m-Y" }}</span>
+                                </div>
+                                {% if membership_history.discount > 0 %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-tag-outline mr-2 text-success"></i>Discount</span>
+                                    <span class="badge badge-success px-2 py-1">-₹{{ membership_history.discount }}</span>
+                                </div>
+                                {% endif %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-cash-multiple mr-2 text-primary"></i>Total Amount</span>
+                                    <span class="text-dark font-weight-bold">₹{{ membership_history.total_amount }}</span>
+                                </div>
+                                {% if membership_history.due_amount > 0 %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-alert-circle-outline mr-2 text-danger"></i>Due</span>
+                                    <span class="text-danger font-weight-bold">₹{{ membership_history.due_amount }}</span>
+                                </div>
+                                {% endif %}
+                                {% if membership_history.is_frozen %}
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="mdi mdi-information-outline mr-2 text-primary"></i>Reason for Freezing</span>
+                                    <span class="text-muted">{{ membership_history.freezes.last.reason }}</span>
+                                </div>
+                                {% endif %}
+                            {% else %}
+                                <p class="text-muted">No active membership plan.</p>
+                            {% endif %}
+                        </div>
+                        <div class="py-4 border-top">
+                            <h5 class="mb-3">Personal Trainer Info</h5>
+                            {% if pt_member.first %}
+                                {% with pt=pt_member.first %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-account-star mr-2 text-primary"></i>Trainer</span>
+                                    <span>
+                                        <a href="{% url 'trainer_profile' pt.trainer.id %}" class="font-weight-bold text-dark text-decoration-none hover-primary">
+                                            {{ pt.trainer.name }}
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-calendar-clock mr-2 text-primary"></i>End Date</span>
+                                    <span class="text-muted">{{ pt.get_end_date|date:"d-m-Y" }}</span>
+                                </div>
+                                {% if pt.discount > 0 %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-tag-outline mr-2 text-success"></i>Discount</span>
+                                    <span class="badge badge-success px-2 py-1">-₹{{ pt.discount }}</span>
+                                </div>
+                                {% endif %}
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="mdi mdi-cash-multiple mr-2 text-primary"></i>Total Amount</span>
+                                    <span class="text-dark font-weight-bold">₹{{ pt.total_amount }}</span>
+                                </div>
+                                {% endwith %}
+                            {% else %}
+                                <p class="text-muted">No personal trainer assigned.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="py-4 border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Diet Plan Info</h5>
+                                {% if not assigned_diet_plans %}
+                                    <a href="{% url 'assign_diet_plan' member.id %}" class="btn btn-sm btn-primary">
+                                        <i class="mdi mdi-plus-circle-outline"></i> Assign Plan
+                                    </a>
+                                {% endif %}
+                            </div>
+                            {% if assigned_diet_plans %}
+                                {% with latest_diet=assigned_diet_plans.first %}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span><i class="mdi mdi-food-apple mr-2 text-primary"></i>Plan</span>
+                                    <span class="text-muted font-weight-bold text-truncate ml-2" style="max-width: 150px;" title="{{ latest_diet.diet_plan.name }}">{{ latest_diet.diet_plan.name }}</span>
+                                </div>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <a href="{% url 'public_diet_plan' latest_diet.diet_plan.pk %}" target="_blank" class="btn btn-sm btn-info mr-2">
+                                        <i class="mdi mdi-eye"></i> View
+                                    </a>
+                                    <a href="https://wa.me/91{{ member.mobile_number }}?text=Hello%20*{{ member.first_name|urlencode }}*,%0A%0AHere%20is%20your%20custom%20Diet%20Plan:%20*{{ latest_diet.diet_plan.name|urlencode }}*.%0A%0AYou%20can%20view%20and%20download%20your%20detailed%20plan%20here:%0A{{ request.scheme }}://{{ request.get_host }}{% url 'public_diet_plan' latest_diet.diet_plan.pk %}%0A%0AStay%20healthy!%20-%20*{{ member.gym.name|urlencode }}*" target="_blank" class="btn btn-sm btn-success">
+                                        <i class="mdi mdi-whatsapp"></i> WhatsApp
+                                    </a>
+                                </div>
+                                {% endwith %}
+                            {% else %}
+                                <p class="text-muted small mb-0">No diet plan assigned.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="py-4 border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Workout Plan Info</h5>
+                                {% if not assigned_workout_plans %}
+                                    <a href="{% url 'assign_workout_plan' member.id %}" class="btn btn-sm btn-primary">
+                                        <i class="mdi mdi-plus-circle-outline"></i> Assign Plan
+                                    </a>
+                                {% endif %}
+                            </div>
+                            {% if assigned_workout_plans %}
+                                {% with latest_workout=assigned_workout_plans.first %}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span><i class="mdi mdi-dumbbell mr-2 text-primary"></i>Plan</span>
+                                    <span class="text-muted font-weight-bold text-truncate ml-2" style="max-width: 150px;" title="{{ latest_workout.workout_plan.name }}">{{ latest_workout.workout_plan.name }}</span>
+                                </div>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <a href="{% url 'public_workout_plan' latest_workout.workout_plan.pk %}" target="_blank" class="btn btn-sm btn-info mr-2">
+                                        <i class="mdi mdi-eye"></i> View
+                                    </a>
+                                    <a href="https://wa.me/91{{ member.mobile_number }}?text=Hello%20*{{ member.first_name|urlencode }}*,%0A%0AHere%20is%20your%20custom%20Workout%20Plan:%20*{{ latest_workout.workout_plan.name|urlencode }}*.%0A%0AYou%20can%20view%20and%20download%20your%20detailed%20routine%20here:%0A{{ request.scheme }}://{{ request.get_host }}{% url 'public_workout_plan' latest_workout.workout_plan.pk %}%0A%0AStay%20strong!%20-%20*{{ member.gym.name|urlencode }}*" target="_blank" class="btn btn-sm btn-success">
+                                        <i class="mdi mdi-whatsapp"></i> WhatsApp
+                                    </a>
+                                </div>
+                                {% endwith %}
+                            {% else %}
+                                <p class="text-muted small mb-0">No workout plan assigned.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="mt-4 py-2">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="personal-tab" data-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="true">Personal Details</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="medical-tab" data-toggle="tab" href="#medical" role="tab" aria-controls="medical" aria-selected="false">Medical History</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="emergency-tab" data-toggle="tab" href="#emergency" role="tab" aria-controls="emergency" aria-selected="false">Emergency Contact</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="plan-tab" data-toggle="tab" href="#plan" role="tab" aria-controls="plan" aria-selected="false">Membership Plan</a>
+                                </li>
+                            
+                                <li class="nav-item">
+                                    <a class="nav-link" id="personal-trainer-tab" data-toggle="tab" href="#personal-trainer" role="tab" aria-controls="personal-trainer" aria-selected="false">Personal Trainer Info</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="invoices-tab" data-toggle="tab" href="#invoices" role="tab" aria-controls="invoices" aria-selected="false">Invoice/ Payment History</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="diet-plan-tab" data-toggle="tab" href="#diet-plan" role="tab" aria-controls="diet-plan" aria-selected="false">Diet Plan</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="workout-plan-tab" data-toggle="tab" href="#workout-plan" role="tab" aria-controls="workout-plan" aria-selected="false">Workout Plan</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="fitness-progress-tab" data-toggle="tab" href="#fitness-progress" role="tab" aria-controls="fitness-progress" aria-selected="false">
+                                        <i class="mdi mdi-chart-line text-success mr-1"></i> Workout Progress & Logs
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                  <div class="tab-pane fade" id="personal-trainer" role="tabpanel" aria-labelledby="personal-trainer-tab">
+                                    <div class="py-3">
+                                        <h4>Personal Trainer Info</h4>
+                                        {% for pt in pt_member %}
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>Trainer Name</th>
+                                                            <td>
+                                                                <a href="{% url 'trainer_profile' pt.trainer.id %}" class="font-weight-bold text-dark text-decoration-none hover-primary">
+                                                                    {{ pt.trainer.name }}
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Months</th>
+                                                            <td>{{ pt.months }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Trainer Fee</th>
+                                                            <td>{{ pt.trainer_fee }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>GYM Charges</th>
+                                                            <td>{{ pt.gym_charges }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Start Date</th>
+                                                            <td>{{ pt.pt_start_date|date:"d-m-Y" }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>End Date</th>
+                                                            <td>{{ pt.get_end_date|date:"d-m-Y" }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Discount</th>
+                                                            <td>{{ pt.discount }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Total Amount</th>
+                                                            <td>{{ pt.total_amount }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Paid Amount</th>
+                                                            <td>{{ pt.paid_amount }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Payment Mode</th>
+                                                            <td>{{ pt.get_payment_mode_display }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Transaction ID</th>
+                                                            <td>{{ pt.transaction_id|default_if_none:"N/A" }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            {% if not forloop.last %}<hr>{% endif %}
+                                        {% empty %}
+                                            <p class="text-muted">This member has not been assigned a personal trainer.</p>
+                                        {% endfor %}
+                                    </div>
+                                  </div>
+                                <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                                    <div class="py-3">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Age:</strong> {{ member.age }}</p>
+                                                <p><strong>Gender:</strong> {{ member.gender }}</p>
+                                                <p><strong>Date of Birth:</strong> {{ member.date_of_birth }}</p>
+                                                <p><strong>Profession:</strong> {{ member.profession }}</p>
+                                                <p><strong>{{ member.get_identity_type_display }}:</strong> {{ member.identity_no }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Address:</strong></p>
+                                                <p>{{ member.address }}</p>
+                                                <p>{{ member.area }}</p>
+                                                <p>{{ member.city }}, {{ member.state }} - {{ member.pincode }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+                                    <div class="py-3">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">
+                                                <h5>Signature</h5>
+                                                {% if member.sign %}
+                                                    <img src="{{ member.sign.url }}" alt="Signature" class="img-fluid">
+                                                {% else %}
+                                                    <p class="text-muted">Not Provided</p>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <h5>Identity Document</h5>
+                                                {% if member.identity_document_image %}
+                                                    <img src="{{ member.identity_document_image.url }}" alt="Identity Document" class="img-fluid">
+                                                {% else %}
+                                                    <p class="text-muted">Not Provided</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="medical" role="tabpanel" aria-labelledby="medical-tab">
+                                    <div class="py-3">
+                                        {% if member.medical_history.all %}
+                                            <ul class="list-group">
+                                                {% for history in member.medical_history.all %}
+                                                    <li class="list-group-item">
+                                                        <strong>{{ history.condition }}</strong> ({{ history.type }}) - Since: {{ history.since }}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p class="text-muted">No medical history provided.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="emergency" role="tabpanel" aria-labelledby="emergency-tab">
+                                    <div class="py-3">
+                                        {% if member.emergency_contact %}
+                                            <p><strong>Name:</strong> {{ member.emergency_contact.name }}</p>
+                                            <p><strong>Mobile:</strong> {{ member.emergency_contact.mobile }}</p>
+                                            <p><strong>Relation:</strong> {{ member.emergency_contact.relation }}</p>
+                                        {% else %}
+                                            <p class="text-muted">No emergency contact provided.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="plan" role="tabpanel" aria-labelledby="plan-tab">
+                                    <div class="py-3">
+                                        {% if membership_history %}
+                                            <h4>Current Membership Plan</h4>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>Plan</th>
+                                                            <td>{{ membership_plan.title }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Description</th>
+                                                            <td>{{ membership_plan.description|default:"N/A" }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Duration</th>
+                                                            <td>{{ membership_plan.get_duration_display }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Plan Price</th>
+                                                            <td>₹{{ membership_plan.amount }}</td>
+                                                        </tr>
+                                                        {% if membership_history.registration_fee > 0 %}
+                                                        <tr>
+                                                            <th>Registration Fee</th>
+                                                            <td>₹{{ membership_history.registration_fee }}</td>
+                                                        </tr>
+                                                        {% endif %}
+                                                        <tr>
+                                                            <th>Discount Given</th>
+                                                            <td>
+                                                                {% if membership_history.discount > 0 %}
+                                                                    <span class="badge badge-success px-2 py-1 font-weight-bold">-₹{{ membership_history.discount }}</span>
+                                                                {% else %}
+                                                                    <span class="text-muted">₹0.00</span>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Total Amount</th>
+                                                            <td><strong class="text-dark">₹{{ membership_history.total_amount }}</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Paid Amount</th>
+                                                            <td><span class="text-success font-weight-bold">₹{{ membership_history.paid_amount }}</span></td>
+                                                        </tr>
+                                                        {% if membership_history.due_amount > 0 %}
+                                                        <tr>
+                                                            <th>Due Amount</th>
+                                                            <td><span class="text-danger font-weight-bold">₹{{ membership_history.due_amount }}</span></td>
+                                                        </tr>
+                                                        {% endif %}
+                                                        <tr>
+                                                            <th>Start Date</th>
+                                                            <td>{{ membership_history.membership_start_date|date:"d-m-Y" }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>End Date</th>
+                                                            <td>{{ membership_history.get_end_date|date:"d-m-Y" }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Add on Days</th>
+                                                            <td>{{ membership_history.total_add_on_days }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <hr>
+                                        {% else %}
+                                            <p class="text-muted">No active membership plan.</p>
+                                        {% endif %}
+
+                                        <h4>Plan History</h4>
+                                        {% if membership_histories %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Plan</th>
+                                                            <th>Start Date</th>
+                                                            <th>End Date</th>
+                                                            <th>Add on Days</th>
+                                                            <th>Plan Price</th>
+                                                            <th>Discount</th>
+                                                            <th>Total Amount</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for history in membership_histories %}
+                                                            <tr>
+                                                                <td>{{ history.plan.title }}</td>
+                                                                <td>{{ history.membership_start_date|date:"d-m-Y" }}</td>
+                                                                <td>{{ history.get_end_date|date:"d-m-Y" }}</td>
+                                                                <td>{{ history.total_add_on_days }}</td>
+                                                                <td>₹{{ history.plan.amount }}</td>
+                                                                <td>
+                                                                    {% if history.discount > 0 %}
+                                                                        <span class="badge badge-success">-₹{{ history.discount }}</span>
+                                                                    {% else %}
+                                                                        <span class="text-muted">₹0</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td><strong>₹{{ history.total_amount }}</strong></td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">No plan history found.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="invoices" role="tabpanel" aria-labelledby="invoices-tab">
+                                    <div class="py-3">
+                                        <h4 class="mt-3">Membership Invoices</h4>
+                                        {% if membership_histories %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Plan</th>
+                                                            <th>Start Date</th>
+                                                            <th>End Date</th>
+                                                            <th>Discount</th>
+                                                            <th>Total</th>
+                                                            <th>Paid</th>
+                                                            <th>Due</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for history in membership_histories %}
+                                                            <tr>
+                                                                <td>{{ history.plan.title }}</td>
+                                                                <td>{{ history.membership_start_date|date:"d-m-Y" }}</td>
+                                                                <td>{{ history.get_end_date|date:"d-m-Y" }}</td>
+                                                                <td>
+                                                                    {% if history.discount > 0 %}
+                                                                        <span class="badge badge-success">-₹{{ history.discount }}</span>
+                                                                    {% else %}
+                                                                        <span class="text-muted">₹0</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>₹{{ history.total_amount }}</td>
+                                                                <td>₹{{ history.paid_amount }}</td>
+                                                                <td>₹{{ history.due_amount }}</td>
+                                                                <td>
+                                                                    <a href="{% url 'billing:invoice' member.id history.id %}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        {% empty %}
+                                                            <tr>
+                                                                <td colspan="8" class="text-center">No membership invoices found.</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">No membership invoice history found.</p>
+                                        {% endif %}
+
+                                        
+                                        <h4 class="mt-3">Personal Training Invoices</h4>
+                                        {% if pt_invoices %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Invoice ID</th>
+                                                            <th>Trainer</th>
+                                                            <th>Start Date</th>
+                                                            <th>End Date</th>
+                                                            <th>Discount</th>
+                                                            <th>Total</th>
+                                                            <th>Due</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for pt_invoice in pt_invoices %}
+                                                            <tr>
+                                                                <td><a href="{% url 'billing:pt_invoice' member.id pt_invoice.id %}">#{{ pt_invoice.id }}</a></td>
+                                                                <td>{{ pt_invoice.trainer.name }}</td>
+                                                                <td>{{ pt_invoice.pt_start_date|date:"d M, Y" }}</td>
+                                                                <td>{{ pt_invoice.get_end_date|date:"d-m-Y" }}</td>
+                                                                <td>
+                                                                    {% if pt_invoice.discount > 0 %}
+                                                                        <span class="badge badge-success">-₹{{ pt_invoice.discount }}</span>
+                                                                    {% else %}
+                                                                        <span class="text-muted">₹0</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>₹{{ pt_invoice.total_amount }}</td>
+                                                                <td>₹{{ pt_invoice.due_amount }}</td>
+                                                                <td>
+                                                                    <a href="{% url 'billing:pt_invoice' member.id pt_invoice.id %}" class="btn btn-sm btn-primary"> <i class="fas fa-eye"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        {% empty %}
+                                                            <tr>
+                                                                <td colspan="8" class="text-center">No personal training invoices found.</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">No personal training invoices found.</p>
+                                        {% endif %}
+
+                                        <hr>
+                                        <h4 class="mt-3">Payment History</h4>
+                                        {% if payments %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Payment ID</th>
+                                                            <th>Date</th>
+                                                            <th>Amount</th>
+                                                            <th>Mode</th>
+                                                            <th>Transaction ID</th>
+                                                            {% comment %} <th>Actions</th> {% endcomment %}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for payment in payments %}
+                                                            <tr>
+                                                                <td>#{{ payment.id }}</td>
+                                                                <td>{{ payment.payment_date|date:"d M, Y H:i" }}</td>
+                                                                <td>₹{{ payment.amount }}</td>
+                                                                <td>{{ payment.get_payment_mode_display }}</td>
+                                                                <td>{{ payment.transaction_id|default_if_none:"N/A" }}</td>
+                                                                {% comment %} <td>
+                                                                    <a href="#" class="btn btn-sm btn-primary"><i class="mdi mdi-eye"></i></a>
+                                                                </td> {% endcomment %}
+                                                            </tr>
+                                                        {% empty %}
+                                                            <tr>
+                                                                <td colspan="6" class="text-center">No receipts found.</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">No receipt history found.</p>
+                                        {% endif %} 
+
+                                        <hr>
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="diet-plan" role="tabpanel" aria-labelledby="diet-plan-tab">
+                                    <div class="py-3">
+                                        <h4>Assigned Diet Plans</h4>
+                                        {% if assigned_diet_plans %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Plan Name</th>
+                                                            <th>Target</th>
+                                                            <th>Assigned On</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for assigned_plan in assigned_diet_plans %}
+                                                            <tr>
+                                                                <td>{{ assigned_plan.diet_plan.name }}</td>
+                                                                <td>{{ assigned_plan.diet_plan.get_target_display }}</td>
+                                                                <td>{{ assigned_plan.assigned_at|date:"d-m-Y" }}</td>
+                                                                <td>
+                                                                    <a href="{% url 'public_diet_plan' assigned_plan.diet_plan.pk %}" target="_blank" class="btn btn-sm btn-primary" data-toggle="tooltip" title="View Public Link">
+                                                                        <i class="mdi mdi-eye-outline"></i>
+                                                                    </a>
+                                                                    <a href="https://wa.me/91{{ member.mobile_number }}?text=Hello%20*{{ member.first_name|urlencode }}*,%0A%0AHere%20is%20your%20custom%20Diet%20Plan:%20*{{ assigned_plan.diet_plan.name|urlencode }}*.%0A%0AYou%20can%20view%20and%20download%20your%20detailed%20plan%20here:%0A{{ request.scheme }}://{{ request.get_host }}{% url 'public_diet_plan' assigned_plan.diet_plan.pk %}%0A%0AStay%20healthy!%20-%20*{{ member.gym.name|urlencode }}*" target="_blank" class="btn btn-sm btn-success" data-toggle="tooltip" title="Send via WhatsApp">
+                                                                        <i class="mdi mdi-whatsapp"></i>
+                                                                    </a>
+                                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ assigned_plan.id }}', '{{ assigned_plan.diet_plan.name }}', '{% url 'delete_assigned_diet_plan' assigned_plan.id %}')" data-toggle="tooltip" title="Delete">
+                                                                        <i class="mdi mdi-delete-outline"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">No diet plan assigned yet.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="workout-plan" role="tabpanel" aria-labelledby="workout-plan-tab">
+                                    <div class="py-3">
+                                        <h4>Assigned Workout Plans</h4>
+                                        {% if assigned_workout_plans %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            
+                                                            <th>Plan Name</th>
+                                                            <th>Difficulty</th>
+                                                            <th>Assigned On</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for assigned_plan in assigned_workout_plans %}
+                                                            <tr>
+                                                               
+                                                                <td data-label="Plan Name">{{ assigned_plan.workout_plan.name }}</td>
+                                                                <td data-label="Difficulty">{{ assigned_plan.workout_plan.get_difficulty_display }}</td>
+                                                                <td data-label="Assigned On">{{ assigned_plan.assigned_at|date:"d-m-Y" }}</td>
+                                                                <td data-label="Action">
+                                                                    <a href="{% url 'public_workout_plan' assigned_plan.workout_plan.pk %}" target="_blank" class="btn btn-sm btn-primary" data-toggle="tooltip" title="View Public Link">
+                                                                        <i class="mdi mdi-eye-outline"></i>
+                                                                    </a>
+                                                                    <a href="https://wa.me/91{{ member.mobile_number }}?text=Hello%20*{{ member.first_name|urlencode }}*,%0A%0AHere%20is%20your%20custom%20Workout%20Plan:%20*{{ assigned_plan.workout_plan.name|urlencode }}*.%0A%0AYou%20can%20view%20and%20download%20your%20detailed%20routine%20here:%0A{{ request.scheme }}://{{ request.get_host }}{% url 'public_workout_plan' assigned_plan.workout_plan.pk %}%0A%0AStay%20strong!%20-%20*{{ member.gym.name|urlencode }}*" target="_blank" class="btn btn-sm btn-success" data-toggle="tooltip" title="Send via WhatsApp">
+                                                                        <i class="mdi mdi-whatsapp"></i>
+                                                                    </a>
+                                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ assigned_plan.id }}', '{{ assigned_plan.workout_plan.name }}', '{% url 'delete_assigned_workout_plan' assigned_plan.id %}')" data-toggle="tooltip" title="Delete">
+                                                                        <i class="mdi mdi-delete-outline"></i>
+                                                                    </button>
+                                                               </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">No workout plan assigned yet.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="fitness-progress" role="tabpanel" aria-labelledby="fitness-progress-tab">
+                                    <div class="py-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h4 class="mb-0">Member Fitness Journal & Progress</h4>
+                                                <p class="text-muted small mb-0">Logged daily workouts, exercise weights, and periodic body measurements.</p>
+                                            </div>
+                                            <span class="badge badge-primary px-3 py-2 font-weight-bold">
+                                                <i class="mdi mdi-dumbbell mr-1"></i> {{ workout_logs|length }} Workouts Logged
+                                            </span>
+                                        </div>
+
+                                        <!-- Member Target Goal Summary -->
+                                        {% if fitness_goal %}
+                                        <div class="card mb-3 border-0" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border-radius: 12px;">
+                                            <div class="card-body p-3">
+                                                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                                    <div>
+                                                        <span class="badge badge-warning text-dark font-weight-bold px-2 py-0.5 rounded-pill mb-1">
+                                                            <i class="mdi mdi-bullseye mr-1"></i> Goal: {{ fitness_goal.get_goal_type_display }}
+                                                        </span>
+                                                        <h5 class="mb-0 text-white font-weight-bold">
+                                                            Target: {{ fitness_goal.target_weight_kg }} kg 
+                                                            <small class="text-white-50 ml-2">(Starting: {{ fitness_goal.starting_weight_kg }} kg{% if fitness_goal.target_date %} &bull; Target Date: {{ fitness_goal.target_date|date:"d M Y" }}{% endif %})</small>
+                                                        </h5>
+                                                        {% if fitness_goal.motivation_notes %}
+                                                        <p class="text-warning small mb-0 font-italic mt-1">"{{ fitness_goal.motivation_notes }}"</p>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="text-right mt-2 mt-sm-0">
+                                                        <span class="badge badge-light text-dark font-weight-bold px-3 py-1.5 rounded-pill">
+                                                            <i class="mdi mdi-calendar-check mr-1 text-primary"></i> {{ fitness_goal.target_weekly_workouts }} Workouts / Wk
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        <!-- Section 1: Recent Workout Logs -->
+                                        <h5 class="font-weight-bold mb-3 mt-4 text-dark"><i class="mdi mdi-clipboard-text mr-1 text-primary"></i> Workout Logs</h5>
+                                        {% if workout_logs %}
+                                            <div class="accordion" id="trainerWorkoutAccordion">
+                                                {% for log in workout_logs %}
+                                                <div class="card mb-2 border shadow-none" style="border-radius: 8px;">
+                                                    <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center" id="headingTrainerLog{{ log.id }}">
+                                                        <div class="d-flex align-items-center flex-wrap">
+                                                            <span class="badge badge-dark mr-2">{{ log.date|date:"d M Y" }}</span>
+                                                            <span class="badge badge-info mr-2 text-capitalize">{{ log.get_workout_type_display }}</span>
+                                                            <strong class="text-dark mr-2">{{ log.title }}</strong>
+                                                            <small class="text-muted mr-3"><i class="mdi mdi-clock-outline mr-1"></i>{{ log.duration_minutes }} min</small>
+                                                            {% if log.calories_burned %}
+                                                            <small class="text-danger mr-3"><i class="mdi mdi-fire mr-1"></i>{{ log.calories_burned }} kcal</small>
+                                                            {% endif %}
+                                                            {% if log.energy_rating %}
+                                                            <small class="text-warning"><i class="mdi mdi-flash mr-1"></i>{{ log.energy_rating }}/5 Energy</small>
+                                                            {% endif %}
+                                                        </div>
+                                                        <button class="btn btn-sm btn-link text-decoration-none font-weight-bold" type="button" data-toggle="collapse" data-target="#collapseTrainerLog{{ log.id }}" aria-expanded="false" aria-controls="collapseTrainerLog{{ log.id }}">
+                                                            View Exercises ({{ log.exercises.count }}) &darr;
+                                                        </button>
+                                                    </div>
+
+                                                    <div id="collapseTrainerLog{{ log.id }}" class="collapse" aria-labelledby="headingTrainerLog{{ log.id }}" data-parent="#trainerWorkoutAccordion">
+                                                        <div class="card-body p-3">
+                                                            {% if log.notes %}
+                                                            <p class="text-muted small mb-2"><strong>Notes:</strong> {{ log.notes }}</p>
+                                                            {% endif %}
+                                                            {% if log.exercises.all %}
+                                                            <div class="table-responsive">
+                                                                <table class="table table-sm table-bordered mb-0">
+                                                                    <thead class="thead-light">
+                                                                        <tr>
+                                                                            <th>#</th>
+                                                                            <th>Exercise Name</th>
+                                                                            <th>Sets</th>
+                                                                            <th>Reps / Set</th>
+                                                                            <th>Weight Lifted</th>
+                                                                            <th>Exercise Notes</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {% for ex in log.exercises.all %}
+                                                                        <tr>
+                                                                            <td>{{ forloop.counter }}</td>
+                                                                            <td class="font-weight-bold text-dark">{{ ex.exercise_name }}</td>
+                                                                            <td>{{ ex.sets }}</td>
+                                                                            <td>{{ ex.reps }}</td>
+                                                                            <td>{% if ex.weight_kg %}<span class="badge badge-success">{{ ex.weight_kg }} kg</span>{% else %}<span class="text-muted">-</span>{% endif %}</td>
+                                                                            <td class="small text-muted">{{ ex.notes|default:"-" }}</td>
+                                                                        </tr>
+                                                                        {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            {% else %}
+                                                            <p class="text-muted small mb-0">No exercise breakdown recorded for this session.</p>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <div class="alert alert-light border text-center py-3 text-muted">
+                                                <i class="mdi mdi-information-outline mr-1"></i> Member has not logged any workouts yet.
+                                            </div>
+                                        {% endif %}
+
+                                        <!-- Section 2: Body Metrics History -->
+                                        <h5 class="font-weight-bold mb-3 mt-4 text-dark"><i class="mdi mdi-tape-measure mr-1 text-primary"></i> Body Measurement History</h5>
+                                        {% if body_metrics %}
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-bordered mb-0">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Weight (kg)</th>
+                                                            <th>Body Fat %</th>
+                                                            <th>Chest</th>
+                                                            <th>Waist</th>
+                                                            <th>Biceps</th>
+                                                            <th>Thighs</th>
+                                                            <th>Notes</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for bm in body_metrics %}
+                                                        <tr>
+                                                            <td><strong>{{ bm.date|date:"d M Y" }}</strong></td>
+                                                            <td class="font-weight-bold text-primary">{% if bm.weight_kg %}{{ bm.weight_kg }} kg{% else %}-{% endif %}</td>
+                                                            <td>{% if bm.body_fat_percentage %}{{ bm.body_fat_percentage }}%{% else %}-{% endif %}</td>
+                                                            <td>{% if bm.chest_inches %}{{ bm.chest_inches }}"{% else %}-{% endif %}</td>
+                                                            <td>{% if bm.waist_inches %}{{ bm.waist_inches }}"{% else %}-{% endif %}</td>
+                                                            <td>{% if bm.biceps_inches %}{{ bm.biceps_inches }}"{% else %}-{% endif %}</td>
+                                                            <td>{% if bm.thighs_inches %}{{ bm.thighs_inches }}"{% else %}-{% endif %}</td>
+                                                            <td class="small text-muted">{{ bm.notes|default:"-" }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <div class="alert alert-light border text-center py-3 text-muted">
+                                                <i class="mdi mdi-information-outline mr-1"></i> No body measurements recorded yet.
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                          
+                        </div>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openResetMemberPasswordModal(memberId, memberName, mobileNumber, memberCode) {
+  const defaultSuggestion = "Fit@" + (mobileNumber && mobileNumber.length >= 4 ? mobileNumber.slice(-4) : "1234");
+  
+  Swal.fire({
+    title: '<div style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">Reset Member Password</div>',
+    html: `
+      <div style="text-align: left; font-size: 0.9rem; color: #475569; margin-top: 10px;">
+        <p style="margin-bottom: 12px;">Resetting login password for <strong>${memberName}</strong> (${memberCode}).</p>
+        <div class="form-group mb-3">
+          <label style="font-weight: 600; color: #334155; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+            <span>New Password</span>
+            <a href="#" onclick="document.getElementById('swal-new-pwd-input').value = '${defaultSuggestion}'; return false;" style="font-size: 0.8rem; color: #2563eb; text-decoration: none;">Suggest Default</a>
+          </label>
+          <input type="text" id="swal-new-pwd-input" class="form-control" value="${defaultSuggestion}" placeholder="Enter new password" style="border-radius: 8px; font-family: monospace; font-size: 0.95rem; font-weight: 600;">
+          <small class="text-muted mt-1 d-block">Leave as suggested or enter a custom password.</small>
+        </div>
+      </div>
+    `,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: '<i class="mdi mdi-lock-reset mr-1"></i> Confirm Reset',
+    cancelButtonText: 'Cancel',
+    buttonsStyling: false,
+    customClass: {
+      popup: 'rounded-4 shadow-lg border-0 p-4',
+      confirmButton: 'btn btn-primary px-4 py-2 font-weight-bold rounded-pill shadow-sm mr-2',
+      cancelButton: 'btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-bold'
+    },
+    preConfirm: () => {
+      const pwd = document.getElementById('swal-new-pwd-input').value.trim();
+      if (!pwd) {
+        Swal.showValidationMessage('Please enter a new password');
+        return false;
+      }
+      return pwd;
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const newPwd = result.value;
+      const csrfToken = '{{ csrf_token }}';
+      
+      const formData = new FormData();
+      formData.append('new_password', newPwd);
+      formData.append('csrfmiddlewaretoken', csrfToken);
+      
+      Swal.fire({
+        title: 'Updating Password...',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+      });
+      
+      fetch(`/members/reset-password/${memberId}/`, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          Swal.fire({
+            title: '<div style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">Password Reset Successfully!</div>',
+            icon: 'success',
+            html: `
+              <div style="text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-top: 10px; font-size: 0.9rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #64748b;">Member:</span>
+                  <strong>${data.name}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #64748b;">Username / ID:</span>
+                  <span style="font-family: monospace; font-weight: 700; color: #2563eb;">${data.username}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="color: #64748b;">Mobile:</span>
+                  <span>${data.mobile}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
+                  <span style="color: #64748b; font-weight: 600;">New Password:</span>
+                  <span style="font-family: monospace; font-size: 1rem; font-weight: 700; color: #dc2626; background: #fef2f2; padding: 2px 8px; border-radius: 6px;">${data.new_password}</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 16px;">
+                <button type="button" id="copy-reset-pwd-btn" onclick="copyResetText('${data.share_text.replace(/'/g, "\\'")}')" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #2563eb; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
+                  <i class="mdi mdi-content-copy"></i>
+                  <span id="copy-reset-pwd-text">Copy Credentials</span>
+                </button>
+                ${data.mobile ? `
+                <a href="https://wa.me/91${data.mobile}?text=${encodeURIComponent(data.share_text)}" target="_blank" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #16a34a; color: #fff; text-decoration: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem;">
+                  <i class="mdi mdi-whatsapp"></i>
+                  <span>Send WhatsApp</span>
+                </a>` : ''}
+              </div>
+            `,
+            confirmButtonText: 'Done',
+            buttonsStyling: false,
+            customClass: {
+              popup: 'rounded-4 shadow-lg border-0 p-4',
+              confirmButton: 'btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-bold mt-2'
+            }
+          });
+        } else {
+          Swal.fire('Error', data.message || 'Could not reset password', 'error');
+        }
+      })
+      .catch(err => {
+        Swal.fire('Error', 'An error occurred while resetting password', 'error');
+      });
+    }
+  });
+}
+
+function copyResetText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-reset-pwd-text');
+    if (btn) btn.textContent = 'Copied!';
+  }).catch(() => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    const btn = document.getElementById('copy-reset-pwd-text');
+    if (btn) btn.textContent = 'Copied!';
+  });
+}
+</script>
+{% endblock %}

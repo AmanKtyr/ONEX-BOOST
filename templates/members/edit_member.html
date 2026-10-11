@@ -1,0 +1,449 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'member_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Members List
+            </a>
+        </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'member_profile' member.id %}" class="text-decoration-none">
+                    <i class="mdi mdi-account-outline mdi-18px"></i> {{ member.first_name }} {{ member.last_name }}
+                </a>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-account-plus-outline mdi-18px"></i> Edit Member
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Edit Member</h4>
+        </div>
+        <div class="card-body">
+            <form method="post"  enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <fieldset class="border p-4 rounded mb-4">
+                    <legend class="w-auto px-2 h5">Personal Info</legend>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_first_name" class="form-label">First Name <span class="text-danger">*</span></label>
+                            {{ form.first_name }}
+                            {% for error in form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
+                            {{ form.last_name }}
+                            {% for error in form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                            {{ form.gender }}
+                            {% for error in form.gender.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_date_of_birth" class="form-label">Date of Birth</label>
+                            {{ form.date_of_birth }}
+                            {% for error in form.date_of_birth.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_age" class="form-label">Age <span class="text-danger">*</span></label>
+                            {{ form.age }}
+                            {% for error in form.age.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_profession" class="form-label">Profession</label>
+                            {{ form.profession }}
+                            {% for error in form.profession.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                       
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-4 rounded mb-4">
+                    <legend class="w-auto px-2 h5">Contact Details</legend>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_mobile_number" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                            {{ form.mobile_number }}
+                            {% for error in form.mobile_number.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% for error in form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_pincode" class="form-label">Pincode</label>
+                            {{ form.pincode }}
+                            {% for error in form.pincode.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_address" class="form-label">Address</label>
+                            {{ form.address }}
+                            {% for error in form.address.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_city" class="form-label">City</label>
+                            {{ form.city }}
+                            {% for error in form.city.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_state" class="form-label">State</label>
+                            {{ form.state }}
+                            {% for error in form.state.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-4 rounded mb-4">
+                    <legend class="w-auto px-2 h5">Documents</legend>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_profile_picture" class="form-label">Profile Picture</label>
+                            <div class="input-group">
+                                {{ form.profile_picture }}
+                                <button type="button" class="btn btn-outline-primary capture-btn" data-target="id_profile_picture">
+                                    <i class="mdi mdi-camera"></i> 
+                                </button>
+                            </div>
+                            <div id="preview_id_profile_picture" class="mt-2" style="display: {% if member.profile_picture %}block{% else %}none{% endif %};">
+                                <img src="{% if member.profile_picture %}{{ member.profile_picture.url }}{% endif %}" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                            {% for error in form.profile_picture.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_sign" class="form-label">Signature</label>
+                            <div class="input-group">
+                                {{ form.sign }}
+                                <button type="button" class="btn btn-outline-primary capture-btn" data-target="id_sign">
+                                    <i class="mdi mdi-camera"></i> 
+                                </button>
+                            </div>
+                            <div id="preview_id_sign" class="mt-2" style="display: {% if member.sign %}block{% else %}none{% endif %};">
+                                <img src="{% if member.sign %}{{ member.sign.url }}{% endif %}" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                            {% for error in form.sign.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_identity_type" class="form-label">Identity Type</label>
+                            {{ form.identity_type }}
+                            {% for error in form.identity_type.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_identity_no" class="form-label">Identity Number</label>
+                            {{ form.identity_no }}
+                            {% for error in form.identity_no.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_identity_document_image" class="form-label">Identity Document</label>
+                            <div class="input-group">
+                                {{ form.identity_document_image }}
+                                <button type="button" class="btn btn-outline-primary capture-btn" data-target="id_identity_document_image">
+                                    <i class="mdi mdi-camera"></i> 
+                                </button>
+                            </div>
+                            <div id="preview_id_identity_document_image" class="mt-2" style="display: {% if member.identity_document_image %}block{% else %}none{% endif %};">
+                                <img src="{% if member.identity_document_image %}{{ member.identity_document_image.url }}{% endif %}" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                            {% for error in form.identity_document_image.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-4 rounded mb-4">
+                    <legend class="w-auto px-2 h5">Medical History</legend>
+                    {{ medical_formset.management_form }}
+                    <div id="medical-formset-container">
+                        {% for form in medical_formset %}
+                            <div class="row medical-formset-row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="{{ form.condition.id_for_label }}" class="form-label">Condition</label>
+                                    {{ form.condition }}
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="{{ form.type.id_for_label }}" class="form-label">Type</label>
+                                    {{ form.type }}
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="{{ form.since.id_for_label }}" class="form-label">Since <span class="text-danger">*</span></label>
+                                    {{ form.since|attr:'required:true' }}
+                                </div>
+                                <div class="col-md-3 mb-3 d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger remove-medical-formset-row">Remove</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" id="add-medical-formset-row" class="btn btn-success">Add More</button>
+                </fieldset>
+
+                <fieldset class="border p-4 rounded mb-4">
+                    <legend class="w-auto px-2 h5">Emergency Contact</legend>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ emergency_form.name.id_for_label }}" class="form-label">Name</label>
+                            {{ emergency_form.name }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ emergency_form.mobile.id_for_label }}" class="form-label">Mobile</label>
+                            {{ emergency_form.mobile }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ emergency_form.relation.id_for_label }}" class="form-label">Relation</label>
+                            {{ emergency_form.relation }}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary me-2">Submit</button>
+                    <a href="{% url 'member_list' %}" class="btn btn-light">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('medical-formset-container');
+    const addButton = document.getElementById('add-medical-formset-row');
+    const totalForms = document.querySelector('input[name="{{ medical_formset.prefix }}-TOTAL_FORMS"]');
+    const emptyFormTemplate = `
+        <div class="row medical-formset-row">
+            <div class="col-md-3 mb-3">
+                <label for="id_{{ medical_formset.prefix }}-__prefix__-condition" class="form-label">Condition</label>
+                {{ medical_formset.empty_form.condition }}
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="id_{{ medical_formset.prefix }}-__prefix__-type" class="form-label">Type</label>
+                {{ medical_formset.empty_form.type }}
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="id_{{ medical_formset.prefix }}-__prefix__-since" class="form-label">Since <span class="text-danger">*</span></label>
+                {{ medical_formset.empty_form.since|attr:'required:true' }}
+            </div>
+            <div class="col-md-3 mb-3 d-flex align-items-end">
+                <button type="button" class="btn btn-danger remove-medical-formset-row">Remove</button>
+            </div>
+        </div>
+    `;
+
+    addButton.addEventListener('click', function () {
+        let newIndex = parseInt(totalForms.value);
+        let newForm = emptyFormTemplate.replace(/__prefix__/g, newIndex);
+        container.insertAdjacentHTML('beforeend', newForm);
+        totalForms.value = newIndex + 1;
+    });
+
+    container.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('remove-medical-formset-row')) {
+            const row = e.target.closest('.medical-formset-row');
+            const deleteInput = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
+            if (deleteInput) {
+                deleteInput.checked = true;
+                row.style.display = 'none';
+            } else {
+                row.remove();
+                updateFormIndexes();
+            }
+        }
+    });
+
+    function updateFormIndexes() {
+        const rows = container.querySelectorAll('.medical-formset-row');
+        let formCount = 0;
+        rows.forEach((row, index) => {
+            if (row.style.display !== 'none') {
+                formCount++;
+                row.querySelectorAll('input, select, textarea').forEach(input => {
+                    if (input.name) {
+                        const name = input.name.replace(/-(\d+|__prefix__)-/, `-${index}-`);
+                        const id = input.id.replace(/-(\d+|__prefix__)-/, `-${index}-`);
+                        input.name = name;
+                        input.id = id;
+                        const label = document.querySelector(`label[for="${id.replace(index, '__prefix__')}"]`);
+                        if (label) {
+                            label.setAttribute('for', id);
+                        }
+                    }
+                });
+            }
+        });
+        totalForms.value = formCount;
+    }
+});
+</script>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.querySelector('form')
+  
+  // Function to scroll to first error field
+  function scrollToFirstError() {
+    // Look for fields with validation errors
+    const invalidFields = form.querySelectorAll('.is-invalid, .invalid-feedback.d-block')
+    const emptyRequiredFields = form.querySelectorAll('input[required]:invalid, select[required]:invalid, textarea[required]:invalid')
+    
+    let firstErrorElement = null
+    
+    // Check for Bootstrap validation errors first
+    if (invalidFields.length > 0) {
+      firstErrorElement = invalidFields[0]
+    }
+    
+    // Check for HTML5 validation errors
+    if (!firstErrorElement && emptyRequiredFields.length > 0) {
+      firstErrorElement = emptyRequiredFields[0]
+    }
+    
+    // If we found an error, scroll to it and focus
+    if (firstErrorElement) {
+      // If it's an error message, find the corresponding input field
+      let targetElement = firstErrorElement
+      if (firstErrorElement.classList.contains('invalid-feedback')) {
+        const inputId = firstErrorElement.getAttribute('for') || firstErrorElement.previousElementSibling?.id
+        if (inputId) {
+          const correspondingInput = document.getElementById(inputId) || form.querySelector(`[name="${inputId}"]`)
+          if (correspondingInput) {
+            targetElement = correspondingInput
+          }
+        }
+      }
+      
+      // Scroll to the element
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+      
+      // Focus the element
+      if (targetElement.tagName === 'INPUT' || targetElement.tagName === 'SELECT' || targetElement.tagName === 'TEXTAREA') {
+        targetElement.focus()
+      }
+      
+      // Add visual highlight
+      targetElement.style.borderColor = '#dc3545'
+      setTimeout(() => {
+        targetElement.style.borderColor = ''
+      }, 3000)
+      
+      return true
+    }
+    
+    return false
+  }
+  
+  // Intercept form submission to check for errors
+  form.addEventListener('submit', function (e) {
+    // Let browser validation happen first
+    if (!form.checkValidity()) {
+      e.preventDefault()
+      e.stopPropagation()
+      
+      // Add was-validated class to show validation styles
+      form.classList.add('was-validated')
+      
+      // Scroll to first error after a short delay to let validation render
+      setTimeout(() => {
+        scrollToFirstError()
+      }, 100)
+      
+      return false
+    }
+    
+    // If form is valid, check for server-side errors (Bootstrap validation)
+    setTimeout(() => {
+      if (scrollToFirstError()) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }, 100)
+  })
+  
+  // Also check on page load if there are any server-side errors
+  setTimeout(() => {
+    scrollToFirstError()
+  }, 500)
+})
+</script>
+{% endblock %}

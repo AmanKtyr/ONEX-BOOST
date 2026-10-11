@@ -1,0 +1,249 @@
+{% extends 'website/base_website.html' %}
+{% load static %}
+
+{% block title %}ONEXIVAPricing | Gym Management Software Plans — Starter, Professional & Enterprise{% endblock %}
+
+{% block seo %}
+<meta name="description" content="Choose the right ONEXIVAplan for your gym. Transparent pricing for gym management software — Starter for small gyms, Professional for growing studios, and Enterprise for large fitness operations. Book a free demo.">
+<meta name="keywords" content="gym management software pricing India, gym software cost, gym management app pricing, affordable gym management software, gym billing software price, fitness software subscription, gym software plans India, ONEXIVApricing, gym CRM cost India">
+<meta name="author" content="ONEXIVAby BhattSquare">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+{% endblock %}
+
+{% block canonical %}
+<link rel="canonical" href="https://fitstack.nextgenapplication.com/pricing/">
+{% endblock %}
+
+{% block og_tags %}
+<meta property="og:site_name" content="ONEXIVA">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fitstack.nextgenapplication.com/pricing/">
+<meta property="og:title" content="ONEXIVAPricing — Gym Management Software Plans">
+<meta property="og:description" content="Starter, Professional, and Enterprise plans designed for every stage of your gym's growth. Clear tiers, no hidden fees.">
+<meta property="og:image" content="{% static 'images/bmi-og.png' %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_IN">
+{% endblock %}
+
+{% block twitter_tags %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ONEXIVAPricing — Gym Management Software Plans">
+<meta name="twitter:description" content="Starter to Enterprise — clear gym software plans for every stage of growth. Book a free demo.">
+<meta name="twitter:image" content="{% static 'images/bmi-og.png' %}">
+{% endblock %}
+
+{% block schema_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can we start with a small plan and expand later?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. ONEXIVA's pricing structure supports businesses that want clarity today without blocking future growth. You can start with Starter and move to Professional or Enterprise as you scale."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does ONEXIVAhelp with onboarding?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Setup walkthroughs and role-based guidance are part of every plan. Enterprise customers get dedicated onboarding support."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can ONEXIVAhandle billing, trainers, and attendance together?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. ONEXIVAcovers memberships, billing, QR attendance, trainer assignments, workout & diet plans, and follow-up — all from one platform."
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <img src="{% static 'images/hero_image_gym.png' %}" alt="ONEXIVApricing" class="page-hero-media">
+    <div class="brand-container page-hero-content">
+        <div class="max-w-4xl site-reveal">
+            <span class="brand-eyebrow brand-eyebrow-dark">
+                <i class="fa-solid fa-badge-dollar"></i>
+                Pricing built for growth
+            </span>
+            <h1 class="brand-heading mt-6">Choose the ONEXIVAsetup that matches your current stage and your next move.</h1>
+            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
+                Clear tiers, premium support, and the same visual confidence across the whole buying journey. Pick a plan that fits your scale today and still feels right as you grow.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="brand-section">
+    <div class="brand-container">
+        <div class="price-grid">
+            <article class="brand-card p-8 site-reveal">
+                <span class="brand-eyebrow mb-5">
+                    <i class="fa-solid fa-seedling"></i>
+                    Starter
+                </span>
+                <h2 class="text-3xl font-bold mb-2">For focused teams</h2>
+                <p class="text-slate-800 leading-8 mb-8">A clean setup for smaller gyms and studios that want member, billing, and daily operating control in one place.</p>
+                <div class="brand-list">
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Member records and membership plans</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Invoice and due tracking</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Attendance basics</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Core reporting and admin workflows</div></div>
+                </div>
+                <a href="{% url 'contact' %}" class="btn btn-outline w-full mt-8">Talk to sales</a>
+            </article>
+
+            <article class="brand-card brand-panel p-8 site-reveal" style="border-color: rgba(93, 173, 216, 0.3); box-shadow: 0 28px 56px rgba(93, 173, 216, 0.18);">
+                <span class="brand-eyebrow mb-5">
+                    <i class="fa-solid fa-bolt"></i>
+                    Most popular
+                </span>
+                <h2 class="text-3xl font-bold mb-2">Professional</h2>
+                <p class="text-slate-800 leading-8 mb-8">For growth-stage fitness businesses that need stronger billing discipline, trainer workflows, follow-up systems, and richer day-to-day visibility.</p>
+                <div class="brand-list">
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Everything in Starter</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Lead and enquiry handling</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Trainer and PT workflows</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Workout and diet plan assignment</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Better retention touchpoints</div></div>
+                </div>
+                <a href="{% url 'contact' %}" class="btn btn-primary w-full mt-8">Book a walkthrough</a>
+            </article>
+
+            <article class="brand-card p-8 site-reveal">
+                <span class="brand-eyebrow mb-5">
+                    <i class="fa-solid fa-building"></i>
+                    Enterprise
+                </span>
+                <h2 class="text-3xl font-bold mb-2">For larger operations</h2>
+                <p class="text-slate-800 leading-8 mb-8">A more tailored setup for advanced teams that want broader control, more support, and a rollout aligned to scale.</p>
+                <div class="brand-list">
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Advanced operating workflows</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Inventory and deeper admin control</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Structured onboarding support</div></div>
+                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Custom rollout guidance</div></div>
+                </div>
+                <a href="{% url 'contact' %}" class="btn btn-outline w-full mt-8">Contact our team</a>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="brand-section brand-section-soft">
+    <div class="brand-container">
+        <div class="text-center max-w-3xl mx-auto mb-12 site-reveal">
+            <span class="brand-eyebrow">
+                <i class="fa-solid fa-table-columns"></i>
+                Compare plans
+            </span>
+            <h2 class="brand-section-title mt-4">See how the tiers map to real business needs.</h2>
+        </div>
+
+        <div class="comparison-shell site-reveal">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Capability</th>
+                        <th>Starter</th>
+                        <th>Professional</th>
+                        <th>Enterprise</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-bold">Member management</td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                        <td><span class="comparison-pill primary">Advanced</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Billing and dues</td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                        <td><span class="comparison-pill primary">Advanced</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Lead management</td>
+                        <td><span class="comparison-pill secondary">Limited</span></td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Trainer and PT workflows</td>
+                        <td><span class="comparison-pill secondary">Optional</span></td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Workout and diet plans</td>
+                        <td><span class="comparison-pill secondary">Optional</span></td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                        <td><span class="comparison-pill primary">Included</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Inventory and operations</td>
+                        <td><span class="comparison-pill secondary">Basic</span></td>
+                        <td><span class="comparison-pill secondary">Expanded</span></td>
+                        <td><span class="comparison-pill accent">Tailored</span></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Onboarding support</td>
+                        <td><span class="comparison-pill secondary">Standard</span></td>
+                        <td><span class="comparison-pill primary">Priority</span></td>
+                        <td><span class="comparison-pill accent">Dedicated</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="brand-section">
+    <div class="brand-container">
+        <div class="grid lg:grid-cols-[1fr_.9fr] gap-10 items-start">
+            <div class="site-reveal">
+                <span class="brand-eyebrow">
+                    <i class="fa-solid fa-circle-question"></i>
+                    Buying guidance
+                </span>
+                <h2 class="brand-section-title mt-4">Questions teams usually ask before they switch.</h2>
+                <div class="grid gap-4 mt-8">
+                    <div class="brand-card p-6">
+                        <h3 class="text-xl font-bold mb-2">Can we start small and expand later?</h3>
+                        <p class="text-slate-800 leading-8">Yes. The structure of the pricing is meant to support businesses that want clarity today without blocking future growth.</p>
+                    </div>
+                    <div class="brand-card p-6">
+                        <h3 class="text-xl font-bold mb-2">Do you help with onboarding?</h3>
+                        <p class="text-slate-800 leading-8">Yes. Setup, walkthroughs, and role-based guidance are part of making the platform usable in real team environments.</p>
+                    </div>
+                    <div class="brand-card p-6">
+                        <h3 class="text-xl font-bold mb-2">Can ONEXIVAsupport operational depth?</h3>
+                        <p class="text-slate-800 leading-8">That is one of the main differentiators. The product covers much more than a simple membership database or invoice tool.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-card brand-card-dark p-8 site-reveal">
+                <p class="brand-mono text-xs uppercase tracking-[0.2em] text-white/50">Need a custom rollout?</p>
+                <h3 class="text-3xl font-bold mt-4 mb-4">Let’s map the right plan to your team structure.</h3>
+                <p class="text-white/70 leading-8">We can walk through your current tools, pain points, and the modules that matter most so the platform recommendation fits the way you actually operate.</p>
+                <div class="grid gap-4 mt-8">
+                    <a href="{% url 'contact' %}" class="btn btn-primary">Book your demo</a>
+                    <a href="https://wa.me/916392348731?text=Hello%20ONEXIVA%2C%20I%20want%20to%20discuss%20pricing." class="btn btn-outline border-white/20 bg-white/8 text-white hover:bg-white/16 hover:text-white">Chat about pricing</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

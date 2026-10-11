@@ -1,0 +1,509 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'view_subadmins' %}" class="text-decoration-none">
+                <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Sub-Admins List
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-{% if sub_admin %}account-edit-outline{% else %}account-plus-outline{% endif %} mdi-18px"></i>
+            {% if sub_admin %}Edit Sub-Admin{% else %}Create Sub-Admin{% endif %}
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <h4 class="mb-0">{% if sub_admin %}Edit Sub-Admin: {{ sub_admin.user.get_full_name|default:sub_admin.user.username }}{% else %}Create New Sub-Admin{% endif %}</h4>
+            </div>
+            <div class="d-flex">
+                <a href="{% url 'view_subadmins' %}" class="btn btn-light btn-sm d-flex align-items-center font-weight-bold">
+                    <i class="mdi mdi-arrow-left mr-1 me-1"></i> Sub-Admins List
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if quota_limit_reached %}
+            <div class="alert alert-danger shadow-sm border-0 d-flex align-items-center justify-content-between flex-wrap p-3 mb-4 rounded-xl" style="border-left: 5px solid #dc2626 !important; background: #fef2f2; border-radius: 12px;">
+              <div class="d-flex align-items-center mb-2 mb-md-0">
+                <div class="p-2 rounded-circle bg-danger text-white mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                  <i class="mdi mdi-alert-octagon-outline" style="font-size: 22px;"></i>
+                </div>
+                <div>
+                  <strong class="text-danger">Admin Account Limit Reached ({{ quota_status.admins.current }} / {{ quota_status.admins.display_max }} Accounts)!</strong>
+                  <div class="small text-muted">Your active SaaS plan limit for administrator accounts has been reached. Please upgrade your plan to create more sub-admin logins.</div>
+                </div>
+              </div>
+              <a href="{% url 'settings:my_subscription' %}" class="btn btn-danger btn-sm font-weight-bold px-3 py-2 rounded-pill shadow-sm">
+                <i class="mdi mdi-arrow-up-circle mr-1"></i> Upgrade Plan
+              </a>
+            </div>
+            {% endif %}
+
+            <!-- Main Form -->
+            <form method="post" enctype="multipart/form-data" id="subadmin-form">
+                {% csrf_token %}
+
+        <div class="row">
+            <!-- Left Column: Personal Information & Operational Role -->
+            <div class="col-lg-6">
+                <div class="subadmin-card">
+                    <div class="subadmin-card-header">
+                        <div class="subadmin-card-title-group">
+                            <div class="subadmin-card-header-icon bg-soft-primary text-primary">
+                                <i class="mdi mdi-card-account-details-outline"></i>
+                            </div>
+                            <div>
+                                <h3 class="subadmin-card-title">Personal Information & Role</h3>
+                                <p class="subadmin-card-subtitle">Staff identity, communication channels & job role</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subadmin-card-body">
+                        <!-- Avatar / Photo Upload & Live Camera Capture -->
+                        <div class="avatar-upload-wrapper">
+                            <div class="avatar-preview-box" id="preview_id_photo" data-default-avatar="{% static 'images/member_dp.jpg' %}">
+                                <img src="{% if sub_admin and sub_admin.photo %}{{ sub_admin.photo.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" alt="Avatar Preview" id="avatar-img-preview">
+                            </div>
+                            <div class="avatar-actions-box">
+                                <div class="avatar-btn-row">
+                                    <label class="btn btn-sm btn-outline-primary mb-0" for="id_photo">
+                                        <i class="mdi mdi-upload"></i> Upload Photo
+                                    </label>
+                                    <input type="file" name="photo" id="id_photo" accept="image/*" style="display: none;">
+
+                                    <button type="button" class="btn btn-sm btn-primary capture-btn" data-target="id_photo" title="Take photo using webcam">
+                                        <i class="mdi mdi-camera"></i> Camera
+                                    </button>
+
+                                    <button type="button" class="btn btn-sm btn-light" id="reset-photo-btn" title="Reset image">
+                                        <i class="mdi mdi-refresh"></i>
+                                    </button>
+                                </div>
+                                <p class="avatar-hint">
+                                    <i class="mdi mdi-information-outline"></i> Upload a square portrait photo (JPG, PNG, WebP up to 2MB).
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Full Name -->
+                        <div class="form-group-modern">
+                            <label class="form-label-modern" for="id_full_name">
+                                Full Name <span class="required-star">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <div class="input-icon-box">
+                                    <i class="mdi mdi-account-outline"></i>
+                                </div>
+                                <input type="text" class="form-control-modern" name="full_name" id="id_full_name" 
+                                       value="{% if sub_admin %}{{ sub_admin.user.get_full_name|default:sub_admin.user.first_name }}{% endif %}" 
+                                       placeholder="e.g. Johnathan Miller" required autocomplete="name">
+                            </div>
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="form-group-modern">
+                            <label class="form-label-modern" for="id_email">
+                                Email Address <span class="required-star">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <div class="input-icon-box">
+                                    <i class="mdi mdi-email-outline"></i>
+                                </div>
+                                <input type="email" class="form-control-modern" name="email" id="id_email" 
+                                       value="{{ sub_admin.user.email }}" 
+                                       placeholder="e.g. staff@onexivagym.com" required autocomplete="email">
+                            </div>
+                            <div class="form-hint">
+                                <i class="mdi mdi-shield-check-outline"></i> Used for notifications and security recovery.
+                            </div>
+                        </div>
+
+                        <!-- Phone / Mobile Number -->
+                        <div class="form-group-modern">
+                            <label class="form-label-modern" for="id_phone_number">
+                                Mobile Phone Number <span class="required-star">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <div class="input-icon-box">
+                                    <i class="mdi mdi-phone-outline"></i>
+                                </div>
+                                <input type="tel" class="form-control-modern" name="phone_number" id="id_phone_number" 
+                                       value="{{ sub_admin.phone_number }}" 
+                                       placeholder="e.g. +91 98765 43210" required autocomplete="tel">
+                            </div>
+                        </div>
+
+                        <!-- Designated Staff Role -->
+                        <div class="form-group-modern">
+                            <label class="form-label-modern" for="id_role_select">
+                                Designated Role <span class="required-star">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <div class="input-icon-box">
+                                    <i class="mdi mdi-badge-account-horizontal-outline"></i>
+                                </div>
+                                <select class="form-control-modern" name="role" id="id_role_select" required>
+                                    <option value="">Select Operational Role</option>
+                                    {% for role_val, role_label in ROLE_CHOICES %}
+                                        <option value="{{ role_val }}" {% if sub_admin and sub_admin.role == role_val %}selected{% elif not sub_admin and role_val == 'subadmin' %}selected{% endif %}>
+                                            {{ role_label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div id="role-badge-preview" class="role-badge-preview badge-soft-info mt-2" style="display: none;"></div>
+                            <p class="form-hint mt-1" id="role-desc-preview">
+                                Select a designated operational staff role for this account.
+                            </p>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group-modern mb-0">
+                            <label class="form-label-modern" for="id_address">
+                                Address / Branch Notes
+                            </label>
+                            <div class="input-group-modern">
+                                <div class="input-icon-box" style="align-self: flex-start; margin-top: 0.65rem;">
+                                    <i class="mdi mdi-map-marker-outline"></i>
+                                </div>
+                                <textarea class="form-control-modern" name="address" id="id_address" rows="3" 
+                                          placeholder="e.g. 104 Fitness Avenue, West Sector, Mumbai">{{ sub_admin.address }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Login Credentials & Security Scope -->
+            <div class="col-lg-6">
+                <div class="subadmin-card">
+                    <div class="subadmin-card-header">
+                        <div class="subadmin-card-title-group">
+                            <div class="subadmin-card-header-icon bg-soft-success text-success">
+                                <i class="mdi mdi-shield-key-outline"></i>
+                            </div>
+                            <div>
+                                <h3 class="subadmin-card-title">Login Credentials & Security</h3>
+                                <p class="subadmin-card-subtitle">Staff authentication and portal login security</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subadmin-card-body">
+                        <!-- Username -->
+                        <div class="form-group-modern">
+                            <label class="form-label-modern" for="id_username">
+                                Portal Username <span class="required-star">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <div class="input-icon-box">
+                                    <i class="mdi mdi-account-circle-outline"></i>
+                                </div>
+                                <input type="text" class="form-control-modern" name="username" id="id_username" 
+                                       value="{{ sub_admin.user.username }}" 
+                                       placeholder="e.g. john_trainer" required autocomplete="username">
+                            </div>
+                            <div class="form-hint">
+                                <i class="mdi mdi-information-outline"></i> Unique username used by staff to sign into ONEXIVA.
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group-modern">
+                            <label class="form-label-modern" for="id_password">
+                                Account Password {% if not sub_admin %}<span class="required-star">*</span>{% endif %}
+                            </label>
+                            <div class="input-group-modern">
+                                <div class="input-icon-box">
+                                    <i class="mdi mdi-lock-outline"></i>
+                                </div>
+                                <input type="password" class="form-control-modern" name="password" id="id_password" 
+                                       placeholder="{% if sub_admin %}•••••••• (Leave blank to keep unchanged){% else %}Enter secure staff password{% endif %}" 
+                                       {% if not sub_admin %}required{% endif %} autocomplete="new-password">
+                                <button type="button" class="input-action-btn" id="toggle-password-btn" title="Toggle password visibility">
+                                    <i class="mdi mdi-eye-outline"></i>
+                                </button>
+                            </div>
+
+                            <!-- Password Strength Meter -->
+                            <div class="password-meter-wrap">
+                                <div class="password-meter-bar">
+                                    <div class="meter-segment"></div>
+                                    <div class="meter-segment"></div>
+                                    <div class="meter-segment"></div>
+                                    <div class="meter-segment"></div>
+                                </div>
+                                <div class="password-meter-text">
+                                    <span id="password-meter-text">Enter password</span>
+                                    <span class="text-muted">Min. 8 characters</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="form-group-modern">
+                            <label class="form-label-modern" for="id_confirm_password">
+                                Confirm Password {% if not sub_admin %}<span class="required-star">*</span>{% endif %}
+                            </label>
+                            <div class="input-group-modern">
+                                <div class="input-icon-box">
+                                    <i class="mdi mdi-lock-check-outline"></i>
+                                </div>
+                                <input type="password" class="form-control-modern" id="id_confirm_password" 
+                                       placeholder="Re-type password to verify" 
+                                       {% if not sub_admin %}required{% endif %} autocomplete="new-password">
+                                <button type="button" class="input-action-btn" id="toggle-confirm-password-btn" title="Toggle password visibility">
+                                    <i class="mdi mdi-eye-outline"></i>
+                                </button>
+                            </div>
+                            <div class="form-hint" id="password-match-hint"></div>
+                        </div>
+
+                        <!-- Security Scope Card -->
+                        <div class="p-3 bg-light rounded-3 mt-4 border">
+                            <div class="d-flex align-items-start gap-3">
+                                <i class="mdi mdi-shield-lock-outline text-primary mdi-24px"></i>
+                                <div>
+                                    <h6 class="font-weight-bold mb-1 text-dark">Staff Access Scope & Isolation</h6>
+                                    <p class="text-muted small mb-0">
+                                        This sub-admin account is strictly scoped to <strong>{{ request.gym.name|default:'this Gym Branch' }}</strong>. 
+                                        They cannot access other branches, financial super-admin tools, or modify gym ownership settings.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full-Width Section: Granular Module Access & Permissions Matrix -->
+        <div class="row">
+            <div class="col-12">
+                <div class="subadmin-card">
+                    <div class="subadmin-card-header">
+                        <div class="subadmin-card-title-group">
+                            <div class="subadmin-card-header-icon bg-soft-warning text-warning">
+                                <i class="mdi mdi-shield-account-outline"></i>
+                            </div>
+                            <div>
+                                <h3 class="subadmin-card-title">Module Access & Operational Privileges</h3>
+                                <p class="subadmin-card-subtitle">Grant granular view, add, edit, or delete capabilities per gym module</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <span id="preset-applied-indicator" class="badge badge-soft-success px-2 py-1" style="display: none; font-size: 0.78rem;">
+                                <i class="mdi mdi-check-circle-outline me-1"></i> Preset Applied: <strong id="preset-applied-name"></strong> (Customizable)
+                            </span>
+                            <span id="selected-perm-count" class="badge badge-soft-primary px-3 py-2">
+                                0 Permissions Selected
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Presets & Search Toolbar -->
+                    <div class="perm-matrix-toolbar">
+                        <div class="perm-presets-group">
+                            <span class="perm-preset-label">
+                                <i class="mdi mdi-flash-outline"></i> Quick Presets:
+                            </span>
+                            <button type="button" class="btn-preset" data-preset="full-admin" title="Grants full privileges across all modules">
+                                <i class="mdi mdi-shield-star-outline"></i> Full Admin
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="manager" title="Grants view, add, and edit for operational modules">
+                                <i class="mdi mdi-briefcase-account-outline"></i> Manager
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="front-desk" title="Grants view, add, edit for enquiries, members, attendance, billing">
+                                <i class="mdi mdi-desk"></i> Front Desk
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="trainer" title="Grants members, attendance, and workout/diet privileges">
+                                <i class="mdi mdi-dumbbell"></i> Trainer
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="accounts" title="Grants billing and expense privileges">
+                                <i class="mdi mdi-cash-multiple"></i> Accounts
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="inventory" title="Grants equipment & inventory privileges">
+                                <i class="mdi mdi-package-variant-closed"></i> Inventory
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="marketing" title="Grants lead management & marketing privileges">
+                                <i class="mdi mdi-bullhorn-outline"></i> Marketing
+                            </button>
+                            <button type="button" class="btn-preset" data-preset="view-only" title="Grants read-only access to all modules">
+                                <i class="mdi mdi-eye-outline"></i> View Only
+                            </button>
+                            <button type="button" class="btn-preset btn-preset-danger" data-preset="clear-all" title="Uncheck all permissions">
+                                <i class="mdi mdi-close-circle-outline"></i> Clear All
+                            </button>
+                        </div>
+
+                        <div class="perm-search-box">
+                            <i class="mdi mdi-magnify"></i>
+                            <input type="text" id="perm-search-input" placeholder="Filter modules (e.g. billing, members)...">
+                        </div>
+                    </div>
+
+                    <!-- Permissions Table -->
+                    <div class="perm-table-responsive">
+                        <table class="perm-table" id="perm-matrix-table">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 260px;">Module & Scope</th>
+                                    <th class="col-check">
+                                        <div class="d-flex flex-column align-items-center gap-1">
+                                            <span>View</span>
+                                            <input type="checkbox" id="select-all-view" title="Select All View Permissions" class="perm-check-header">
+                                        </div>
+                                    </th>
+                                    <th class="col-check">
+                                        <div class="d-flex flex-column align-items-center gap-1">
+                                            <span>Add</span>
+                                            <input type="checkbox" id="select-all-add" title="Select All Add Permissions" class="perm-check-header">
+                                        </div>
+                                    </th>
+                                    <th class="col-check">
+                                        <div class="d-flex flex-column align-items-center gap-1">
+                                            <span>Change</span>
+                                            <input type="checkbox" id="select-all-change" title="Select All Change Permissions" class="perm-check-header">
+                                        </div>
+                                    </th>
+                                    <th class="col-check">
+                                        <div class="d-flex flex-column align-items-center gap-1">
+                                            <span>Delete</span>
+                                            <input type="checkbox" id="select-all-delete" title="Select All Delete Permissions" class="perm-check-header">
+                                        </div>
+                                    </th>
+                                    <th class="col-row-action">Module Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mod in module_list %}
+                                <tr data-app="{{ mod.app }}" {% if mod.model %}data-model="{{ mod.model }}"{% endif %}>
+                                    <!-- Module Information -->
+                                    <td>
+                                        <div class="perm-module-info">
+                                            <div class="perm-module-icon-box {{ mod.badge_class }}">
+                                                <i class="mdi {{ mod.icon }}"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="perm-module-title">{{ mod.title }}</h5>
+                                                <p class="perm-module-desc">{{ mod.desc }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- View Permission -->
+                                    <td class="perm-checkbox-cell">
+                                        {% if mod.view_perm %}
+                                            <label class="perm-check-custom" title="Allow viewing {{ mod.title }}">
+                                                <input type="checkbox" class="perm-checkbox view-perm" name="permissions" 
+                                                       value="{{ mod.view_perm.id }}" 
+                                                       {% if mod.has_view %}checked{% endif %}>
+                                            </label>
+                                        {% else %}
+                                            <span class="text-muted small">—</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Add Permission -->
+                                    <td class="perm-checkbox-cell">
+                                        {% if mod.add_perm %}
+                                            <label class="perm-check-custom" title="Allow creating new {{ mod.title }}">
+                                                <input type="checkbox" class="perm-checkbox add-perm" name="permissions" 
+                                                       value="{{ mod.add_perm.id }}" 
+                                                       {% if mod.has_add %}checked{% endif %}>
+                                            </label>
+                                        {% else %}
+                                            <span class="text-muted small">—</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Change / Edit Permission -->
+                                    <td class="perm-checkbox-cell">
+                                        {% if mod.change_perm %}
+                                            <label class="perm-check-custom" title="Allow editing {{ mod.title }}">
+                                                <input type="checkbox" class="perm-checkbox change-perm" name="permissions" 
+                                                       value="{{ mod.change_perm.id }}" 
+                                                       {% if mod.has_change %}checked{% endif %}>
+                                            </label>
+                                        {% else %}
+                                            <span class="text-muted small">—</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Delete Permission -->
+                                    <td class="perm-checkbox-cell">
+                                        {% if mod.delete_perm %}
+                                            <label class="perm-check-custom" title="Allow deleting from {{ mod.title }}">
+                                                <input type="checkbox" class="perm-checkbox delete-perm" name="permissions" 
+                                                       value="{{ mod.delete_perm.id }}" 
+                                                       {% if mod.has_delete %}checked{% endif %}>
+                                            </label>
+                                        {% else %}
+                                            <span class="text-muted small">—</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Row Quick Action -->
+                                    <td class="text-center">
+                                        <button type="button" class="row-switch-btn" title="Toggle all permissions for {{ mod.title }}">
+                                            Select All
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sticky / Prominent Action Bar -->
+        <div class="subadmin-action-bar">
+            <div class="subadmin-action-status">
+                <i class="mdi mdi-information-outline text-primary mdi-20px"></i>
+                <span>Sub-admins will immediately gain access upon account submission.</span>
+            </div>
+            <div class="subadmin-action-btns">
+                <a href="{% url 'view_subadmins' %}" class="btn-secondary-modern">
+                    <i class="mdi mdi-close"></i> Cancel
+                </a>
+                {% if quota_limit_reached and not sub_admin %}
+                  <a href="{% url 'settings:my_subscription' %}" class="btn btn-danger font-weight-bold px-3 py-2 rounded-pill shadow-sm">
+                    <i class="mdi mdi-crown mr-1"></i> Quota Full - Upgrade Plan
+                  </a>
+                {% else %}
+                  <button type="submit" class="btn-primary-modern" id="submit-subadmin-btn">
+                      <i class="mdi mdi-check-circle-outline"></i>
+                      {% if sub_admin %}Update Sub-Admin Profile{% else %}Create Sub-Admin Account{% endif %}
+                  </button>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/permissions.js' %}?v={% now 'U' %}"></script>
+{% endblock extra_js %}

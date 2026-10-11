@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+{% load humanize %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Payslip - {{ trainer.name }} - {{ month_name }} {{ year }}</title>
+  <style>
+    @page {
+      size: a4 portrait;
+      margin: 10mm 12mm;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 10pt;
+      color: #111111;
+      line-height: 1.35;
+    }
+    .sheet {
+      border: 1.5pt solid #333333;
+      margin: 0 auto;
+    }
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-bottom: 1.5pt solid #333333;
+    }
+    .header-table td {
+      padding: 10pt;
+      vertical-align: middle;
+    }
+    .logo-cell {
+      width: 140pt;
+      border-right: 1pt solid #444444;
+      text-align: center;
+    }
+    .gym-name {
+      font-size: 16pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 3pt;
+    }
+    .gym-meta {
+      font-size: 8.5pt;
+      color: #555555;
+    }
+    .title-banner {
+      background-color: #f3f4f6;
+      text-align: center;
+      font-size: 11pt;
+      font-weight: bold;
+      padding: 6pt;
+      border-top: 1pt solid #333333;
+      border-bottom: 1pt solid #333333;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .data-table th, .data-table td {
+      border: 0.75pt solid #444444;
+      padding: 4.5pt 6pt;
+      font-size: 8.5pt;
+    }
+    .label-col {
+      background-color: #fafafa;
+      font-weight: bold;
+      width: 18%;
+    }
+    .val-col {
+      width: 32%;
+    }
+    .th-col {
+      background-color: #f3f4f6;
+      font-weight: bold;
+      text-align: center;
+      font-size: 9pt;
+      padding: 5pt;
+    }
+    .amount-cell {
+      text-align: right;
+    }
+    .total-row td {
+      font-weight: bold;
+      background-color: #fafafa;
+    }
+    .net-pay-row td {
+      font-size: 11pt;
+      font-weight: bold;
+      background-color: #f8fafc;
+      padding: 7pt;
+    }
+    .signatures-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 35pt;
+    }
+    .signatures-table td {
+      border: none;
+      text-align: center;
+      padding: 10pt;
+    }
+    .sig-line {
+      border-top: 1pt solid #333333;
+      width: 65%;
+      margin: 0 auto;
+      padding-top: 4pt;
+      font-weight: bold;
+      font-size: 9pt;
+    }
+    .footer-note {
+      text-align: center;
+      font-size: 7.5pt;
+      color: #777777;
+      margin-top: 15pt;
+      border-top: 0.5pt solid #cccccc;
+      padding-top: 5pt;
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <!-- Header -->
+    <table class="header-table">
+      <tr>
+        <td class="logo-cell">
+          {% if gym.logo %}
+            <img src="{{ gym.logo.url }}" alt="{{ gym.name }}" style="max-height: 50pt; max-width: 110pt;">
+          {% else %}
+            <div style="font-size: 16pt; font-weight: bold; color: #ea580c; line-height: 1.1;">
+              COMPANY<br><span style="font-size: 20pt;">LOGO</span>
+            </div>
+          {% endif %}
+        </td>
+        <td style="text-align: center; width: 70%;">
+          <div class="gym-name">{{ gym.name|default:"ONEXIVAGYM" }}</div>
+          <div class="gym-meta">{{ gym.address|default:"Madhurawada, Visakhapatnam, Andhra Pradesh 530045" }}</div>
+          {% if gym.phone or gym.email %}
+            <div class="gym-meta">
+              {% if gym.phone %}Phone: {{ gym.phone }}{% endif %}
+              {% if gym.phone and gym.email %} | {% endif %}
+              {% if gym.email %}Email: {{ gym.email }}{% endif %}
+            </div>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+
+    <!-- Banner -->
+    <div class="title-banner">
+      Pay Slip for the Month of {{ month_name }} {{ year }}
+    </div>
+
+    <!-- Employee Details -->
+    <table class="data-table">
+      <tr>
+        <td class="label-col">Name</td>
+        <td class="val-col"><strong>{{ trainer.name }}</strong></td>
+        <td class="label-col">Department</td>
+        <td class="val-col">{{ trainer.get_specialization_display|default:trainer.specialization|default:"Fitness Training" }}</td>
+      </tr>
+      <tr>
+        <td class="label-col">Emp. No</td>
+        <td class="val-col"><strong>{{ trainer.trainer_id }}</strong></td>
+        <td class="label-col">Bank Name</td>
+        <td class="val-col">{{ salary.get_payment_mode_display|default:"Bank Transfer" }}</td>
+      </tr>
+      <tr>
+        <td class="label-col">Designation</td>
+        <td class="val-col">Fitness Coach / Trainer</td>
+        <td class="label-col">A/c No. / Ref</td>
+        <td class="val-col">{% if salary.transaction_id %}{{ salary.transaction_id }}{% else %}N/A{% endif %}</td>
+      </tr>
+      <tr>
+        <td class="label-col">Joining Date</td>
+        <td class="val-col">{{ trainer.joining_date|date:"d M, Y"|default:"-" }}</td>
+        <td class="label-col">Status</td>
+        <td class="val-col">
+          {% if salary.status == 'paid' %}
+            <strong>PAID</strong> ({{ salary.payment_date|date:"d M, Y"|default:"-" }})
+          {% elif salary.status == 'approved' %}
+            <strong>APPROVED</strong>
+          {% else %}
+            <strong>DRAFT / CALCULATION</strong>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+
+    <!-- Attendance Summary Strip -->
+    <table class="data-table">
+      <tr style="background-color: #fafafa; text-align: center; font-size: 8pt;">
+        <td>Month Days: <strong>{{ salary.total_days }}</strong></td>
+        <td>Present: <strong>{{ salary.present_days|floatformat:1 }}</strong></td>
+        <td>Half Days: <strong>{{ salary.half_days }}</strong></td>
+        <td>Paid Leaves: <strong>{{ salary.paid_leave_days|floatformat:1 }}</strong></td>
+        <td>Unpaid: <strong>{{ salary.unpaid_leave_days|floatformat:1 }}</strong></td>
+        <td>Absent: <strong>{{ salary.absent_days|floatformat:1 }}</strong></td>
+        <td style="background-color: #eef2f6;"><strong>Payable Days: {{ salary.payable_days|floatformat:1 }} / {{ salary.total_days }}</strong></td>
+      </tr>
+    </table>
+
+    <!-- Earnings & Deductions Table -->
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th colspan="2" class="th-col" style="width: 50%;">Earnings</th>
+          <th colspan="2" class="th-col" style="width: 50%;">Deductions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="width: 32%;">Basic Fixed Salary</td>
+          <td class="amount-cell" style="width: 18%;">{{ salary.base_salary|floatformat:2|intcomma }}</td>
+          <td style="width: 32%;">Salary Deductions / Penalty</td>
+          <td class="amount-cell" style="width: 18%;">{% if salary.deductions > 0 %}{{ salary.deductions|floatformat:2|intcomma }}{% else %}-{% endif %}</td>
+        </tr>
+        <tr>
+          <td>Base Salary Earned ({{ salary.payable_days|floatformat:1 }}/{{ salary.total_days }} days)</td>
+          <td class="amount-cell"><strong>{{ salary.base_salary_earned|floatformat:2|intcomma }}</strong></td>
+          <td>Unpaid Leave Loss</td>
+          <td class="amount-cell">-</td>
+        </tr>
+        <tr>
+          <td>PT Client Commission ({{ salary.pt_clients_count }} clients)</td>
+          <td class="amount-cell"><strong>{{ salary.pt_commission|floatformat:2|intcomma }}</strong></td>
+          <td>Professional Tax / TDS</td>
+          <td class="amount-cell">-</td>
+        </tr>
+        <tr>
+          <td>Performance Bonus / Incentive</td>
+          <td class="amount-cell"><strong>{% if salary.bonus > 0 %}{{ salary.bonus|floatformat:2|intcomma }}{% else %}-{% endif %}</strong></td>
+          <td>Other Deductions</td>
+          <td class="amount-cell">-</td>
+        </tr>
+        <tr class="total-row">
+          <td>Gross Salary</td>
+          <td class="amount-cell">{{ salary.total_earnings|floatformat:2|intcomma }}</td>
+          <td>Total Deductions</td>
+          <td class="amount-cell">{{ salary.total_deductions|floatformat:2|intcomma }}</td>
+        </tr>
+        <tr class="net-pay-row">
+          <td style="text-align: center;">Net Pay</td>
+          <td colspan="3" style="text-align: center; font-size: 13pt;">Rs. {{ salary.net_salary|floatformat:2|intcomma }}</td>
+        </tr>
+        <tr>
+          <td style="background-color: #fafafa; font-weight: bold;">Amount in Words:</td>
+          <td colspan="3"><strong>{{ net_in_words }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Signatures -->
+    <table class="signatures-table">
+      <tr>
+        <td style="width: 50%;">
+          <div class="sig-line">Trainer's Signature<br><span style="font-size: 8pt; font-weight: normal; color: #555;">{{ trainer.name }}</span></div>
+        </td>
+        <td style="width: 50%;">
+          <div class="sig-line">Authorized Signatory<br><span style="font-size: 8pt; font-weight: normal; color: #555;">{{ gym.name }} Administration</span></div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="footer-note">
+      This is a computer-generated salary slip and requires no physical signature when authenticated electronically.
+    </div>
+  </div>
+</body>
+</html>

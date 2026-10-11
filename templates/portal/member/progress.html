@@ -1,0 +1,1103 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}Workout Progress & Fitness Tracking - {{ member.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <!-- HERO / PAGE HEADER (Consistent with Member Portal Style) -->
+  <div class="dashboard-hero-header">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+        <span class="badge badge-warning text-dark font-weight-bold px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
+          <i class="fas fa-chart-line mr-1"></i> Member Fitness Journal
+        </span>
+        {% if assigned_workout %}
+          <span class="badge badge-primary px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
+            <i class="fas fa-dumbbell mr-1"></i> Routine: {{ assigned_workout.workout_plan.name }}
+          </span>
+        {% endif %}
+      </div>
+      <h2 class="dashboard-hero-title">Workout Progress & Fitness Tracking</h2>
+      <p class="dashboard-hero-subtitle">Log daily workout sets, monitor personal records (PRs), and track body metric transformations</p>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap mt-2 mt-md-0">
+      <button type="button" class="btn btn-primary font-weight-bold px-3 py-2 rounded-pill shadow-sm" data-toggle="modal" data-target="#logWorkoutModal">
+        <i class="fas fa-plus-circle mr-1"></i> Log Workout
+      </button>
+      <button type="button" class="btn btn-outline-primary font-weight-bold px-3 py-2 rounded-pill shadow-sm ml-1" data-toggle="modal" data-target="#logMetricsModal">
+        <i class="fas fa-weight-scale mr-1"></i> Record Body Metrics
+      </button>
+      <button type="button" class="btn btn-outline-primary font-weight-bold px-3 py-2 rounded-pill shadow-sm ml-1" data-toggle="modal" data-target="#setGoalModal">
+        <i class="fas fa-bullseye mr-1 text-primary"></i> {% if fitness_goal %}Target: {{ fitness_goal.target_weight_kg }}kg{% else %}Set Target Goal{% endif %}
+      </button>
+      <a href="{% url 'member_portal:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill ml-1">
+        <i class="fas fa-arrow-left mr-1"></i> Dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- TOP 4 KPI METRIC CARDS (Exact Dashboard KPI Aesthetic) -->
+  <div class="row">
+    <!-- Total Workouts -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-primary h-100">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Total Sessions</span>
+            <div class="kpi-icon-wrap kpi-icon-primary">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ total_workouts }}</div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-primary">
+            <i class="fas fa-check-circle mr-1"></i> Logged
+          </span>
+          <span class="kpi-meta-desc">Training sessions</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Streak -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-success h-100">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Weekly Active</span>
+            <div class="kpi-icon-wrap kpi-icon-success">
+              <i class="fas fa-fire"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ workouts_this_week }} <span style="font-size: 0.95rem; font-weight: 500;">Days</span></div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-success">
+            <i class="fas fa-bolt mr-1"></i> Current Week
+          </span>
+          <span class="kpi-meta-desc">Consistency streak</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Hours -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-warning h-100">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Time Invested</span>
+            <div class="kpi-icon-wrap kpi-icon-warning">
+              <i class="fas fa-stopwatch"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ total_hours }} <span style="font-size: 0.95rem; font-weight: 500;">Hours</span></div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-warning">
+            <i class="fas fa-clock mr-1"></i> Total Time
+          </span>
+          <span class="kpi-meta-desc">Training duration</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Latest Body Weight -->
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="kpi-card kpi-danger h-100">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Body Weight</span>
+            <div class="kpi-icon-wrap kpi-icon-danger">
+              <i class="fas fa-weight-scale"></i>
+            </div>
+          </div>
+          <div class="kpi-value">
+            {% if latest_metric %}
+              {{ latest_metric.weight_kg }} <span style="font-size: 0.95rem; font-weight: 500;">kg</span>
+            {% else %}
+              -- <span style="font-size: 0.85rem; font-weight: 400;">Not logged</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-danger">
+            {% if weight_delta is not None %}
+              <i class="fas {% if weight_delta > 0 %}fa-arrow-up{% elif weight_delta < 0 %}fa-arrow-down{% else %}fa-minus{% endif %} mr-1"></i>
+              {{ weight_delta|stringformat:"+0.1f" }} kg
+            {% else %}
+              <i class="fas fa-chart-line mr-1"></i> Baseline
+            {% endif %}
+          </span>
+          <span class="kpi-meta-desc">{% if latest_metric %}{{ latest_metric.date|date:"d M Y" }}{% else %}Record first metric{% endif %}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FITNESS GOAL CHASE SCORECARD (THEME-ALIGNED GYM-CARD) -->
+  <div class="gym-card mb-4">
+    <div class="gym-card-header d-flex justify-content-between align-items-center flex-wrap">
+      <div class="gym-card-title d-flex align-items-center flex-wrap gap-2">
+        <i class="fas fa-bullseye text-primary" style="font-size: 1.25rem;"></i>
+        <span>Target Chase Scorecard</span>
+        {% if goal_stats %}
+          <span class="badge-soft badge-soft-primary ml-1">
+            Goal: {{ goal_stats.goal_type_display }}
+          </span>
+          <span class="badge-soft {{ goal_stats.status_badge_class }} ml-1">
+            <i class="fas {{ goal_stats.pace_icon }} mr-1"></i> {{ goal_stats.status_label }}
+          </span>
+        {% endif %}
+      </div>
+      <div>
+        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill font-weight-bold px-3 py-1.5" data-toggle="modal" data-target="#setGoalModal">
+          <i class="fas fa-edit mr-1"></i> {% if goal_stats %}Update Target Goal{% else %}Set Fitness Goal{% endif %}
+        </button>
+      </div>
+    </div>
+
+    <div class="gym-card-body p-4">
+      {% if goal_stats %}
+        <!-- Match Comparison Grid -->
+        <div class="row align-items-center text-center text-md-left my-1">
+          
+          <!-- Team 1: Current Score / Member Growth -->
+          <div class="col-md-5 mb-3 mb-md-0">
+            <div class="p-3 rounded-lg" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-uppercase small font-weight-bold text-muted" style="letter-spacing: 0.05em; font-size: 0.72rem;">Current Progress</span>
+                <span class="badge-soft badge-soft-primary">
+                  <i class="fas fa-user mr-1"></i> Your Score
+                </span>
+              </div>
+              <div class="d-flex align-items-baseline">
+                <h2 class="font-weight-bold mb-0 text-dark" style="font-size: 2.2rem; line-height: 1;">{{ goal_stats.current_weight }}</h2>
+                <span class="text-muted ml-1 font-weight-bold">kg</span>
+                <div class="ml-auto text-right">
+                  <span class="badge-soft {{ goal_stats.growth_badge_class }} font-weight-bold">
+                    {{ goal_stats.current_growth }} kg {{ goal_stats.growth_verb }}
+                  </span>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between text-muted small mt-2 pt-2 border-top">
+                <span>Baseline: <strong class="text-dark">{{ goal_stats.start_weight }} kg</strong></span>
+                <span>Current Pace (CRR): <strong class="text-primary font-weight-bold">{{ goal_stats.current_pace }} kg/wk</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Match Divider: VS -->
+          <div class="col-md-2 text-center mb-3 mb-md-0">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width: 44px; height: 44px; background: #eff6ff; border: 2px solid #bfdbfe; color: #1d4ed8; font-weight: 800; font-size: 0.85rem;">
+              VS
+            </div>
+            <div class="text-muted font-weight-bold mt-1" style="font-size: 0.68rem; letter-spacing: 0.08em;">CHASING</div>
+          </div>
+
+          <!-- Team 2: Target Score / Needed Growth -->
+          <div class="col-md-5">
+            <div class="p-3 rounded-lg" style="background: #fffbeb; border: 1px solid #fef3c7;">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-uppercase small font-weight-bold text-muted" style="letter-spacing: 0.05em; font-size: 0.72rem;">Target to Win</span>
+                <span class="badge-soft badge-soft-warning font-weight-bold">
+                  <i class="fas fa-trophy mr-1"></i> Target Goal
+                </span>
+              </div>
+              <div class="d-flex align-items-baseline">
+                <h2 class="font-weight-bold mb-0" style="color: #b45309; font-size: 2.2rem; line-height: 1;">{{ goal_stats.target_weight }}</h2>
+                <span class="text-muted ml-1 font-weight-bold">kg</span>
+                <div class="ml-auto text-right">
+                  <span class="badge-soft badge-soft-warning font-weight-bold">
+                    <i class="fas fa-flag-checkered mr-1"></i> {{ goal_stats.needed_growth }} kg {{ goal_stats.needed_verb }}
+                  </span>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between text-muted small mt-2 pt-2 border-top" style="border-color: #fde68a !important;">
+                <span>{% if goal_stats.days_left is not None %}<i class="far fa-clock mr-1"></i><strong class="text-dark">{{ goal_stats.days_left }} Days left</strong>{% else %}Open deadline{% endif %}</span>
+                <span>Required Rate (RRR): <strong class="text-dark font-weight-bold">{% if goal_stats.required_pace %}{{ goal_stats.required_pace }} kg/wk{% else %}On pace{% endif %}</strong></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DUAL PROGRESS BAR: Achieved Growth vs Needed Growth -->
+        <div class="mt-3 pt-2">
+          <div class="d-flex justify-content-between align-items-center mb-1 small">
+            <span class="font-weight-bold text-dark">
+              <i class="fas fa-check-circle text-success mr-1"></i> Achieved Growth: <strong class="text-success">{{ goal_stats.progress_pct }}%</strong> ({{ goal_stats.current_growth }} kg {{ goal_stats.growth_verb }})
+            </span>
+            <span class="font-weight-bold text-muted">
+              <i class="fas fa-hourglass-half text-warning mr-1"></i> Needed Growth: <strong class="text-warning">{{ goal_stats.remaining_pct }}%</strong> ({{ goal_stats.needed_growth }} kg {{ goal_stats.needed_verb }})
+            </span>
+          </div>
+          <div class="progress" style="height: 12px; border-radius: 9999px; background: #e2e8f0; overflow: hidden;">
+            <div class="progress-bar font-weight-bold" role="progressbar" style="width: {{ goal_stats.progress_pct }}%; background: #10b981;" aria-valuenow="{{ goal_stats.progress_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar font-weight-bold" role="progressbar" style="width: {{ goal_stats.remaining_pct }}%; background: #f59e0b;" aria-valuenow="{{ goal_stats.remaining_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+        <!-- Coach Commentary Alert Box (Matches Theme) -->
+        <div class="mt-3 p-3 rounded-lg d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb;">
+          <div class="small text-muted">
+            <strong class="text-dark mr-1"><i class="fas {{ goal_stats.pace_icon }} mr-1"></i> Match Analysis:</strong>
+            {{ goal_stats.pace_analysis }}
+          </div>
+          {% if goal_stats.motivation %}
+            <div class="small font-italic text-primary font-weight-bold">
+              <i class="fas fa-quote-left mr-1"></i>{{ goal_stats.motivation }}<i class="fas fa-quote-right ml-1"></i>
+            </div>
+          {% endif %}
+        </div>
+
+      {% else %}
+        <!-- Blank State if Goal not yet set -->
+        <div class="row align-items-center py-2">
+          <div class="col-lg-8">
+            <h5 class="font-weight-bold text-dark mb-1">Set Your Target & Track Growth vs Needed Growth</h5>
+            <p class="text-muted small mb-0">
+              Just like chasing a target in a cricket match, set your target weight and deadline. We will automatically calculate your <strong>Current Score (Growth achieved)</strong>, <strong>Target Score (Needed Growth)</strong>, and <strong>Required Run Rate (kg/week needed)</strong>!
+            </p>
+          </div>
+          <div class="col-lg-4 text-lg-right mt-3 mt-lg-0">
+            <button type="button" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill shadow-sm" data-toggle="modal" data-target="#setGoalModal">
+              <i class="fas fa-bullseye mr-1"></i> Set Your Fitness Target
+            </button>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- WEIGHT PROGRESSION CHART CARD (GYM-CARD STYLE) -->
+  <div class="gym-card mb-4">
+    <div class="gym-card-header d-flex justify-content-between align-items-center flex-wrap">
+      <div class="gym-card-title">
+        <i class="fas fa-chart-line text-primary" style="font-size: 1.25rem;"></i>
+        <span>Body Weight Transformation Curve</span>
+        <small class="text-muted ml-2 font-weight-normal d-none d-md-inline">&bull; Visual timeline tracking your weight changes across check-ins</small>
+      </div>
+      <div>
+        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill font-weight-bold px-3" data-toggle="modal" data-target="#logMetricsModal">
+          <i class="fas fa-plus mr-1"></i> Add Entry
+        </button>
+      </div>
+    </div>
+    <div class="gym-card-body p-4">
+      {% if body_metrics %}
+        <div style="height: 280px; position: relative;">
+          <canvas id="weightProgressChart"></canvas>
+        </div>
+      {% else %}
+        <div class="text-center py-5" style="background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
+          <div class="text-muted mb-2"><i class="fas fa-weight-scale" style="font-size: 2.5rem; color: #94a3b8;"></i></div>
+          <h5 class="font-weight-bold text-dark">No Body Metrics Recorded Yet</h5>
+          <p class="text-muted small mb-3">Record your starting weight and body measurements to start visualizing your fitness transformation curve.</p>
+          <button type="button" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill shadow-sm" data-toggle="modal" data-target="#logMetricsModal">
+            <i class="fas fa-plus mr-1"></i> Record First Measurement
+          </button>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- TABS: WORKOUT SESSIONS & BODY MEASUREMENTS (GYM-CARD CONTAINER) -->
+  <style>
+    .modern-pill-tabs {
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 9999px;
+      border: 1px solid #e2e8f0;
+      display: inline-flex;
+      align-items: center;
+    }
+    .modern-pill-tabs .nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .modern-pill-tabs .nav-link {
+      border-radius: 9999px !important;
+      border: none !important;
+      color: #475569 !important;
+      background: transparent !important;
+      font-weight: 600;
+      font-size: 0.84rem;
+      padding: 7px 18px !important;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none !important;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modern-pill-tabs .nav-link:hover {
+      color: #0f172a !important;
+      background: rgba(255, 255, 255, 0.75) !important;
+    }
+    .modern-pill-tabs .nav-link.active {
+      color: #ffffff !important;
+      background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28) !important;
+      font-weight: 700 !important;
+    }
+    .modern-pill-tabs .nav-link.active i {
+      color: #ffffff !important;
+    }
+    .modern-pill-tabs .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      line-height: 1;
+      margin-left: 4px;
+      background: #e2e8f0;
+      color: #475569;
+      transition: all 0.2s ease;
+    }
+    .modern-pill-tabs .nav-link.active .pill-badge {
+      background: rgba(255, 255, 255, 0.25) !important;
+      color: #ffffff !important;
+    }
+  </style>
+
+  <div class="gym-card mb-4">
+    <div class="gym-card-header d-flex justify-content-between align-items-center flex-wrap">
+      <div class="modern-pill-tabs">
+        <ul class="nav" id="progressTabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="workouts-tab" data-toggle="pill" href="#workoutsContent" role="tab">
+              <i class="fas fa-dumbbell mr-1"></i> Workout Logs
+              <span class="pill-badge">{{ total_workouts }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="metrics-tab" data-toggle="pill" href="#metricsContent" role="tab">
+              <i class="fas fa-ruler-combined mr-1"></i> Body Measurements History
+              <span class="pill-badge">{{ body_metrics|length }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill font-weight-bold px-3 py-1.5" data-toggle="modal" data-target="#logWorkoutModal">
+          <i class="fas fa-plus mr-1"></i> Log Session
+        </button>
+        <button type="button" class="btn btn-sm btn-primary rounded-pill font-weight-bold px-3 py-1.5 shadow-sm" data-toggle="modal" data-target="#logMetricsModal">
+          <i class="fas fa-ruler-combined mr-1"></i> Record Metrics
+        </button>
+      </div>
+    </div>
+
+    <div class="gym-card-body p-3 p-md-4">
+      <div class="tab-content" id="progressTabsContent">
+
+        <!-- TAB 1: WORKOUT SESSIONS LIST -->
+        <div class="tab-pane fade show active" id="workoutsContent" role="tabpanel">
+          {% if workout_logs %}
+            <div class="row">
+              {% for log in workout_logs %}
+              <div class="col-lg-6 mb-3">
+                <div class="card h-100 border p-3 shadow-none" style="border-radius: 12px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <span class="badge badge-light border text-uppercase font-weight-bold px-2 py-0.5" style="font-size: 0.72rem; color: #475569;">
+                        {{ log.get_workout_type_display }}
+                      </span>
+                      <h5 class="font-weight-bold text-dark mt-1 mb-0">{{ log.title }}</h5>
+                      <div class="small text-muted mt-1">
+                        <i class="far fa-calendar-alt mr-1"></i> {{ log.date|date:"d M Y" }} &bull; 
+                        <i class="far fa-clock mr-1"></i> {{ log.duration_minutes }} mins
+                        {% if log.calories_burned %}
+                          &bull; <i class="fas fa-fire text-danger mr-1"></i> {{ log.calories_burned }} kcal
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="text-right">
+                      <div class="text-warning small" title="Energy rating {{ log.energy_rating }}/5">
+                        {% for i in "12345" %}
+                          {% if forloop.counter <= log.energy_rating %}
+                            <i class="fas fa-star"></i>
+                          {% else %}
+                            <i class="far fa-star text-muted"></i>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                      <form method="POST" action="{% url 'member_portal:delete_workout_log' log.id %}" class="d-inline" onsubmit="return confirm('Delete this workout session log?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link text-muted p-0 mt-1" style="font-size: 0.8rem;" title="Delete Log">
+                          <i class="fas fa-trash-alt text-danger"></i>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+
+                  {% if log.notes %}
+                    <div class="p-2 mb-2 rounded bg-light small text-muted font-italic" style="border-left: 3px solid #2563eb;">
+                      "{{ log.notes }}"
+                    </div>
+                  {% endif %}
+
+                  <!-- Exercises Breakdown -->
+                  {% if log.exercises.all %}
+                    <div class="mt-2">
+                      <div class="text-uppercase font-weight-bold text-muted mb-2" style="font-size: 0.72rem; letter-spacing: 0.04em;">
+                        Exercises Recorded ({{ log.exercises.count }})
+                      </div>
+                      <div class="exercise-list">
+                        {% for ex in log.exercises.all %}
+                        <div class="d-flex justify-content-between align-items-center p-2 mb-1 rounded bg-light" style="font-size: 0.85rem;">
+                          <div>
+                            <strong class="text-dark d-block">{{ ex.exercise_name }}</strong>
+                            {% if ex.notes %}<span class="text-muted" style="font-size: 0.75rem;">{{ ex.notes }}</span>{% endif %}
+                          </div>
+                          <div class="text-right">
+                            <span class="badge badge-primary px-2 py-1 font-weight-bold rounded-pill">
+                              {{ ex.sets }} sets × {{ ex.reps }}
+                            </span>
+                            {% if ex.weight_kg > 0 %}
+                              <span class="badge badge-dark px-2 py-1 font-weight-bold rounded-pill ml-1">
+                                {{ ex.weight_kg }} kg
+                              </span>
+                            {% endif %}
+                          </div>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% endif %}
+
+                  <div class="pt-2 border-top mt-auto d-flex justify-content-between align-items-center text-muted small" style="font-size: 0.75rem;">
+                    <span>Logged by you</span>
+                    <span>{{ log.created_at|naturaltime }}</span>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-center py-5 bg-light rounded border">
+              <div class="text-muted mb-2"><i class="fas fa-dumbbell" style="font-size: 2.5rem; color: #94a3b8;"></i></div>
+              <h5 class="font-weight-bold text-dark">No Workout Sessions Logged Yet</h5>
+              <p class="text-muted small mb-3">Keep yourself accountable by logging today's exercises, weights, and repetitions.</p>
+              <button type="button" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill shadow-sm" data-toggle="modal" data-target="#logWorkoutModal">
+                <i class="fas fa-plus mr-1"></i> Log Today's Workout
+              </button>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- TAB 2: BODY MEASUREMENTS HISTORY TABLE -->
+        <div class="tab-pane fade" id="metricsContent" role="tabpanel">
+          {% if body_metrics %}
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered mb-0" style="border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0;">
+                <thead style="background: #f8fafc;">
+                  <tr style="font-size: 0.74rem; color: #475569; letter-spacing: 0.03em;">
+                    <th><i class="far fa-calendar-alt text-muted mr-1"></i> DATE</th>
+                    <th class="text-center" style="width: 70px;"><i class="fas fa-camera text-muted mr-1"></i> PHOTO</th>
+                    <th><i class="fas fa-weight-scale text-muted mr-1"></i> WEIGHT</th>
+                    <th><i class="fas fa-percentage text-muted mr-1"></i> BODY FAT</th>
+                    <th><i class="fas fa-ruler-horizontal text-muted mr-1"></i> CHEST</th>
+                    <th><i class="fas fa-ruler-horizontal text-muted mr-1"></i> WAIST</th>
+                    <th><i class="fas fa-ruler-horizontal text-muted mr-1"></i> ARMS / BICEPS</th>
+                    <th><i class="fas fa-ruler-horizontal text-muted mr-1"></i> THIGHS</th>
+                    <th><i class="far fa-sticky-note text-muted mr-1"></i> NOTES</th>
+                    <th class="text-right">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for m in body_metrics %}
+                  <tr>
+                    <td class="font-weight-bold text-dark">{{ m.date|date:"d M Y" }}</td>
+                    <td class="text-center align-middle">
+                      {% if m.photo %}
+                        <a href="javascript:void(0);" onclick="openPhotoModal('{{ m.photo.url }}', '{{ m.date|date:"d M Y" }}', '{{ m.weight_kg }} kg', '{{ m.notes|default:""|escapejs }}');" title="View Full Transformation Photo" class="d-inline-block">
+                          <img src="{{ m.photo.url }}" alt="Progress Photo" class="rounded shadow-sm" style="width: 38px; height: 38px; object-fit: cover; border: 2px solid #2563eb; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';">
+                        </a>
+                      {% else %}
+                        <span class="text-muted small" title="No photo recorded"><i class="fas fa-minus text-black-50"></i></span>
+                      {% endif %}
+                    </td>
+                    <td><strong class="text-primary">{{ m.weight_kg }} kg</strong></td>
+                    <td>{% if m.body_fat_percentage %}{{ m.body_fat_percentage }}%{% else %}--{% endif %}</td>
+                    <td>{% if m.chest_inches %}{{ m.chest_inches }}"{% else %}--{% endif %}</td>
+                    <td>{% if m.waist_inches %}{{ m.waist_inches }}"{% else %}--{% endif %}</td>
+                    <td>{% if m.biceps_inches %}{{ m.biceps_inches }}"{% else %}--{% endif %}</td>
+                    <td>{% if m.thighs_inches %}{{ m.thighs_inches }}"{% else %}--{% endif %}</td>
+                    <td class="text-muted small">{{ m.notes|default:"--" }}</td>
+                    <td class="text-right align-middle">
+                      <form method="POST" action="{% url 'member_portal:delete_metric' m.id %}" class="d-inline" onsubmit="return confirm('Delete this measurement entry?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" title="Delete Entry">
+                          <i class="fas fa-trash-alt" style="font-size: 0.75rem;"></i>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5 bg-light rounded border">
+              <div class="text-muted mb-2"><i class="fas fa-ruler-combined" style="font-size: 2.5rem; color: #94a3b8;"></i></div>
+              <h5 class="font-weight-bold text-dark">No Body Measurements Recorded</h5>
+              <p class="text-muted small mb-3">Record key tape measurements and body weight to measure real transformation results.</p>
+              <button type="button" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill shadow-sm" data-toggle="modal" data-target="#logMetricsModal">
+                <i class="fas fa-plus mr-1"></i> Record Body Metrics
+              </button>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================================== -->
+<!-- 1. MODAL: LOG WORKOUT SESSION -->
+<!-- ============================================================================== -->
+<div class="modal fade" id="logWorkoutModal" tabindex="-1" role="dialog" aria-labelledby="logWorkoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff;">
+        <div class="d-flex align-items-center">
+          <div class="d-inline-flex align-items-center justify-content-center mr-2.5 rounded-circle" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.18);">
+            <i class="fas fa-dumbbell text-white" style="font-size: 1rem;"></i>
+          </div>
+          <div>
+            <h5 class="modal-title font-weight-bold text-white mb-0" id="logWorkoutModalLabel">Log Today's Workout Session</h5>
+            <small class="text-white-50" style="font-size: 0.75rem;">Record exercises, sets, weights, and training effort</small>
+          </div>
+        </div>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.9; text-shadow: none;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form method="POST" action="{% url 'member_portal:log_workout' %}">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          <!-- Session Header Fields -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-pen text-primary mr-1"></i> Workout Title / Routine <span class="text-danger">*</span></label>
+              <input type="text" name="title" class="form-control rounded-pill" placeholder="e.g. Chest & Triceps Blast, Leg Day, 5K Run" required>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="far fa-calendar-alt text-primary mr-1"></i> Date <span class="text-danger">*</span></label>
+              <input type="date" name="date" class="form-control rounded-pill" value="{{ today|date:'Y-m-d' }}" required>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-layer-group text-primary mr-1"></i> Training Type</label>
+              <select name="workout_type" class="form-control rounded-pill">
+                <option value="strength">Strength / Resistance</option>
+                <option value="cardio">Cardio / Conditioning</option>
+                <option value="hiit">HIIT / Circuit</option>
+                <option value="crossfit">CrossFit / Functional</option>
+                <option value="yoga">Yoga / Mobility</option>
+                <option value="recovery">Active Recovery</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="far fa-clock text-primary mr-1"></i> Duration (Minutes)</label>
+              <div class="input-group">
+                <input type="number" name="duration_minutes" class="form-control" value="45" min="5" max="300" style="border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
+                <div class="input-group-append">
+                  <span class="input-group-text small" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;">mins</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-fire text-danger mr-1"></i> Calories Burned (Est.)</label>
+              <div class="input-group">
+                <input type="number" name="calories_burned" class="form-control" placeholder="e.g. 350" min="0" max="3000" style="border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
+                <div class="input-group-append">
+                  <span class="input-group-text small" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;">kcal</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-bolt text-warning mr-1"></i> Energy Level (1-5)</label>
+              <select name="energy_rating" class="form-control rounded-pill">
+                <option value="5">5 / 5 - Energetic (Peak Energy)</option>
+                <option value="4" selected>4 / 5 - Solid (Great Session)</option>
+                <option value="3">3 / 5 - Moderate (Steady Pace)</option>
+                <option value="2">2 / 5 - Low Energy (Fatigued)</option>
+                <option value="1">1 / 5 - Struggled (Tough Day)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dynamic Exercise Table Builder -->
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="font-weight-bold text-dark small mb-0"><i class="fas fa-list-ol mr-1 text-primary"></i> Exercises & Sets Completed</label>
+              <button type="button" class="btn btn-outline-primary btn-sm rounded-pill font-weight-bold px-3 py-1" onclick="addExerciseRow()" style="font-size: 0.76rem;">
+                <i class="fas fa-plus mr-1"></i> Add Exercise
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-bordered mb-0" id="exerciseInputsTable" style="border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0;">
+                <thead style="background: #f8fafc;">
+                  <tr style="font-size: 0.74rem; color: #475569; letter-spacing: 0.03em;">
+                    <th style="width: 35%;"><i class="fas fa-dumbbell text-muted mr-1"></i> EXERCISE NAME</th>
+                    <th style="width: 15%;"><i class="fas fa-layer-group text-muted mr-1"></i> SETS</th>
+                    <th style="width: 15%;"><i class="fas fa-redo-alt text-muted mr-1"></i> REPS</th>
+                    <th style="width: 15%;"><i class="fas fa-weight-hanging text-muted mr-1"></i> WEIGHT (KG)</th>
+                    <th style="width: 15%;"><i class="far fa-sticky-note text-muted mr-1"></i> NOTES</th>
+                    <th style="width: 5%; text-align: center;"></th>
+                  </tr>
+                </thead>
+                <tbody id="exerciseRowsContainer">
+                  <!-- Row 1 -->
+                  <tr>
+                    <td><input type="text" name="exercise_name[]" class="form-control form-control-sm rounded" placeholder="e.g. Barbell Bench Press" required></td>
+                    <td><input type="number" name="sets[]" class="form-control form-control-sm rounded" value="3" min="1" max="20"></td>
+                    <td><input type="text" name="reps[]" class="form-control form-control-sm rounded" value="10-12" placeholder="e.g. 10"></td>
+                    <td><input type="number" step="0.5" name="weight[]" class="form-control form-control-sm rounded" value="0.0" placeholder="0.0"></td>
+                    <td><input type="text" name="exercise_notes[]" class="form-control form-control-sm rounded" placeholder="e.g. Good form"></td>
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" onclick="removeExerciseRow(this)" title="Remove Exercise"><i class="fas fa-trash-alt" style="font-size: 0.75rem;"></i></button></td>
+                  </tr>
+                  <!-- Row 2 -->
+                  <tr>
+                    <td><input type="text" name="exercise_name[]" class="form-control form-control-sm rounded" placeholder="e.g. Incline Dumbbell Press"></td>
+                    <td><input type="number" name="sets[]" class="form-control form-control-sm rounded" value="3" min="1" max="20"></td>
+                    <td><input type="text" name="reps[]" class="form-control form-control-sm rounded" value="10-12" placeholder="e.g. 12"></td>
+                    <td><input type="number" step="0.5" name="weight[]" class="form-control form-control-sm rounded" value="0.0" placeholder="0.0"></td>
+                    <td><input type="text" name="exercise_notes[]" class="form-control form-control-sm rounded" placeholder="e.g. Felt strong"></td>
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" onclick="removeExerciseRow(this)" title="Remove Exercise"><i class="fas fa-trash-alt" style="font-size: 0.75rem;"></i></button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- General Reflection Notes -->
+          <div class="form-group mb-0">
+            <label class="font-weight-bold text-dark small mb-1"><i class="far fa-comment-dots text-primary mr-1"></i> Session Reflections & PR Notes (Optional)</label>
+            <textarea name="notes" class="form-control" rows="2" placeholder="Hit a new PR today! Felt great on bench press..." style="border-radius: 10px;"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light py-3 px-4 border-top">
+          <button type="button" class="btn btn-outline-secondary font-weight-bold rounded-pill px-4" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary font-weight-bold px-4 rounded-pill shadow-sm">
+            <i class="fas fa-check-circle mr-1"></i> Save Workout Session
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================================== -->
+<!-- 2. MODAL: RECORD BODY METRICS -->
+<!-- ============================================================================== -->
+<div class="modal fade" id="logMetricsModal" tabindex="-1" role="dialog" aria-labelledby="logMetricsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 520px;">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff;">
+        <div class="d-flex align-items-center">
+          <div class="d-inline-flex align-items-center justify-content-center mr-2.5 rounded-circle" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.18);">
+            <i class="fas fa-weight-scale text-white" style="font-size: 1rem;"></i>
+          </div>
+          <div>
+            <h5 class="modal-title font-weight-bold text-white mb-0" id="logMetricsModalLabel">Record Body Measurements</h5>
+            <small class="text-white-50" style="font-size: 0.75rem;">Track weight changes and tape measurements</small>
+          </div>
+        </div>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.9; text-shadow: none;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form method="POST" action="{% url 'member_portal:log_metrics' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          <p class="text-muted small mb-3">Keep track of your weight transformation, progress photos, and tape measurements over time.</p>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-weight-scale text-primary mr-1"></i> Body Weight (kg) <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input type="number" step="0.1" name="weight_kg" class="form-control" placeholder="e.g. 72.5" required style="border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
+                <div class="input-group-append">
+                  <span class="input-group-text small" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;">kg</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="far fa-calendar-alt text-primary mr-1"></i> Date <span class="text-danger">*</span></label>
+              <input type="date" name="date" class="form-control rounded-pill" value="{{ today|date:'Y-m-d' }}" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-percentage text-primary mr-1"></i> Body Fat % (Optional)</label>
+              <input type="number" step="0.1" name="body_fat_percentage" class="form-control rounded-pill" placeholder="e.g. 16.5">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-ruler-horizontal text-primary mr-1"></i> Chest (Inches)</label>
+              <input type="number" step="0.25" name="chest_inches" class="form-control rounded-pill" placeholder="e.g. 38.5">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-ruler-horizontal text-primary mr-1"></i> Waist (Inches)</label>
+              <input type="number" step="0.25" name="waist_inches" class="form-control rounded-pill" placeholder="e.g. 32.0">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-ruler-horizontal text-primary mr-1"></i> Arms / Biceps (Inches)</label>
+              <input type="number" step="0.25" name="biceps_inches" class="form-control rounded-pill" placeholder="e.g. 14.5">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-ruler-horizontal text-primary mr-1"></i> Thighs (Inches)</label>
+              <input type="number" step="0.25" name="thighs_inches" class="form-control rounded-pill" placeholder="e.g. 22.0">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="far fa-sticky-note text-primary mr-1"></i> Notes / Observations</label>
+              <input type="text" name="notes" class="form-control rounded-pill" placeholder="e.g. Morning fasting measurement">
+            </div>
+          </div>
+
+          <!-- Progress / Transformation Photo Upload -->
+          <div class="form-group mb-2">
+            <label class="font-weight-bold text-dark small">
+              <i class="fas fa-camera text-primary mr-1"></i> Transformation / Physique Photo <span class="text-muted font-weight-normal">(Optional)</span>
+            </label>
+            <div class="p-3 rounded-lg d-flex align-items-center justify-content-between" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 12px;">
+              <div class="d-flex align-items-center" style="min-width: 0;">
+                <div id="metricsPhotoPreviewContainer" class="mr-3" style="display: none;">
+                  <img id="metricsPhotoPreview" src="#" alt="Preview" class="rounded shadow-sm" style="width: 52px; height: 52px; object-fit: cover; border: 2px solid #2563eb;">
+                </div>
+                <div id="metricsPhotoPlaceholderIcon" class="mr-3 text-primary d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 44px; height: 44px; background: #eff6ff; font-size: 1.2rem;">
+                  <i class="fas fa-portrait"></i>
+                </div>
+                <div style="min-width: 0;">
+                  <div class="font-weight-bold small text-dark text-truncate" id="metricsPhotoFileName">Add Transformation Photo</div>
+                  <div class="text-muted small" style="font-size: 0.72rem;">JPG or PNG, max 5MB (Front, Side, or Back pose)</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center flex-shrink-0 ml-2">
+                <input type="file" name="photo" id="metricsPhotoInput" class="d-none" accept="image/*" onchange="handleMetricsPhotoSelect(this);">
+                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill font-weight-bold px-3 py-1" onclick="document.getElementById('metricsPhotoInput').click();">
+                  <i class="fas fa-upload mr-1"></i> Choose
+                </button>
+                <button type="button" id="metricsPhotoRemoveBtn" class="btn btn-sm btn-outline-danger rounded-circle ml-2 p-0" style="display: none; width: 28px; height: 28px;" onclick="removeMetricsPhoto();" title="Remove Photo">
+                  <i class="fas fa-times" style="font-size: 0.75rem;"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer bg-light py-3 px-4 border-top">
+          <button type="button" class="btn btn-outline-secondary font-weight-bold rounded-pill px-4" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary font-weight-bold px-4 rounded-pill shadow-sm">
+            <i class="fas fa-check-circle mr-1"></i> Save Measurement
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================================== -->
+<!-- 3. MODAL: SET / UPDATE FITNESS GOAL -->
+<!-- ============================================================================== -->
+<div class="modal fade" id="setGoalModal" tabindex="-1" role="dialog" aria-labelledby="setGoalModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 520px;">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff;">
+        <div class="d-flex align-items-center">
+          <div class="d-inline-flex align-items-center justify-content-center mr-2.5 rounded-circle" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.18);">
+            <i class="fas fa-bullseye text-white" style="font-size: 1rem;"></i>
+          </div>
+          <div>
+            <h5 class="modal-title font-weight-bold text-white mb-0" id="setGoalModalLabel">Set Your Fitness Target Goal</h5>
+            <small class="text-white-50" style="font-size: 0.75rem;">Set your target weight and timeline for live chase analysis</small>
+          </div>
+        </div>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.9; text-shadow: none;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form method="POST" action="{% url 'member_portal:set_goal' %}">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          <p class="text-muted small mb-3">Set your baseline and finish line to track your head-to-head Growth vs Needed Growth.</p>
+
+          <div class="form-group mb-3">
+            <label class="font-weight-bold text-dark small"><i class="fas fa-crosshairs text-primary mr-1"></i> Primary Goal Type <span class="text-danger">*</span></label>
+            <select name="goal_type" class="form-control rounded-pill">
+              <option value="weight_loss" {% if fitness_goal and fitness_goal.goal_type == 'weight_loss' %}selected{% endif %}>Weight Loss & Fat Reduction</option>
+              <option value="muscle_gain" {% if fitness_goal and fitness_goal.goal_type == 'muscle_gain' %}selected{% endif %}>Muscle Building & Bulking</option>
+              <option value="body_recomp" {% if fitness_goal and fitness_goal.goal_type == 'body_recomp' %}selected{% endif %}>Body Recomposition & Toning</option>
+              <option value="endurance" {% if fitness_goal and fitness_goal.goal_type == 'endurance' %}selected{% endif %}>Cardio & Stamina Building</option>
+              <option value="strength" {% if fitness_goal and fitness_goal.goal_type == 'strength' %}selected{% endif %}>Strength & Powerlifting</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-play text-primary mr-1"></i> Starting Weight (kg) <span class="text-danger">*</span></label>
+              <input type="number" step="0.1" name="starting_weight_kg" class="form-control rounded-pill" value="{{ fitness_goal.starting_weight_kg|default:latest_metric.weight_kg|default:'75.0' }}" required>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-flag-checkered text-warning mr-1"></i> Target Goal Weight (kg) <span class="text-danger">*</span></label>
+              <input type="number" step="0.1" name="target_weight_kg" class="form-control rounded-pill" value="{{ fitness_goal.target_weight_kg|default:'68.0' }}" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-percentage text-primary mr-1"></i> Target Body Fat % (Optional)</label>
+              <input type="number" step="0.1" name="target_body_fat" class="form-control rounded-pill" placeholder="e.g. 15.0" value="{{ fitness_goal.target_body_fat|default:'' }}">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="font-weight-bold text-dark small"><i class="fas fa-dumbbell text-primary mr-1"></i> Target Workouts / Wk</label>
+              <select name="target_weekly_workouts" class="form-control rounded-pill">
+                <option value="3" {% if fitness_goal and fitness_goal.target_weekly_workouts == 3 %}selected{% endif %}>3 Days / Week</option>
+                <option value="4" {% if not fitness_goal or fitness_goal.target_weekly_workouts == 4 %}selected{% endif %}>4 Days / Week</option>
+                <option value="5" {% if fitness_goal and fitness_goal.target_weekly_workouts == 5 %}selected{% endif %}>5 Days / Week</option>
+                <option value="6" {% if fitness_goal and fitness_goal.target_weekly_workouts == 6 %}selected{% endif %}>6 Days / Week</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="font-weight-bold text-dark small"><i class="far fa-calendar-check text-primary mr-1"></i> Target Deadline Date</label>
+            <input type="date" name="target_date" class="form-control rounded-pill" value="{{ fitness_goal.target_date|date:'Y-m-d'|default:'' }}">
+            <small class="text-muted">Setting a target date enables Required Rate (RRR kg/week) calculation.</small>
+          </div>
+
+          <div class="form-group mb-0">
+            <label class="font-weight-bold text-dark small"><i class="far fa-lightbulb text-warning mr-1"></i> Personal Mantra / Motivation (Optional)</label>
+            <input type="text" name="motivation_notes" class="form-control rounded-pill" placeholder="e.g. Stay consistent and build core strength" value="{{ fitness_goal.motivation_notes|default:'' }}">
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light py-3 px-4 border-top">
+          <button type="button" class="btn btn-outline-secondary font-weight-bold rounded-pill px-4" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary font-weight-bold px-4 rounded-pill shadow-sm">
+            <i class="fas fa-check-circle mr-1"></i> Lock In Target
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================================== -->
+<!-- 4. MODAL: PHOTO VIEWER LIGHTBOX -->
+<!-- ============================================================================== -->
+<div class="modal fade" id="photoViewModal" tabindex="-1" role="dialog" aria-labelledby="photoViewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 560px;">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden; background: #0f172a; color: #ffffff;">
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center border-0" style="background: rgba(255, 255, 255, 0.06);">
+        <div class="d-flex align-items-center">
+          <span class="badge badge-primary px-3 py-1.5 rounded-pill font-weight-bold" id="photoModalDateBadge">Date</span>
+          <span class="badge badge-success px-3 py-1.5 rounded-pill font-weight-bold ml-2" id="photoModalWeightBadge">Weight</span>
+        </div>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.9; text-shadow: none;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body p-3 text-center" style="background: #020617;">
+        <img id="photoModalImg" src="#" alt="Transformation Photo" class="img-fluid rounded" style="max-height: 480px; object-fit: contain; width: 100%; border: 1px solid rgba(255, 255, 255, 0.1);">
+      </div>
+      <div class="modal-footer py-2.5 px-4 d-flex justify-content-between align-items-center border-0" style="background: rgba(255, 255, 255, 0.06);">
+        <small class="text-white-50 text-truncate font-italic" id="photoModalNotes" style="max-width: 70%;"></small>
+        <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-3 font-weight-bold" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function handleMetricsPhotoSelect(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Photo must be less than 5MB.');
+      input.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('metricsPhotoPreview').src = e.target.result;
+      document.getElementById('metricsPhotoPreviewContainer').style.display = 'block';
+      document.getElementById('metricsPhotoPlaceholderIcon').style.display = 'none';
+      document.getElementById('metricsPhotoFileName').textContent = file.name;
+      document.getElementById('metricsPhotoRemoveBtn').style.display = 'inline-flex';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function removeMetricsPhoto() {
+  const input = document.getElementById('metricsPhotoInput');
+  if (input) input.value = '';
+  document.getElementById('metricsPhotoPreviewContainer').style.display = 'none';
+  document.getElementById('metricsPhotoPlaceholderIcon').style.display = 'flex';
+  document.getElementById('metricsPhotoFileName').textContent = 'Add Transformation Photo';
+  document.getElementById('metricsPhotoRemoveBtn').style.display = 'none';
+}
+
+function openPhotoModal(photoUrl, dateStr, weightStr, notesStr) {
+  document.getElementById('photoModalImg').src = photoUrl;
+  document.getElementById('photoModalDateBadge').innerHTML = '<i class="far fa-calendar-alt mr-1"></i> ' + dateStr;
+  document.getElementById('photoModalWeightBadge').innerHTML = '<i class="fas fa-weight-scale mr-1"></i> ' + weightStr;
+  const notesEl = document.getElementById('photoModalNotes');
+  if (notesStr && notesStr !== '--' && notesStr.trim() !== '') {
+    notesEl.textContent = 'Note: ' + notesStr;
+  } else {
+    notesEl.textContent = '';
+  }
+  $('#photoViewModal').modal('show');
+}
+
+function addExerciseRow() {
+  const container = document.getElementById('exerciseRowsContainer');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" name="exercise_name[]" class="form-control form-control-sm rounded" placeholder="Exercise name..." required></td>
+    <td><input type="number" name="sets[]" class="form-control form-control-sm rounded" value="3" min="1" max="20"></td>
+    <td><input type="text" name="reps[]" class="form-control form-control-sm rounded" value="10-12"></td>
+    <td><input type="number" step="0.5" name="weight[]" class="form-control form-control-sm rounded" value="0.0"></td>
+    <td><input type="text" name="exercise_notes[]" class="form-control form-control-sm rounded" placeholder="Notes..."></td>
+    <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" onclick="removeExerciseRow(this)" title="Remove Exercise"><i class="fas fa-trash-alt" style="font-size: 0.75rem;"></i></button></td>
+  `;
+  container.appendChild(tr);
+}
+
+function removeExerciseRow(btn) {
+  const row = btn.closest('tr');
+  const tbody = document.getElementById('exerciseRowsContainer');
+  if (tbody.children.length > 1) {
+    row.remove();
+  } else {
+    alert("At least one exercise row is required.");
+  }
+}
+
+// Initialize Chart.js weight progress curve with Target Chase line
+document.addEventListener("DOMContentLoaded", function() {
+  const chartCanvas = document.getElementById('weightProgressChart');
+  if (!chartCanvas) return;
+
+  const dates = JSON.parse('{{ chart_dates_json|escapejs }}' || '[]');
+  const weights = JSON.parse('{{ chart_weights_json|escapejs }}' || '[]');
+  const targetWeights = JSON.parse('{{ target_weights_json|escapejs }}' || '[]');
+
+  if (dates.length === 0 || weights.length === 0) return;
+
+  const ctx = chartCanvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+  gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+  gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+
+  const chartDatasets = [{
+    label: 'Current Weight (kg)',
+    data: weights,
+    borderColor: '#2563eb',
+    borderWidth: 3,
+    backgroundColor: gradient,
+    fill: true,
+    tension: 0.35,
+    pointBackgroundColor: '#ffffff',
+    pointBorderColor: '#2563eb',
+    pointBorderWidth: 2.5,
+    pointRadius: 5,
+    pointHoverRadius: 7,
+  }];
+
+  if (targetWeights && targetWeights.length > 0 && targetWeights[0] > 0) {
+    chartDatasets.push({
+      label: 'Target Goal (' + targetWeights[0] + ' kg)',
+      data: targetWeights,
+      borderColor: '#f59e0b',
+      borderWidth: 2.5,
+      borderDash: [8, 6],
+      fill: false,
+      pointRadius: 0,
+      tension: 0,
+    });
+  }
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: chartDatasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#64748b', font: { size: 11, family: 'Plus Jakarta Sans, sans-serif' } }
+        },
+        y: {
+          grid: { color: '#f1f5f9' },
+          ticks: {
+            color: '#64748b',
+            font: { size: 11, family: 'Plus Jakarta Sans, sans-serif' },
+            callback: function(value) { return value + ' kg'; }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            boxWidth: 14,
+            usePointStyle: true,
+            font: { size: 11, family: 'Plus Jakarta Sans, sans-serif', weight: '600' }
+          }
+        },
+        tooltip: {
+          backgroundColor: '#0f172a',
+          titleFont: { size: 12, family: 'Plus Jakarta Sans, sans-serif', weight: 'bold' },
+          bodyFont: { size: 12, family: 'Plus Jakarta Sans, sans-serif' },
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              return ' ' + context.dataset.label + ': ' + context.parsed.y + ' kg';
+            }
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+
+{% endblock %}

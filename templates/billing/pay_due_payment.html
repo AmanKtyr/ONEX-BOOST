@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% load static %}
+{% load form_tags %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <a href="{% url 'billing:submit_due' %}" class="text-decoration-none">
+                <i class="mdi mdi-account-group mdi-18px"></i> Submit Due Payment List
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-currency-usd mdi-18px"></i> Pay Due Payment
+        </li>
+    </ol>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Pay Due Payment for {{ member.first_name }} {{ member.last_name }}</h4>
+                </div>
+                <div class="card-body">
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <form method="post" id="payment-form" novalidate>
+                        {% csrf_token %}
+                        {{ form.invoice_type }}
+                        {{ form.invoice_id }}
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="invoice-select">Select Invoice <span class="text-danger">*</span></label>
+                                    <select class="form-control {% if form.invoice_id.errors %}is-invalid{% endif %}" id="invoice-select" name="invoice_type_id" required>
+                                        <option value="">Select an invoice</option>
+                                        {% for invoice in membership_invoices %}
+                                            <option value="membership-{{ invoice.id }}" data-due="{{ invoice.due }}">{{ invoice.plan.title }} (Membership) - Due: {{ invoice.due }}</option>
+                                        {% endfor %}
+                                        {% for invoice in pt_invoices %}
+                                            <option value="pt-{{ invoice.id }}" data-due="{{ invoice.due }}">{{ invoice.trainer.name }} (Personal Trainer) - Due: {{ invoice.due }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">{% if form.invoice_id.errors %}{{ form.invoice_id.errors.0 }}{% else %}Please select an invoice.{% endif %}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="due-amount">Due Amount</label>
+                                    <input type="text" class="form-control" id="due-amount" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="payment_date">Payment Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="payment_date" name="payment_date" value="{{ today|date:'Y-m-d' }}" max="{{ today|date:'Y-m-d' }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="id_amount">Amount Paid <span class="text-danger">*</span></label>
+                                    {{ form.amount|attr:'class:form-control,required:true,min:1' }}
+                                    <div class="invalid-feedback">
+                                        {% if form.amount.errors %}
+                                            {{ form.amount.errors.0 }}
+                                        {% else %}
+                                            Please enter a valid amount.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id_payment_mode">Payment Mode <span class="text-danger">*</span></label>
+                                    {{ form.payment_mode|attr:'class:form-control,required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="transaction-id-row" style="display: none;">
+                                <div class="form-group">
+                                    <label for="id_transaction_id">Transaction ID</label>
+                                    {{ form.transaction_id|attr:'class:form-control' }}
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="follow-up-date-row" style="display: none;">
+                                <div class="form-group">
+                                    <label for="id_follow_up_date">Due Follow-up Date <span class="text-danger">*</span></label>
+                                    {{ form.follow_up_date|attr:'class:form-control' }}
+                                    <div class="invalid-feedback">
+                                        {% if form.follow_up_date.errors %}
+                                            {{ form.follow_up_date.errors.0 }}
+                                        {% else %}
+                                            Please select a follow-up date.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_comment">Comment</label>
+                            {{ form.comment|attr:'class:form-control' }}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary float-right" id="submit-button">Submit Payment</button>
+                        <a href="{% url 'billing:submit_due' %}" class="btn btn-secondary float-right" style="margin-right: 10px;">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('payment-form');
+    const amountPaidInput = document.getElementById('id_amount');
+    const dueAmountInput = document.getElementById('due-amount');
+    const invoiceSelect = document.getElementById('invoice-select');
+    const followUpDateRow = document.getElementById('follow-up-date-row');
+    const followUpDateInput = document.getElementById('id_follow_up_date');
+    const paymentModeSelect = document.getElementById('id_payment_mode');
+    const transactionIdRow = document.getElementById('transaction-id-row');
+    const submitButton = document.getElementById('submit-button');
+
+    const today = new Date().toISOString().split('T')[0];
+    followUpDateInput.setAttribute('min', today);
+
+    invoiceSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const dueAmount = selectedOption.getAttribute('data-due');
+        dueAmountInput.value = dueAmount;
+
+        const invoiceValue = selectedOption.value.split('-');
+        document.getElementById('id_invoice_type').value = invoiceValue[0];
+        document.getElementById('id_invoice_id').value = invoiceValue[1];
+        
+        amountPaidInput.value = '';
+        amountPaidInput.classList.remove('is-invalid');
+        updateFollowUpDateVisibility();
+    });
+
+    paymentModeSelect.addEventListener('change', function() {
+        const selectedMode = this.value;
+        if (selectedMode === 'card' || selectedMode === 'upi') {
+            transactionIdRow.style.display = 'block';
+        } else {
+            transactionIdRow.style.display = 'none';
+        }
+    });
+
+    amountPaidInput.addEventListener('input', function() {
+        updateFollowUpDateVisibility();
+    });
+
+    function updateFollowUpDateVisibility() {
+        const amountPaid = parseFloat(amountPaidInput.value);
+        const dueAmount = parseFloat(dueAmountInput.value);
+
+        if (!isNaN(amountPaid) && !isNaN(dueAmount)) {
+            if (amountPaid < 1) {
+                amountPaidInput.classList.add('is-invalid');
+                const feedback = amountPaidInput.nextElementSibling;
+                if (feedback) {
+                    feedback.textContent = 'Amount paid must be at least 1 rupee.';
+                }
+            } else if (amountPaid > dueAmount) {
+                amountPaidInput.classList.add('is-invalid');
+                const feedback = amountPaidInput.nextElementSibling;
+                if (feedback) {
+                    feedback.textContent = 'Amount paid cannot be greater than the due amount.';
+                }
+            } else {
+                amountPaidInput.classList.remove('is-invalid');
+            }
+
+            if (amountPaid < dueAmount) {
+                followUpDateRow.style.display = 'block';
+                followUpDateInput.required = true;
+            } else {
+                followUpDateRow.style.display = 'none';
+                followUpDateInput.required = false;
+            }
+        } else {
+            followUpDateRow.style.display = 'none';
+            followUpDateInput.required = false;
+        }
+    }
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const amountPaid = parseFloat(amountPaidInput.value);
+        if (isNaN(amountPaid) || amountPaid < 1) {
+            amountPaidInput.classList.add('is-invalid');
+            amountPaidInput.focus();
+            return;
+        }
+
+        if (amountPaidInput.classList.contains('is-invalid')) {
+            amountPaidInput.focus();
+            return;
+        }
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to submit this payment.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, submit it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Submitting...';
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Membership Pass Verification - {{ gym.name|default:'ONEXIVAGYM' }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #334155;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .verify-card {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .card-header-banner {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      padding: 24px 20px 40px 20px;
+      text-align: center;
+      color: #ffffff;
+      position: relative;
+    }
+    .gym-name {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .gym-sub {
+      font-size: 0.76rem;
+      opacity: 0.85;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 2px;
+    }
+    .avatar-wrapper {
+      margin-top: -38px;
+      text-align: center;
+      position: relative;
+    }
+    .avatar-img {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #ffffff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      background: #f1f5f9;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+    .status-active {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+    .status-expired {
+      background: #fff1f2;
+      color: #be123c;
+      border: 1px solid #fecdd3;
+    }
+    .member-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .member-id-pill {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #2563eb;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 9999px;
+      margin-top: 4px;
+      border: 1px solid #e2e8f0;
+    }
+    .details-box {
+      margin: 18px 20px;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 0.86rem;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .detail-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .detail-label {
+      color: #64748b;
+      font-weight: 500;
+    }
+    .detail-val {
+      font-weight: 700;
+      color: #0f172a;
+      text-align: right;
+    }
+    .security-notice {
+      padding: 14px 20px;
+      background: #eff6ff;
+      border-top: 1px solid #dbeafe;
+      font-size: 0.74rem;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="verify-card">
+    {% if found %}
+      <!-- Gym Header Banner -->
+      <div class="card-header-banner">
+        <div class="gym-name">{{ gym.name }}</div>
+        <div class="gym-sub">Official Digital Pass Verification</div>
+      </div>
+
+      <!-- Avatar & Identity -->
+      <div class="avatar-wrapper">
+        <img src="{% if member.profile_picture %}{{ member.profile_picture.url }}{% else %}https://ui-avatars.com/api/?name={{ member.name|urlencode }}&background=2563eb&color=fff&size=128{% endif %}" alt="{{ member.name }}" class="avatar-img">
+        <div>
+          {% if is_active %}
+            <span class="status-badge status-active">
+              <i class="fas fa-check-circle"></i> Active Verified Member
+            </span>
+          {% else %}
+            <span class="status-badge status-expired">
+              <i class="fas fa-exclamation-circle"></i> Membership Expired
+            </span>
+          {% endif %}
+        </div>
+        <div class="member-title">{{ member.name }}</div>
+        <div class="member-id-pill">{{ member.member_id }}</div>
+      </div>
+
+      <!-- Verified Membership Info -->
+      <div class="details-box">
+        <div class="detail-row">
+          <span class="detail-label">Membership Plan</span>
+          <span class="detail-val">{{ latest_membership.plan.title|default:'Standard Membership' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Plan Validity</span>
+          <span class="detail-val">
+            {% if end_date %}
+              {{ end_date|date:"d M Y" }}
+              {% if is_active %}
+                <small style="color: #047857; font-weight: 600;">({{ days_left }}d left)</small>
+              {% endif %}
+            {% else %}
+              Active
+            {% endif %}
+          </span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Gender & Age</span>
+          <span class="detail-val">{{ member.gender|default:'Member' }}{% if member.age %}, {{ member.age }} yrs{% endif %}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Location / Branch</span>
+          <span class="detail-val">{{ gym.city|default:'Main Facility' }}{% if gym.state %}, {{ gym.state }}{% endif %}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Verification Timestamp</span>
+          <span class="detail-val" style="color: #2563eb;">{{ today|date:"d M Y" }} Live</span>
+        </div>
+      </div>
+
+      <!-- Security Notice -->
+      <div class="security-notice">
+        <i class="fas fa-shield-halved" style="font-size: 1.25rem; flex-shrink: 0;"></i>
+        <div>
+          <strong>Authentic Access Pass:</strong> This digital pass is issued by <strong>{{ gym.name }}</strong> and verified cryptographically through the ONEXIVAsystem.
+        </div>
+      </div>
+
+    {% else %}
+      <!-- Not Found Screen -->
+      <div class="card-header-banner" style="background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);">
+        <div class="gym-name">Verification Failed</div>
+        <div class="gym-sub">Invalid or Unknown Pass</div>
+      </div>
+      <div style="padding: 30px 20px; text-align: center;">
+        <i class="fas fa-times-circle text-danger" style="font-size: 3rem; color: #dc2626; margin-bottom: 12px;"></i>
+        <h3 style="font-weight: 800; color: #0f172a; margin-bottom: 6px;">Pass Not Found</h3>
+        <p style="color: #64748b; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
+          No active membership record was found for Member ID: <strong>{{ member_id }}</strong>.
+        </p>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 12px; font-size: 0.8rem; color: #475569;">
+          Please contact the gym reception or front desk to check your membership credentials.
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</body>
+</html>

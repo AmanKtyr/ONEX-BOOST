@@ -1,0 +1,623 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {% block title %} {{ system_setting.platform_name|default:"ONEXIVA" }} GYM Management Software {% endblock title %}
+    </title>
+    <link
+      rel="stylesheet"
+      href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'vendors/css/vendor.bundle.base.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}"
+    />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    {% comment %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/customstyle.css' %}?v=3.7" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/dashboard_modern.css' %}?v=3.7">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+
+    <!-- Critical Anti-FOUC & Unified Form Styles -->
+    <style>
+      .nav-profile-img { width: 32px !important; height: 32px !important; max-width: 32px !important; max-height: 32px !important; object-fit: cover !important; border-radius: 50% !important; display: inline-block !important; }
+      .avatar-wrapper { width: 32px !important; height: 32px !important; min-width: 32px !important; flex-shrink: 0 !important; display: inline-block !important; }
+      .avatar-wrapper img { width: 32px !important; height: 32px !important; max-width: 32px !important; max-height: 32px !important; object-fit: cover !important; border-radius: 50% !important; display: block !important; }
+      .sidebar-brand.brand-logo img { max-height: 45px !important; max-width: 140px !important; width: auto !important; object-fit: contain !important; }
+      .sidebar-brand.brand-logo-mini img { max-height: 35px !important; max-width: 35px !important; width: auto !important; object-fit: contain !important; }
+
+      /* Unified Form Section & Controls */
+      .form-section-fieldset,
+      fieldset.border {
+        background: #ffffff;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.75rem !important;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      }
+      .form-section-fieldset:hover,
+      fieldset.border:hover {
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      }
+      .form-section-legend,
+      legend.w-auto,
+      legend.h5 {
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        color: #1e40af !important;
+        background: #eff6ff !important;
+        border: 1px solid #bfdbfe !important;
+        border-radius: 30px !important;
+        padding: 0.35rem 1rem !important;
+        width: auto !important;
+        float: none !important;
+        margin-bottom: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+      }
+      .form-label {
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        color: #334155 !important;
+        margin-bottom: 0.35rem !important;
+      }
+      .helper-text {
+        font-size: 0.78rem !important;
+        color: #64748b !important;
+        margin-top: 0.25rem !important;
+      }
+      .input-group-text {
+        background-color: #f8fafc !important;
+        border-color: #ced4da !important;
+        color: #64748b !important;
+      }
+      .form-control:focus + .input-group-text,
+      .input-group-text:focus-within {
+        border-color: #86b7fe !important;
+      }
+
+      /* Project-wide Primary Theme Definition (Royal Blue Gradient #1e40af -> #3b82f6) */
+      :root {
+        --primary-color: #1e40af !important;
+        --primary-hover: #1d4ed8 !important;
+        --primary-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+        --sidebar-gradient: linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%) !important;
+      }
+
+      .bg-primary {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+        border-color: #1e40af !important;
+      }
+      .btn-primary:hover,
+      .btn-primary:focus,
+      .btn-primary:active {
+        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
+        border-color: #1d4ed8 !important;
+        box-shadow: 0 4px 14px rgba(30, 64, 175, 0.35) !important;
+      }
+      .btn-outline-primary {
+        color: #1e40af !important;
+        border-color: #1e40af !important;
+      }
+      .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+        color: #ffffff !important;
+      }
+      .text-primary {
+        color: #1e40af !important;
+      }
+      .border-primary {
+        border-color: #2563eb !important;
+      }
+
+      /* SaaS Tables & Micro-Headers */
+      .table thead th {
+        background-color: #f8fafc !important;
+        color: #64748b !important;
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        padding: 0.85rem 1rem !important;
+        border-top: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        white-space: nowrap;
+      }
+      .table tbody td {
+        padding: 0.85rem 1rem !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        font-size: 0.88rem;
+      }
+      .table tbody tr:hover td {
+        background-color: #f8fafc !important;
+      }
+
+      /* Modern Status Pill Chips */
+      .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3.5px 10px !important;
+        border-radius: 9999px !important;
+        font-size: 0.74rem !important;
+        font-weight: 600 !important;
+        line-height: 1.2;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+      .badge-status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .badge-success, .badge-status-active, .badge-status-paid {
+        background-color: #ecfdf5 !important;
+        color: #047857 !important;
+        border: 1px solid #a7f3d0 !important;
+      }
+      .badge-status-active .badge-status-dot, .badge-status-paid .badge-status-dot {
+        background-color: #10b981;
+      }
+      .badge-warning, .badge-status-expiring, .badge-status-pending {
+        background-color: #fffbeb !important;
+        color: #b45309 !important;
+        border: 1px solid #fde68a !important;
+      }
+      .badge-status-expiring .badge-status-dot, .badge-status-pending .badge-status-dot {
+        background-color: #f59e0b;
+      }
+      .badge-danger, .badge-status-expired, .badge-status-unpaid {
+        background-color: #fff1f2 !important;
+        color: #be123c !important;
+        border: 1px solid #fecdd3 !important;
+      }
+      .badge-status-expired .badge-status-dot, .badge-status-unpaid .badge-status-dot {
+        background-color: #f43f5e;
+      }
+      .badge-info, .badge-status-info {
+        background-color: #f0f9ff !important;
+        color: #0369a1 !important;
+        border: 1px solid #bae6fd !important;
+      }
+      .badge-status-info .badge-status-dot {
+        background-color: #0284c7;
+      }
+
+
+      /* SweetAlert2 Brand Customization */
+      .swal2-popup {
+        border-radius: 20px !important;
+        padding: 1.75rem !important;
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.16) !important;
+        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+      }
+      .swal2-title {
+        font-size: 1.25rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+      }
+      .swal2-confirm {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+        border-radius: 30px !important;
+        font-weight: 600 !important;
+        padding: 0.6rem 1.6rem !important;
+      }
+      .swal2-cancel {
+        border-radius: 30px !important;
+        font-weight: 600 !important;
+        padding: 0.6rem 1.5rem !important;
+      }
+    </style>
+
+    <link rel="manifest" href="{% static 'manifest.json' %}" />
+    <!-- PWA Icons -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="{% static 'images/favicon.png' %}"
+    />
+    <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}" />
+    <meta name="theme-color" content="#0d6efd" />
+
+    <meta name="google-site-verification" content="WXgpCm7smrPbuCEaiWjSUBw0P5-NHi7MG_IilJc86t4" />
+
+    {% block extra_css %}{% endblock extra_css %}
+
+    <style>
+      .codex-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffffcb;
+        z-index: 99999;   /* must be above notification drawer (9991) */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* =========================================================================
+         GLOBAL FILTER TOOLBAR STYLES (Zero-dependency & cache-proof)
+         ========================================================================= */
+      .filter-card-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 1rem 1.15rem;
+        transition: all 0.2s ease;
+      }
+
+      .filter-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.35rem;
+        display: block;
+      }
+
+      .filter-search-wrapper {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+      }
+
+      .filter-search-icon {
+        position: absolute !important;
+        left: 11px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #9ca3af !important;
+        pointer-events: none !important;
+        font-size: 17px !important;
+        line-height: 1 !important;
+        z-index: 4 !important;
+        margin: 0 !important;
+      }
+
+      .filter-control {
+        height: 38px !important;
+        border-radius: 4px !important;
+        border: 1px solid #ced4da !important;
+        font-size: 0.875rem !important;
+        color: #1f2937 !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        background-color: #ffffff !important;
+        width: 100% !important;
+      }
+
+      .filter-control:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15) !important;
+        outline: none !important;
+      }
+
+      .filter-search-input {
+        padding-left: 35px !important;
+        padding-right: 32px !important;
+      }
+
+      input[type="date"].filter-control {
+        padding: 0.375rem 0.45rem !important;
+        font-size: 0.84rem !important;
+        min-width: 0 !important;
+      }
+
+      .filter-clear-btn {
+        position: absolute !important;
+        right: 9px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        color: #9ca3af !important;
+        font-size: 17px !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+        width: auto !important;
+        height: auto !important;
+        z-index: 5 !important;
+        transition: color 0.15s ease;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .filter-clear-btn:hover {
+        color: #ef4444 !important;
+        background: transparent !important;
+      }
+
+      .filter-spinner {
+        position: absolute !important;
+        right: 10px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 15px !important;
+        height: 15px !important;
+        border: 2px solid #e2e8f0 !important;
+        border-top-color: #2563eb !important;
+        border-radius: 50% !important;
+        animation: filterSpin 0.6s linear infinite !important;
+        z-index: 5 !important;
+        display: none;
+      }
+
+      @keyframes filterSpin {
+        to { transform: translateY(-50%) rotate(360deg); }
+      }
+
+      .filter-reset-btn {
+        height: 38px !important;
+        border-radius: 4px !important;
+        font-size: 1rem !important;
+        transition: all 0.15s ease;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .table-responsive.is-filtering {
+        opacity: 0.55;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Loader Start-->
+    <div class="codex-loader">
+      <img src="{% static 'images/loader.gif' %}" alt="" class="img-fluid" />
+    </div>
+
+    <style>
+      .pulse-dot.pulse-warning {
+        background-color: #f59e0b !important;
+      }
+      .pulse-dot.pulse-warning::after {
+        background-color: rgba(245, 158, 11, 0.45) !important;
+      }
+      .alert-maintenance-banner {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+        border: 1.5px solid #fde68a !important;
+        border-radius: 12px !important;
+        padding: 0.85rem 1.25rem !important;
+      }
+      .maintenance-alert-icon-box {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 10px;
+        background: #fde047;
+        color: #854d0e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 6px rgba(180, 83, 9, 0.12);
+      }
+    </style>
+
+    <div class="container-scroller">
+      {% include 'includes/sidebar.html' %}
+      <div class="container-fluid page-body-wrapper">
+        {% include 'includes/top-nav.html' %}
+        <div class="main-panel">
+          <div class="content-wrapper px-0 pb-0 pt-3">
+            {% if system_setting.maintenance_mode %}
+            <div class="px-3 px-md-4 mb-3">
+              <div class="alert alert-maintenance-banner shadow-sm d-flex align-items-center justify-content-between flex-wrap mb-0" role="alert">
+                <div class="d-flex align-items-center py-1">
+                  <div class="maintenance-alert-icon-box mr-3">
+                    <i class="fas fa-tools"></i>
+                  </div>
+                  <div>
+                    <div class="font-weight-bold" style="font-size: 0.92rem; color: #92400e;">
+                      Platform Maintenance Mode Active
+                    </div>
+                    <div class="small" style="color: #b45309; line-height: 1.4;">
+                      {{ system_setting.maintenance_message|default:"ONEXIVA is currently undergoing scheduled platform maintenance. Some operations may be temporarily restricted." }}
+                    </div>
+                  </div>
+                </div>
+                <div class="my-1">
+                  <span class="badge badge-pill font-weight-bold py-1.5 px-3" style="font-size: 0.72rem; background: #ffffff; color: #b45309; border: 1px solid #fde68a; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                    <i class="fas fa-shield-alt mr-1 text-warning"></i> ADMIN NOTICE
+                  </span>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% block content %} {% endblock content %}
+          </div>
+          {% include 'includes/footer.html' %}
+        </div>
+      </div>
+    </div>
+    {% comment %} QR Code Preview Modal {% endcomment %}
+    <div
+      class="modal fade"
+      id="imagePreviewModal"
+      tabindex="-1"
+      aria-labelledby="imagePreviewModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="imagePreviewModalLabel">QR Code</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body text-center">
+            <img src="" id="modalImage" class="img-fluid" alt="QR Code" />
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Camera Capture Modal -->
+    <div class="modal fade" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true" data-bs-backdrop="static">
+      <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 bg-white" style="overflow: hidden;">
+          
+          <div class="modal-header border-0 pb-0 pt-4 px-4 bg-white d-flex justify-content-between align-items-center">
+            <h5 class="modal-title fw-bold text-dark d-flex align-items-center" id="cameraModalLabel">
+              <i class="mdi mdi-camera-outline text-primary me-2 fs-5"></i> Capture Photo
+            </h5>
+             {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
+          </div>
+
+          <div class="modal-body p-4">
+            <div class="position-relative bg-dark rounded-4 overflow-hidden shadow-sm mx-auto" style="aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;">
+              <video id="video" style="width: 100%; height: 100%; object-fit: cover;" autoplay playsinline></video>
+              <canvas id="canvas" style="display:none;"></canvas>
+              
+              <!-- Scanning Corners Overlay -->
+              <div class="position-absolute top-0 start-0 w-100 h-100 p-3 pointer-events-none d-flex flex-column justify-content-between" style="pointer-events: none; opacity: 0.8;">
+                <div class="d-flex justify-content-between">
+                  <div style="width: 35px; height: 35px; border-top: 4px solid #0d6efd; border-left: 4px solid #0d6efd; border-top-left-radius: 12px;"></div>
+                  <div style="width: 35px; height: 35px; border-top: 4px solid #0d6efd; border-right: 4px solid #0d6efd; border-top-right-radius: 12px;"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-end">
+                  <div style="width: 35px; height: 35px; border-bottom: 4px solid #0d6efd; border-left: 4px solid #0d6efd; border-bottom-left-radius: 12px;"></div>
+                  <div style="width: 35px; height: 35px; border-bottom: 4px solid #0d6efd; border-right: 4px solid #0d6efd; border-bottom-right-radius: 12px;"></div>
+                </div>
+              </div>
+
+              <!-- Floating Switch Camera Button -->
+              <button type="button" class="btn btn-primary rounded-circle shadow-lg position-absolute p-0 d-flex align-items-center justify-content-center" id="switch-camera-btn" style="width: 48px; height: 48px; top: 15px; right: 15px; opacity: 0.9; border: 2px solid rgba(255,255,255,0.2) !important; z-index: 10;">
+                <i class="mdi mdi-camera-switch mdi-24px"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="modal-footer border-0 pt-0 pb-4 px-4 d-flex justify-content-center gap-3 bg-white">
+            <button type="button" class="btn btn-light btn-lg rounded-pill px-4 fw-medium text-muted" id="cancel-camera-btn" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-sm d-flex align-items-center" id="take-photo-btn">
+              <i class="mdi mdi-camera-iris me-2 fs-5"></i> Capture
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- plugins:js -->
+    <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'vendors/chart.js/Chart.min.js' %}" defer></script>
+    <script
+      src="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"
+      defer
+    ></script>
+    <script src="{% static 'vendors/flot/jquery.flot.js' %}" defer></script>
+    <script
+      src="{% static 'vendors/flot/jquery.flot.resize.js' %}"
+      defer
+    ></script>
+    <script
+      src="{% static 'vendors/flot/jquery.flot.categories.js' %}"
+      defer
+    ></script>
+    <script
+      src="{% static 'vendors/flot/jquery.flot.fillbetween.js' %}"
+      defer
+    ></script>
+    <script
+      src="{% static 'vendors/flot/jquery.flot.stack.js' %}"
+      defer
+    ></script>
+    <script src="{% static 'vendors/flot/jquery.flot.pie.js' %}" defer></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'js/off-canvas.js' %}" defer></script>
+    <script src="{% static 'js/hoverable-collapse.js' %}" defer></script>
+    <script src="{% static 'js/misc.js' %}" defer></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="{% static 'js/dashboard.js' %}" defer></script>
+    <script src="{% static 'js/tabs.js' %}" defer></script>
+    <script src="{% static 'js/typeahead.js' %}" defer></script>
+    <script src="{% static 'js/select2.js' %}" defer></script>
+    <script src="{% static 'js/validation.js' %}" defer></script>
+    <script src="{% static 'js/form-navigation.js' %}" defer></script>
+    <script src="{% static 'js/address-api.js' %}" defer></script>
+    <script src="{% static 'js/profession-autocomplete.js' %}" defer></script>
+    <script src="{% static 'js/camera-capture.js' %}" defer></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{% static 'js/delete_confirmation.js' %}"></script>
+
+    {% include 'includes/swal_messages.html' %}
+    {% include 'includes/popup_dispatcher.html' %}
+    {% block javascript %}{% endblock javascript %}
+    {% block extra_js %}{% endblock extra_js %} 
+    {% block scripts %}{% endblock %}
+    <script>
+      // Hide loader when page is fully loaded
+      window.addEventListener("load", function () {
+        const loader = document.querySelector(".codex-loader");
+        loader.style.display = "none";
+      });
+      function showImage(src) {
+        document.getElementById("modalImage").src = src;
+      }
+    </script>
+  </body>
+</html>

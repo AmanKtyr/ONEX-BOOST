@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}My Diet Plan - {{ member.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">Nutrition & Diet Plan</h2>
+      <p class="dashboard-hero-subtitle">Fuel your workouts with your customized nutritional regimen</p>
+    </div>
+    <div>
+      <a href="{% url 'member_portal:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+        <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+
+  {% if diet_plan %}
+    <!-- Diet Plan Banner -->
+    <div class="gym-card mb-4">
+      <div class="gym-card-body" style="background: linear-gradient(135deg, #064e3b, #047857); color: #ffffff; border-radius: 12px;">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+          <div>
+            <span class="badge badge-success px-3 py-1 font-weight-bold mb-2" style="background: rgba(255,255,255,0.2);">Assigned Diet Plan</span>
+            <h2 class="font-weight-bold mb-1 text-white">{{ diet_plan.name }}</h2>
+            <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
+              <span class="badge badge-light text-success font-weight-bold mr-2">
+                <i class="fas fa-bullseye mr-1"></i> Target: {{ diet_plan.get_target_display|default:diet_plan.target|title }}
+              </span>
+              <span class="badge badge-light text-dark font-weight-bold mr-2">
+                <i class="fas fa-clock mr-1"></i> Duration: {{ diet_plan.duration_days }} Days
+              </span>
+              {% if diet_plan.created_by %}
+              <span class="badge badge-light text-dark font-weight-bold">
+                <i class="fas fa-user-shield mr-1"></i> By: {{ diet_plan.created_by }}
+              </span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="mt-3 mt-md-0 text-md-right">
+            {% if assigned_diet.assigned_date %}
+              <div class="text-white-50 small">Assigned On</div>
+              <div class="font-weight-bold text-white">{{ assigned_diet.assigned_date|date:'d M Y' }}</div>
+            {% endif %}
+            {% if diet_plan.document %}
+              <a href="{{ diet_plan.document.url }}" target="_blank" class="btn btn-sm btn-light mt-2 rounded-pill font-weight-bold">
+                <i class="fas fa-file-download mr-1"></i> Download Diet Chart PDF
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      {% if diet_plan.image %}
+      <div class="col-lg-4 mb-4">
+        <div class="gym-card h-100">
+          <div class="gym-card-header">
+            <h5 class="gym-card-title"><i class="fas fa-image text-success"></i> Diet Meal Chart</h5>
+          </div>
+          <div class="gym-card-body text-center">
+            <img src="{{ diet_plan.image.url }}" alt="{{ diet_plan.name }}" class="img-fluid rounded shadow-sm" style="max-height: 380px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="{% if diet_plan.image %}col-lg-8{% else %}col-12{% endif %} mb-4">
+        <div class="gym-card h-100">
+          <div class="gym-card-header">
+            <h5 class="gym-card-title">
+              <i class="fas fa-apple-alt text-success"></i> Meal Schedule & Instructions
+            </h5>
+          </div>
+          <div class="gym-card-body">
+            {% if diet_plan.description %}
+              <div class="diet-content" style="line-height: 1.8; color: #334155;">
+                {{ diet_plan.description|safe }}
+              </div>
+            {% else %}
+              <div class="text-center py-4 text-muted">
+                <p class="mb-0">Meal chart instructions are currently being finalized by your nutritionist or trainer.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% else %}
+    <div class="gym-card p-5 text-center">
+      <div class="text-muted mb-2"><i class="mdi mdi-food-apple-outline" style="font-size: 3rem; color: #94a3b8;"></i></div>
+      <h4 class="font-weight-bold text-dark">No Diet Plan Assigned</h4>
+      <p class="text-muted mb-4" style="max-width: 450px; margin: 0 auto;">
+        You do not have an active diet plan assigned at this moment. Contact your gym nutritionist or trainer to have one assigned.
+      </p>
+      <a href="{% url 'member_portal:dashboard' %}" class="btn btn-success btn-sm px-4 rounded-pill font-weight-bold">
+        Back to Dashboard
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

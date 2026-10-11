@@ -1,0 +1,36 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ system_setting.platform_name|default:"ONEXIVA" }} GYM Management Software{% endblock title %}</title>
+  <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+</head>
+
+<body>
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth">
+        <div class="row flex-grow">
+          <div class="{% block col_class %}col-lg-4{% endblock col_class %} mx-auto">
+            {% block content %}
+            {% endblock content %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  {% include 'includes/swal_messages.html' %}
+  {% block extra_js %}{% endblock extra_js %}
+</body>
+
+</html>

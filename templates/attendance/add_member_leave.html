@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Member Leave - ONEXIVAGYM{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'attendance:leave_management' %}" class="text-decoration-none">
+                <i class="mdi mdi-calendar-remove-outline mdi-18px"></i> Leave Management
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-plus-circle-outline mdi-18px"></i> Add Member Leave
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card shadow-sm border-0">
+        <!-- Header -->
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div>
+                <h4 class="mb-1 font-weight-bold text-white d-flex align-items-center">
+                    <i class="mdi mdi-calendar-account-outline mr-2 me-2"></i> Add Member Leave Request
+                </h4>
+                <p class="mb-0 text-white-50 small">Record a leave request or membership pause period for an active gym member.</p>
+            </div>
+            <a href="{% url 'attendance:leave_management' %}" class="btn btn-sm btn-light mt-2 mt-md-0 shadow-sm">
+                <i class="mdi mdi-arrow-left mr-1"></i> Back to Leave Management
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+            {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}danger{% else %}info{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                
+                <!-- Section 1: Member & Leave Type -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-account-circle-outline mr-1"></i> Member & Leave Category
+                    </legend>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="member_id" class="form-label">Select Member <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-account"></i></span>
+                                <select class="form-control" id="member_id" name="member_id" required>
+                                    <option value="">-- Choose a member --</option>
+                                    {% for member in members %}
+                                    <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }} - {{ member.email|default:"No email" }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="leave_type" class="form-label">Leave Type <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-tag-outline"></i></span>
+                                <select class="form-control" id="leave_type" name="leave_type" required>
+                                    <option value="">-- Select leave type --</option>
+                                    {% for type_value, type_name in leave_types %}
+                                    <option value="{{ type_value }}">{{ type_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section 2: Dates & Reason -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-calendar-range mr-1"></i> Leave Duration & Reason
+                    </legend>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                <input type="date" class="form-control" id="start_date" name="start_date" required min="{{ today|date:'Y-m-d' }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="end_date" class="form-label">End Date <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span>
+                                <input type="date" class="form-control" id="end_date" name="end_date" required min="{{ today|date:'Y-m-d' }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
+                            <label for="reason" class="form-label">Reason / Notes (Optional)</label>
+                            <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Provide any additional details or reason for the leave request..."></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-end align-items-center gap-2 pt-3 border-top mt-4">
+                    <a href="{% url 'attendance:leave_management' %}" class="btn btn-light px-4">
+                        <i class="mdi mdi-close mr-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                        <i class="mdi mdi-check-circle-outline mr-1"></i> Submit Leave Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const startDateInput = document.getElementById('start_date');
+    const endDateInput = document.getElementById('end_date');
+    
+    if (startDateInput && endDateInput) {
+        startDateInput.addEventListener('change', function() {
+            endDateInput.min = this.value;
+        });
+
+        endDateInput.addEventListener('change', function() {
+            startDateInput.max = this.value;
+        });
+
+        const today = new Date().toISOString().split('T')[0];
+        if (!startDateInput.value) startDateInput.value = today;
+        if (!endDateInput.value) endDateInput.value = today;
+    }
+});
+</script>
+{% endblock content %}

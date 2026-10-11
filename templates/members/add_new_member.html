@@ -1,0 +1,602 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+{% block content %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/customstyle.css' %}" />
+  <!-- Compact Breadcrumb Navigation -->
+  <nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'dashboard' %}" class="text-decoration-none"><i class="mdi mdi-home-outline mdi-18px"></i> Dashboard</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href="{% url 'member_list' %}" class="text-decoration-none"><i class="mdi mdi-account-multiple-outline mdi-18px"></i> Members</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="mdi mdi-account-plus-outline mdi-18px"></i> Add Member
+      </li>
+    </ol>
+  </nav>
+
+  <div class="col-lg-12 px-0">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Add New Member</h4>
+      </div>
+      <div class="card-body">
+        {% if quota_limit_reached %}
+        <div class="alert alert-danger shadow-sm border-0 d-flex align-items-center justify-content-between flex-wrap p-3 mb-4 rounded-xl" style="border-left: 5px solid #dc2626 !important; background: #fef2f2; border-radius: 12px;">
+          <div class="d-flex align-items-center mb-2 mb-md-0">
+            <div class="p-2 rounded-circle bg-danger text-white mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+              <i class="mdi mdi-alert-octagon-outline" style="font-size: 22px;"></i>
+            </div>
+            <div>
+              <strong class="text-danger">Member Quota Full ({{ quota_status.members.current }} / {{ quota_status.members.display_max }} Registered)!</strong>
+              <div class="small text-muted">Your active SaaS plan limit has been reached. You cannot register new members until your plan is upgraded or inactive members are archived.</div>
+            </div>
+          </div>
+          <a href="{% url 'settings:my_subscription' %}" class="btn btn-danger btn-sm font-weight-bold px-3 py-2 rounded-pill shadow-sm">
+            <i class="mdi mdi-arrow-up-circle mr-1"></i> Upgrade Plan
+          </a>
+        </div>
+        {% elif quota_status.members.is_warning %}
+        <div class="alert alert-warning shadow-sm border-0 d-flex align-items-center justify-content-between flex-wrap p-3 mb-4 rounded-xl" style="border-left: 5px solid #f59e0b !important; background: #fffbeb; border-radius: 12px;">
+          <div class="d-flex align-items-center mb-2 mb-md-0">
+            <i class="mdi mdi-alert text-warning mr-2" style="font-size: 22px;"></i>
+            <div class="small text-dark">
+              <strong>Capacity Notice:</strong> You have used <strong>{{ quota_status.members.current }} of {{ quota_status.members.display_max }}</strong> member slots ({{ quota_status.members.percent }}%). Consider upgrading soon.
+            </div>
+          </div>
+          <a href="{% url 'settings:my_subscription' %}" class="btn btn-warning btn-sm font-weight-bold px-3 rounded-pill text-dark">
+            Review Plans
+          </a>
+        </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+          {% csrf_token %}
+
+          <fieldset class="border p-4 rounded mb-4">
+            <legend class="w-auto px-2 h5">Personal Info</legend>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="id_first_name" class="form-label">First Name <span class="text-danger">*</span></label>
+                {{ form.first_name }} {% for error in form.first_name.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
+                {{ form.last_name }} {% for error in form.last_name.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                {{ form.gender }} {% for error in form.gender.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_date_of_birth" class="form-label">Date of Birth</label>
+                {{ form.date_of_birth }} {% for error in form.date_of_birth.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_age" class="form-label">Age <span class="text-danger">*</span></label>
+                {{ form.age }} {% for error in form.age.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_profession" class="form-label">Profession</label>
+                {{ form.profession }} {% for error in form.profession.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-4 rounded mb-4">
+            <legend class="w-auto px-2 h5">Contact Details</legend>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="id_mobile_number" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                {{ form.mobile_number }}
+                <div id="mobile-note" class="text-info small mt-1" style="display: none"></div>
+                {% for error in form.mobile_number.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_relation" class="form-label">Relation <span class="text-danger">*</span></label>
+                {{ form.relation }} {% for error in form.relation.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_email" class="form-label">Email</label>
+                {{ form.email }} {% for error in form.email.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_pincode" class="form-label">Pincode</label>
+                {{ form.pincode }} {% for error in form.pincode.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_address" class="form-label">Address</label>
+                {{ form.address }} {% for error in form.address.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_city" class="form-label">City</label>
+                {{ form.city }} {% for error in form.city.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_state" class="form-label">State</label>
+                {{ form.state }} {% for error in form.state.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-4 rounded mb-4">
+            <legend class="w-auto px-2 h5">Documents</legend>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="id_profile_picture" class="form-label">Profile Picture</label>
+                <div class="input-group">
+                  {{ form.profile_picture }}
+                  <button type="button" class="btn btn-outline-primary capture-btn" data-target="id_profile_picture">
+                    <i class="mdi mdi-camera"></i> 
+                  </button>
+                </div>
+                <div id="preview_id_profile_picture" class="mt-2" style="display: none;">
+                  <img src="" class="img-thumbnail" style="max-height: 150px;">
+                </div>
+                {% for error in form.profile_picture.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_sign" class="form-label">Signature</label>
+                <div class="input-group">
+                  {{ form.sign }}
+                  <button type="button" class="btn btn-outline-primary capture-btn" data-target="id_sign">
+                    <i class="mdi mdi-camera"></i> 
+                  </button>
+                </div>
+                <div id="preview_id_sign" class="mt-2" style="display: none;">
+                  <img src="" class="img-thumbnail" style="max-height: 150px;">
+                </div>
+                {% for error in form.sign.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_identity_type" class="form-label">Identity Type</label>
+                {{ form.identity_type }} {% for error in form.identity_type.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_identity_no" class="form-label">Identity Number</label>
+                {{ form.identity_no }} {% for error in form.identity_no.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="id_identity_document_image" class="form-label">Identity Document</label>
+                <div class="input-group">
+                  {{ form.identity_document_image }}
+                  <button type="button" class="btn btn-outline-primary capture-btn" data-target="id_identity_document_image">
+                    <i class="mdi mdi-camera"></i> 
+                  </button>
+                </div>
+                <div id="preview_id_identity_document_image" class="mt-2" style="display: none;">
+                  <img src="" class="img-thumbnail" style="max-height: 150px;">
+                </div>
+                {% for error in form.identity_document_image.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="border p-4 rounded mb-4">
+            <legend class="w-auto px-2 h5">Medical History</legend>
+            {{ medical_formset.management_form }}
+            <div id="medical-formset-container">
+              {% for form in medical_formset %}
+                <div class="row medical-formset-row">
+                  <div class="col-md-3 mb-3">
+                    <label for="{{ form.condition.id_for_label }}" class="form-label">Condition</label>
+                    {{ form.condition }}
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="{{ form.type.id_for_label }}" class="form-label">Type</label>
+                    {{ form.type }}
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="{{ form.since.id_for_label }}" class="form-label">Since</label>
+                    {{ form.since }}
+                  </div>
+                  <div class="col-md-3 mb-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger remove-medical-formset-row">Remove</button>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            <button type="button" id="add-medical-formset-row" class="btn btn-success">Add More</button>
+          </fieldset>
+
+          <fieldset class="border p-4 rounded mb-4">
+            <legend class="w-auto px-2 h5">Emergency Contact</legend>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="{{ emergency_form.name.id_for_label }}" class="form-label">Name</label>
+                {{ emergency_form.name }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="{{ emergency_form.mobile.id_for_label }}" class="form-label">Mobile</label>
+                {{ emergency_form.mobile }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="{{ emergency_form.relation.id_for_label }}" class="form-label">Relation</label>
+                {{ emergency_form.relation }}
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="d-flex justify-content-end align-items-center">
+            {% if quota_limit_reached %}
+              <span class="text-danger small font-weight-bold mr-3 me-3"><i class="mdi mdi-alert-circle"></i> Registration locked (Quota Full)</span>
+              <button type="button" class="btn btn-secondary me-2 mr-2" disabled title="Member quota full">Submit Locked</button>
+              <a href="{% url 'settings:my_subscription' %}" class="btn btn-danger me-2 mr-2"><i class="mdi mdi-crown"></i> Upgrade Plan</a>
+            {% else %}
+              <button type="submit" class="btn btn-primary me-2 mr-2 font-weight-bold px-4">Submit</button>
+            {% endif %}
+            <a href="{% url 'member_list' %}" class="btn btn-light">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const container = document.getElementById('medical-formset-container')
+      const addButton = document.getElementById('add-medical-formset-row')
+      const totalForms = document.querySelector('input[name="{{ medical_formset.prefix }}-TOTAL_FORMS"]')
+      const emptyFormTemplate = `
+            <div class="row medical-formset-row">
+                <div class="col-md-3 mb-3">
+                    <label for="id_{{ medical_formset.prefix }}-__prefix__-condition" class="form-label">Condition</label>
+                    {{ medical_formset.empty_form.condition }}
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="id_{{ medical_formset.prefix }}-__prefix__-type" class="form-label">Type</label>
+                    {{ medical_formset.empty_form.type }}
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="id_{{ medical_formset.prefix }}-__prefix__-since" class="form-label">Since</label>
+                    {{ medical_formset.empty_form.since }}
+                </div>
+                <div class="col-md-3 mb-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger remove-medical-formset-row">Remove</button>
+                </div>
+            </div>
+        `
+    
+      addButton.addEventListener('click', function () {
+        let newIndex = parseInt(totalForms.value)
+        let newForm = emptyFormTemplate.replace(/__prefix__/g, newIndex)
+        container.insertAdjacentHTML('beforeend', newForm)
+        totalForms.value = newIndex + 1
+      })
+    
+      container.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('remove-medical-formset-row')) {
+          const row = e.target.closest('.medical-formset-row')
+          const deleteInput = row.querySelector('input[type="checkbox"][name$="-DELETE"]')
+          if (deleteInput) {
+            deleteInput.checked = true
+            row.style.display = 'none'
+          } else {
+            row.remove()
+            updateFormIndexes()
+          }
+        }
+      })
+    
+      function updateFormIndexes() {
+        const rows = container.querySelectorAll('.medical-formset-row')
+        let formCount = 0
+        rows.forEach((row, index) => {
+          if (row.style.display !== 'none') {
+            formCount++
+            row.querySelectorAll('input, select, textarea').forEach((input) => {
+              if (input.name) {
+                const name = input.name.replace(/-(\d+|__prefix__)-/, `-${index}-`)
+                const id = input.id.replace(/-(\d+|__prefix__)-/, `-${index}-`)
+                input.name = name
+                input.id = id
+                const label = document.querySelector(`label[for="${id.replace(index, '__prefix__')}"]`)
+                if (label) {
+                  label.setAttribute('for', id)
+                }
+              }
+            })
+          }
+        })
+        totalForms.value = formCount
+      }
+    })
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const dobInput = document.getElementById('id_date_of_birth')
+      const ageInput = document.getElementById('id_age')
+    
+      dobInput.addEventListener('change', function () {
+        const dob = new Date(this.value)
+        if (!isNaN(dob.getTime())) {
+          const today = new Date()
+          let age = today.getFullYear() - dob.getFullYear()
+          const monthDiff = today.getMonth() - dob.getMonth()
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            age--
+          }
+          ageInput.value = age
+        } else {
+          ageInput.value = ''
+        }
+      })
+    })
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const validateFile = function (event, allowedTypes, maxSizeMB, type) {
+        const file = event.target.files[0]
+        if (file) {
+          if (file.size > maxSizeMB * 1024 * 1024) {
+            Swal.fire({
+              icon: 'error',
+              title: 'File Too Large',
+              text: `The ${type} file size must be no more than ${maxSizeMB} MB.`
+            })
+            event.target.value = ''
+            return
+          }
+    
+          if (!allowedTypes.includes(file.type)) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Invalid File Type',
+              text: `Only ${allowedTypes.join(', ')} files are allowed for the ${type}.`
+            })
+            event.target.value = ''
+          }
+        }
+      }
+    
+      const profilePicInput = document.getElementById('id_profile_picture')
+      const signInput = document.getElementById('id_sign')
+      const identityDocInput = document.getElementById('id_identity_document_image')
+    
+      profilePicInput.addEventListener('change', function (event) {
+        validateFile(event, ['image/jpeg', 'image/png'], 2, 'profile picture')
+      })
+    
+      signInput.addEventListener('change', function (event) {
+        validateFile(event, ['image/jpeg', 'image/png'], 2, 'signature')
+      })
+    
+      identityDocInput.addEventListener('change', function (event) {
+        validateFile(event, ['image/jpeg', 'image/png', 'application/pdf'], 2, 'identity document')
+      })
+    })
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const mobileNumberInput = document.getElementById('id_mobile_number')
+      const relationSelect = document.getElementById('id_relation')
+      const mobileNote = document.getElementById('mobile-note')
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      const form = document.querySelector('form')
+    
+      // Initial state: relation field is 'Myself' and read-only by default
+      // But if there's already a value (e.g. after validation error), we might need to enable it
+      if (!relationSelect.value) {
+        relationSelect.value = 'Myself'
+      }
+    
+      const checkMobile = (onLoad = false) => {
+        const mobileNumber = mobileNumberInput.value
+        if (mobileNumber.length === 10) {
+          fetch('/members/check_mobile_number/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-CSRFToken': csrfToken
+            },
+            body: `mobile_number=${mobileNumber}`
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.is_registered) {
+                mobileNote.textContent = `Note: This number is already registered to ${data.registered_name}.`
+                mobileNote.style.display = 'block'
+                mobileNote.className = 'text-warning small mt-1'
+    
+                if (!onLoad) {
+                  Swal.fire({
+                    title: 'Mobile Number Registered!',
+                    text: `This mobile number is already registered to ${data.registered_name}. Do you want to add another registration with this same number?`,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, register another!',
+                    cancelButtonText: 'No, use different number'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      relationSelect.removeAttribute('disabled')
+                      relationSelect.focus()
+                      Swal.fire('Enabled!', 'Please select the relationship for this new registration.', 'success')
+                    } else {
+                      relationSelect.setAttribute('disabled', 'disabled')
+                      relationSelect.value = 'Myself'
+                      mobileNumberInput.value = ''
+                      mobileNumberInput.focus()
+                      mobileNote.style.display = 'none'
+                    }
+                  })
+                } else {
+                  // If on load and registered, enable relation field because it was already chosen or being corrected
+                  relationSelect.removeAttribute('disabled')
+                }
+              } else {
+                // New number
+                mobileNote.textContent = 'This is a new mobile number.'
+                mobileNote.style.display = 'block'
+                mobileNote.className = 'text-success small mt-1'
+                if (!onLoad) {
+                  relationSelect.value = 'Myself'
+                  relationSelect.setAttribute('disabled', 'disabled')
+                }
+              }
+            })
+            .catch((error) => {
+              console.error('Error checking mobile number:', error)
+            })
+        } else {
+          if (!onLoad) {
+            relationSelect.value = 'Myself'
+            relationSelect.setAttribute('disabled', 'disabled')
+          }
+          mobileNote.style.display = 'none'
+        }
+      }
+    
+      mobileNumberInput.addEventListener('blur', () => checkMobile(false))
+    
+      // Run once on load if number is already there
+      if (mobileNumberInput.value.length === 10) {
+        checkMobile(true)
+      } else {
+        relationSelect.setAttribute('disabled', 'disabled')
+      }
+    
+      // Ensure disabled field is enabled before submit so it's included in POST
+      form.addEventListener('submit', function () {
+        relationSelect.removeAttribute('disabled')
+      })
+    })
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.querySelector('form')
+      
+      // Function to scroll to first error field
+      function scrollToFirstError() {
+        // Look for fields with validation errors
+        const invalidFields = form.querySelectorAll('.is-invalid, .invalid-feedback.d-block')
+        const emptyRequiredFields = form.querySelectorAll('input[required]:invalid, select[required]:invalid, textarea[required]:invalid')
+        
+        let firstErrorElement = null
+        
+        // Check for Bootstrap validation errors first
+        if (invalidFields.length > 0) {
+          firstErrorElement = invalidFields[0]
+        }
+        
+        // Check for HTML5 validation errors
+        if (!firstErrorElement && emptyRequiredFields.length > 0) {
+          firstErrorElement = emptyRequiredFields[0]
+        }
+        
+        // If we found an error, scroll to it and focus
+        if (firstErrorElement) {
+          // If it's an error message, find the corresponding input field
+          let targetElement = firstErrorElement
+          if (firstErrorElement.classList.contains('invalid-feedback')) {
+            const inputId = firstErrorElement.getAttribute('for') || firstErrorElement.previousElementSibling?.id
+            if (inputId) {
+              const correspondingInput = document.getElementById(inputId) || form.querySelector(`[name="${inputId}"]`)
+              if (correspondingInput) {
+                targetElement = correspondingInput
+              }
+            }
+          }
+          
+          // Scroll to the element
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          })
+          
+          // Focus the element
+          if (targetElement.tagName === 'INPUT' || targetElement.tagName === 'SELECT' || targetElement.tagName === 'TEXTAREA') {
+            targetElement.focus()
+          }
+          
+          // Add visual highlight
+          targetElement.style.borderColor = '#dc3545'
+          setTimeout(() => {
+            targetElement.style.borderColor = ''
+          }, 3000)
+          
+          return true
+        }
+        
+        return false
+      }
+      
+      // Intercept form submission to check for errors
+      form.addEventListener('submit', function (e) {
+        // Let browser validation happen first
+        if (!form.checkValidity()) {
+          e.preventDefault()
+          e.stopPropagation()
+          
+          // Add was-validated class to show validation styles
+          form.classList.add('was-validated')
+          
+          // Scroll to first error after a short delay to let validation render
+          setTimeout(() => {
+            scrollToFirstError()
+          }, 100)
+          
+          return false
+        }
+        
+        // If form is valid, check for server-side errors (Bootstrap validation)
+        setTimeout(() => {
+          if (scrollToFirstError()) {
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }, 100)
+      })
+      
+      // Also check on page load if there are any server-side errors
+      setTimeout(() => {
+        scrollToFirstError()
+      }, 500)
+    })
+  </script>
+
+{% endblock %}

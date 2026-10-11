@@ -1,0 +1,290 @@
+<!doctype html>
+{% load static humanize %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>{% block title %}Trainer Portal - {{ gym.name|default:'ONEXIVA Gym' }}{% endblock %}</title>
+
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #eff6ff;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --dark: #0f172a;
+      --slate: #475569;
+      --border: #e2e8f0;
+      --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .portal-nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .portal-brand-logo {
+      height: 38px;
+      max-width: 160px;
+      object-fit: contain;
+    }
+    .portal-nav-link {
+      color: var(--slate);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .portal-nav-link:hover, .portal-nav-link.active {
+      color: var(--primary);
+      background: var(--primary-light);
+      text-decoration: none;
+    }
+    .trainer-badge-chip {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 30px;
+      padding: 4px 12px 4px 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    .trainer-avatar-small {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Main Container */
+    .portal-content {
+      flex: 1;
+      padding: 1.5rem 0 3rem 0;
+    }
+
+    /* Cards */
+    .portal-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .portal-card-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+    }
+    .portal-card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+    .portal-card-body {
+      padding: 1.5rem;
+    }
+
+    /* Bottom Nav on Mobile */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      z-index: 1000;
+      padding: 8px 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+    .mobile-bottom-nav-item {
+      flex: 1;
+      text-align: center;
+      color: #64748b;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .mobile-bottom-nav-item i {
+      font-size: 1.15rem;
+    }
+    .mobile-bottom-nav-item.active, .mobile-bottom-nav-item:hover {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    @media (max-width: 991px) {
+      .portal-desktop-nav { display: none; }
+      .mobile-bottom-nav { display: flex; }
+      .portal-content { padding-bottom: 5rem; }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="portal-nav py-2">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3">
+        <a href="{% url 'trainer_portal:dashboard' %}" class="d-flex align-items-center text-decoration-none">
+          {% if gym.logo %}
+            <img src="{{ gym.logo.url }}" alt="{{ gym.name }}" class="portal-brand-logo mr-2">
+          {% else %}
+            <div class="d-inline-flex align-items-center font-weight-bold text-primary mr-2" style="font-size: 1.25rem;">
+              <i class="fas fa-dumbbell mr-1"></i> {{ gym.name|default:'ONEXIVA Gym' }}
+            </div>
+          {% endif %}
+        </a>
+      </div>
+
+      <!-- Desktop Navigation Menu -->
+      <div class="portal-desktop-nav d-flex align-items-center gap-1">
+        <a href="{% url 'trainer_portal:dashboard' %}" class="portal-nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+          <i class="mdi mdi-view-dashboard-outline"></i> Dashboard
+        </a>
+        <a href="{% url 'trainer_portal:personal_training' %}" class="portal-nav-link {% if request.resolver_match.url_name == 'personal_training' %}active{% endif %}">
+          <i class="mdi mdi-dumbbell"></i> Personal Training
+        </a>
+        <a href="{% url 'trainer_portal:clients' %}" class="portal-nav-link {% if request.resolver_match.url_name == 'clients' %}active{% endif %}">
+          <i class="mdi mdi-account-group-outline"></i> My Clients
+        </a>
+        <a href="{% url 'trainer_portal:attendance' %}" class="portal-nav-link {% if request.resolver_match.url_name == 'attendance' %}active{% endif %}">
+          <i class="mdi mdi-calendar-check-outline"></i> My Attendance
+        </a>
+        <a href="{% url 'trainer_portal:profile' %}" class="portal-nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+          <i class="mdi mdi-account-cog-outline"></i> Profile
+        </a>
+      </div>
+
+      <!-- Trainer Profile, Notifications & Logout -->
+      <div class="d-flex align-items-center gap-2">
+        <!-- Notification Bell Trigger -->
+        <a class="cursor-pointer d-flex align-items-center justify-content-center mr-2" href="javascript:void(0);" onclick="openNotificationDrawer()" title="Notifications" style="text-decoration: none; position: relative;">
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: #3f3f40; display: flex; align-items: center; justify-content: center; color: #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+            <i class="mdi mdi-bell" style="font-size: 18px; color: #ffffff; line-height: 1;"></i>
+          </div>
+          {% if unread_notifications_count > 0 %}
+            <span class="count-symbol" id="navNotifCountDot" style="background-color: #dc2626; width: 10px; height: 10px; position: absolute; top: -1px; right: -1px; border-radius: 50%; border: 2px solid #ffffff;"></span>
+          {% endif %}
+        </a>
+
+        <a href="{% url 'trainer_portal:profile' %}" class="trainer-badge-chip text-decoration-none" title="Trainer Profile">
+          <img src="{% if trainer.photo %}{{ trainer.photo.url }}{% else %}{% static 'images/trainer_dp.png' %}{% endif %}" onerror="this.src='{% static 'images/trainer_dp.png' %}';" alt="{{ trainer.name }}" class="trainer-avatar-small">
+          <span class="d-none d-sm-inline font-weight-bold mr-1">{{ trainer.name }}</span>
+          <span class="badge badge-pill px-2 py-0.5" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a; font-size: 10px; font-weight: 700; text-transform: uppercase;"><i class="mdi mdi-dumbbell mr-1"></i>Trainer</span>
+        </a>
+        <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger px-3 ml-2" title="Sign Out">
+          <i class="mdi mdi-logout mr-1"></i> Logout
+        </a>
+      </div>
+    </div>
+  </nav>
+  {% include 'includes/notification_drawer.html' %}
+  <!-- Main Content Area -->
+  <main class="portal-content">
+    <div class="container">
+      {% if system_setting.maintenance_mode %}
+      <div class="alert alert-warning border shadow-sm d-flex align-items-center mb-3" style="background: #fffbeb; border-color: #fde68a !important; color: #92400e; border-radius: 10px;">
+        <i class="fas fa-tools mr-3 text-warning" style="font-size: 1.25rem;"></i>
+        <div>
+          <div class="font-weight-bold" style="font-size: 0.88rem;">Platform Maintenance Active</div>
+          <div class="small" style="color: #b45309;">{{ system_setting.maintenance_message|default:"ONEXIVAis currently undergoing scheduled platform maintenance. Some operations may be temporarily restricted." }}</div>
+        </div>
+      </div>
+      {% endif %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <div class="mobile-bottom-nav">
+    <a href="{% url 'trainer_portal:dashboard' %}" class="mobile-bottom-nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+      <i class="mdi mdi-view-dashboard-outline"></i>
+      <span>Home</span>
+    </a>
+    <a href="{% url 'trainer_portal:personal_training' %}" class="mobile-bottom-nav-item {% if request.resolver_match.url_name == 'personal_training' %}active{% endif %}">
+      <i class="mdi mdi-dumbbell"></i>
+      <span>PT Info</span>
+    </a>
+    <a href="{% url 'trainer_portal:clients' %}" class="mobile-bottom-nav-item {% if request.resolver_match.url_name == 'clients' %}active{% endif %}">
+      <i class="mdi mdi-account-group-outline"></i>
+      <span>Clients</span>
+    </a>
+    <a href="{% url 'trainer_portal:attendance' %}" class="mobile-bottom-nav-item {% if request.resolver_match.url_name == 'attendance' %}active{% endif %}">
+      <i class="mdi mdi-calendar-check-outline"></i>
+      <span>Attendance</span>
+    </a>
+    <a href="{% url 'trainer_portal:profile' %}" class="mobile-bottom-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+      <i class="mdi mdi-account-circle-outline"></i>
+      <span>Profile</span>
+    </a>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  {% include 'includes/popup_dispatcher.html' %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ system_setting.platform_name|default:"ONEXIVA" }} GYM Management Software - Login</title>
+  <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendors/bootstrap-datepicker/bootstrap-datepicker.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/customstyle.css' %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .content-wrapper {
+      background-image: url('{% static "images/login-bg.jpg" %}');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .auth-form-light {
+      background: rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      color: #ffffff;
+    }
+    .auth-form-light h4 {
+      color: #ffffff !important;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+      letter-spacing: -0.01em;
+    }
+    .auth-form-light h6 {
+      color: rgba(255, 255, 255, 0.9) !important;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    }
+    .login-label {
+      color: #ffffff !important;
+      font-weight: 600 !important;
+      font-size: 0.88rem !important;
+      letter-spacing: 0.02em;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+      margin-bottom: 0.35rem;
+      display: inline-block;
+    }
+    .form-control {
+      background: rgba(255, 255, 255, 0.9) !important;
+      border: 1px solid rgba(255, 255, 255, 0.6) !important;
+      color: #0f172a !important;
+      font-weight: 500;
+      border-radius: 8px !important;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      background: #ffffff !important;
+      box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.35) !important;
+      border-color: #0d6efd !important;
+    }
+    .form-control::placeholder {
+      color: #64748b !important;
+    }
+    .input-group-text {
+      background: rgba(255, 255, 255, 0.9) !important;
+      border: 1px solid rgba(255, 255, 255, 0.6) !important;
+      border-left: none !important;
+      color: #475569 !important;
+      border-top-right-radius: 8px !important;
+      border-bottom-right-radius: 8px !important;
+    }
+    .auth-form-btn {
+      background: #4599cd !important;
+      border-color: #4599cd !important;
+      border-radius: 8px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.03em;
+      transition: all 0.25s ease;
+    }
+    .auth-form-btn:hover {
+      background: #3685b5 !important;
+      border-color: #3685b5 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(69, 153, 205, 0.45);
+    }
+    .form-check-label {
+      color: #ffffff !important;
+      font-weight: 500;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    }
+    .auth-link {
+      color: #93c5fd !important;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    }
+    .auth-link:hover {
+      color: #ffffff !important;
+      text-decoration: underline;
+    }
+    .btn-back-web {
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(6px);
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-back-web:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff !important;
+      border-color: #ffffff;
+    }
+    .logo-img {
+      max-width: 250px;
+      height: auto;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Multiple Accounts Alert */
+    .multiple-accounts-alert {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1.5px solid #ffab2d;
+      border-left: 4px solid #f59e0b !important;
+      border-radius: 8px;
+      color: #1e293b;
+      padding: 12px 14px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+    .multiple-accounts-alert .alert-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .multiple-accounts-alert p {
+      margin: 4px 0 0 0;
+      font-size: 0.82rem;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    /* Account Selection Cards */
+    .account-select-group {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .account-select-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      margin-bottom: 0;
+      user-select: none;
+    }
+    .account-select-card:hover {
+      background: #ffffff;
+      border-color: #4599cd;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+    .account-select-card.selected,
+    .account-select-card:has(input[type="radio"]:checked) {
+      background: #ffffff !important;
+      border-color: #4599cd !important;
+      box-shadow: 0 0 0 2px rgba(69, 153, 205, 0.4), 0 6px 18px rgba(69, 153, 205, 0.2) !important;
+    }
+    .account-select-card input[type="radio"] {
+      accent-color: #4599cd;
+      width: 17px;
+      height: 17px;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+    .account-name-text {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 0.92rem;
+      line-height: 1.25;
+    }
+    .account-extra-text {
+      font-size: 0.77rem;
+      color: #64748b;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* Role Badge Buttons (Styled to Match ONEXIVATheme) */
+    .account-role-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border-radius: 6px;
+      color: #ffffff !important;
+      background: #4599cd;
+      background: linear-gradient(135deg, #4599cd 0%, #2b78a8 100%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 6px rgba(69, 153, 205, 0.38);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      text-decoration: none;
+      line-height: 1.2;
+    }
+    .account-role-btn i {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+    .account-role-btn:hover {
+      box-shadow: 0 4px 10px rgba(69, 153, 205, 0.55);
+      filter: brightness(1.06);
+    }
+    /* Role-specific variations strictly aligned with brand palette */
+    .account-role-btn.role-member {
+      background: linear-gradient(135deg, #4599cd 0%, #2475a8 100%);
+      box-shadow: 0 2px 7px rgba(69, 153, 205, 0.4);
+    }
+    .account-role-btn.role-trainer {
+      background: linear-gradient(135deg, #00cccd 0%, #1789d4 100%);
+      box-shadow: 0 2px 7px rgba(0, 204, 205, 0.4);
+    }
+    .account-role-btn.role-gym-admin,
+    .account-role-btn.role-admin {
+      background: linear-gradient(135deg, #ffab2d 0%, #f59e0b 100%);
+      box-shadow: 0 2px 7px rgba(245, 158, 11, 0.4);
+    }
+    .account-role-btn.role-staff {
+      background: linear-gradient(135deg, #5e50f9 0%, #4599cd 100%);
+      box-shadow: 0 2px 7px rgba(94, 80, 249, 0.4);
+    }
+  </style>
+</head>
+
+<body >
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth">
+        <div class="row flex-grow">
+          <div class="col-11 col-sm-8 col-md-6 col-lg-4 mx-auto">
+            <div class="auth-form-light text-left p-4 p-sm-5">
+              <div class="brand-logo text-center">
+                <img src="{% static 'images/onexiva-logo.png' %}" alt="ONEXIVA" class="logo-img" style="max-height: 75px; width: auto; object-fit: contain;">
+              </div>
+              <h4 class="text-center font-weight-bold">Welcome Back !</h4>
+              <h6 class="font-weight-light text-center">Sign in to continue to {{ system_setting.platform_name|default:"ONEXIVA" }}.</h6>
+              {% if messages %}
+                <div class="alert alert-danger" role="alert">
+                  {% for message in messages %}
+                    {{ message }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+              {% if has_multiple_accounts %}
+                <div class="multiple-accounts-alert" role="alert">
+                  <div class="alert-title">
+                    <i class="mdi mdi-account-multiple-outline" style="font-size: 1.25rem;"></i>
+                    <span>Multiple Accounts Found</span>
+                  </div>
+                  <p>The mobile number <strong>{{ entered_identifier }}</strong> is associated with multiple accounts. Please select your account below to proceed:</p>
+                </div>
+              {% endif %}
+
+              <form class="pt-2" id="login-form" method="post">
+                {% csrf_token %}
+                
+                <div class="form-group mb-3">
+                  <label for="identifier" class="login-label">Login Identifier</label>
+                  <input type="text" class="form-control form-control-lg" id="identifier" name="identifier" 
+                         value="{{ entered_identifier|default:'' }}" 
+                         placeholder="Mobile, Email, or Username" required>
+                </div>
+
+                {% if has_multiple_accounts %}
+                <div class="form-group mb-3">
+                  <label class="login-label">Select Your Account</label>
+                  <div class="account-select-group">
+                    {% for acc in multiple_candidates %}
+                    <label class="account-select-card {% if forloop.first %}selected{% endif %}" onclick="selectAccount('{{ acc.username }}')">
+                      <div class="d-flex align-items-center">
+                        <input type="radio" name="selected_username" value="{{ acc.username }}" id="acc_{{ forloop.counter }}" {% if forloop.first %}checked{% endif %}>
+                        <div>
+                          <div class="account-name-text">{{ acc.name }}</div>
+                          <div class="account-extra-text">{{ acc.extra|default:acc.username }}</div>
+                        </div>
+                      </div>
+                      <span class="account-role-btn role-{{ acc.account_type|lower|slugify }}">
+                        {% if acc.account_type|lower == 'member' %}
+                          <i class="mdi mdi-account"></i>
+                        {% elif acc.account_type|lower == 'trainer' %}
+                          <i class="mdi mdi-dumbbell"></i>
+                        {% elif 'admin' in acc.account_type|lower %}
+                          <i class="mdi mdi-shield-crown-outline"></i>
+                        {% else %}
+                          <i class="mdi mdi-shield-account"></i>
+                        {% endif %}
+                        {{ acc.account_type }}
+                      </span>
+                    </label>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% endif %}
+
+                <div class="form-group mb-3">
+                  <label for="password" class="login-label">Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Password" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="toggle-password" style="cursor: pointer;">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4">
+                  <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn shadow-sm" type="submit">SIGN IN</button>
+                </div>
+                <div class="my-3 d-flex justify-content-between align-items-center">
+                  <div class="form-check m-0">
+                    <label class="form-check-label">
+                      <input type="checkbox" class="form-check-input"> Keep me signed in </label>
+                  </div>
+                  <a href="#" class="auth-link" id="forgot-password-link">Forgot password?</a>
+                </div>
+                <div class="text-center mt-4">
+                  <a href="/" class="btn btn-back-web btn-block py-2">Back to Website</a>
+                </div>
+              </form>
+            </div>
+              
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- plugins:js -->
+  <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script>
+  <!-- endinject -->
+  <!-- inject:js -->
+  <script src="{% static 'js/off-canvas.js' %}"></script>
+  <script src="{% static 'js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'js/misc.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+  function selectAccount(username) {
+      var radio = document.querySelector('input[name="selected_username"][value="' + username + '"]');
+      if (radio) {
+          radio.checked = true;
+          document.querySelectorAll('.account-select-card').forEach(function(card) {
+              card.classList.remove('selected');
+          });
+          var parentCard = radio.closest('.account-select-card');
+          if (parentCard) {
+              parentCard.classList.add('selected');
+          }
+      }
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll('input[name="selected_username"]').forEach(function(r) {
+          if (r.checked) {
+              var card = r.closest('.account-select-card');
+              if (card) card.classList.add('selected');
+          }
+          r.addEventListener('change', function() {
+              document.querySelectorAll('.account-select-card').forEach(function(c) {
+                  c.classList.remove('selected');
+              });
+              var card = this.closest('.account-select-card');
+              if (card) card.classList.add('selected');
+          });
+      });
+  });
+
+  document.querySelector("#login-form").addEventListener("submit", function(){
+    document.querySelector("button[type=submit]").disabled = true;
+  });
+
+  window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+    document.getElementById('toggle-password').addEventListener('click', function () {
+        var passwordInput = document.getElementById('password');
+        var icon = this.querySelector('i');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    document.getElementById('forgot-password-link').addEventListener('click', function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Reset Password',
+            text: 'Enter your registered email address or username to receive a password reset link:',
+            input: 'text',
+            inputPlaceholder: 'name@example.com or username',
+            showCancelButton: true,
+            confirmButtonText: 'Send Reset Email',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#1e40af',
+            showLoaderOnConfirm: true,
+            preConfirm: function(identifier) {
+                if (!identifier || !identifier.trim()) {
+                    Swal.showValidationMessage('Please enter your email or username');
+                    return false;
+                }
+                var formData = new URLSearchParams();
+                formData.append('identifier', identifier.trim());
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+                return fetch("{% url 'forgot_password_api' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString()
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    if (!data.success) {
+                        throw new Error(data.message || 'Failed to send reset email.');
+                    }
+                    return data;
+                })
+                .catch(function(error) {
+                    Swal.showValidationMessage(error.message);
+                });
+            },
+            allowOutsideClick: function() { return !Swal.isLoading(); }
+        }).then(function(result) {
+            if (result.isConfirmed && result.value) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Reset Email Sent!',
+                    text: result.value.message,
+                    confirmButtonText: 'Back to Login',
+                    confirmButtonColor: '#1e40af'
+                });
+            }
+        });
+    });
+  </script>
+  <!-- endinject -->
+</body>
+
+</html>

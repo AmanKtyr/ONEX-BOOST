@@ -1,0 +1,52 @@
+{% extends "emails/base_email.html" %}
+
+{% block email_content %}
+  <div class="greeting">Welcome to {{ platform_name }}! 👋</div>
+  <p class="content-text">
+    We are thrilled to confirm that <strong>{{ gym.name }}</strong> has been officially registered and onboarded to the {{ platform_name }} ecosystem.
+  </p>
+
+  <div class="credential-card">
+    <div style="font-size: 14px; font-weight: 700; color: #1e40af; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+      Gym Profile Summary
+    </div>
+    <div class="credential-row">
+      <span class="credential-label">Facility Name</span>
+      <span class="credential-value" style="font-family: inherit;">{{ gym.name }}</span>
+    </div>
+    <div class="credential-row">
+      <span class="credential-label">Gym Identifier</span>
+      <span class="credential-value">{{ gym.gym_id }}</span>
+    </div>
+    {% if gym.city %}
+    <div class="credential-row">
+      <span class="credential-label">Location</span>
+      <span class="credential-value" style="font-family: inherit;">{{ gym.city }}{% if gym.state %}, {{ gym.state }}{% endif %}</span>
+    </div>
+    {% endif %}
+    {% if gym.phone %}
+    <div class="credential-row">
+      <span class="credential-label">Contact Phone</span>
+      <span class="credential-value" style="font-family: inherit;">{{ gym.phone }}</span>
+    </div>
+    {% endif %}
+    <div class="credential-row">
+      <span class="credential-label">Platform Status</span>
+      <span class="credential-value" style="color: #15803d; border-color: #bbf7d0; background: #f0fdf4;">ACTIVE</span>
+    </div>
+  </div>
+
+  <p class="content-text">
+    <strong>What's Next?</strong><br>
+    Your dedicated administrators can now log in, configure your membership plans, enroll members, track live attendance, and manage seamless billing.
+  </p>
+
+  <div style="text-align: center; margin: 28px 0;">
+    <a href="{{ login_url }}" class="btn-action">Access Gym Console &rarr;</a>
+  </div>
+
+  <div class="security-notice">
+    <strong>Need assistance getting started?</strong><br>
+    Our technical onboarding team is here to assist you with WhatsApp integration, QR check-in setup, and data migration. Reach out at <a href="mailto:{{ support_email }}" style="color: #92400e; font-weight: 700;">{{ support_email }}</a>.
+  </div>
+{% endblock %}

@@ -1,0 +1,600 @@
+{% block content %}
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'success' %}
+      <div id="success-modal" class="modal modal-open">
+        <div class="modal-box text-center">
+          <h3 class="font-bold text-2xl">Registration Successful!</h3>
+          <p class="py-4 text-lg">{{ message }}</p>
+          <div class="modal-action justify-center">
+            <a href="/" class="btn btn-primary">Go to Homepage</a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('success-modal');
+    if (modal) {
+      // No need to manually open, modal-open class does it.
+      // To close it, you might add a close button inside the modal
+      // and add an event listener to remove the modal-open class.
+    }
+  });
+</script>
+{% comment %} {% load static %} {% endcomment %}
+
+<!-- Include DaisyUI via Tailwind CDN (Correct Way) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    daisyui: {
+      themes: ["light"],
+    },
+  }
+</script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+
+<div class="min-h-screen bg-gradient-to-br from-base-100 to-base-200 py-8 px-4">
+  <div class="container mx-auto max-w-6xl">
+    
+    <!-- Progress Indicator -->
+    <div class="mb-8 hidden md:block">
+      <ul class="steps steps-horizontal w-full">
+        <li class="step step-primary">Event Info</li>
+        <li class="step step-primary">Participant Details</li>
+        <li class="step">Health & Safety</li>
+        <li class="step">Payment & Confirm</li>
+        <li class="step">Complete</li>
+      </ul>
+    </div>
+
+    <!-- Header -->
+    <div class="text-center mb-10">
+      <h1 class="text-4xl md:text-5xl font-bold mb-3">Event Registration</h1>
+      <p class="text-lg opacity-80">Complete your registration for <b>{{ event.event_name }}</b></p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Event Summary Card (Left Sidebar) -->
+      <div class="lg:col-span-1">
+        <div class="card bg-base-100 shadow-xl sticky top-8">
+          {% if event.banner_image %}
+          <figure>
+            <img src="{{ event.banner_image.url }}" alt="{{ event.event_name }} banner" class="max-h-48 w-full object-cover">
+          </figure>
+          {% endif %}
+          <div class="card-body">
+            <h2 class="card-title text-2xl mb-4">Event Details</h2>
+            
+            <!-- Event Badge -->
+            <div class="mb-6">
+              <span class="badge badge-lg badge-primary">
+                {{ event.get_fee_display }} Event
+              </span>
+              <span class="badge badge-lg badge-outline ml-2">{{ event.get_event_type_display }}</span>
+            </div>
+            
+            <!-- Event Info List -->
+            <div class="space-y-4">
+              <div class="flex items-start gap-3">
+                <div class="h-5 w-5 text-primary mt-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold">Date & Time</p>
+                  <p>{{ event.start_date|date:"F d, Y" }} • {{ event.start_date|date:"H:i A" }}</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start gap-3">
+                <div class="h-5 w-5 text-primary mt-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold">Address</p>
+                  <p>{{ event.address }}</p>
+                  <p class="text-sm opacity-70 mt-1">Organized by {{ event.gym.name }}</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start gap-3">
+                <div class="h-5 w-5 text-primary mt-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold">Availability</p>
+                  <div class="flex items-center gap-2 mt-1">
+                    <div class="flex-1 h-2 bg-base-200 rounded-full overflow-hidden">
+                      {% if available_seats %}
+                      <div class="h-full bg-primary rounded-full" style="width: {% widthratio available_seats event.max_participants 100 %}%"></div>
+                      {% endif %}
+                    </div>
+                    <span class="font-bold">{{ available_seats }} / {{ event.max_participants }} seats</span>
+                  </div>
+                </div>
+              </div>
+              
+              {% if event.fee == 'Paid' %}
+              <div class="flex items-start gap-3">
+                <div class="h-5 w-5 text-primary mt-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold">Registration Fee</p>
+                  <p class="text-2xl font-bold">₹{{ event.fee_amount }}</p>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+            
+            <!-- Important Note -->
+            <div class="alert alert-info mt-6">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 shrink-0">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span class="text-sm">Registration confirmation will be sent via email & SMS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Registration Form (Main Content) -->
+      <div class="lg:col-span-2">
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+          {% csrf_token %}
+          
+          {% if form.errors %}
+            <div class="alert alert-error">
+              <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span>Please correct the errors below.</span>
+            </div>
+          {% endif %}
+          
+          <!-- Participant Information Section -->
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5 text-primary">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold">Participant Information</h3>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Full Name <span class="text-error">*</span></span>
+                  </label>
+                  {{ form.full_name }}
+                  {% for error in form.full_name.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Mobile Number <span class="text-error">*</span></span>
+                  </label>
+                  {{ form.mobile_number }}
+                  {% for error in form.mobile_number.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Email Address</span>
+                  </label>
+                  {{ form.email }}
+                  {% for error in form.email.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Gender</span>
+                  </label>
+                  <div class="flex gap-4">
+                    {% for radio in form.gender %}
+                    <label class="cursor-pointer label justify-start gap-2">
+                      {{ radio.tag }}
+                      <span class="label-text">{{ radio.choice_label }}</span>
+                    </label>
+                    {% endfor %}
+                  </div>
+                  {% for error in form.gender.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Date of Birth</span>
+                  </label>
+                  {{ form.dob }}
+                  {% for error in form.dob.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Fitness Background Section -->
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5 text-secondary">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold">Fitness Background</h3>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Are you a gym member? <span class="text-error">*</span></span>
+                  </label>
+                  <div class="flex gap-4">
+                    {% for radio in form.is_gym_member %}
+                    <label class="cursor-pointer label justify-start gap-2">
+                      {{ radio.tag }}
+                      <span class="label-text">{{ radio.choice_label }}</span>
+                    </label>
+                    {% endfor %}
+                  </div>
+                  {% for error in form.is_gym_member.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Current Gym Name</span>
+                  </label>
+                  {{ form.current_gym_name }}
+                  {% for error in form.current_gym_name.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Fitness Level</span>
+                  </label>
+                  {{ form.fitness_level }}
+                  {% for error in form.fitness_level.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Years of Training</span>
+                  </label>
+                  {{ form.years_of_training }}
+                  {% for error in form.years_of_training.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Health & Emergency Section -->
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5 text-accent">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold">Health & Emergency Information</h3>
+              </div>
+              
+              <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text font-semibold">Emergency Contact Name</span>
+                    </label>
+                    {{ form.emergency_contact_name }}
+                    {% for error in form.emergency_contact_name.errors %}
+                      <div class="text-error text-sm mt-1">{{ error }}</div>
+                    {% endfor %}
+                  </div>
+                  
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text font-semibold">Emergency Contact Number</span>
+                    </label>
+                    {{ form.emergency_contact_number }}
+                    {% for error in form.emergency_contact_number.errors %}
+                      <div class="text-error text-sm mt-1">{{ error }}</div>
+                    {% endfor %}
+                  </div>
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Medical Conditions</span>
+                  </label>
+                  {{ form.medical_conditions }}
+                  {% for error in form.medical_conditions.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+                
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Injuries (if any)</span>
+                  </label>
+                  {{ form.injuries }}
+                  {% for error in form.injuries.errors %}
+                    <div class="text-error text-sm mt-1">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+         <!-- Payment Section (Conditional) -->
+{% if event.fee_amount %}
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="h-10 w-10 rounded-full bg-warning/10 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5 text-warning">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold">Payment Information</h3>
+    </div>
+    
+    <!-- Amount Display -->
+    <div class="bg-base-200 rounded-lg p-6 mb-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <p class="text-lg font-semibold">Registration Fee</p>
+          <p class="text-sm opacity-70">Includes event participation</p>
+        </div>
+        <p class="text-3xl font-bold text-primary">₹{{ event.fee_amount }}</p>
+      </div>
+    </div>
+    
+    <!-- Form and QR Code Side by Side -->
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Form Section (Left) -->
+                <div class="lg:w-2/3">
+                  <div class="space-y-4">
+                    <div class="form-control">
+                      <label class="label">
+                        <span class="label-text font-semibold">Payment Method <span class="text-error">*</span></span>
+                      </label>
+                      {{ form.payment_method }}
+                      {% for error in form.payment_method.errors %}
+                        <div class="text-error text-sm mt-1">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                    
+                    <div class="form-control">
+                      <label class="label">
+                        <span class="label-text font-semibold">Transaction ID/Reference</span>
+                      </label>
+                      {{ form.transaction_id }}
+                      <label class="label">
+                        <span class="label-text-alt">Required for online payments</span>
+                      </label>
+                      {% for error in form.transaction_id.errors %}
+                        <div class="text-error text-sm mt-1">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                    
+                    <!-- Additional Payment Details -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div class="form-control">
+                        <label class="label">
+                          <span class="label-text font-semibold">Payment Amount (₹)</span>
+                        </label>
+                        {{ form.payment_amount }}
+                        {% for error in form.payment_amount.errors %}
+                          <div class="text-error text-sm mt-1">{{ error }}</div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                          <span class="label-text font-semibold">Payment Screenshot</span>
+                        </label>
+                        {{ form.payment_screenshot }}
+                        {% for error in form.payment_screenshot.errors %}
+                          <div class="text-error text-sm mt-1">{{ error }}</div>
+                        {% endfor %}
+                      </div>
+                    
+                    <!-- Payment Instructions -->
+                    <div class="alert alert-info mt-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <div>
+                        <h4 class="font-bold">Payment Instructions</h4>
+                        <ul class="text-sm list-disc pl-4 mt-1">
+                          <li>For online payments, please keep your transaction ID ready</li>
+                          <li>Cash payments can be made at the gym reception</li>
+                          <li>Bank transfers should include your name as reference</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+      
+      <!-- QR Code Section (Right) -->
+      {% if event.payment_qr_code %}
+      <div class="lg:w-1/3">
+        <div class="card bg-base-200 border-2 border-base-300">
+          <div class="card-body items-center text-center">
+            <h4 class="card-title text-lg font-semibold mb-2">Scan to Pay via UPI</h4>
+            <p class="text-sm opacity-70 mb-4">Use any UPI app to scan</p>
+            
+            <!-- QR Code Display -->
+            <div class="p-4 bg-white rounded-lg shadow-sm mb-4">
+              <img src="{{ event.payment_qr_code.url }}" 
+                   alt="Payment QR Code" 
+                   class="w-48 h-48 object-contain">
+            </div>
+            
+            <!-- Payment Details -->
+            <div class="space-y-2 text-sm w-full">
+              <div class="flex justify-between">
+                <span class="opacity-70">Amount:</span>
+                <span class="font-semibold">₹{{ event.fee_amount }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="opacity-70">UPI ID:</span>
+                <span class="font-mono text-xs">{{ event.upi_id|default:"gym@upi" }}</span>
+              </div>
+            </div>
+            
+            
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    
+    <!-- Note for non-QR payments -->
+    {% if not event.payment_qr_code %}
+    <div class="mt-6">
+      <div class="alert alert-warning">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 h-6 w-6">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+        <span class="text-sm">Please contact the gym directly for payment details and account information.</span>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <div class="alert alert-success">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span>This is a free event. No payment is required.</span>
+    </div>
+  </div>
+</div>
+{% endif %}
+          
+          <!-- Consent Section -->
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+              <h3 class="text-xl font-bold mb-4">Terms & Consent</h3>
+              
+              <div class="space-y-4">
+                <div class="form-control">
+                  <label class="cursor-pointer label justify-start gap-3">
+                    <input type="checkbox" name="consent" required class="checkbox checkbox-primary" />
+                    <span class="label-text">
+                      I confirm that I am medically fit and participate at my own risk. I understand the physical demands of this event and agree to follow all safety instructions.
+                    </span>
+                  </label>
+                </div>
+                
+                <div class="form-control">
+                  <label class="cursor-pointer label justify-start gap-3">
+                    <input type="checkbox" name="terms" required class="checkbox checkbox-primary" />
+                    <span class="label-text">
+                      I agree to the <a href="#" class="link link-primary">Terms & Conditions</a> and <a href="#" class="link link-primary">Liability Waiver</a>. I understand that my registration is non-refundable and subject to event policies.
+                    </span>
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Hidden System Fields -->
+              <input type="hidden" name="event_id" value="{{ event.id }}">
+              <input type="hidden" name="organizer_gym_id" value="{{ event.gym.id }}">
+              <input type="hidden" name="registration_source" value="Public">
+              <input type="hidden" name="status" value="Registered">
+              
+              <!-- Submit Button -->
+              <div class="card-actions justify-center mt-6">
+                <button type="submit" class="btn btn-primary btn-lg px-12">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Complete Registration
+                </button>
+              </div>
+              
+              <p class="text-center text-sm opacity-70 mt-4">
+                By clicking "Complete Registration", you agree to our terms and confirm all information is accurate.
+              </p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Footer Note -->
+    <div class="mt-8 text-center">
+      <p class="text-sm opacity-70">
+        Need help? Contact {{ event.gym.name }} at <a href="mailto:{{ event.gym.email }}" class="link link-primary">{{ event.gym.email }}</a> or call {{ event.gym.phone }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Custom CSS fixes -->
+<style>
+  /* Fix for SVG icons */
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  /* Fix for form spacing */
+  .form-control {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Fix for label alignment */
+  .label {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  /* Fix for responsive spacing */
+  @media (max-width: 768px) {
+    .grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Ensure proper font rendering */
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+</style>
+
+{% endblock %}

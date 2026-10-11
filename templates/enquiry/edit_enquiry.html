@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+{% load static %}
+
+{% block title %}Edit Enquiry - ONEXIVAGYM{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<style>
+  .form-section-fieldset {
+    background: #ffffff;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px;
+    padding: 1.5rem !important;
+    margin-bottom: 1.75rem;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .form-section-fieldset:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+  .form-section-legend {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e40af;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 30px;
+    padding: 0.35rem 1rem !important;
+    width: auto !important;
+    float: none;
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .input-group-text {
+    background-color: #f8fafc;
+    border-color: #ced4da;
+    color: #64748b;
+  }
+  .form-control:focus + .input-group-text,
+  .input-group-text:focus-within {
+    border-color: #86b7fe;
+  }
+  .form-label {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #334155;
+    margin-bottom: 0.35rem;
+  }
+  .helper-text {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'enquiry_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-comment-question-outline mdi-18px"></i> Enquiries
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-pencil-circle-outline mdi-18px"></i> Edit Enquiry
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card shadow-sm border-0">
+        <!-- Header -->
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div>
+                <h4 class="mb-1 font-weight-bold text-white d-flex align-items-center">
+                    <i class="mdi mdi-pencil-box-outline mr-2 me-2"></i> Edit Enquiry
+                </h4>
+                <p class="mb-0 text-white-50 small">Update enquiry status, prospect contact information, and follow-up timeline.</p>
+            </div>
+            <a href="{% url 'enquiry_list' %}" class="btn btn-light btn-sm mt-2 mt-md-0 font-weight-bold text-primary shadow-sm d-flex align-items-center">
+                <i class="mdi mdi-arrow-left mr-1 me-1"></i> Back to Enquiries
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+            <form method="post" class="needs-validation" id="editEnquiryForm" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger shadow-sm border-0 d-flex align-items-start mb-4">
+                        <i class="mdi mdi-alert-circle mr-2 me-2 mt-1 fs-5"></i>
+                        <div>
+                            <strong>Please correct the following errors:</strong>
+                            <ul class="mb-0 mt-1 pl-3">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- SECTION 1: Personal & Contact Info -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-account-circle-outline"></i> Personal & Contact Info
+                    </legend>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-account-outline"></i></span>
+                                {{ form.name }}
+                            </div>
+                            <div class="helper-text">Enter prospect's legal full name.</div>
+                            {% for error in form.name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="id_mobile_number" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text font-weight-bold">+91</span>
+                                {{ form.mobile_number }}
+                            </div>
+                            <div class="helper-text">10-digit number used for calls and automated WhatsApp reminders.</div>
+                            {% for error in form.mobile_number.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-email-outline"></i></span>
+                                {{ form.email }}
+                            </div>
+                            <div class="helper-text">Optional. Used for membership brochures and receipts.</div>
+                            {% for error in form.email.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="id_address" class="form-label">Residential Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-map-marker-outline"></i></span>
+                                {{ form.address }}
+                            </div>
+                            <div class="helper-text">Local locality, apartment name or street address.</div>
+                            {% for error in form.address.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-gender-male-female"></i></span>
+                                {{ form.gender }}
+                            </div>
+                            <div class="helper-text">Gender category.</div>
+                            {% for error in form.gender.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="id_age" class="form-label">Age <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-numeric"></i></span>
+                                {{ form.age }}
+                            </div>
+                            <div class="helper-text">Prospect's age in years.</div>
+                            {% for error in form.age.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="id_source" class="form-label">Lead Source</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-bullhorn-outline"></i></span>
+                                {{ form.source }}
+                            </div>
+                            <div class="helper-text">How the prospect heard about our gym.</div>
+                            {% for error in form.source.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- SECTION 2: Enquiry & Follow-up Details -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-calendar-clock"></i> Enquiry & Follow-up Details
+                    </legend>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_interested_in" class="form-label">Query For / Interested In</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-dumbbell"></i></span>
+                                {{ form.interested_in }}
+                            </div>
+                            <div class="helper-text">Workout goal, class, or service the prospect is exploring.</div>
+                            {% for error in form.interested_in.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="id_next_follow_up_date" class="form-label">Next Follow-up Date <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                {{ form.next_follow_up_date }}
+                            </div>
+                            <div class="helper-text">Scheduled date to reach back out or follow up via call/WhatsApp.</div>
+                            {% for error in form.next_follow_up_date.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <label for="id_enquiry_note" class="form-label">Remark / Consultation Notes</label>
+                            {{ form.enquiry_note }}
+                            <div class="helper-text">Prospect goals, budget, trial workout feedback, or specific requirements.</div>
+                            {% for error in form.enquiry_note.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Form Action Buttons -->
+                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a href="{% url 'enquiry_list' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-semibold me-2 mb-2 mb-sm-0">
+                        <i class="mdi mdi-close mr-1 me-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill font-weight-bold shadow-sm" id="submitBtn">
+                        <i class="mdi mdi-check-circle-outline mr-1 me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+  'use strict'
+  const forms = document.querySelectorAll('.needs-validation')
+  Array.from(forms).forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.querySelector('form')
+  
+  function scrollToFirstError() {
+    const invalidFields = form.querySelectorAll('.is-invalid, .text-danger.small, .invalid-feedback.d-block')
+    const emptyRequiredFields = form.querySelectorAll('input[required]:invalid, select[required]:invalid, textarea[required]:invalid')
+    
+    let firstErrorElement = null
+    
+    if (invalidFields.length > 0) {
+      firstErrorElement = invalidFields[0]
+    }
+    
+    if (!firstErrorElement && emptyRequiredFields.length > 0) {
+      firstErrorElement = emptyRequiredFields[0]
+    }
+    
+    if (firstErrorElement) {
+      let targetElement = firstErrorElement
+      if (firstErrorElement.classList.contains('invalid-feedback') || firstErrorElement.classList.contains('text-danger')) {
+        const prevElement = firstErrorElement.previousElementSibling
+        if (prevElement && (prevElement.tagName === 'INPUT' || prevElement.tagName === 'SELECT' || prevElement.tagName === 'TEXTAREA')) {
+          targetElement = prevElement
+        } else {
+          const parentDiv = firstErrorElement.closest('.mb-3')
+          if (parentDiv) {
+            const inputField = parentDiv.querySelector('input, select, textarea')
+            if (inputField) {
+              targetElement = inputField
+            }
+          }
+        }
+      }
+      
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+      
+      if (targetElement.tagName === 'INPUT' || targetElement.tagName === 'SELECT' || targetElement.tagName === 'TEXTAREA') {
+        targetElement.focus()
+      }
+      
+      targetElement.style.borderColor = '#dc3545'
+      setTimeout(() => {
+        targetElement.style.borderColor = ''
+      }, 3000)
+      
+      return true
+    }
+    
+    return false
+  }
+  
+  form.addEventListener('submit', function (e) {
+    if (!form.checkValidity()) {
+      e.preventDefault()
+      e.stopPropagation()
+      form.classList.add('was-validated')
+      setTimeout(() => {
+        scrollToFirstError()
+      }, 100)
+      return false
+    }
+    
+    setTimeout(() => {
+      if (scrollToFirstError()) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }, 100)
+  })
+  
+  setTimeout(() => {
+    scrollToFirstError()
+  }, 500)
+})
+</script>
+{% endblock %}

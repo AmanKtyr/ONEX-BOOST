@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Trainer Attendance - Check In/Out{% endblock %}
+
+{% block content %}
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+           <i class="mdi mdi-account-tie-outline mdi-18px"></i> Trainer Attendance  
+        </li>
+    </ol>
+</nav> 
+
+<div class="row">
+    <!-- Live Stats Cards -->
+    <div class="col-xl-3 col-sm-6">
+        <div class="card bg-success-soft ">
+            <div class="card-body d-flex align-items-center">
+                <div>
+                    <h3 class="mb-0">{{ checked_in_today }}</h3>
+                    <p class="mb-0">Checked In Today</p>
+                </div>
+                <i class="mdi mdi-account-check-outline mdi-48px ms-auto opacity-75"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+        <div class="card bg-info-soft ">
+            <div class="card-body d-flex align-items-center">
+                <div>
+                    <h3 class="mb-0">{{ currently_inside }}</h3>
+                    <p class="mb-0">Currently Inside</p>
+                </div>
+                <i class="mdi mdi-clipboard-account-outline mdi-48px ms-auto opacity-75"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+        <div class="card bg-warning-soft ">
+            <div class="card-body d-flex align-items-center">
+                <div>
+                    <h3 class="mb-0">{{ late_checkouts|default:"0" }}</h3>
+                    <p class="mb-0">Late Checkouts</p>
+                </div>
+                <i class="mdi mdi-clock-alert-outline mdi-48px ms-auto opacity-75"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+        <div class="card bg-primary-soft ">
+            <div class="card-body d-flex align-items-center">
+                <div>
+                    <h3 class="mb-0">{{ total_trainers }}</h3>
+                    <p class="mb-0">Total Trainers</p>
+                </div>
+                <i class="mdi mdi-account-group-outline mdi-48px ms-auto opacity-75"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+<!-- Main Attendance Card -->
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Trainer Attendance</h4>
+            <a href="{% url 'attendance:qr_code' %}" target="_blank" class="btn btn-light">
+                <i class="mdi mdi-qrcode-scan text-dark"></i> Show QR Code
+            </a>
+            <a href="{% url 'attendance:attendance_report' %}" class="btn btn-light btn-sm">
+                <i class="mdi mdi-file-chart-outline"></i> View Reports
+            </a>
+        </div>
+        <div class="card-body">
+            <!-- Unified Real-Time Search & Quick ID Action Toolbar -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="filter-card-box">
+                        <div class="row g-2 align-items-end">
+                            <!-- 1. Real-Time Auto-Search -->
+                            <div class="col-xl-6 col-lg-6 col-md-12">
+                                <label for="trainer_search" class="filter-label">Search Trainers</label>
+                                <div class="filter-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
+                                    <i class="mdi mdi-magnify filter-search-icon" style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 17px; line-height: 1; z-index: 4; margin: 0;"></i>
+                                    <input 
+                                        type="text" 
+                                        id="trainer_search"
+                                        class="form-control filter-control filter-search-input" 
+                                        name="q" 
+                                        placeholder="Search by name or phone..." 
+                                        value="{{ request.GET.q|default:'' }}"
+                                        autocomplete="off"
+                                        style="padding-left: 35px; padding-right: 32px;"
+                                    >
+                                    <button type="button" class="filter-clear-btn" id="clearTrainerSearchBtn" title="Clear search text" style="position: absolute; right: 9px; top: 50%; transform: translateY(-50%); background: transparent; border: none; outline: none; box-shadow: none; color: #9ca3af; font-size: 17px; cursor: pointer; padding: 0; line-height: 1; z-index: 5; {% if not request.GET.q %}display: none;{% endif %}">
+                                        <i class="mdi mdi-close-circle"></i>
+                                    </button>
+                                    <div class="filter-spinner" id="trainerSearchSpinner"></div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Quick Scan & Manual ID Check-In/Out -->
+                            <div class="col-xl-6 col-lg-6 col-md-12">
+                                <label for="quick_trainer_id" class="filter-label">Quick ID Scan / Check-In</label>
+                                <form method="post" class="d-inline w-100">
+                                    {% csrf_token %}
+                                    <div class="input-group">
+                                        <input type="text" id="quick_trainer_id" name="quick_checkin_id" class="form-control filter-control" placeholder="Scan or enter Trainer ID..." autofocus style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important;">
+                                        <button type="submit" name="quick_action" value="checkin" class="btn btn-success" style="border-radius: 0 !important; font-weight: 600; font-size: 0.85rem; padding: 0 14px;">
+                                            <i class="mdi mdi-login me-1"></i> Check In
+                                        </button>
+                                        <button type="submit" name="action" value="checkout" class="btn btn-warning" style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; font-weight: 600; font-size: 0.85rem; padding: 0 14px;">
+                                            <i class="mdi mdi-logout me-1"></i> Check Out
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+           <div class="table-responsive" id="trainerAttendanceTableContainer">
+                <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Photo</th>
+                            <th>Trainer</th>
+                            <th>Specialization</th>
+                            <th>Status</th>
+                            <th>Check-In Time</th>
+                            <th>Check-Out Time</th>
+                            <th>Duration</th>
+                            <th width="180">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in trainer_data %}
+                        {% with trainer=data.trainer records=data.records is_checked_in=data.is_checked_in %}
+                            {% if not records %}
+                                <tr class="table-light">
+                                    <td data-label="#">{{ forloop.counter0|add:page_obj.start_index }}</td>
+                                    <td data-label="Photo">
+                                        {% if trainer.photo %}
+                                            <img src="{{ trainer.photo.url }}" class="rounded-circle" width="40" height="40" alt="{{ trainer }}">
+                                        {% else %}
+                                            <img src="{% static 'images/member_dp.jpg' %}" class="rounded-circle" width="40" height="40" alt="Default Profile Pic">
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="Trainer">
+                                        <strong>{{ trainer.name }}</strong><br>
+                                        <small class="text-muted">#{{ trainer.trainer_id }}</small>
+                                    </td>
+                                    <td data-label="Specialization">
+                                        <span class="badge bg-info">{{ trainer.specialization }}</span>
+                                    </td>
+                                    <td data-label="Status">
+                                        <span class="badge bg-secondary">Checked Out</span>
+                                    </td>
+                                    <td data-label="Check-In Time"><span class="text-muted">—</span></td>
+                                    <td data-label="Check-Out Time"><span class="text-muted">—</span></td>
+                                    <td data-label="Duration"><span class="text-muted">—</span></td>
+                                    <td data-label="Action">
+                                        <form method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="trainer_id" value="{{ trainer.id }}">
+                                            <button type="submit" name="action" value="checkin" title="Check In" class="btn btn-success btn-sm">
+                                                <i class="mdi mdi-login"></i> 
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                {% for record in records %}
+                                <tr class="{% if forloop.first and is_checked_in %}table-success{% else %}table-light{% endif %}">
+                                    {% if forloop.first %}
+                                        <td data-label="#" rowspan="{{ records|length }}">{{ forloop.parentloop.counter0|add:page_obj.start_index }}</td>
+                                        <td data-label="Photo" rowspan="{{ records|length }}">
+                                            {% if trainer.photo %}
+                                                <img src="{{ trainer.photo.url }}" class="rounded-circle" width="40" height="40" alt="{{ trainer }}">
+                                            {% else %}
+                                                <img src="{% static 'images/member_dp.jpg' %}" class="rounded-circle" width="40" height="40" alt="Default Profile Pic">
+                                            {% endif %}
+                                        </td>
+                                        <td data-label="Trainer" rowspan="{{ records|length }}">
+                                            <strong>{{ trainer.name }}</strong><br>
+                                            <small class="text-muted">#{{ trainer.trainer_id }}</small>
+                                        </td>
+                                        <td data-label="Specialization" rowspan="{{ records|length }}">
+                                            <span class="badge bg-info">{{ trainer.specialization }}</span>
+                                        </td>
+                                        <td data-label="Status" rowspan="{{ records|length }}">
+                                            {% if is_checked_in %}
+                                                <span class="badge bg-success"><i class="mdi mdi-circle"></i> Inside</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Checked Out</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    <td data-label="Check-In Time">
+                                        {% if record %}{{ record.check_in_time|time:"h:i A" }}{% else %}<span class="text-muted">—</span>{% endif %}
+                                    </td>
+                                    <td data-label="Check-Out Time">
+                                        {% if record and record.check_out_time %}{{ record.check_out_time|time:"h:i A" }}{% else %}<span class="text-muted">—</span>{% endif %}
+                                    </td>
+                                    <td data-label="Duration">
+                                        {% if record %}
+                                            {% if record.duration %}
+                                                {{ record.duration }}
+                                            {% elif is_checked_in and forloop.first %}
+                                                <span class="text-live" data-start="{{ record.check_in_time|date:'U' }}">
+                                                    <span class="badge bg-info">Live</span>
+                                                </span>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    {% if forloop.first %}
+                                        <td data-label="Action" rowspan="{{ records|length }}">
+                                            <form method="post" class="d-inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="trainer_id" value="{{ trainer.id }}">
+                                                {% if is_checked_in %}
+                                                    <button type="submit" name="action" value="checkout" title="Check Out" class="btn btn-warning btn-sm">
+                                                        <i class="mdi mdi-logout"></i> 
+                                                    </button>
+                                                {% else %}
+                                                    <button type="submit" name="action" value="checkin" title="Check In" class="btn btn-success btn-sm">
+                                                        <i class="mdi mdi-login"></i> 
+                                                    </button>
+                                                {% endif %}
+                                            </form>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center py-5">
+                                <i class="mdi mdi-account-off-outline mdi-48px text-muted d-block mb-3"></i>
+                                <h5>No active trainers found</h5>
+                                <p class="text-muted">Create trainers or adjust search filters.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div id="trainerAttendancePaginationContainer">
+                {% if page_obj.has_other_pages %}
+                    <div class="mt-4">
+                        {% include 'includes/pagination.html' with page_obj=page_obj %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<!-- Live Duration & Real-Time Auto-Search Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Live duration calculation
+    function updateLiveDurations() {
+        document.querySelectorAll('.text-live').forEach(el => {
+            const start = parseInt(el.dataset.start) * 1000;
+            const now = Date.now();
+            const diff = Math.floor((now - start) / 1000);
+            
+            let hours = Math.floor(diff / 3600);
+            let minutes = Math.floor((diff % 3600) / 60);
+
+            el.textContent = `${hours}h ${minutes}m`;
+        });
+    }
+
+    setInterval(updateLiveDurations, 1000);
+    updateLiveDurations();
+
+    // Auto-Search Engine
+    const searchInput = document.getElementById("trainer_search");
+    const clearSearchBtn = document.getElementById("clearTrainerSearchBtn");
+    const searchSpinner = document.getElementById("trainerSearchSpinner");
+    const tableContainer = document.getElementById("trainerAttendanceTableContainer");
+    const paginationContainer = document.getElementById("trainerAttendancePaginationContainer");
+
+    let debounceTimer = null;
+    let abortController = null;
+
+    function toggleClearBtn() {
+        if (!clearSearchBtn || !searchInput) return;
+        clearSearchBtn.style.display = searchInput.value.trim().length > 0 ? "block" : "none";
+    }
+
+    function runSearchRequest(val) {
+        if (abortController) abortController.abort();
+        abortController = new AbortController();
+
+        const url = new URL(window.location.href);
+        if (val) {
+            url.searchParams.set("q", val);
+        } else {
+            url.searchParams.delete("q");
+        }
+        url.searchParams.delete("page");
+
+        if (searchSpinner) searchSpinner.style.display = "block";
+        if (clearSearchBtn) clearSearchBtn.style.display = "none";
+        if (tableContainer) tableContainer.classList.add("is-filtering");
+
+        fetch(url.toString(), {
+            signal: abortController.signal,
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Search network error");
+            return res.text();
+        })
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const newTable = doc.querySelector("#trainerAttendanceTableContainer");
+            if (newTable && tableContainer) {
+                tableContainer.innerHTML = newTable.innerHTML;
+            }
+            const newPagination = doc.querySelector("#trainerAttendancePaginationContainer");
+            if (newPagination && paginationContainer) {
+                paginationContainer.innerHTML = newPagination.innerHTML;
+            }
+            window.history.replaceState(null, "", url.toString());
+            updateLiveDurations();
+        })
+        .catch(err => {
+            if (err.name !== "AbortError") {
+                window.location.href = url.toString();
+            }
+        })
+        .finally(() => {
+            if (searchSpinner) searchSpinner.style.display = "none";
+            toggleClearBtn();
+            if (tableContainer) tableContainer.classList.remove("is-filtering");
+        });
+    }
+
+    function triggerAutoSearch(delay = 350) {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        toggleClearBtn();
+
+        debounceTimer = setTimeout(() => {
+            const val = searchInput ? searchInput.value.trim() : "";
+            runSearchRequest(val);
+        }, delay);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            triggerAutoSearch(350);
+        });
+        searchInput.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                triggerAutoSearch(0);
+            }
+        });
+    }
+
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener("click", function() {
+            if (searchInput) {
+                searchInput.value = "";
+                searchInput.focus();
+            }
+            triggerAutoSearch(0);
+        });
+    }
+});
+</script>
+{% endblock extra_js %}
+{% endblock %}

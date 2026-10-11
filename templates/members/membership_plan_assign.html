@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load form_tags %}
+
+{% block title %}{% if history %}Upgrade{% else %}Assign{% endif %} Membership Plan - ONEXIVAGYM{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<style>
+  .form-section-fieldset {
+    background: #ffffff;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px;
+    padding: 1.5rem !important;
+    margin-bottom: 1.75rem;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .form-section-fieldset:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+  .form-section-legend {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e40af;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 30px;
+    padding: 0.35rem 1rem !important;
+    width: auto !important;
+    float: none;
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .input-group-text {
+    background-color: #f8fafc;
+    border-color: #ced4da;
+    color: #64748b;
+  }
+  .form-control:focus + .input-group-text,
+  .input-group-text:focus-within {
+    border-color: #86b7fe;
+  }
+  .form-label {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #334155;
+    margin-bottom: 0.35rem;
+  }
+  .helper-text {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'member_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Members
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'member_profile' member.id %}" class="text-decoration-none">
+                <i class="mdi mdi-account-outline mdi-18px"></i> {{ member.name }}
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-file-document-box-plus-outline mdi-18px"></i> {% if history %}Upgrade{% else %}Assign{% endif %} Plan
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card shadow-sm border-0">
+        <!-- Header -->
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div>
+                <h4 class="mb-1 font-weight-bold text-white d-flex align-items-center">
+                    <i class="mdi mdi-arrow-up-bold-circle-outline mr-2 me-2"></i>
+                    {% if history %}Upgrade{% else %}Assign{% endif %} Membership Plan
+                </h4>
+                <p class="mb-0 text-white-50 small">
+                    Assigning subscription plan for member: <strong class="text-white">{{ member.name }}</strong> (ID: #{{ member.id }})
+                </p>
+            </div>
+            <a href="{% url 'member_profile' member.id %}" class="btn btn-light btn-sm mt-2 mt-md-0 font-weight-bold text-primary shadow-sm d-flex align-items-center">
+                <i class="mdi mdi-arrow-left mr-1 me-1"></i> Back to Profile
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger shadow-sm border-0 d-flex align-items-start mb-4" role="alert">
+                    <i class="mdi mdi-alert-circle mr-2 me-2 mt-1 fs-5"></i>
+                    <div>
+                        <strong>Please correct the following errors:</strong>
+                        <ul class="mb-0 mt-1 pl-3">
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            <form class="forms-sample" action="{% if history %}{% url 'update_membership_plan' member.id history.id %}{% else %}{% url 'assign_membership_plan' member.id %}{% endif %}" method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- SECTION 1: Plan & Timeline -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-calendar-star"></i> Plan Selection & Schedule
+                    </legend>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="id_plan">Membership Plan <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-card-bulleted-settings-outline"></i></span>
+                                {{ form.plan|attr:'class:form-control,required:true' }}
+                            </div>
+                            <div class="helper-text">Select a membership package from your catalog.</div>
+                            <div class="invalid-feedback">{% if form.plan.errors %}{{ form.plan.errors.0 }}{% else %}Please select a plan.{% endif %}</div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="id_add_on_days">Bonus Add-on Days</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-calendar-plus"></i></span>
+                                {{ form.add_on_days|attr:'class:form-control' }}
+                            </div>
+                            <div class="helper-text">Extra promotional or grace days to extend plan duration.</div>
+                            {% if form.add_on_days.errors %}
+                                <div class="invalid-feedback">{{ form.add_on_days.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="id_membership_start_date">Membership Start Date <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                {{ form.membership_start_date|attr:'class:form-control,required:true' }}
+                            </div>
+                            <div class="helper-text">First day the membership becomes active.</div>
+                            <div class="invalid-feedback">{% if form.membership_start_date.errors %}{{ form.membership_start_date.errors.0 }}{% else %}Please select a start date.{% endif %}</div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="id_payment_date">Payment Date <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span>
+                                <input type="date" name="payment_date" class="form-control" required id="id_payment_date" value="{{ form.payment_date.value|date:'Y-m-d' }}">
+                            </div>
+                            <div class="helper-text">Date when payment was made or collected.</div>
+                            <div class="invalid-feedback">{% if form.payment_date.errors %}{{ form.payment_date.errors.0 }}{% else %}Please select a payment date.{% endif %}</div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- SECTION 2: Pricing & Total Breakdown -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-currency-inr"></i> Pricing & Calculation Breakdown
+                    </legend>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="id_registration_fee">Registration Fee</label>
+                            <div class="input-group">
+                                <span class="input-group-text font-weight-bold">₹</span>
+                                {{ form.registration_fee|attr:'class:form-control' }}
+                            </div>
+                            <div class="helper-text">One-time enrollment charge.</div>
+                            <div class="invalid-feedback">{% if form.registration_fee.errors %}{{ form.registration_fee.errors.0 }}{% else %}Registration fee cannot be negative.{% endif %}</div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="id_discount">Discount Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text font-weight-bold">₹</span>
+                                {{ form.discount|attr:'class:form-control' }}
+                            </div>
+                            <div class="helper-text">Direct discount deducted from total.</div>
+                            <div class="invalid-feedback">{% if form.discount.errors %}{{ form.discount.errors.0 }}{% else %}Discount cannot be greater than the plan price.{% endif %}</div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="id_total_amount">Total Amount Payable</label>
+                            <div class="input-group">
+                                <span class="input-group-text font-weight-bold">₹</span>
+                                {{ form.total_amount|attr:'class:form-control,readonly:true' }}
+                            </div>
+                            <div class="p-2 mt-2 rounded bg-light border d-flex justify-content-between align-items-center">
+                                <span class="small font-weight-bold text-secondary">Final Payable:</span>
+                                <h5 class="mb-0 text-primary font-weight-bold">₹<span id="total_display">0.00</span> <span id="gst_display" class="text-muted small"></span></h5>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- SECTION 3: Payment Settlement -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-credit-card-check-outline"></i> Payment Settlement & Notes
+                    </legend>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="id_paid_amount">Paid Amount <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text font-weight-bold">₹</span>
+                                {{ form.paid_amount|attr:'class:form-control,required:true' }}
+                            </div>
+                            <div class="helper-text">Amount paid upfront today.</div>
+                            <div class="invalid-feedback">{% if form.paid_amount.errors %}{{ form.paid_amount.errors.0 }}{% else %}Paid amount cannot be greater than the total amount or negative.{% endif %}</div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="id_payment_mode">Payment Mode <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-wallet-outline"></i></span>
+                                {{ form.payment_mode|attr:'class:form-control,required:true' }}
+                            </div>
+                            <div class="helper-text">Settlement method.</div>
+                            <div class="invalid-feedback">{% if form.payment_mode.errors %}{{ form.payment_mode.errors.0 }}{% else %}Please select a payment mode.{% endif %}</div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="id_transaction_id">Transaction / Reference ID</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-identifier"></i></span>
+                                {{ form.transaction_id|attr:'class:form-control' }}
+                            </div>
+                            <div class="helper-text">UPI UTR or receipt number.</div>
+                            {% if form.transaction_id.errors %}
+                                <div class="invalid-feedback">{{ form.transaction_id.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row" id="follow-up-date-row" style="display: none;">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="id_follow_up_date">Dues Follow-up Date <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-clock-alert-outline"></i></span>
+                                {{ form.follow_up_date|attr:'class:form-control' }}
+                            </div>
+                            <div class="helper-text">Date by which the member agreed to clear remaining dues.</div>
+                            <div class="invalid-feedback">{% if form.follow_up_date.errors %}{{ form.follow_up_date.errors.0 }}{% else %}Please select a follow-up date.{% endif %}</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <label class="form-label" for="id_comment">Notes / Remarks</label>
+                            {{ form.comment|attr:'class:form-control' }}
+                            <div class="helper-text">Special discounts, promo codes, or admin notes.</div>
+                            {% if form.comment.errors %}
+                                <div class="invalid-feedback">{{ form.comment.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Form Action Buttons -->
+                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a href="{% url 'member_profile' member.id %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill font-weight-semibold me-2 mb-2 mb-sm-0">
+                        <i class="mdi mdi-close mr-1 me-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill font-weight-bold shadow-sm" id="submitBtn">
+                        <i class="mdi mdi-check-circle-outline mr-1 me-1"></i> 
+                        {% if history %}Upgrade{% else %}Assign{% endif %} Plan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    const plansData = JSON.parse('{{ plans_json|escapejs|default:"[]" }}');
+    const gymData = JSON.parse('{{ gym_json|escapejs|default:"[]" }}')[0];
+    
+    const planSelect = document.getElementById('id_plan');
+    const registrationFeeInput = document.getElementById('id_registration_fee');
+    const discountInput = document.getElementById('id_discount');
+    const totalAmountInput = document.getElementById('id_total_amount');
+    const paidAmountInput = document.getElementById('id_paid_amount');
+    const totalDisplay = document.getElementById('total_display');
+    const gstDisplay = document.getElementById('gst_display');
+    const followUpDateRow = document.getElementById('follow-up-date-row');
+    const followUpDateInput = document.getElementById('id_follow_up_date');
+    
+    const today = new Date().toISOString().split('T')[0];
+    const startDateEl = document.getElementById('id_membership_start_date');
+    const payDateEl = document.getElementById('id_payment_date');
+    if (startDateEl) startDateEl.setAttribute('max', today);
+    if (payDateEl) payDateEl.setAttribute('max', today);
+    if (followUpDateInput) followUpDateInput.setAttribute('min', today);
+    
+    function updateTotalAmount() {
+        const selectedPlanId = planSelect.value;
+        const registrationFee = parseFloat(registrationFeeInput.value) || 0;
+        const discount = parseFloat(discountInput.value) || 0;
+        
+        let planOfferPrice = 0;
+        if (selectedPlanId && plansData.length > 0) {
+            const selectedPlan = plansData.find(p => p.pk == selectedPlanId);
+            if (selectedPlan) {
+                planOfferPrice = parseFloat(selectedPlan.fields.offer_price);
+            }
+        }
+        
+        const baseAmount = planOfferPrice + registrationFee - discount;
+        
+        let gstRate = 0;
+        if (gymData && gymData.fields.gst_enabled) {
+            gstRate = parseFloat(gymData.fields.gst_rate) || 0;
+        }
+        
+        const gstAmount = (baseAmount * gstRate) / 100;
+        const totalAmount = baseAmount + gstAmount;
+
+        totalAmountInput.value = totalAmount.toFixed(2);
+        totalDisplay.textContent = totalAmount.toFixed(2);
+
+        if (gstRate > 0) {
+            gstDisplay.textContent = `(Includes ${gstAmount.toFixed(2)} GST)`;
+        } else {
+            gstDisplay.textContent = '';
+        }
+        validateForm();
+    }
+
+    function validateField(input, condition, errorMessage) {
+        if (!input) return true;
+        const feedback = input.closest('.mb-3')?.querySelector('.invalid-feedback') || input.nextElementSibling;
+        if (condition) {
+            input.classList.add('is-invalid');
+            if (feedback && feedback.classList.contains('invalid-feedback')) {
+                feedback.textContent = errorMessage;
+            }
+            return false;
+        } else {
+            input.classList.remove('is-invalid');
+            return true;
+        }
+    }
+
+    function validateForm() {
+        let isValid = true;
+        const selectedPlanId = planSelect.value;
+        let planOfferPrice = 0;
+        if (selectedPlanId && plansData.length > 0) {
+            const selectedPlan = plansData.find(p => p.pk == selectedPlanId);
+            if (selectedPlan) {
+                planOfferPrice = parseFloat(selectedPlan.fields.offer_price);
+            }
+        }
+
+        const totalAmount = parseFloat(totalAmountInput.value) || 0;
+        const paidAmount = parseFloat(paidAmountInput.value) || 0;
+
+        if (paidAmount < totalAmount) {
+            followUpDateRow.style.display = 'block';
+            followUpDateInput.required = true;
+        } else {
+            followUpDateRow.style.display = 'none';
+            followUpDateInput.required = false;
+        }
+
+        isValid = validateField(planSelect, !planSelect.value, 'Please select a plan.') && isValid;
+        isValid = validateField(registrationFeeInput, parseFloat(registrationFeeInput.value) < 0, 'Registration fee cannot be negative.') && isValid;
+        isValid = validateField(discountInput, parseFloat(discountInput.value) > planOfferPrice, 'Discount cannot be greater than the plan price.') && isValid;
+        isValid = validateField(paidAmountInput, paidAmount < 0, 'Paid amount cannot be negative.') && isValid;
+        isValid = validateField(paidAmountInput, paidAmount > totalAmount, 'Paid amount cannot be greater than the total amount.') && isValid;
+        isValid = validateField(followUpDateInput, followUpDateInput.required && !followUpDateInput.value, 'Please select a follow-up date.') && isValid;
+        
+        return isValid;
+    }
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!validateForm()) {
+            event.stopPropagation();
+        } else {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to assign this membership plan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, assign it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    submitButton.disabled = true;
+                    submitButton.textContent = '{% if history %}Updating{% else %}Assigning{% endif %}...';
+                    form.submit();
+                }
+            });
+        }
+    });
+
+    planSelect.addEventListener('change', updateTotalAmount);
+    registrationFeeInput.addEventListener('input', updateTotalAmount);
+    discountInput.addEventListener('input', updateTotalAmount);
+    paidAmountInput.addEventListener('input', validateForm);
+    followUpDateInput.addEventListener('input', validateForm);
+
+    updateTotalAmount();
+});
+</script>
+{% endblock %}

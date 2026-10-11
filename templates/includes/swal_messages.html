@@ -1,0 +1,252 @@
+{% if messages %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  {% for message in messages %}
+    {% if 'permission_denied' in message.tags %}
+      Swal.fire({
+        icon: 'warning',
+        title: 'Access Restricted',
+        html: `
+          <div style="color: #475569; font-size: 0.95rem; line-height: 1.6; text-align: center; margin-top: 0.4rem;">
+            <p style="margin-bottom: 1.1rem; font-weight: 500;">{{ message|escapejs }}</p>
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 8px 16px; color: #92400e; font-size: 0.82rem; font-weight: 600;">
+              <i class="mdi mdi-shield-lock-outline" style="font-size: 1.15rem;"></i>
+              <span>Staff Operational Privilege Required</span>
+            </div>
+          </div>
+        `,
+        confirmButtonText: '<i class="mdi mdi-check-circle-outline mr-1"></i> Understood',
+        buttonsStyling: false,
+        customClass: {
+          popup: 'rounded-4 shadow-lg border-0 p-4',
+          title: 'font-weight-bold text-dark pt-2',
+          confirmButton: 'btn btn-warning text-dark px-4 py-2 font-weight-bold rounded-pill shadow-sm'
+        },
+        backdrop: 'rgba(15, 23, 42, 0.65)',
+        allowOutsideClick: false
+      });
+    {% elif 'whatsapp_success' in message.tags %}
+      Swal.fire({
+        html: `
+          <div style="display: flex; align-items: center; gap: 12px; padding: 2px;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #25D366; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(37,211,102,0.35);">
+              <i class="mdi mdi-whatsapp"></i>
+            </div>
+            <div style="text-align: left; font-size: 0.92rem; font-weight: 600; color: #14532d; line-height: 1.4;">
+              {{ message|escapejs }}
+            </div>
+          </div>
+        `,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        background: '#f0fdf4',
+        customClass: {
+          popup: 'rounded-3 shadow-lg border border-success'
+        }
+      });
+    {% elif 'whatsapp_warning' in message.tags %}
+      Swal.fire({
+        html: `
+          <div style="display: flex; align-items: center; gap: 12px; padding: 2px;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #f59e0b; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(245,158,11,0.35);">
+              <i class="mdi mdi-check-circle"></i>
+            </div>
+            <div style="text-align: left; font-size: 0.92rem; font-weight: 600; color: #78350f; line-height: 1.4;">
+              {{ message|escapejs }}
+            </div>
+          </div>
+        `,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        background: '#fffbeb',
+        customClass: {
+          popup: 'rounded-3 shadow-lg border border-warning'
+        }
+      });
+    {% elif 'warning' in message.tags %}
+      Swal.fire({
+        html: `
+          <div style="display: flex; align-items: center; gap: 12px; padding: 4px 2px;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #f59e0b; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; flex-shrink: 0;">
+              <i class="mdi mdi-alert-circle-outline"></i>
+            </div>
+            <div style="text-align: left; font-size: 0.92rem; font-weight: 600; color: #92400e;">
+              {{ message|escapejs }}
+            </div>
+          </div>
+        `,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 4500,
+        timerProgressBar: true,
+        background: '#fffbeb',
+        customClass: {
+          popup: 'rounded-3 shadow-sm border-0'
+        }
+      });
+    {% elif 'error' in message.tags %}
+      Swal.fire({
+        icon: 'error',
+        title: 'Action Error',
+        text: '{{ message|escapejs }}',
+        confirmButtonText: 'OK',
+        buttonsStyling: false,
+        customClass: {
+          popup: 'rounded-4 shadow-lg border-0',
+          confirmButton: 'btn btn-danger px-4 py-2 font-weight-bold rounded-pill'
+        }
+      });
+    {% else %}
+      Swal.fire({
+        title: '{{ message|escapejs }}',
+        icon: '{% if "success" in message.tags %}success{% elif "info" in message.tags %}info{% else %}info{% endif %}',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        customClass: {
+          popup: 'rounded-3 shadow-sm'
+        }
+      });
+    {% endif %}
+  {% endfor %}
+});
+</script>
+{% endif %}
+
+{% if registration_credentials %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const creds = {
+    account_type: "{{ registration_credentials.account_type|escapejs }}",
+    name: "{{ registration_credentials.name|escapejs }}",
+    id: "{{ registration_credentials.id|escapejs }}",
+    username: "{{ registration_credentials.username|escapejs }}",
+    mobile: "{{ registration_credentials.mobile|escapejs }}",
+    email: "{{ registration_credentials.email|escapejs }}",
+    password: "{{ registration_credentials.password|escapejs }}",
+    gym_name: "{{ registration_credentials.gym_name|escapejs }}",
+    login_url: "{{ registration_credentials.login_url|escapejs }}"
+  };
+
+  const shareText = `*Welcome to ${creds.gym_name}!*\n\nHi ${creds.name}, your ${creds.account_type} account has been created successfully.\n\n*Login Details:*\n• *Username / ID:* ${creds.username}\n• *Mobile:* ${creds.mobile || 'N/A'}\n• *Password:* ${creds.password}\n\n*Login URL:* ${creds.login_url}\n\nYou can log in using your Mobile Number, Email, or Username.\nPlease keep your credentials safe.`;
+
+  Swal.fire({
+    title: `<div style="font-size: 1.3rem; font-weight: 700; color: #0f172a;">${creds.account_type} Registered Successfully!</div>`,
+    icon: 'success',
+    html: `
+      <div style="text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-top: 12px; font-size: 0.92rem; color: #334155;">
+        <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; margin-bottom: 10px;">
+          <span style="font-weight: 600; color: #64748b;">Full Name</span>
+          <span style="font-weight: 700; color: #0f172a;">${creds.name}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; margin-bottom: 10px;">
+          <span style="font-weight: 600; color: #64748b;">${creds.account_type} ID</span>
+          <span style="font-family: monospace; font-weight: 700; color: #2563eb; background: #eff6ff; padding: 2px 8px; border-radius: 6px;">${creds.id}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; margin-bottom: 10px;">
+          <span style="font-weight: 600; color: #64748b;">Username</span>
+          <span style="font-family: monospace; font-weight: 700; color: #0f172a; background: #f1f5f9; padding: 2px 8px; border-radius: 6px;">${creds.username}</span>
+        </div>
+        ${creds.mobile ? `
+        <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; margin-bottom: 10px;">
+          <span style="font-weight: 600; color: #64748b;">Mobile</span>
+          <span style="font-weight: 600; color: #0f172a;">${creds.mobile}</span>
+        </div>` : ''}
+        ${creds.email && creds.email !== 'N/A' ? `
+        <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; margin-bottom: 10px;">
+          <span style="font-weight: 600; color: #64748b;">Email</span>
+          <span style="font-weight: 600; color: #0f172a;">${creds.email}</span>
+        </div>` : ''}
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 4px;">
+          <span style="font-weight: 600; color: #64748b;">Default Password</span>
+          <div style="display: inline-flex; align-items: center; gap: 6px;">
+            <span id="swal-cred-pwd" style="font-family: monospace; font-size: 0.95rem; font-weight: 700; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 3px 10px; border-radius: 6px;">${creds.password}</span>
+            <button type="button" onclick="toggleSwalPwd()" style="border: none; background: transparent; color: #64748b; cursor: pointer; padding: 2px;" title="Show/Hide">
+              <i class="mdi mdi-eye" id="swal-eye-icon"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 14px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 14px; font-size: 0.82rem; color: #065f46; display: flex; align-items: center; gap: 8px;">
+        <i class="mdi mdi-information" style="font-size: 1.2rem;"></i>
+        <span>Can log in using <strong>Mobile Number</strong>, <strong>Email</strong>, or <strong>Username</strong>.</span>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 18px;">
+        <button type="button" id="swal-copy-btn" onclick="copyRegistrationCreds()" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #2563eb; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: background 0.2s;">
+          <i class="mdi mdi-content-copy"></i>
+          <span id="swal-copy-text">Copy Credentials</span>
+        </button>
+        ${creds.mobile ? `
+        <a href="https://wa.me/91${creds.mobile}?text=${encodeURIComponent(shareText)}" target="_blank" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #16a34a; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 0.88rem;">
+          <i class="mdi mdi-whatsapp"></i>
+          <span>Send WhatsApp</span>
+        </a>` : ''}
+      </div>
+    `,
+    showConfirmButton: true,
+    confirmButtonText: 'Done',
+    buttonsStyling: false,
+    customClass: {
+      popup: 'rounded-4 shadow-lg border-0 p-4',
+      confirmButton: 'btn btn-outline-secondary px-5 py-2 rounded-pill font-weight-bold mt-3'
+    },
+    backdrop: 'rgba(15, 23, 42, 0.65)',
+    allowOutsideClick: false
+  });
+
+  window.toggleSwalPwd = function() {
+    const pwdEl = document.getElementById('swal-cred-pwd');
+    const eyeIcon = document.getElementById('swal-eye-icon');
+    if (pwdEl.dataset.hidden === 'true') {
+      pwdEl.textContent = creds.password;
+      pwdEl.dataset.hidden = 'false';
+      eyeIcon.className = 'mdi mdi-eye';
+    } else {
+      pwdEl.textContent = '••••••••';
+      pwdEl.dataset.hidden = 'true';
+      eyeIcon.className = 'mdi mdi-eye-off';
+    }
+  };
+
+  window.copyRegistrationCreds = function() {
+    navigator.clipboard.writeText(shareText).then(function() {
+      const copyBtn = document.getElementById('swal-copy-btn');
+      const copyText = document.getElementById('swal-copy-text');
+      copyBtn.style.background = '#059669';
+      copyText.textContent = 'Copied to Clipboard!';
+      setTimeout(function() {
+        copyBtn.style.background = '#2563eb';
+        copyText.textContent = 'Copy Credentials';
+      }, 2500);
+    }).catch(function(err) {
+      // Fallback if clipboard API fails
+      const textarea = document.createElement('textarea');
+      textarea.value = shareText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      const copyBtn = document.getElementById('swal-copy-btn');
+      const copyText = document.getElementById('swal-copy-text');
+      copyBtn.style.background = '#059669';
+      copyText.textContent = 'Copied to Clipboard!';
+      setTimeout(function() {
+        copyBtn.style.background = '#2563eb';
+        copyText.textContent = 'Copy Credentials';
+      }, 2500);
+    });
+  };
+});
+</script>
+{% endif %}

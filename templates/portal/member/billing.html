@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}My Invoices & Dues - {{ member.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <!-- HERO / PAGE HEADER -->
+  <div class="dashboard-hero-header">
+    <div>
+      <h2 class="dashboard-hero-title">Invoices & Billing History</h2>
+      <p class="dashboard-hero-subtitle">Review your membership invoices, payment receipts, and balance status</p>
+    </div>
+    <div>
+      <a href="{% url 'member_portal:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill font-weight-bold">
+        <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- Dues & Receipts KPI Summary Cards -->
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="kpi-card {% if due_amount > 0 %}kpi-danger{% else %}kpi-success{% endif %}">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Current Pending Balance</span>
+            <div class="kpi-icon-wrap {% if due_amount > 0 %}kpi-icon-danger{% else %}kpi-icon-success{% endif %}">
+              <i class="fas {% if due_amount > 0 %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+            </div>
+          </div>
+          <div class="kpi-value">&#8377;{{ due_amount|intcomma }}</div>
+        </div>
+        <div class="kpi-meta">
+          {% if due_amount > 0 %}
+            <span class="kpi-meta-badge kpi-badge-danger">
+              <i class="fas fa-exclamation-triangle mr-1"></i> Outstanding Due
+            </span>
+            <span class="kpi-meta-desc">Please clear at the gym reception desk</span>
+          {% else %}
+            <span class="kpi-meta-badge kpi-badge-success">
+              <i class="fas fa-check-circle mr-1"></i> Zero Due
+            </span>
+            <span class="kpi-meta-desc">All memberships are completely settled</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="kpi-card kpi-primary">
+        <div>
+          <div class="kpi-header">
+            <span class="kpi-label">Payment Transactions</span>
+            <div class="kpi-icon-wrap kpi-icon-primary">
+              <i class="fas fa-receipt"></i>
+            </div>
+          </div>
+          <div class="kpi-value">{{ payments|length }} <span style="font-size: 1rem; font-weight: 600;">Receipts</span></div>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-meta-badge kpi-badge-primary">
+            <i class="fas fa-history mr-1"></i> Receipts
+          </span>
+          <span class="kpi-meta-desc">Verified transactions in record</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Membership Subscriptions Table -->
+  <div class="gym-card mb-4">
+    <div class="gym-card-header d-flex align-items-center justify-content-between flex-wrap">
+      <div class="gym-card-title">
+        <i class="mdi mdi-card-account-details-outline text-primary mr-1" style="font-size: 1.25rem;"></i>
+        <span>Membership Subscriptions</span>
+      </div>
+      <span class="badge-soft badge-soft-primary font-weight-bold">{{ histories|length }} Subscriptions</span>
+    </div>
+    <div class="gym-card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th class="text-center" style="width: 50px;">#</th>
+              <th>Plan / Package</th>
+              <th>Subscription Period</th>
+              <th class="text-right">Total Plan Fee</th>
+              <th class="text-right">Amount Paid</th>
+              <th class="text-right">Balance Due</th>
+              <th class="text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in histories %}
+            <tr>
+              <td class="text-center text-muted font-weight-bold">{{ forloop.counter }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="mr-2 text-primary font-weight-bold" style="font-size: 1.1rem;">
+                    <i class="mdi mdi-ticket-percent-outline"></i>
+                  </div>
+                  <div>
+                    <div class="font-weight-bold text-dark">{{ h.plan.title|default:'Standard Plan' }}</div>
+                    <small class="text-muted">Subscription #SUB-{{ h.id }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="font-weight-bold text-dark" style="font-size: 0.88rem;">
+                  {{ h.membership_start_date|date:'d M Y' }}
+                  <i class="fas fa-arrow-right text-muted mx-1" style="font-size: 0.72rem;"></i>
+                  {{ h.get_end_date|date:'d M Y' }}
+                </div>
+                <small class="text-muted"><i class="far fa-calendar-check mr-1"></i>Joined: {{ h.payment_date|date:'d M Y' }}</small>
+              </td>
+              <td class="text-right">
+                <span class="font-weight-bold text-dark">&#8377;{{ h.total_amount|intcomma }}</span>
+              </td>
+              <td class="text-right">
+                <span class="font-weight-bold text-success">&#8377;{{ h.paid_amount|intcomma }}</span>
+              </td>
+              <td class="text-right">
+                {% if h.due_amount > 0 %}
+                  <span class="font-weight-bold text-danger">&#8377;{{ h.due_amount|intcomma }}</span>
+                {% else %}
+                  <span class="badge-soft badge-soft-success font-weight-bold">
+                    <i class="fas fa-check-circle mr-1"></i> Paid in Full
+                  </span>
+                {% endif %}
+              </td>
+              <td class="text-center">
+                {% if h.status == 'active' %}
+                  <span class="badge-soft badge-soft-success font-weight-bold">
+                    <i class="fas fa-check-circle mr-1"></i> Active
+                  </span>
+                {% elif h.status == 'frozen' %}
+                  <span class="badge-soft badge-soft-info font-weight-bold">
+                    <i class="fas fa-snowflake mr-1"></i> Frozen
+                  </span>
+                {% else %}
+                  <span class="badge-soft badge-soft-secondary font-weight-bold">
+                    <i class="fas fa-history mr-1"></i> Expired
+                  </span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="text-center py-4 text-muted">
+                <i class="fas fa-file-invoice fa-2x mb-2 d-block text-muted opacity-50"></i>
+                No subscription history found.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Receipts Table -->
+  <div class="gym-card">
+    <div class="gym-card-header d-flex align-items-center justify-content-between flex-wrap">
+      <div class="gym-card-title">
+        <i class="mdi mdi-receipt-text-outline text-success mr-1" style="font-size: 1.25rem;"></i>
+        <span>Payment Receipts & Transactions</span>
+      </div>
+      <span class="badge-soft badge-soft-success font-weight-bold">{{ payments|length }} Receipts</span>
+    </div>
+    <div class="gym-card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th class="text-center" style="width: 50px;">#</th>
+              <th>Receipt Number</th>
+              <th>Date & Time</th>
+              <th>Payment Mode</th>
+              <th class="text-right">Amount Paid</th>
+              <th class="text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in payments %}
+            <tr>
+              <td class="text-center text-muted font-weight-bold">{{ forloop.counter }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-receipt text-primary mr-2" style="font-size: 1rem;"></i>
+                  <div>
+                    <span class="font-weight-bold text-dark">#RCP-{{ p.id|stringformat:"05d" }}</span>
+                    {% if p.transaction_id %}
+                      <small class="text-muted d-block font-monospace">Txn: {{ p.transaction_id }}</small>
+                    {% endif %}
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="font-weight-bold text-dark">{{ p.payment_date|date:'d M Y' }}</div>
+                <small class="text-muted"><i class="far fa-clock mr-1"></i>{{ p.payment_date|date:'g:i A' }}</small>
+              </td>
+              <td>
+                <span class="badge-soft badge-soft-info font-weight-bold">
+                  <i class="fas fa-credit-card mr-1"></i> {{ p.get_payment_mode_display|default:p.payment_mode|default:'Cash'|title }}
+                </span>
+              </td>
+              <td class="text-right">
+                <span class="font-weight-bold text-success" style="font-size: 1rem;">&#8377;{{ p.amount|intcomma }}</span>
+              </td>
+              <td class="text-center">
+                <span class="badge-soft badge-soft-success font-weight-bold">
+                  <i class="fas fa-check-circle mr-1"></i> Received
+                </span>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">
+                <i class="fas fa-cash-register fa-2x mb-2 d-block text-muted opacity-50"></i>
+                No payment receipts recorded yet.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

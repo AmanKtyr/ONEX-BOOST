@@ -1,0 +1,196 @@
+{% extends 'website/base_website.html' %}
+{% load static %}
+
+{% block title %}About ONEXIVA| India's Gym Management Software Company — Our Story & Mission{% endblock %}
+
+{% block seo %}
+<meta name="description" content="Learn about ONEXIVA— India's premium gym management software built for gyms, fitness studios, and independent trainers. Discover our story, mission, and how we're transforming gym operations across India.">
+<meta name="keywords" content="about ONEXIVA, gym management company India, fitness software company, gym software developers India, ONEXIVAstory, gym technology startup India, fitness business software company">
+<meta name="author" content="ONEXIVAby BhattSquare">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+{% endblock %}
+
+{% block canonical %}
+<link rel="canonical" href="https://fitstack.nextgenapplication.com/about/">
+{% endblock %}
+
+{% block og_tags %}
+<meta property="og:site_name" content="ONEXIVA">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fitstack.nextgenapplication.com/about/">
+<meta property="og:title" content="About ONEXIVA— Our Mission to Transform Gym Management in India">
+<meta property="og:description" content="ONEXIVAwas built to solve the real pressure points slowing good gyms down — billing follow-up, scattered systems, and fragmented workflows. Learn our story.">
+<meta property="og:image" content="{% static 'images/gymaboutimage.png' %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_IN">
+{% endblock %}
+
+{% block twitter_tags %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About ONEXIVA— Gym Management Software Company India">
+<meta name="twitter:description" content="Built for gyms that want cleaner operations, stronger follow-up, and better member experience.">
+<meta name="twitter:image" content="{% static 'images/gymaboutimage.png' %}">
+{% endblock %}
+
+{% block schema_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "ONEXIVAby BhattSquare",
+  "url": "https://fitstack.nextgenapplication.com",
+  "logo": "https://fitstack.nextgenapplication.com/static/images/onexiva-logo.png",
+  "description": "ONEXIVAis a premium gym management software platform serving gyms and fitness studios across India.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Bhatt Square HQ, Vishesh Khand",
+    "addressLocality": "Lucknow",
+    "addressRegion": "Uttar Pradesh",
+    "postalCode": "226010",
+    "addressCountry": "IN"
+  },
+  "telephone": "+91-63923-48731",
+  "email": "info@bhattsquare.com",
+  "openingHours": "Mo-Sa 10:00-18:00"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <img src="{% static 'images/hero_image_gym.png' %}" alt="About ONEXIVA" class="page-hero-media">
+    <div class="brand-container page-hero-content">
+        <div class="max-w-4xl site-reveal">
+            <span class="brand-eyebrow brand-eyebrow-dark">
+                <i class="fa-solid fa-flag"></i>
+                About ONEXIVA
+            </span>
+            <h1 class="brand-heading mt-6">We built ONEXIVAaround the pressure points that slow good gyms down.</h1>
+            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
+                Great fitness businesses often lose time to manual coordination, scattered systems, and inconsistent front-desk execution. ONEXIVAwas created to bring those moving parts into one sharper operating rhythm.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="brand-section">
+    <div class="brand-container">
+        <div class="grid lg:grid-cols-[1fr_1fr] gap-10 items-start">
+            <div class="site-reveal">
+                <span class="brand-eyebrow">
+                    <i class="fa-solid fa-book-open"></i>
+                    Our story
+                </span>
+                <h2 class="brand-section-title mt-4">The idea started with one clear pattern.</h2>
+                <p class="brand-section-copy">
+                        Gym teams were working hard, but their energy was being drained by fragmented systems for billing, member tracking, and administrative tasks. We saw a clear pattern of operational drag holding back even the most passionate owners.
+                    </p>
+                    <p class="brand-section-copy">
+                        ONEXIVAwas built to eliminate that drag. It’s a single, unified platform that integrates core functions, empowering teams to focus on delivering exceptional member experiences instead of fighting with their software.
+                    </p>
+                    <p class="brand-section-copy">
+                        Our mission is to provide a stable, reliable platform that lets you focus on what matters most: your members.
+                    </p>
+            </div>
+            <div class="brand-card p-8 site-reveal">
+                <img src="{% static 'images/gymaboutimage.png' %}" alt="ONEXIVAproduct story" class="rounded-[1.6rem]">
+            </div>
+        </div>
+
+        <div class="grid gap-5 mt-12">
+            <div class="brand-card p-8 site-reveal">
+                <p class="brand-mono text-xs uppercase tracking-[0.2em] text-slate-500">Phase 01</p>
+                <h3 class="text-2xl font-bold mt-3 mb-3">Study what actually breaks under daily pressure.</h3>
+                <p class="text-slate-800 leading-8">The problem was rarely motivation. It was system friction. Teams needed a setup that could support the realities of front-desk, trainer, payment, and member workflows together.</p>
+            </div>
+            <div class="brand-card p-8 site-reveal">
+                <p class="brand-mono text-xs uppercase tracking-[0.2em] text-slate-500">Phase 02</p>
+                <h3 class="text-2xl font-bold mt-3 mb-3">Design around business leverage, not feature clutter.</h3>
+                <p class="text-slate-800 leading-8">ONEXIVAfocuses on the operating loops that create leverage: onboarding, renewals, due recovery, trainer execution, member consistency, and better day-to-day control.</p>
+            </div>
+            <div class="brand-card p-8 site-reveal">
+                <p class="brand-mono text-xs uppercase tracking-[0.2em] text-slate-500">Phase 03</p>
+                <h3 class="text-2xl font-bold mt-3 mb-3">Keep the product grounded in how teams really work.</h3>
+                <p class="text-slate-800 leading-8">That means practical workflows, sensible controls, better clarity for owners, and a product surface that feels professional instead of improvised.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="brand-section brand-section-soft">
+    <div class="brand-container">
+        <div class="grid lg:grid-cols-[.95fr_1.05fr] gap-10 items-center">
+            <div class="site-reveal">
+                <span class="brand-eyebrow">
+                    <i class="fa-solid fa-compass"></i>
+                    What drives us
+                </span>
+                <h2 class="brand-section-title mt-4">We want independent gyms and growing brands to operate with more confidence.</h2>
+            </div>
+            <div class="grid gap-4">
+                <div class="brand-card p-6 site-reveal">
+                    <h3 class="text-xl font-bold mb-2">Less manual follow-up</h3>
+                    <p class="text-slate-800 leading-8">Teams should not have to rely on memory, scattered notes, or repetitive low-value admin work.</p>
+                </div>
+                <div class="brand-card p-6 site-reveal">
+                    <h3 class="text-xl font-bold mb-2">More dependable systems</h3>
+                    <p class="text-slate-800 leading-8">Owners need numbers, workflows, and visibility they can trust when making daily decisions.</p>
+                </div>
+                <div class="brand-card p-6 site-reveal">
+                    <h3 class="text-xl font-bold mb-2">Stronger member relationships</h3>
+                    <p class="text-slate-800 leading-8">Better operations create the consistency and time needed for better member experience and retention.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="brand-section">
+    <div class="brand-container">
+        <div class="text-center max-w-3xl mx-auto mb-12 site-reveal">
+            <span class="brand-eyebrow">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                Principles
+            </span>
+            <h2 class="brand-section-title mt-4">How we think about product and support.</h2>
+        </div>
+
+        <div class="value-grid">
+            <div class="brand-card p-8 site-reveal">
+                <h3 class="text-2xl font-bold mb-3">Ship with accountability</h3>
+                <p class="text-slate-800 leading-8">Features should be usable, supportable, and steady enough to matter in production.</p>
+            </div>
+            <div class="brand-card p-8 site-reveal">
+                <h3 class="text-2xl font-bold mb-3">Listen to operators</h3>
+                <p class="text-slate-800 leading-8">Gym owners, managers, and staff stay closest to the truth of what makes software helpful or frustrating.</p>
+            </div>
+            <div class="brand-card p-8 site-reveal">
+                <h3 class="text-2xl font-bold mb-3">Build for growth</h3>
+                <p class="text-slate-800 leading-8">A good system should stay coherent as a business grows in complexity, staff count, and operational load.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="brand-section brand-section-dark">
+    <div class="brand-container">
+        <div class="brand-card brand-card-dark p-10 lg:p-12 site-reveal">
+            <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-center">
+                <div>
+                    <span class="brand-eyebrow brand-eyebrow-dark">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        See it in action
+                    </span>
+                    <h2 class="brand-section-title mt-4">Want to see how ONEXIVAsupports a modern gym operation?</h2>
+                    <p class="text-white/70 leading-8 max-w-2xl">We can walk through the exact workflows that matter to your team and show where the system creates the most leverage.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'contact' %}" class="btn btn-primary">Talk to sales</a>
+                    <a href="{% url 'pricing' %}" class="btn btn-outline border-white/20 bg-white/8 text-white hover:bg-white/16 hover:text-white">View pricing</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

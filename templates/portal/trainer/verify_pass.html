@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Coach Pass Verification - {{ gym.name|default:'ONEXIVAGYM' }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #334155;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .verify-card {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .card-header-banner {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+      padding: 24px 20px 40px 20px;
+      text-align: center;
+      color: #ffffff;
+      position: relative;
+    }
+    .gym-name {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .gym-sub {
+      font-size: 0.76rem;
+      opacity: 0.85;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 2px;
+    }
+    .avatar-wrapper {
+      margin-top: -38px;
+      text-align: center;
+      position: relative;
+    }
+    .avatar-img {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #ffffff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      background: #f1f5f9;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+    .status-active {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+    .status-inactive {
+      background: #fff1f2;
+      color: #be123c;
+      border: 1px solid #fecdd3;
+    }
+    .coach-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .coach-id-pill {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #2563eb;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 9999px;
+      margin-top: 4px;
+      border: 1px solid #e2e8f0;
+      font-family: monospace;
+    }
+    .details-box {
+      margin: 18px 20px;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 0.86rem;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .detail-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .detail-label {
+      color: #64748b;
+      font-weight: 500;
+    }
+    .detail-val {
+      font-weight: 700;
+      color: #0f172a;
+      text-align: right;
+    }
+    .security-notice {
+      padding: 14px 20px;
+      background: #eff6ff;
+      border-top: 1px solid #dbeafe;
+      font-size: 0.74rem;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="verify-card">
+    {% if found %}
+      <!-- Gym Header Banner -->
+      <div class="card-header-banner">
+        <div class="gym-name">{{ gym.name|default:'ONEXIVAGYM' }}</div>
+        <div class="gym-sub">Official Digital Pass Verification</div>
+      </div>
+
+      <!-- Avatar & Identity -->
+      <div class="avatar-wrapper">
+        {% if trainer.photo %}
+          <img src="{{ trainer.photo.url }}" alt="{{ trainer.name }}" class="avatar-img">
+        {% else %}
+          <img src="{% static 'images/trainer_dp.png' %}" alt="{{ trainer.name }}" class="avatar-img">
+        {% endif %}
+      </div>
+
+      <div class="text-center px-3">
+        <div class="coach-title">Coach {{ trainer.name }}</div>
+        <div class="coach-id-pill">
+          <i class="fas fa-id-badge mr-1"></i> {{ trainer.trainer_id }}
+        </div>
+        <br>
+        {% if trainer.is_active %}
+          <span class="status-badge status-active">
+            <i class="fas fa-check-circle text-primary"></i> VERIFIED ACTIVE COACH
+          </span>
+        {% else %}
+          <span class="status-badge status-inactive">
+            <i class="fas fa-times-circle text-danger"></i> INACTIVE STAFF
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- Credential Details Box -->
+      <div class="details-box">
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-certificate text-muted mr-1"></i> Specialization</span>
+          <span class="detail-val">{{ trainer.get_specialization_display|default:trainer.specialization }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-clock text-muted mr-1"></i> Working Shift</span>
+          <span class="detail-val">{{ trainer.time_slot|default:'Full Day / Flexible' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-users text-muted mr-1"></i> Active PT Clients</span>
+          <span class="detail-val">{{ active_clients_count }} Members</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-shield-alt text-muted mr-1"></i> Access Permission</span>
+          <span class="detail-val text-primary font-weight-bold">Turnstile & Staff Floor</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label"><i class="fas fa-calendar-check text-muted mr-1"></i> Verified Date</span>
+          <span class="detail-val">{{ today|date:'d M Y' }}</span>
+        </div>
+      </div>
+
+      <!-- Security Notice Footer -->
+      <div class="security-notice">
+        <i class="fas fa-shield-halved" style="font-size: 1.1rem; flex-shrink: 0;"></i>
+        <span>Authentic coach credential verified by gym turnstile & management system.</span>
+      </div>
+
+    {% else %}
+      <!-- Not Found -->
+      <div class="p-5 text-center">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #fee2e2; color: #ef4444; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.5rem;">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 style="font-weight: 800; color: #0f172a; margin-bottom: 8px;">Invalid Coach Pass</h3>
+        <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5;">No coach record was found for ID <strong class="text-dark">{{ trainer_id }}</strong>. Please check with gym administration.</p>
+      </div>
+    {% endif %}
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,1183 @@
+{% extends 'superadmin/base.html' %}
+{% load static humanize %}
+
+{% block title %}System Settings | {{ system_setting.platform_name|default:"ONEXIVA" }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard_modern.css' %}">
+
+<style>
+    .settings-nav-pills .nav-link {
+        color: #475569;
+        font-weight: 700;
+        font-size: 0.88rem;
+        padding: 10px 18px;
+        border-radius: 10px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        background: #ffffff;
+        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+    }
+    .settings-nav-pills .nav-link:hover {
+        background: #f1f5f9;
+        color: #1e40af;
+        border-color: #cbd5e1;
+    }
+    .settings-nav-pills .nav-link.active {
+        background: #2563eb !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);
+        border-color: #2563eb;
+    }
+    .settings-section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .settings-section-subtitle {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-bottom: 18px;
+    }
+    .form-group label {
+        font-weight: 600;
+        font-size: 0.84rem;
+        color: #334155;
+        margin-bottom: 5px;
+    }
+    .preview-box {
+        width: 64px;
+        height: 64px;
+        border-radius: 10px;
+        border: 2px dashed #cbd5e1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: #f8fafc;
+    }
+    .preview-box img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    .backup-quick-alert {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border: 1px solid #bbf7d0;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+    <!-- BREADCRUMB NAVIGATION -->
+    <nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none">
+                    <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <i class="mdi mdi-settings mdi-18px"></i> System Settings
+            </li>
+        </ol>
+    </nav>
+
+    <!-- HERO / PAGE HEADER (Standard ONEXIVAExecutive Header) -->
+    <div class="dashboard-hero-header mb-4">
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center justify-content-center text-white shadow-sm mr-3" style="width: 48px; height: 48px; min-width: 48px; border-radius: 12px; font-size: 22px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;">
+                <i class="fas fa-sliders-h"></i>
+            </div>
+            <div>
+                <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
+                    <h2 class="dashboard-hero-title">Platform Configuration &amp; Settings</h2>
+                    {% if setting.maintenance_mode %}
+                        <span class="badge badge-pill badge-warning font-weight-bold" style="font-size: 0.72rem; padding: 0.35rem 0.75rem; background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> Maintenance Active
+                        </span>
+                    {% else %}
+                        <span class="badge badge-pill badge-success font-weight-bold" style="font-size: 0.72rem; padding: 0.35rem 0.75rem; background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0;">
+                            <i class="fas fa-check-circle mr-1"></i> System Online
+                        </span>
+                    {% endif %}
+                </div>
+                <p class="dashboard-hero-subtitle">Manage global SaaS branding, tenant defaults, email relay, and security controls</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
+            <a href="{% url 'superadmin:backup_manager' %}" class="btn-sync-refresh" title="Open Disaster Recovery & Backup Center">
+                <i class="mdi mdi-backup-restore mr-1 text-primary"></i> Backup Center
+            </a>
+            <button class="btn-sync-refresh" onclick="location.reload();" title="Refresh Settings">
+                <i class="fas fa-sync-alt mr-1"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- QUICK NOTICE TO BACKUP MANAGER -->
+    <div class="backup-quick-alert d-flex flex-wrap align-items-center justify-content-between shadow-sm">
+        <div class="d-flex align-items-center">
+            <div class="mr-3">
+                <span class="badge badge-pill badge-success p-2" style="font-size: 1.25rem;">
+                    <i class="fas fa-database"></i>
+                </span>
+            </div>
+            <div>
+                <h6 class="font-weight-bold mb-1 text-dark">Database & Media Backup Section Available</h6>
+                <p class="text-muted mb-0 small">Looking to generate a full system backup, single gym package, or disaster recovery snapshot?</p>
+            </div>
+        </div>
+        <div class="mt-2 mt-md-0">
+            <a href="{% url 'superadmin:backup_manager' %}" class="btn btn-success btn-sm font-weight-bold shadow-sm">
+                <i class="fas fa-arrow-right mr-1"></i> Open Backup Manager
+            </a>
+        </div>
+    </div>
+
+    <form method="POST" action="{% url 'superadmin:system_settings' %}" enctype="multipart/form-data" id="settingsForm">
+        {% csrf_token %}
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-pills settings-nav-pills mb-3" id="settingsTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="branding-tab" data-toggle="pill" href="#tab-branding" role="tab">
+                    <i class="fas fa-palette mr-1"></i> Platform & Branding
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="defaults-tab" data-toggle="pill" href="#tab-defaults" role="tab">
+                    <i class="fas fa-sliders-h mr-1"></i> Business & Gym Defaults
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="whatsapp-tab" data-toggle="pill" href="#tab-whatsapp" role="tab">
+                    <i class="fab fa-whatsapp mr-1 text-success"></i> WhatsApp Master
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="smtp-tab" data-toggle="pill" href="#tab-smtp" role="tab">
+                    <i class="fas fa-envelope mr-1 text-warning"></i> SMTP & Mail Gateway
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="security-tab" data-toggle="pill" href="#tab-security" role="tab">
+                    <i class="fas fa-shield-alt mr-1 text-danger"></i> Maintenance & Security
+                </a>
+            </li>
+        </ul>
+
+        <!-- Tab Panes -->
+        <div class="tab-content" id="settingsTabsContent">
+
+            <!-- 1. Platform & Branding -->
+            <div class="tab-pane fade show active" id="tab-branding" role="tabpanel">
+                <div class="gym-card mb-4">
+                    <div class="gym-card-header">
+                        <div class="gym-card-title">
+                            <i class="fas fa-palette text-primary"></i>
+                            <span>Platform Identity & Branding</span>
+                        </div>
+                    </div>
+                    <div class="gym-card-body">
+                        <p class="settings-section-subtitle">Define platform naming, contact details, currency formatting, and visual branding assets.</p>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label>Platform Name <span class="text-danger">*</span></label>
+                                <input type="text" name="platform_name" class="form-control" value="{{ setting.platform_name }}" required>
+                                <small class="text-muted">Displayed on navbar, invoice headers, and portal title.</small>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Tagline / Motto</label>
+                                <input type="text" name="tagline" class="form-control" value="{{ setting.tagline }}">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Company Legal Name</label>
+                                <input type="text" name="company_name" class="form-control" value="{{ setting.company_name }}">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Support Email Address</label>
+                                <input type="email" name="support_email" class="form-control" value="{{ setting.support_email }}">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Helpdesk Phone / WhatsApp</label>
+                                <input type="text" name="support_phone" class="form-control" value="{{ setting.support_phone }}">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Public Website URL</label>
+                                <input type="url" name="website_url" class="form-control" value="{{ setting.website_url }}">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="font-weight-bold text-dark">Currency Symbol</label>
+                                <select name="currency_symbol" id="currency_symbol" class="form-control font-weight-bold" onchange="syncFromSymbol(this.value)">
+                                    <option value="₹" {% if setting.currency_symbol == '₹' %}selected{% endif %}>₹ (INR Rupee)</option>
+                                    <option value="$" {% if setting.currency_symbol == '$' %}selected{% endif %}>$ (USD / CAD / AUD Dollar)</option>
+                                    <option value="€" {% if setting.currency_symbol == '€' %}selected{% endif %}>€ (EUR Euro)</option>
+                                    <option value="£" {% if setting.currency_symbol == '£' %}selected{% endif %}>£ (GBP British Pound)</option>
+                                    <option value="د.إ" {% if setting.currency_symbol == 'د.إ' %}selected{% endif %}>د.إ (AED UAE Dirham)</option>
+                                    <option value="﷼" {% if setting.currency_symbol == '﷼' %}selected{% endif %}>﷼ (SAR Saudi Riyal)</option>
+                                    <option value="C$" {% if setting.currency_symbol == 'C$' %}selected{% endif %}>C$ (Canadian Dollar)</option>
+                                    <option value="A$" {% if setting.currency_symbol == 'A$' %}selected{% endif %}>A$ (Australian Dollar)</option>
+                                    <option value="S$" {% if setting.currency_symbol == 'S$' %}selected{% endif %}>S$ (Singapore Dollar)</option>
+                                    <option value="RM" {% if setting.currency_symbol == 'RM' %}selected{% endif %}>RM (Malaysian Ringgit)</option>
+                                    <option value="¥" {% if setting.currency_symbol == '¥' %}selected{% endif %}>¥ (JPY Yen / CNY Yuan)</option>
+                                    <option value="R" {% if setting.currency_symbol == 'R' %}selected{% endif %}>R (ZAR South African Rand)</option>
+                                    <option value="KD" {% if setting.currency_symbol == 'KD' %}selected{% endif %}>KD (Kuwaiti Dinar)</option>
+                                    <option value="BD" {% if setting.currency_symbol == 'BD' %}selected{% endif %}>BD (Bahraini Dinar)</option>
+                                    <option value="QR" {% if setting.currency_symbol == 'QR' %}selected{% endif %}>QR (Qatari Riyal)</option>
+                                    <option value="OMR" {% if setting.currency_symbol == 'OMR' %}selected{% endif %}>OMR (Omani Rial)</option>
+                                    {% if setting.currency_symbol and setting.currency_symbol not in "₹,$,€,£,د.إ,﷼,C$,A$,S$,RM,¥,R,KD,BD,QR,OMR" %}
+                                        <option value="{{ setting.currency_symbol }}" selected>{{ setting.currency_symbol }} (Current Custom)</option>
+                                    {% endif %}
+                                </select>
+                                <small class="text-muted">Symbol for plan prices &amp; billing</small>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="font-weight-bold text-dark">Currency ISO Code</label>
+                                <select name="currency_code" id="currency_code" class="form-control font-weight-bold text-uppercase" onchange="syncFromCode(this.value)">
+                                    <option value="INR" data-symbol="₹" {% if setting.currency_code == 'INR' %}selected{% endif %}>INR - Indian Rupee (₹)</option>
+                                    <option value="USD" data-symbol="$" {% if setting.currency_code == 'USD' %}selected{% endif %}>USD - US Dollar ($)</option>
+                                    <option value="EUR" data-symbol="€" {% if setting.currency_code == 'EUR' %}selected{% endif %}>EUR - Euro (€)</option>
+                                    <option value="GBP" data-symbol="£" {% if setting.currency_code == 'GBP' %}selected{% endif %}>GBP - British Pound (£)</option>
+                                    <option value="AED" data-symbol="د.إ" {% if setting.currency_code == 'AED' %}selected{% endif %}>AED - UAE Dirham (د.إ)</option>
+                                    <option value="SAR" data-symbol="﷼" {% if setting.currency_code == 'SAR' %}selected{% endif %}>SAR - Saudi Riyal (﷼)</option>
+                                    <option value="CAD" data-symbol="C$" {% if setting.currency_code == 'CAD' %}selected{% endif %}>CAD - Canadian Dollar (C$)</option>
+                                    <option value="AUD" data-symbol="A$" {% if setting.currency_code == 'AUD' %}selected{% endif %}>AUD - Australian Dollar (A$)</option>
+                                    <option value="SGD" data-symbol="S$" {% if setting.currency_code == 'SGD' %}selected{% endif %}>SGD - Singapore Dollar (S$)</option>
+                                    <option value="MYR" data-symbol="RM" {% if setting.currency_code == 'MYR' %}selected{% endif %}>MYR - Malaysian Ringgit (RM)</option>
+                                    <option value="JPY" data-symbol="¥" {% if setting.currency_code == 'JPY' %}selected{% endif %}>JPY - Japanese Yen (¥)</option>
+                                    <option value="CNY" data-symbol="¥" {% if setting.currency_code == 'CNY' %}selected{% endif %}>CNY - Chinese Yuan (¥)</option>
+                                    <option value="ZAR" data-symbol="R" {% if setting.currency_code == 'ZAR' %}selected{% endif %}>ZAR - South African Rand (R)</option>
+                                    <option value="KWD" data-symbol="KD" {% if setting.currency_code == 'KWD' %}selected{% endif %}>KWD - Kuwaiti Dinar (KD)</option>
+                                    <option value="BHD" data-symbol="BD" {% if setting.currency_code == 'BHD' %}selected{% endif %}>BHD - Bahraini Dinar (BD)</option>
+                                    <option value="QAR" data-symbol="QR" {% if setting.currency_code == 'QAR' %}selected{% endif %}>QAR - Qatari Riyal (QR)</option>
+                                    <option value="OMR" data-symbol="OMR" {% if setting.currency_code == 'OMR' %}selected{% endif %}>OMR - Omani Rial (OMR)</option>
+                                    {% if setting.currency_code and setting.currency_code not in "INR,USD,EUR,GBP,AED,SAR,CAD,AUD,SGD,MYR,JPY,CNY,ZAR,KWD,BHD,QAR,OMR" %}
+                                        <option value="{{ setting.currency_code }}" selected>{{ setting.currency_code }} (Current Custom)</option>
+                                    {% endif %}
+                                </select>
+                                <small class="text-muted">3-letter standard ISO currency code</small>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label>Timezone</label>
+                                <select name="timezone" class="form-control">
+                                    <option value="Asia/Kolkata" {% if setting.timezone == 'Asia/Kolkata' %}selected{% endif %}>Asia/Kolkata (IST +05:30)</option>
+                                    <option value="UTC" {% if setting.timezone == 'UTC' %}selected{% endif %}>UTC (GMT +00:00)</option>
+                                    <option value="America/New_York" {% if setting.timezone == 'America/New_York' %}selected{% endif %}>America/New_York (EST)</option>
+                                    <option value="Europe/London" {% if setting.timezone == 'Europe/London' %}selected{% endif %}>Europe/London (BST)</option>
+                                    <option value="Asia/Dubai" {% if setting.timezone == 'Asia/Dubai' %}selected{% endif %}>Asia/Dubai (GST)</option>
+                                </select>
+                            </div>
+
+                            <!-- Media Uploads -->
+                            <div class="col-md-6 form-group mt-3">
+                                <label>Platform Brand Logo</label>
+                                <div class="d-flex align-items-center">
+                                    <div class="preview-box mr-3">
+                                        {% if setting.platform_logo %}
+                                            <img src="{{ setting.platform_logo.url }}" alt="Logo" id="logoPreview">
+                                        {% else %}
+                                            <img src="{% static 'images/favicon.png' %}" alt="Logo" id="logoPreview">
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <input type="file" name="platform_logo" class="form-control-file" accept="image/*" onchange="previewImage(this, 'logoPreview')">
+                                        <small class="text-muted d-block mt-1">Recommended: 256x256 PNG or SVG with transparent background.</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 form-group mt-3">
+                                <label>Platform Favicon</label>
+                                <div class="d-flex align-items-center">
+                                    <div class="preview-box mr-3">
+                                        {% if setting.platform_favicon %}
+                                            <img src="{{ setting.platform_favicon.url }}" alt="Favicon" id="faviconPreview">
+                                        {% else %}
+                                            <img src="{% static 'images/favicon.png' %}" alt="Favicon" id="faviconPreview">
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <input type="file" name="platform_favicon" class="form-control-file" accept="image/*" onchange="previewImage(this, 'faviconPreview')">
+                                        <small class="text-muted d-block mt-1">Browser tab icon (32x32 or 64x64 PNG/ICO).</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Business & Gym Defaults -->
+            <div class="tab-pane fade" id="tab-defaults" role="tabpanel">
+                <div class="gym-card mb-4">
+                    <div class="gym-card-header">
+                        <div class="gym-card-title">
+                            <i class="fas fa-sliders-h text-primary"></i>
+                            <span>Multi-Tenant Onboarding Rules</span>
+                        </div>
+                    </div>
+                    <div class="gym-card-body">
+                        <p class="settings-section-subtitle">Configure default limits, trial periods, and ID formatting applied to newly onboarded gyms.</p>
+
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <label>Free Trial Duration (Days)</label>
+                                <div class="input-group">
+                                    <input type="number" name="default_trial_days" class="form-control" value="{{ setting.default_trial_days }}" min="0" max="365">
+                                    <div class="input-group-append"><span class="input-group-text">Days</span></div>
+                                </div>
+                                <small class="text-muted">Granted to newly registered gym accounts.</small>
+                            </div>
+
+                            <div class="col-md-4 form-group">
+                                <label>Subscription Grace Period (Days)</label>
+                                <div class="input-group">
+                                    <input type="number" name="grace_period_days" class="form-control" value="{{ setting.grace_period_days }}" min="0" max="60">
+                                    <div class="input-group-append"><span class="input-group-text">Days</span></div>
+                                </div>
+                                <small class="text-muted">Days allowed after plan expiry before freezing tenant access.</small>
+                            </div>
+
+                            <div class="col-md-4 form-group">
+                                <label>Default Member ID Prefix</label>
+                                <input type="text" name="default_member_prefix" class="form-control text-uppercase" value="{{ setting.default_member_prefix }}" maxlength="10">
+                                <small class="text-muted">e.g. MEM (produces MEM-001)</small>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <div class="custom-control custom-switch p-3 bg-light rounded border">
+                                    <input type="checkbox" class="custom-control-input" id="allow_public_registration" name="allow_public_registration" {% if setting.allow_public_registration %}checked{% endif %}>
+                                    <label class="custom-control-label font-weight-bold text-dark" for="allow_public_registration">
+                                        Allow Public Self-Registration for Gyms
+                                    </label>
+                                    <p class="text-muted mb-0 small pl-1">When active, prospective gym owners can sign up directly through the public landing page.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. WhatsApp Master Switch -->
+            <div class="tab-pane fade" id="tab-whatsapp" role="tabpanel">
+                <div class="gym-card mb-4">
+                    <div class="gym-card-header">
+                        <div class="gym-card-title">
+                            <i class="fab fa-whatsapp text-success"></i>
+                            <span>Global WhatsApp Automation Switch</span>
+                        </div>
+                    </div>
+                    <div class="gym-card-body">
+                        <p class="settings-section-subtitle">Global toggle to activate or immediately pause automated outbound WhatsApp messaging across all tenant gyms.</p>
+
+                        <div class="custom-control custom-switch p-4 bg-light rounded border mb-4">
+                            <input type="checkbox" class="custom-control-input" id="global_whatsapp_master" name="global_whatsapp_master" {% if setting.global_whatsapp_master %}checked{% endif %}>
+                            <label class="custom-control-label font-weight-bold text-dark" for="global_whatsapp_master" style="font-size: 1rem;">
+                                Master Outbound WhatsApp Dispatch (All Gyms)
+                            </label>
+                            <p class="text-muted mb-0 mt-1 small">If switched OFF, all scheduled and automated WhatsApp messages (fee dues, birthday wishes, welcome notifications) will be paused platform-wide.</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <div class="p-3 border rounded bg-white shadow-sm h-100">
+                                    <h6 class="font-weight-bold text-dark mb-2"><i class="fas fa-check-circle text-success mr-1"></i> Active Channels</h6>
+                                    <ul class="list-unstyled small text-muted mb-0">
+                                        <li class="mb-2"><i class="fas fa-chevron-right text-primary mr-2"></i>Twilio WhatsApp Business API</li>
+                                        <li class="mb-2"><i class="fas fa-chevron-right text-primary mr-2"></i>Personal WhatsApp Web Manual Dispatch</li>
+                                        <li><i class="fas fa-chevron-right text-primary mr-2"></i>Automated Member Fee Follow-up Engine</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded bg-white shadow-sm h-100">
+                                    <h6 class="font-weight-bold text-dark mb-2"><i class="fas fa-shield-alt text-warning mr-1"></i> Rate Limit Protection</h6>
+                                    <p class="small text-muted mb-0">In case of unexpected rate limits or third-party outages, switch this master toggle off to safeguard your Meta/Twilio quota.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. SMTP Configuration -->
+            <div class="tab-pane fade" id="tab-smtp" role="tabpanel">
+                <div class="gym-card mb-4">
+                    <div class="gym-card-header d-flex flex-wrap justify-content-between align-items-center">
+                        <div class="gym-card-title mb-2 mb-sm-0">
+                            <i class="fas fa-envelope text-warning"></i>
+                            <span>Outbound Email &amp; SMTP Gateway</span>
+                        </div>
+                        <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
+                            <button type="button" class="btn btn-outline-info btn-sm font-weight-bold shadow-sm" onclick="openSmtpGuideModal()">
+                                <i class="fas fa-book-reader mr-1"></i> Setup Guide &amp; Docs
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm font-weight-bold shadow-sm" onclick="openTestEmailModal()">
+                                <i class="fas fa-paper-plane mr-1"></i> Send Test Email
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gym-card-body">
+                        <p class="settings-section-subtitle mb-3">Configure custom mail relay for billing receipts, password reset notifications, and superadmin alerts.</p>
+
+                        <!-- Quick Presets Bar (Clean, Non-overlapping Layout) -->
+                        <div class="card border mb-4 p-3 shadow-none" style="border-left: 4px solid #0284c7 !important; background: #f8fafc; border-radius: 10px; border-color: #e2e8f0;">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center mb-1 mb-md-0">
+                                    <span class="badge badge-primary px-2 py-1 mr-2" style="font-size: 0.78rem;">
+                                        <i class="fas fa-magic mr-1"></i> 1-Click Presets
+                                    </span>
+                                    <span class="text-dark small font-weight-bold">
+                                        Select your email provider to auto-fill recommended host, port &amp; security:
+                                    </span>
+                                </div>
+                                <a href="javascript:void(0)" onclick="openSmtpGuideModal()" class="small font-weight-bold text-primary">
+                                    <i class="fas fa-book-reader mr-1"></i> Need help? Open Setup Guide &rarr;
+                                </a>
+                            </div>
+
+                            <div class="d-flex flex-wrap align-items-center" style="gap: 10px;">
+                                <button type="button" class="btn btn-sm shadow-xs font-weight-bold" onclick="applySmtpPreset('gmail')" style="background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 8px; padding: 5px 12px; white-space: nowrap;">
+                                    <i class="fab fa-google text-danger mr-1"></i> Gmail / Workspace
+                                </button>
+                                <button type="button" class="btn btn-sm shadow-xs font-weight-bold" onclick="applySmtpPreset('brevo')" style="background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 8px; padding: 5px 12px; white-space: nowrap;">
+                                    <i class="fas fa-paper-plane text-info mr-1"></i> Brevo (300 Free/Day)
+                                </button>
+                                <button type="button" class="btn btn-sm shadow-xs font-weight-bold" onclick="applySmtpPreset('sendgrid')" style="background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 8px; padding: 5px 12px; white-space: nowrap;">
+                                    <i class="fas fa-cloud text-primary mr-1"></i> SendGrid
+                                </button>
+                                <button type="button" class="btn btn-sm shadow-xs font-weight-bold" onclick="applySmtpPreset('cpanel')" style="background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 8px; padding: 5px 12px; white-space: nowrap;">
+                                    <i class="fas fa-server text-success mr-1"></i> cPanel / Hostinger
+                                </button>
+                                <button type="button" class="btn btn-sm btn-primary font-weight-bold shadow-xs" onclick="openSmtpGuideModal()" style="border-radius: 8px; padding: 5px 14px; white-space: nowrap;">
+                                    <i class="fas fa-book-open mr-1"></i> Full Guide &amp; Docs
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Preset Applied Notification -->
+                        <div id="smtpPresetNotification" class="alert alert-info alert-dismissible fade show d-none small py-2 px-3 mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-1"></i> <span id="smtpPresetNotificationText"></span>
+                            <button type="button" class="close py-2" onclick="$('#smtpPresetNotification').addClass('d-none')">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8 form-group">
+                                <label class="font-weight-bold text-dark">SMTP Host Server</label>
+                                <input type="text" name="smtp_host" id="smtp_host" class="form-control" value="{{ setting.smtp_host|default:'' }}" placeholder="e.g. smtp.gmail.com or smtp.sendgrid.net">
+                                <small class="text-muted">Outgoing relay server address provided by your email host.</small>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label class="font-weight-bold text-dark">Port</label>
+                                <input type="number" name="smtp_port" id="smtp_port" class="form-control" value="{{ setting.smtp_port|default:587 }}">
+                                <small class="text-muted">Common: <strong>587</strong> (TLS) or <strong>465</strong> (SSL)</small>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-dark">SMTP Username / User Email</label>
+                                <input type="text" name="smtp_user" id="smtp_user" class="form-control" value="{{ setting.smtp_user|default:'' }}" placeholder="user@domain.com">
+                                <small class="text-muted">Full email or API user identifier.</small>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-dark">SMTP Password / App Password</label>
+                                <input type="password" name="smtp_password" id="smtp_password" class="form-control" placeholder="••••••••••••••" autocomplete="new-password">
+                                <div class="d-flex justify-content-between align-items-center mt-1 flex-wrap">
+                                    <small class="text-muted">Leave empty to keep existing password.</small>
+                                    <a href="javascript:void(0)" onclick="openSmtpGuideModal('gmail')" class="small font-weight-bold text-primary">
+                                        <i class="fas fa-key mr-1"></i> How to get Gmail App Password?
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-dark">Sender 'From' Email Address</label>
+                                <input type="email" name="smtp_from_email" id="smtp_from_email" class="form-control" value="{{ setting.smtp_from_email|default:'' }}" placeholder="no-reply@onexiva.com">
+                                <small class="text-muted">Must be authorized/verified by your email relay provider.</small>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center mt-3">
+                                <div class="custom-control custom-checkbox mr-4">
+                                    <input type="checkbox" class="custom-control-input" id="smtp_use_tls" name="smtp_use_tls" {% if setting.smtp_use_tls %}checked{% endif %} onchange="toggleSecurityMode('tls')">
+                                    <label class="custom-control-label font-weight-bold" for="smtp_use_tls">Enable TLS (Port 587)</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="smtp_use_ssl" name="smtp_use_ssl" {% if setting.smtp_use_ssl %}checked{% endif %} onchange="toggleSecurityMode('ssl')">
+                                    <label class="custom-control-label font-weight-bold" for="smtp_use_ssl">Enable SSL (Port 465)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Maintenance & Security -->
+            <div class="tab-pane fade" id="tab-security" role="tabpanel">
+                <div class="gym-card mb-4">
+                    <div class="gym-card-header">
+                        <div class="gym-card-title">
+                            <i class="fas fa-shield-alt text-danger"></i>
+                            <span>Maintenance Mode & Security Rules</span>
+                        </div>
+                    </div>
+                    <div class="gym-card-body">
+                        <p class="settings-section-subtitle">Control system downtime announcements, session inactivity policies, and automated backups.</p>
+
+                        <div class="custom-control custom-switch p-3 bg-light rounded border mb-3">
+                            <input type="checkbox" class="custom-control-input" id="maintenance_mode" name="maintenance_mode" {% if setting.maintenance_mode %}checked{% endif %}>
+                            <label class="custom-control-label text-danger font-weight-bold" for="maintenance_mode" style="font-size: 0.95rem;">
+                                Activate Platform Maintenance Mode
+                            </label>
+                            <p class="text-muted mb-0 small">When enabled, gym administrators and members will see a maintenance screen. Only Superadmins can access the system.</p>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label>Maintenance Notice Message</label>
+                            <textarea name="maintenance_message" class="form-control" rows="3">{{ setting.maintenance_message }}</textarea>
+                        </div>
+
+                        <div class="border-top pt-3 mb-3">
+                            <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-user-lock text-primary mr-1"></i> Session Inactivity & Login Guard</h6>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label>Session Inactivity Timeout (Minutes)</label>
+                                    <input type="number" name="session_timeout_minutes" class="form-control" value="{{ setting.session_timeout_minutes }}" min="15" max="1440">
+                                    <small class="text-muted">Auto-logout users after inactive duration.</small>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label>Max Failed Login Attempts</label>
+                                    <input type="number" name="max_login_attempts" class="form-control" value="{{ setting.max_login_attempts }}" min="3" max="20">
+                                    <small class="text-muted">Temporarily lock account after consecutive failures.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-top pt-3">
+                            <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-clock text-success mr-1"></i> Automated Periodic Backup Policy</h6>
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label>Automated Periodic Backup</label>
+                                    <div class="custom-control custom-switch mt-2">
+                                        <input type="checkbox" class="custom-control-input" id="auto_backup_enabled" name="auto_backup_enabled" {% if setting.auto_backup_enabled %}checked{% endif %}>
+                                        <label class="custom-control-label font-weight-bold" for="auto_backup_enabled">Enable Automatic Backups</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label>Frequency</label>
+                                    <select name="backup_frequency" class="form-control">
+                                        <option value="daily" {% if setting.backup_frequency == 'daily' %}selected{% endif %}>Daily at Midnight</option>
+                                        <option value="weekly" {% if setting.backup_frequency == 'weekly' %}selected{% endif %}>Weekly (Every Sunday)</option>
+                                        <option value="monthly" {% if setting.backup_frequency == 'monthly' %}selected{% endif %}>Monthly (1st of Month)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label>Retention Window</label>
+                                    <div class="input-group">
+                                        <input type="number" name="backup_retention_days" class="form-control" value="{{ setting.backup_retention_days }}" min="7" max="365">
+                                        <div class="input-group-append"><span class="input-group-text">Days</span></div>
+                                    </div>
+                                    <small class="text-muted">Auto-purge backups older than this.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- STICKY / BOTTOM SAVE BAR -->
+        <div class="gym-card bg-white p-3 d-flex flex-wrap justify-content-between align-items-center mb-5">
+            <div class="text-muted small">
+                <i class="fas fa-info-circle text-primary mr-1"></i> Platform configuration updates apply in real time across all portals.
+            </div>
+            <div class="mt-2 mt-md-0">
+                <button type="reset" class="btn btn-outline-secondary btn-sm mr-2 font-weight-bold">
+                    <i class="fas fa-undo mr-1"></i> Discard
+                </button>
+                <button type="submit" class="btn btn-primary btn-sm font-weight-bold px-4 shadow-sm">
+                    <i class="fas fa-save mr-1"></i> Save Platform Settings
+                </button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<!-- Modal: Test Email Dispatch -->
+<div class="modal fade" id="testEmailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
+            <div class="modal-header bg-primary text-white" style="border-top-left-radius: 14px; border-top-right-radius: 14px;">
+                <h5 class="modal-title font-weight-bold">
+                    <i class="fas fa-paper-plane mr-2"></i> Verify SMTP Gateway
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" onclick="closeTestEmailModal()" aria-label="Close" style="background: transparent; border: none; font-size: 1.5rem; opacity: 0.9; cursor: pointer;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-3">Send a test email to confirm that your SMTP credentials, port, and TLS handshake are functioning properly.</p>
+                <div class="form-group">
+                    <label class="font-weight-bold">Recipient Test Email</label>
+                    <input type="email" id="testRecipientInput" class="form-control" placeholder="admin@example.com" value="{{ request.user.email|default:'' }}">
+                </div>
+                <div id="testEmailAlert" class="alert d-none small mb-0"></div>
+            </div>
+            <div class="modal-footer bg-light" style="border-bottom-left-radius: 14px; border-bottom-right-radius: 14px;">
+                <button type="button" class="btn btn-secondary btn-sm font-weight-bold" data-dismiss="modal" data-bs-dismiss="modal" onclick="closeTestEmailModal()">Close</button>
+                <button type="button" class="btn btn-primary btn-sm font-weight-bold" id="btnDispatchTestEmail" onclick="sendTestEmailAjax()">
+                    <span id="testEmailBtnText"><i class="fas fa-paper-plane mr-1"></i> Dispatch Test</span>
+                    <span id="testEmailSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Comprehensive SMTP Setup Guide -->
+<div class="modal fade" id="smtpGuideModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <div>
+                    <h5 class="modal-title font-weight-bold mb-1">
+                        <i class="fas fa-book-reader mr-2"></i> Outbound SMTP Gateway Setup Guide
+                    </h5>
+                    <p class="small text-white-50 mb-0">Follow our step-by-step instructions to configure reliable email delivery for ONEXIVA.</p>
+                </div>
+                <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" onclick="closeSmtpGuideModal()" aria-label="Close" style="background: transparent; border: none; font-size: 1.5rem; opacity: 0.9; cursor: pointer;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <div class="modal-body p-4 bg-light">
+                <!-- Provider Selection Tabs -->
+                <ul class="nav nav-pills nav-fill mb-4 bg-white p-2 rounded shadow-sm border" id="smtpGuideTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active font-weight-bold" id="guide-tab-gmail" data-toggle="pill" data-bs-toggle="pill" href="#guide-pane-gmail" role="tab">
+                            <i class="fab fa-google text-danger mr-1"></i> Gmail / Workspace
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold" id="guide-tab-brevo" data-toggle="pill" data-bs-toggle="pill" href="#guide-pane-brevo" role="tab">
+                            <i class="fas fa-paper-plane text-info mr-1"></i> Brevo <span class="badge badge-success small ml-1">Free 300/day</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold" id="guide-tab-sendgrid" data-toggle="pill" data-bs-toggle="pill" href="#guide-pane-sendgrid" role="tab">
+                            <i class="fas fa-cloud text-primary mr-1"></i> SendGrid
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold" id="guide-tab-cpanel" data-toggle="pill" data-bs-toggle="pill" href="#guide-pane-cpanel" role="tab">
+                            <i class="fas fa-server text-success mr-1"></i> cPanel / Webmail
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content bg-white p-4 rounded shadow-sm border" id="smtpGuideContent">
+                    
+                    <!-- 1. GMAIL / GOOGLE WORKSPACE -->
+                    <div class="tab-pane fade show active" id="guide-pane-gmail" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="font-weight-bold text-dark mb-0">
+                                <i class="fab fa-google text-danger mr-2"></i> Setting Up Gmail / Google Workspace (SMTP)
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-outline-primary font-weight-bold" onclick="applySmtpPreset('gmail', true)">
+                                <i class="fas fa-magic mr-1"></i> Apply Gmail Settings
+                            </button>
+                        </div>
+                        
+                        <div class="alert alert-warning small border-warning">
+                            <strong><i class="fas fa-exclamation-triangle mr-1"></i> Crucial Requirement:</strong>
+                            Google blocks standard account passwords for SMTP. You <strong>MUST</strong> enable 2-Step Verification and generate a dedicated <strong>16-character App Password</strong>.
+                        </div>
+
+                        <ol class="pl-3 mb-4" style="line-height: 1.8;">
+                            <li class="mb-2">
+                                <strong>Enable 2-Step Verification:</strong> Go to your 
+                                <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer" class="font-weight-bold text-primary">Google Account Security Settings &nearr;</a>
+                                and ensure <strong>2-Step Verification</strong> is switched <strong>ON</strong>.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Generate an App Password:</strong> Direct link to
+                                <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener noreferrer" class="font-weight-bold text-primary">Google App Passwords &nearr;</a>.
+                                <em>(Or search "App passwords" in the top Google search bar)</em>.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Create Password:</strong> Name your app (e.g. <code>ONEXIVAGym Platform</code>) and click <strong>Create</strong>.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Copy 16-Character Password:</strong> Google displays a 16-letter code in a yellow box (e.g. <code>abcd efgh ijkl mnop</code>). Copy it without spaces.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Configure in ONEXIVA:</strong>
+                                <table class="table table-sm table-bordered mt-2 mb-0 small">
+                                    <thead class="thead-light">
+                                        <tr><th>Field</th><th>Required Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>SMTP Host</strong></td><td><code>smtp.gmail.com</code></td></tr>
+                                        <tr><td><strong>Port</strong></td><td><code>587</code></td></tr>
+                                        <tr><td><strong>SMTP Username</strong></td><td>Your full Gmail address (e.g. <code>onexivagym@gmail.com</code>)</td></tr>
+                                        <tr><td><strong>SMTP Password</strong></td><td>Your 16-character Google App Password</td></tr>
+                                        <tr><td><strong>Sender 'From' Email</strong></td><td>Same as your Gmail address</td></tr>
+                                        <tr><td><strong>Encryption</strong></td><td>Check <strong>Enable TLS (Port 587)</strong></td></tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- 2. BREVO (SENDINBLUE) -->
+                    <div class="tab-pane fade" id="guide-pane-brevo" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="font-weight-bold text-dark mb-0">
+                                <i class="fas fa-paper-plane text-info mr-2"></i> Setting Up Brevo / Sendinblue (Recommended Free Tier)
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-outline-info font-weight-bold" onclick="applySmtpPreset('brevo', true)">
+                                <i class="fas fa-magic mr-1"></i> Apply Brevo Settings
+                            </button>
+                        </div>
+                        
+                        <div class="alert alert-info small border-info">
+                            <strong><i class="fas fa-thumbs-up mr-1"></i> Why Brevo?</strong> Brevo offers <strong>300 free emails per day forever</strong> with near-zero spam flagging and doesn't require complex 2FA app passwords.
+                        </div>
+
+                        <ol class="pl-3 mb-4" style="line-height: 1.8;">
+                            <li class="mb-2">
+                                <strong>Create Account:</strong> Sign up at 
+                                <a href="https://www.brevo.com" target="_blank" rel="noopener noreferrer" class="font-weight-bold text-info">Brevo.com &nearr;</a> (Free plan).
+                            </li>
+                            <li class="mb-2">
+                                <strong>Find SMTP Credentials:</strong> In Brevo dashboard, click your account name at top-right &rarr; select <strong>SMTP &amp; API</strong> &rarr; open the <strong>SMTP</strong> tab.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Generate SMTP Key:</strong> Click <strong>Generate a new SMTP key</strong>, name it <code>ONEXIVAGym</code>, and copy your master key.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Verify Sender:</strong> Go to <strong>Senders, Domains &amp; Dedicated IPs</strong> in Brevo to verify the email address you will send from.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Configure in ONEXIVA:</strong>
+                                <table class="table table-sm table-bordered mt-2 mb-0 small">
+                                    <thead class="thead-light">
+                                        <tr><th>Field</th><th>Required Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>SMTP Host</strong></td><td><code>smtp-relay.brevo.com</code></td></tr>
+                                        <tr><td><strong>Port</strong></td><td><code>587</code></td></tr>
+                                        <tr><td><strong>SMTP Username</strong></td><td>Your Brevo login email address</td></tr>
+                                        <tr><td><strong>SMTP Password</strong></td><td>Your Brevo SMTP Key (starts with <code>xsmtpsib-...</code>)</td></tr>
+                                        <tr><td><strong>Sender 'From' Email</strong></td><td>Your verified sender address in Brevo</td></tr>
+                                        <tr><td><strong>Encryption</strong></td><td>Check <strong>Enable TLS (Port 587)</strong></td></tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- 3. SENDGRID -->
+                    <div class="tab-pane fade" id="guide-pane-sendgrid" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="font-weight-bold text-dark mb-0">
+                                <i class="fas fa-cloud text-primary mr-2"></i> Setting Up Twilio SendGrid
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-outline-primary font-weight-bold" onclick="applySmtpPreset('sendgrid', true)">
+                                <i class="fas fa-magic mr-1"></i> Apply SendGrid Settings
+                            </button>
+                        </div>
+
+                        <ol class="pl-3 mb-4" style="line-height: 1.8;">
+                            <li class="mb-2">
+                                <strong>Sender Authentication:</strong> Sign in at 
+                                <a href="https://app.sendgrid.com" target="_blank" rel="noopener noreferrer" class="font-weight-bold text-primary">SendGrid Dashboard &nearr;</a> and complete <strong>Sender Authentication</strong> (Single Sender or Domain).
+                            </li>
+                            <li class="mb-2">
+                                <strong>Generate API Key:</strong> Navigate to <strong>Settings</strong> &rarr; <strong>API Keys</strong> &rarr; click <strong>Create API Key</strong>.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Set Permissions:</strong> Name it <code>ONEXIVASMTP</code>, select <strong>Full Access</strong> (or Restricted: <em>Mail Send</em>), and click <strong>Create &amp; View</strong>. Copy the key (starts with <code>SG.</code>).
+                            </li>
+                            <li class="mb-2">
+                                <strong>Configure in ONEXIVA:</strong>
+                                <table class="table table-sm table-bordered mt-2 mb-0 small">
+                                    <thead class="thead-light">
+                                        <tr><th>Field</th><th>Required Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>SMTP Host</strong></td><td><code>smtp.sendgrid.net</code></td></tr>
+                                        <tr><td><strong>Port</strong></td><td><code>587</code></td></tr>
+                                        <tr><td><strong>SMTP Username</strong></td><td><code>apikey</code> <em>(Exact literal string)</em></td></tr>
+                                        <tr><td><strong>SMTP Password</strong></td><td>Your SendGrid API Key (<code>SG.xxxx...</code>)</td></tr>
+                                        <tr><td><strong>Sender 'From' Email</strong></td><td>Your verified Single Sender or Domain address</td></tr>
+                                        <tr><td><strong>Encryption</strong></td><td>Check <strong>Enable TLS (Port 587)</strong></td></tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- 4. CPANEL / HOSTINGER / CUSTOM WEBMAIL -->
+                    <div class="tab-pane fade" id="guide-pane-cpanel" role="tabpanel">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="font-weight-bold text-dark mb-0">
+                                <i class="fas fa-server text-success mr-2"></i> Setting Up Custom Domain / cPanel / Hostinger Webmail
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-outline-success font-weight-bold" onclick="applySmtpPreset('cpanel', true)">
+                                <i class="fas fa-magic mr-1"></i> Apply cPanel Settings
+                            </button>
+                        </div>
+
+                        <ol class="pl-3 mb-4" style="line-height: 1.8;">
+                            <li class="mb-2">
+                                <strong>Access Hosting Webmail:</strong> In cPanel, Plesk, Hostinger, or Namecheap, go to <strong>Email Accounts</strong> &rarr; click <strong>Connect Devices</strong> or <strong>Mail Client Manual Settings</strong>.
+                            </li>
+                            <li class="mb-2">
+                                <strong>Outgoing Server Details:</strong>
+                                Notice your Outgoing Server name (often <code>mail.yourdomain.com</code> or <code>smtp.hostinger.com</code>).
+                            </li>
+                            <li class="mb-2">
+                                <strong>Configure in ONEXIVA:</strong>
+                                <table class="table table-sm table-bordered mt-2 mb-0 small">
+                                    <thead class="thead-light">
+                                        <tr><th>Field</th><th>SSL Option (Port 465)</th><th>TLS Option (Port 587)</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>SMTP Host</strong></td><td><code>mail.yourdomain.com</code></td><td><code>mail.yourdomain.com</code></td></tr>
+                                        <tr><td><strong>Port</strong></td><td><code>465</code></td><td><code>587</code></td></tr>
+                                        <tr><td><strong>Encryption</strong></td><td>Check <strong>Enable SSL (Port 465)</strong></td><td>Check <strong>Enable TLS (Port 587)</strong></td></tr>
+                                        <tr><td><strong>SMTP Username</strong></td><td colspan="2">Your complete email address (e.g. <code>info@onexiva.com</code>)</td></tr>
+                                        <tr><td><strong>SMTP Password</strong></td><td colspan="2">Your mailbox password</td></tr>
+                                        <tr><td><strong>Sender 'From' Email</strong></td><td colspan="2">Same mailbox email address</td></tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                        </ol>
+                    </div>
+
+                </div>
+
+                <!-- Troubleshooting Tips -->
+                <div class="mt-4 p-3 bg-white rounded border shadow-sm">
+                    <h6 class="font-weight-bold text-dark mb-2">
+                        <i class="fas fa-tools text-secondary mr-2"></i> Common SMTP Issues &amp; How to Fix Them
+                    </h6>
+                    <div class="row small">
+                        <div class="col-md-6 mb-2">
+                            <strong><i class="fas fa-times-circle text-danger mr-1"></i> 535 Authentication Failed:</strong>
+                            <p class="text-muted mb-0">For Gmail, you entered your normal Google password instead of a 16-character App Password, or entered an invalid SendGrid API Key.</p>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <strong><i class="fas fa-times-circle text-danger mr-1"></i> Connection Timed Out:</strong>
+                            <p class="text-muted mb-0">Many hosting providers block port 25 or port 465. Switch to <strong>Port 587 with TLS enabled</strong> to bypass outbound firewalls.</p>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <strong><i class="fas fa-times-circle text-danger mr-1"></i> Sender Address Rejected:</strong>
+                            <p class="text-muted mb-0">Ensure the <em>Sender 'From' Email Address</em> matches your authenticated email or authorized domain in Brevo/SendGrid/Gmail.</p>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <strong><i class="fas fa-check-circle text-success mr-1"></i> Instant Verification:</strong>
+                            <p class="text-muted mb-0">Click the <strong>"Send Test Email"</strong> button on the settings card to dispatch a live verification email to your inbox.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light" style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                <button type="button" class="btn btn-secondary btn-sm font-weight-bold px-3" data-dismiss="modal" data-bs-dismiss="modal" onclick="closeSmtpGuideModal()">Close Guide</button>
+                <button type="button" class="btn btn-primary btn-sm font-weight-bold px-3" onclick="closeSmtpGuideModal(); openTestEmailModal();">
+                    <i class="fas fa-paper-plane mr-1"></i> Test Email Dispatch
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(input, previewId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(previewId).src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function syncFromCode(code) {
+        const codeSelect = document.getElementById('currency_code');
+        const selectedOption = codeSelect.options[codeSelect.selectedIndex];
+        const symbol = selectedOption ? selectedOption.getAttribute('data-symbol') : null;
+        if (symbol) {
+            const symbolSelect = document.getElementById('currency_symbol');
+            for (let i = 0; i < symbolSelect.options.length; i++) {
+                if (symbolSelect.options[i].value === symbol) {
+                    symbolSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    }
+
+    function syncFromSymbol(symbol) {
+        const symbolToCodeMap = {
+            '₹': 'INR',
+            '$': 'USD',
+            '€': 'EUR',
+            '£': 'GBP',
+            'د.إ': 'AED',
+            '﷼': 'SAR',
+            'C$': 'CAD',
+            'A$': 'AUD',
+            'S$': 'SGD',
+            'RM': 'MYR',
+            'KD': 'KWD',
+            'BD': 'BHD',
+            'QR': 'QAR',
+            'OMR': 'OMR',
+            'R': 'ZAR'
+        };
+        if (symbolToCodeMap[symbol]) {
+            const targetCode = symbolToCodeMap[symbol];
+            const codeSelect = document.getElementById('currency_code');
+            for (let i = 0; i < codeSelect.options.length; i++) {
+                if (codeSelect.options[i].value === targetCode) {
+                    codeSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    }
+
+    function openTestEmailModal() {
+        $('#testEmailAlert').addClass('d-none').removeClass('alert-success alert-danger').text('');
+        const modalEl = document.getElementById('testEmailModal');
+        if (modalEl) {
+            if (window.bootstrap && bootstrap.Modal) {
+                const modalInstance = bootstrap.Modal.getOrCreateInstance ? bootstrap.Modal.getOrCreateInstance(modalEl) : new bootstrap.Modal(modalEl);
+                modalInstance.show();
+            } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#testEmailModal').modal('show');
+            } else {
+                modalEl.classList.add('show');
+                modalEl.style.display = 'block';
+                document.body.classList.add('modal-open');
+            }
+        }
+    }
+
+    function closeTestEmailModal() {
+        const modalEl = document.getElementById('testEmailModal');
+        if (modalEl) {
+            if (window.bootstrap && bootstrap.Modal) {
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            }
+            if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#testEmailModal').modal('hide');
+            }
+            setTimeout(() => {
+                modalEl.classList.remove('show');
+                modalEl.style.display = 'none';
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('padding-right');
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            }, 100);
+        }
+    }
+
+    function openSmtpGuideModal(tabName) {
+        if (tabName) {
+            const tabEl = document.querySelector('#smtpGuideTabs a[href="#guide-pane-' + tabName + '"]');
+            if (tabEl) {
+                if (window.bootstrap && bootstrap.Tab) {
+                    const tabInstance = bootstrap.Tab.getOrCreateInstance ? bootstrap.Tab.getOrCreateInstance(tabEl) : new bootstrap.Tab(tabEl);
+                    tabInstance.show();
+                } else if (typeof $ !== 'undefined' && $.fn.tab) {
+                    $(tabEl).tab('show');
+                }
+            }
+        }
+        const modalEl = document.getElementById('smtpGuideModal');
+        if (modalEl) {
+            if (window.bootstrap && bootstrap.Modal) {
+                const modalInstance = bootstrap.Modal.getOrCreateInstance ? bootstrap.Modal.getOrCreateInstance(modalEl) : new bootstrap.Modal(modalEl);
+                modalInstance.show();
+            } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#smtpGuideModal').modal('show');
+            } else {
+                modalEl.classList.add('show');
+                modalEl.style.display = 'block';
+                document.body.classList.add('modal-open');
+            }
+        }
+    }
+
+    function closeSmtpGuideModal() {
+        const modalEl = document.getElementById('smtpGuideModal');
+        if (modalEl) {
+            if (window.bootstrap && bootstrap.Modal) {
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            }
+            if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#smtpGuideModal').modal('hide');
+            }
+            setTimeout(() => {
+                modalEl.classList.remove('show');
+                modalEl.style.display = 'none';
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('padding-right');
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            }, 100);
+        }
+    }
+
+    function toggleSecurityMode(mode) {
+        if (mode === 'tls' && $('#smtp_use_tls').is(':checked')) {
+            $('#smtp_use_ssl').prop('checked', false);
+            if ($('#smtp_port').val() == '465') {
+                $('#smtp_port').val('587');
+            }
+        } else if (mode === 'ssl' && $('#smtp_use_ssl').is(':checked')) {
+            $('#smtp_use_tls').prop('checked', false);
+            if ($('#smtp_port').val() == '587') {
+                $('#smtp_port').val('465');
+            }
+        }
+    }
+
+    function applySmtpPreset(provider, fromModal = false) {
+        let msg = '';
+        if (provider === 'gmail') {
+            $('#smtp_host').val('smtp.gmail.com');
+            $('#smtp_port').val('587');
+            $('#smtp_use_tls').prop('checked', true);
+            $('#smtp_use_ssl').prop('checked', false);
+            if (!$('#smtp_user').val()) {
+                $('#smtp_user').attr('placeholder', 'yourgym@gmail.com');
+            }
+            if (!$('#smtp_from_email').val()) {
+                $('#smtp_from_email').attr('placeholder', 'yourgym@gmail.com');
+            }
+            msg = 'Applied Gmail configuration (smtp.gmail.com:587 TLS). Please enter your Gmail address and 16-character App Password.';
+        } else if (provider === 'brevo') {
+            $('#smtp_host').val('smtp-relay.brevo.com');
+            $('#smtp_port').val('587');
+            $('#smtp_use_tls').prop('checked', true);
+            $('#smtp_use_ssl').prop('checked', false);
+            if (!$('#smtp_user').val()) {
+                $('#smtp_user').attr('placeholder', 'your-login@domain.com');
+            }
+            if (!$('#smtp_from_email').val()) {
+                $('#smtp_from_email').attr('placeholder', 'verified-sender@domain.com');
+            }
+            msg = 'Applied Brevo configuration (smtp-relay.brevo.com:587 TLS). Enter your Brevo account email and SMTP Key.';
+        } else if (provider === 'sendgrid') {
+            $('#smtp_host').val('smtp.sendgrid.net');
+            $('#smtp_port').val('587');
+            $('#smtp_user').val('apikey');
+            $('#smtp_use_tls').prop('checked', true);
+            $('#smtp_use_ssl').prop('checked', false);
+            if (!$('#smtp_from_email').val()) {
+                $('#smtp_from_email').attr('placeholder', 'verified-sender@domain.com');
+            }
+            msg = 'Applied SendGrid configuration (smtp.sendgrid.net:587 TLS). Username set to "apikey". Enter your SG.xxx API key as password.';
+        } else if (provider === 'cpanel') {
+            if (!$('#smtp_host').val() || $('#smtp_host').val() === 'smtp.gmail.com' || $('#smtp_host').val() === 'smtp-relay.brevo.com' || $('#smtp_host').val() === 'smtp.sendgrid.net') {
+                $('#smtp_host').val('mail.yourdomain.com');
+            }
+            $('#smtp_port').val('465');
+            $('#smtp_use_tls').prop('checked', false);
+            $('#smtp_use_ssl').prop('checked', true);
+            if (!$('#smtp_user').val()) {
+                $('#smtp_user').attr('placeholder', 'info@yourdomain.com');
+            }
+            if (!$('#smtp_from_email').val()) {
+                $('#smtp_from_email').attr('placeholder', 'info@yourdomain.com');
+            }
+            msg = 'Applied cPanel SSL configuration (Port 465 SSL). Replace "mail.yourdomain.com" with your server host.';
+        }
+
+        if (msg) {
+            $('#smtpPresetNotificationText').text(msg);
+            $('#smtpPresetNotification').removeClass('d-none');
+        }
+
+        if (fromModal) {
+            closeSmtpGuideModal();
+        }
+    }
+
+    function sendTestEmailAjax() {
+        const recipient = document.getElementById('testRecipientInput').value.trim();
+        const alertBox = $('#testEmailAlert');
+        const btnText = $('#testEmailBtnText');
+        const spinner = $('#testEmailSpinner');
+        const btn = $('#btnDispatchTestEmail');
+
+        if (!recipient) {
+            alertBox.removeClass('d-none alert-success').addClass('alert-danger').text('Please provide a recipient email.');
+            return;
+        }
+
+        btn.prop('disabled', true);
+        btnText.addClass('d-none');
+        spinner.removeClass('d-none');
+        alertBox.addClass('d-none');
+
+        const formData = new FormData();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        formData.append('action', 'send_test_email');
+        formData.append('test_recipient', recipient);
+        formData.append('smtp_host', $('#smtp_host').val());
+        formData.append('smtp_port', $('#smtp_port').val());
+        formData.append('smtp_user', $('#smtp_user').val());
+        formData.append('smtp_password', $('#smtp_password').val());
+        formData.append('smtp_from_email', $('#smtp_from_email').val());
+        if ($('#smtp_use_tls').is(':checked')) formData.append('smtp_use_tls', 'on');
+        if ($('#smtp_use_ssl').is(':checked')) formData.append('smtp_use_ssl', 'on');
+
+        fetch("{% url 'superadmin:system_settings' %}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.prop('disabled', false);
+            btnText.removeClass('d-none');
+            spinner.addClass('d-none');
+
+            if (data.success) {
+                alertBox.removeClass('d-none alert-danger').addClass('alert-success').html('<i class="fas fa-check-circle mr-1"></i> ' + data.message);
+            } else {
+                alertBox.removeClass('d-none alert-success').addClass('alert-danger').html('<i class="fas fa-exclamation-circle mr-1"></i> ' + data.message);
+            }
+        })
+        .catch(err => {
+            btn.prop('disabled', false);
+            btnText.removeClass('d-none');
+            spinner.addClass('d-none');
+            alertBox.removeClass('d-none alert-success').addClass('alert-danger').text('Network or server error occurred during test dispatch.');
+        });
+    }
+</script>
+{% endblock %}

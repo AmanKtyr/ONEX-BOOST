@@ -1,0 +1,494 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Settings - {{ system_setting.platform_name|default:"ONEXIVA" }}{% endblock title %}
+
+{% block content %}
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'settings:gym_profile' %}" class="text-decoration-none">
+                <i class="mdi mdi-domain mdi-18px"></i> Settings
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-bank mdi-18px"></i> Payment Settings
+        </li>
+    </ol>
+</nav>
+
+<!-- System Alert Messages -->
+{% if messages %}
+    <div class="mb-3">
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                <i class="mdi {% if message.tags == 'error' %}mdi-alert-circle{% else %}mdi-check-circle{% endif %} mr-1"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" data-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="col-lg-12 px-0">
+    <div class="card mb-4">
+        <!-- Main Card Header matching standard template design -->
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <h4 class="mb-0 mr-2 me-2">Gym Payment & Bank Settings</h4>
+                <span class="badge bg-light text-primary px-2 py-1 ml-2">Billing & UPI</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'settings:gym_profile' %}" class="btn btn-outline-light btn-sm mr-2 me-2 font-weight-bold">
+                    <i class="mdi mdi-domain mr-1"></i> Gym Profile
+                </a>
+                <button type="button" class="btn btn-light btn-sm font-weight-bold" 
+                        data-bs-toggle="modal" data-bs-target="#updatePaymentSettingsModal" 
+                        data-toggle="modal" data-target="#updatePaymentSettingsModal">
+                    <i class="mdi mdi-pencil-outline mr-1"></i> {% if payment_settings and payment_settings.bank_name %}Update Settings{% else %}Add Payment Details{% endif %}
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Modern Visual Information Cards -->
+            <div class="row mb-4">
+                <!-- 1. Bank Account Details Card -->
+                <div class="col-lg-7 mb-3 mb-lg-0">
+                    <div class="card border h-100 shadow-sm" style="border-radius: 10px;">
+                        <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i class="mdi mdi-bank-outline text-primary mr-2 me-2 mdi-24px"></i>
+                                <h6 class="mb-0 font-weight-bold text-dark">Bank Account & Settlement</h6>
+                            </div>
+                            <span class="badge badge-success px-2 py-1">
+                                <i class="mdi mdi-check-decagram mr-1"></i> Active for Invoices
+                            </span>
+                        </div>
+                        <div class="card-body p-4">
+                            {% if payment_settings and payment_settings.bank_name %}
+                                <div class="row g-3">
+                                    <div class="col-sm-6 mb-3">
+                                        <label class="text-muted small font-weight-semibold text-uppercase d-block mb-1">Bank Name</label>
+                                        <div class="d-flex align-items-center">
+                                            <span class="font-weight-bold text-dark fs-6">{{ payment_settings.bank_name }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 mb-3">
+                                        <label class="text-muted small font-weight-semibold text-uppercase d-block mb-1">Account Holder</label>
+                                        <div class="d-flex align-items-center">
+                                            <span class="font-weight-bold text-dark fs-6">{{ payment_settings.account_holder_name|default:"--" }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 mb-3">
+                                        <label class="text-muted small font-weight-semibold text-uppercase d-block mb-1">Account Number</label>
+                                        <div class="d-flex align-items-center">
+                                            <span class="font-monospace font-weight-bold text-primary fs-6 mr-2 me-2" id="accNumText">{{ payment_settings.account_number|default:"--" }}</span>
+                                            {% if payment_settings.account_number %}
+                                                <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 copy-btn" onclick="copyToClipboard('{{ payment_settings.account_number }}', this)" title="Copy Account Number">
+                                                    <i class="mdi mdi-content-copy"></i>
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 mb-3">
+                                        <label class="text-muted small font-weight-semibold text-uppercase d-block mb-1">IFSC Code</label>
+                                        <div class="d-flex align-items-center">
+                                            <span class="font-monospace font-weight-bold text-dark fs-6 mr-2 me-2" id="ifscText">{{ payment_settings.ifsc_code|default:"--" }}</span>
+                                            {% if payment_settings.ifsc_code %}
+                                                <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 copy-btn" onclick="copyToClipboard('{{ payment_settings.ifsc_code }}', this)" title="Copy IFSC Code">
+                                                    <i class="mdi mdi-content-copy"></i>
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info py-2 px-3 mb-0 small rounded">
+                                    <i class="mdi mdi-information-outline mr-1"></i> These bank details automatically appear on generated member receipts, renewal reminders, and invoices.
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="mdi mdi-bank-plus text-muted" style="font-size: 48px;"></i>
+                                    <h6 class="font-weight-bold text-dark mt-2">No Bank Account Added</h6>
+                                    <p class="text-muted small mb-3">Add your gym bank account so members can transfer fees via NEFT/IMPS and receipts show complete payment information.</p>
+                                    <button type="button" class="btn btn-primary btn-sm font-weight-bold" 
+                                            data-bs-toggle="modal" data-bs-target="#updatePaymentSettingsModal"
+                                            data-toggle="modal" data-target="#updatePaymentSettingsModal">
+                                        <i class="mdi mdi-plus mr-1"></i> Configure Bank Account
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. UPI & Payment QR Code Card -->
+                <div class="col-lg-5">
+                    <div class="card border h-100 shadow-sm" style="border-radius: 10px;">
+                        <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i class="mdi mdi-qrcode-scan text-primary mr-2 me-2 mdi-24px"></i>
+                                <h6 class="mb-0 font-weight-bold text-dark">UPI Payment QR Code</h6>
+                            </div>
+                            {% if payment_settings and payment_settings.qr_code %}
+                                <span class="badge badge-primary px-2 py-1">Ready to Scan</span>
+                            {% else %}
+                                <span class="badge badge-secondary px-2 py-1">Not Uploaded</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body p-4 text-center d-flex flex-column justify-content-center align-items-center">
+                            {% if payment_settings and payment_settings.qr_code %}
+                                <div class="position-relative d-inline-block border p-2 rounded bg-white shadow-sm mb-3" style="max-width: 170px;">
+                                    <img src="{{ payment_settings.qr_code.url }}" alt="Payment QR Code" 
+                                         class="img-fluid rounded cursor-pointer" 
+                                         style="max-width: 150px; max-height: 150px; object-fit: contain; cursor: pointer;"
+                                         data-bs-toggle="modal" data-bs-target="#imagePreviewModal" 
+                                         data-toggle="modal" data-target="#imagePreviewModal"
+                                         onclick="showImage('{{ payment_settings.qr_code.url }}')">
+                                    <div class="mt-2 text-center">
+                                        <small class="text-muted d-block" style="font-size: 11px;">
+                                            <i class="mdi mdi-magnify-plus-outline"></i> Click to Zoom
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ payment_settings.qr_code.url }}" download="Gym_Payment_QR.png" class="btn btn-sm btn-outline-primary font-weight-bold">
+                                        <i class="mdi mdi-download mr-1"></i> Download QR
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-primary font-weight-bold" 
+                                            data-bs-toggle="modal" data-bs-target="#updatePaymentSettingsModal"
+                                            data-toggle="modal" data-target="#updatePaymentSettingsModal">
+                                        <i class="mdi mdi-upload mr-1"></i> Replace QR
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div class="p-3 border rounded border-dashed bg-light mb-3 text-center w-100" style="border-style: dashed !important;">
+                                    <i class="mdi mdi-qrcode-scan text-muted" style="font-size: 42px;"></i>
+                                    <h6 class="font-weight-bold text-dark mt-2 mb-1">No QR Code Uploaded</h6>
+                                    <p class="text-muted small mb-0">Upload your Google Pay, PhonePe, or BHIM UPI QR code for instant desk & online payments.</p>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-sm font-weight-bold" 
+                                        data-bs-toggle="modal" data-bs-target="#updatePaymentSettingsModal"
+                                        data-toggle="modal" data-target="#updatePaymentSettingsModal">
+                                    <i class="mdi mdi-upload mr-1"></i> Upload Payment QR
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Overview Table matching system tables -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="font-weight-bold text-dark mb-0">
+                    <i class="mdi mdi-table-large text-primary mr-1"></i> Configuration Overview
+                </h6>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover table-sm table-stack-on-mobile border">
+                    <thead>
+                        <tr>
+                            <th class="font-weight-semibold py-2">Bank Name</th>
+                            <th class="font-weight-semibold py-2">Account Holder Name</th>
+                            <th class="font-weight-semibold py-2">Account Number</th>
+                            <th class="font-weight-semibold py-2">IFSC Code</th>
+                            <th class="font-weight-semibold py-2 text-center">QR Code</th>
+                            <th class="font-weight-semibold text-center py-2" style="width: 90px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if payment_settings and payment_settings.bank_name or payment_settings and payment_settings.qr_code %}
+                        <tr>
+                            <td data-label="Bank Name">
+                                <div class="d-flex align-items-center">
+                                    <i class="mdi mdi-bank text-primary mr-2 me-2"></i>
+                                    <strong>{{ payment_settings.bank_name|default:"--" }}</strong>
+                                </div>
+                            </td>
+                            <td data-label="Account Holder Name">{{ payment_settings.account_holder_name|default:"--" }}</td>
+                            <td data-label="Account Number">
+                                <span class="font-monospace">{{ payment_settings.account_number|default:"--" }}</span>
+                            </td>
+                            <td data-label="IFSC Code">
+                                <span class="font-monospace">{{ payment_settings.ifsc_code|default:"--" }}</span>
+                            </td>
+                            <td data-label="QR Code" class="text-center">
+                                {% if payment_settings.qr_code %}
+                                    <img src="{{ payment_settings.qr_code.url }}" alt="QR Code" 
+                                         class="img-thumbnail" 
+                                         style="max-width: 60px; max-height: 60px; cursor: pointer; object-fit: contain;" 
+                                         data-bs-toggle="modal" data-bs-target="#imagePreviewModal" 
+                                         data-toggle="modal" data-target="#imagePreviewModal"
+                                         onclick="showImage('{{ payment_settings.qr_code.url }}')"
+                                         title="Click to preview full size">
+                                {% else %}
+                                    <span class="badge badge-secondary">None</span>
+                                {% endif %}
+                            </td>
+                            <td data-label="Actions" class="text-center">
+                                <button type="button" class="btn btn-primary btn-sm" 
+                                        data-bs-toggle="modal" data-bs-target="#updatePaymentSettingsModal" 
+                                        data-toggle="modal" data-target="#updatePaymentSettingsModal" 
+                                        data-toggle="tooltip" title="Edit Payment Settings">
+                                    <i class="mdi mdi-pencil-outline"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="mdi mdi-information-outline mdi-36px d-block mb-2 text-primary"></i>
+                                    <p class="mb-2">No payment or bank account settings configured yet.</p>
+                                    <button type="button" class="btn btn-primary btn-sm btn-action-text font-weight-bold" 
+                                            style="width: auto !important; height: auto !important; min-height: 36px !important; padding: 0.4rem 1.1rem !important; display: inline-flex !important; align-items: center !important;"
+                                            data-bs-toggle="modal" data-bs-target="#updatePaymentSettingsModal"
+                                            data-toggle="modal" data-target="#updatePaymentSettingsModal">
+                                        <i class="mdi mdi-plus mr-1"></i> Add Payment Settings
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Payment Settings Modal -->
+<div class="modal fade" id="updatePaymentSettingsModal" tabindex="-1" aria-labelledby="updatePaymentSettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white py-3">
+                <div class="d-flex align-items-center">
+                    <i class="mdi mdi-bank mr-2 me-2 mdi-24px"></i>
+                    <h5 class="modal-title font-weight-bold mb-0" id="updatePaymentSettingsModalLabel">Configure Payment & Bank Settings</h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'settings:payment_setting' %}" method="post" enctype="multipart/form-data" id="paymentSettingsForm">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <!-- Left Column: Bank Account Details -->
+                        <div class="col-lg-6 border-end border-light">
+                            <h6 class="font-weight-bold text-primary mb-3">
+                                <i class="mdi mdi-card-account-details-outline mr-1"></i> Bank Account Information
+                            </h6>
+                            <div class="form-group mb-3">
+                                <label for="id_bank_name" class="form-label font-weight-semibold">Bank Name</label>
+                                {{ form.bank_name }}
+                                <small class="text-muted">Official name of your commercial bank.</small>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="id_account_holder_name" class="form-label font-weight-semibold">Account Holder Name</label>
+                                {{ form.account_holder_name }}
+                                <small class="text-muted">Name registered on the bank passbook/statement.</small>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="id_account_number" class="form-label font-weight-semibold">Account Number</label>
+                                {{ form.account_number }}
+                                <small class="text-muted">Bank account number for receiving member dues.</small>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="id_ifsc_code" class="form-label font-weight-semibold">IFSC Code</label>
+                                {{ form.ifsc_code }}
+                                <small class="text-muted">11-character Indian Financial System Code.</small>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: QR Code & UPI Details -->
+                        <div class="col-lg-6">
+                            <h6 class="font-weight-bold text-primary mb-3">
+                                <i class="mdi mdi-qrcode-scan mr-1"></i> Payment QR Code
+                            </h6>
+                            <div class="form-group mb-3">
+                                <label for="id_qr_code" class="form-label font-weight-semibold">Upload UPI / Bank QR Code</label>
+                                {{ form.qr_code }}
+                                <small class="text-muted d-block mt-1">Recommended format: Square JPG/PNG (500x500px).</small>
+                            </div>
+
+                            <!-- Live Image Preview Container -->
+                            <div class="text-center p-3 border rounded bg-light mt-3">
+                                <label class="text-muted small font-weight-semibold d-block mb-2">QR Code Preview</label>
+                                <div id="qrPreviewWrapper" class="d-inline-block">
+                                    {% if payment_settings and payment_settings.qr_code %}
+                                        <img id="qrPreviewImg" src="{{ payment_settings.qr_code.url }}" alt="Current QR Code" class="img-fluid rounded border shadow-sm" style="max-height: 160px; max-width: 160px; object-fit: contain;">
+                                        <div class="small text-muted mt-1">Current Active QR</div>
+                                    {% else %}
+                                        <div id="noQrPlaceholder" class="p-3">
+                                            <i class="mdi mdi-qrcode text-muted" style="font-size: 48px;"></i>
+                                            <div class="small text-muted">No QR image selected</div>
+                                        </div>
+                                        <img id="qrPreviewImg" src="#" alt="QR Preview" class="img-fluid rounded border shadow-sm d-none" style="max-height: 160px; max-width: 160px; object-fit: contain;">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light px-4 py-3">
+                    <button type="button" class="btn btn-secondary font-weight-bold" data-bs-dismiss="modal" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold px-4">
+                        <i class="mdi mdi-content-save-outline mr-1"></i> Save Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Image Lightbox Modal for Zooming QR Code -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white py-2">
+                <h6 class="modal-title font-weight-bold mb-0" id="imagePreviewModalLabel">
+                    <i class="mdi mdi-qrcode mr-1"></i> UPI Payment QR Code
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center bg-light">
+                <img id="modalImage" src="" alt="Payment QR" class="img-fluid rounded border shadow bg-white p-2" style="max-height: 420px; max-width: 100%; object-fit: contain;">
+                <div class="mt-3 text-muted small">
+                    <i class="mdi mdi-scan-helper mr-1"></i> Scan using Google Pay, PhonePe, Paytm or any UPI App
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between py-2">
+                <a id="downloadQrBtn" href="#" download="Gym_Payment_QR.png" class="btn btn-outline-primary btn-sm font-weight-bold">
+                    <i class="mdi mdi-download mr-1"></i> Download
+                </a>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Copy Notification Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <div id="copyToast" class="toast align-items-center text-white bg-dark border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="mdi mdi-check-circle text-success mr-1"></i> <span id="copyToastText">Copied to clipboard!</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Ensure form controls have proper classes
+        const fields = ['bank_name', 'account_holder_name', 'account_number', 'ifsc_code', 'qr_code'];
+        fields.forEach(function(field) {
+            const element = document.getElementById('id_' + field);
+            if (element) {
+                element.classList.add('form-control');
+            }
+        });
+
+        // Setup live preview for QR Code file input
+        const qrInput = document.getElementById('id_qr_code');
+        const previewImg = document.getElementById('qrPreviewImg');
+        const placeholder = document.getElementById('noQrPlaceholder');
+
+        if (qrInput && previewImg) {
+            qrInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        previewImg.src = event.target.result;
+                        previewImg.classList.remove('d-none');
+                        if (placeholder) {
+                            placeholder.classList.add('d-none');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Modal triggers fallback support for both Bootstrap 4 and 5
+        const updateBtns = document.querySelectorAll('[data-bs-target="#updatePaymentSettingsModal"], [data-target="#updatePaymentSettingsModal"]');
+        updateBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    const modalEl = document.getElementById('updatePaymentSettingsModal');
+                    if (modalEl) {
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+                    }
+                } else if (typeof jQuery !== 'undefined' && typeof jQuery.fn.modal !== 'undefined') {
+                    jQuery('#updatePaymentSettingsModal').modal('show');
+                }
+            });
+        });
+    });
+
+    // Lightbox modal handler
+    function showImage(src) {
+        const modalImg = document.getElementById("modalImage");
+        const downloadBtn = document.getElementById("downloadQrBtn");
+        if (modalImg) {
+            modalImg.src = src;
+        }
+        if (downloadBtn) {
+            downloadBtn.href = src;
+        }
+        // Show modal via BS5 or BS4
+        const previewModalEl = document.getElementById('imagePreviewModal');
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modal = bootstrap.Modal.getOrCreateInstance(previewModalEl);
+            modal.show();
+        } else if (typeof jQuery !== 'undefined' && typeof jQuery.fn.modal !== 'undefined') {
+            jQuery('#imagePreviewModal').modal('show');
+        }
+    }
+
+    // 1-Click Copy helper
+    function copyToClipboard(text, btnElement) {
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(function() {
+            // Visual indicator on button
+            if (btnElement) {
+                const originalHtml = btnElement.innerHTML;
+                btnElement.innerHTML = '<i class="mdi mdi-check text-success"></i>';
+                btnElement.classList.remove('btn-outline-secondary');
+                btnElement.classList.add('btn-outline-success');
+                setTimeout(function() {
+                    btnElement.innerHTML = originalHtml;
+                    btnElement.classList.remove('btn-outline-success');
+                    btnElement.classList.add('btn-outline-secondary');
+                }, 1500);
+            }
+
+            // Show Toast if available
+            const toastEl = document.getElementById('copyToast');
+            const toastText = document.getElementById('copyToastText');
+            if (toastText) {
+                toastText.innerText = 'Copied "' + text + '" to clipboard!';
+            }
+            if (toastEl && typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+                const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                toast.show();
+            }
+        }).catch(function(err) {
+            console.error('Failed to copy: ', err);
+        });
+    }
+</script>
+{% endblock extra_js %}

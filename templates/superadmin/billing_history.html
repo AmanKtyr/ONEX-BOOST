@@ -1,0 +1,290 @@
+{% extends "superadmin/base.html" %}
+{% load static %}
+{% block title %}Billing History{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<style>
+    /* Dashboard Style Soft Cards */
+    .billing-stats-row {
+        margin-bottom: 25px;
+    }
+    .billing-stat-card {
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
+    }
+    .billing-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+    }
+    .billing-stat-card .stat-title {
+        color: #495057;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    .billing-stat-card .stat-value {
+        color: #212529;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    .billing-stat-card .stat-subtext {
+        color: #6c757d;
+        font-size: 0.8rem;
+    }
+
+    /* Table Professional Styling */
+    .table thead th {
+        background-color: #f8f9fa;
+        color: #334155;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+        padding: 12px 15px;
+    }
+    .table tbody td {
+        padding: 12px 15px;
+        vertical-align: middle;
+    }
+    .table-primary-text {
+        color: #4599cd;
+        font-weight: 700;
+    }
+    .amount-bold {
+        font-weight: 800;
+        color: #1e293b;
+    }
+    .badge {
+        font-weight: 600;
+        padding: 0.4em 0.8em;
+    }
+</style>
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-currency-usd mdi-18px"></i> Billing
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-history mdi-18px"></i> Billing History
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <!-- Summary Cards (Soft Dashboard Style) -->
+    <div class="row billing-stats-row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm billing-stat-card bg-primary-soft">
+                <div class="stat-title">Total Revenue</div>
+                <div class="stat-value">₹{{ total_revenue|floatformat:0 }}</div>
+                <div class="stat-subtext">Total platform earnings</div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm billing-stat-card bg-warning-soft">
+                <div class="stat-title">Outstanding Dues</div>
+                <div class="stat-value">₹{{ total_due|floatformat:0 }}</div>
+                <div class="stat-subtext">Pending payments from gyms</div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm billing-stat-card bg-info-soft">
+                <div class="stat-title">Active Gyms</div>
+                <div class="stat-value">{{ active_gyms_count }}</div>
+                <div class="stat-subtext">Total subscribed gym locations</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Billing History</h4>
+            <div class="header-actions">
+                <a href="{% url 'superadmin:export_billing_csv' %}" class="btn btn-outline-light btn-sm font-weight-bold mr-1 shadow-sm" title="Export Billing & Payment Records to CSV">
+                    <i class="mdi mdi-file-delimited mr-1"></i> Export CSV
+                </a>
+                <a href="{% url 'superadmin:assign_subscription' %}" class="btn btn-light btn-sm shadow-sm mr-1">
+                    <i class="mdi mdi-plus-circle"></i> New Subscription
+                </a>
+                <a href="{% url 'superadmin:billing_trash' %}" class="btn btn-danger btn-sm shadow-sm">
+                    <i class="mdi mdi-delete-empty"></i> Trash
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Filter Section -->
+            <form method="get" class="mb-4">
+                <div class="row align-items-end">
+                    <div class="col-md-4">
+                        <label class="small font-weight-bold">Search Gym</label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="q" value="{{ query|default:'' }}" class="form-control" placeholder="Gym Name...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small font-weight-bold">Status</label>
+                        <select name="status" class="form-control form-control-sm">
+                            <option value="">All Statuses</option>
+                            <option value="paid" {% if status_filter == 'paid' %}selected{% endif %}>Paid</option>
+                            <option value="unpaid" {% if status_filter == 'unpaid' %}selected{% endif %}>Unpaid</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small font-weight-bold">Type</label>
+                        <select name="type" class="form-control form-control-sm">
+                            <option value="">All Types</option>
+                            <option value="subscription" {% if type_filter == 'subscription' %}selected{% endif %}>Subscription</option>
+                            <option value="payment" {% if type_filter == 'payment' %}selected{% endif %}>Payment</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <button type="submit" class="btn btn-primary btn-sm px-4">Filter</button>
+                        <a href="{% url 'superadmin:billing_history' %}" class="btn btn-secondary btn-sm px-4 ml-1">Clear</a>
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Gym Name</th>
+                            <th>Amount</th>
+                            <th>Status/Method</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in history %}
+                        <tr>
+                            <td data-label="#">{{ forloop.counter0|add:history.start_index }}</td>
+                            {% if item.is_subscription %}
+                                <td data-label="Date">{{ item.start_date|date:'d-m-Y' }}</td>
+                                <td data-label="Type">
+                                    <span class="badge badge-info">Subscription</span><br>
+                                    <small class="text-muted">{{ item.subscription.name }}</small>
+                                </td>
+                                <td data-label="Gym Name">
+                                    <span class="table-primary-text">{{ item.gym.name }}</span>
+                                </td>
+                                <td data-label="Amount" class="amount-bold">₹{{ item.total_amount|floatformat:2 }}</td>
+                                <td data-label="Status/Method">
+                                    {% if item.due_amount_calculated == 0 %}
+                                        <span class="badge badge-success">Paid</span>
+                                    {% else %}
+                                        <span class="badge badge-warning">Unpaid</span>
+                                        <div class="small text-danger mt-1 font-weight-bold">Due: ₹{{ item.due_amount_calculated|floatformat:2 }}</div>
+                                    {% endif %}
+                                    <div class="small text-muted mt-1">{{ item.get_payment_mode_display }}</div>
+                                </td>
+                                <td data-label="Actions" class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <a href="{% url 'superadmin:invoice' item.id %}" class="btn btn-sm mr-1" style="background-color: #2196F3; color: white; border: none;" target="_blank" title="Invoice">
+                                            <i class="mdi mdi-file-pdf"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm" style="background-color: #f62d82; color: white; border: none;" onclick="softDelete('{{ item.id }}', 'subscription')" title="Move to Trash">
+                                            <i class="mdi mdi-delete"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            {% else %}
+                                <td data-label="Date">{{ item.payment_date|date:'d-m-Y' }}</td>
+                                <td data-label="Type">
+                                    <span class="badge badge-primary">Payment</span>
+                                </td>
+                                <td data-label="Gym Name">
+                                    <span class="table-primary-text">{{ item.gym.name }}</span>
+                                </td>
+                                <td data-label="Amount" class="amount-bold text-success">₹{{ item.amount|floatformat:2 }}</td>
+                                <td data-label="Status/Method">
+                                    <span class="badge badge-success">Received</span>
+                                    <div class="small text-muted mt-1">{{ item.get_payment_mode_display }}</div>
+                                </td>
+                                <td data-label="Actions" class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <button type="button" class="btn btn-sm" style="background-color: #f62d82; color: white; border: none;" onclick="softDelete('{{ item.id }}', 'payment')" title="Move to Trash">
+                                            <i class="mdi mdi-delete"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="mdi mdi-folder-open-outline mdi-48px"></i>
+                                <h5 class="mt-2">No records found</h5>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if history.has_other_pages %}
+            <div class="mt-4">
+                {% include 'includes/pagination.html' with page_obj=history %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function softDelete(itemId, itemType) {
+    let url = itemType === 'subscription' ? "{% url 'superadmin:delete_subscription' 0 %}" : "{% url 'superadmin:delete_payment' 0 %}";
+    url = url.replace('0', itemId);
+
+    Swal.fire({
+        title: 'Move to Trash?',
+        text: "You can restore this record from trash later.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ac0661',
+        cancelButtonColor: '#6c7293',
+        confirmButtonText: 'Yes, move to trash!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    Swal.fire('Trashed!', 'Record moved to trash.', 'success').then(() => {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+    });
+}
+</script>
+{% endblock content %}

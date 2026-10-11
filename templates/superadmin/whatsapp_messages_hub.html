@@ -1,0 +1,1631 @@
+{% extends 'superadmin/base.html' %}
+{% load static %}
+
+{% block title %}WhatsApp Console & Message Hub | ONEXIVASuperadmin{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard_modern.css' %}">
+
+<style>
+    /* WhatsApp Console Professional Aesthetics */
+    .wa-console-root {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .badge-soft-wa {
+        background: rgba(37, 211, 102, 0.12);
+        color: #128c7e;
+        border: 1px solid rgba(37, 211, 102, 0.25);
+    }
+    .badge-soft-inbound {
+        background: rgba(99, 102, 241, 0.12);
+        color: #4338ca;
+        border: 1px solid rgba(99, 102, 241, 0.25);
+    }
+    .badge-soft-gateway {
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+        font-size: 0.76rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Page Header Layout - Clean & Conflict-Free */
+    .wa-header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 1.5rem;
+    }
+    .wa-header-left {
+        flex: 1 1 360px;
+    }
+    .wa-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+    }
+    .wa-nav-pills {
+        display: inline-flex;
+        align-items: center;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+    .wa-nav-pill-btn {
+        border: none;
+        background: transparent;
+        padding: 7px 16px;
+        border-radius: 6px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        line-height: 1.3;
+    }
+    .wa-nav-pill-btn.active {
+        background: #128c7e;
+        color: #ffffff;
+        box-shadow: 0 1px 4px rgba(18, 140, 126, 0.25);
+    }
+    .wa-nav-pill-btn:hover:not(.active) {
+        color: #0f172a;
+        background: #e2e8f0;
+    }
+    .btn-wa-action {
+        background: #128c7e;
+        color: #ffffff;
+        border: 1px solid #0f766e;
+        padding: 8px 18px;
+        border-radius: 6px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+    }
+    .btn-wa-action:hover {
+        background: #0d6e63;
+        color: #ffffff;
+    }
+
+    /* Live Chat Console 2-Pane Architecture */
+    .wa-chat-container {
+        display: flex;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+        height: 720px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+    @media (max-width: 991px) {
+        .wa-chat-container {
+            flex-direction: column;
+            height: auto;
+            min-height: 800px;
+        }
+    }
+
+    /* Left Contact List Pane */
+    .wa-contacts-pane {
+        width: 380px;
+        min-width: 340px;
+        border-right: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        background: #fafafa;
+    }
+    @media (max-width: 991px) {
+        .wa-contacts-pane {
+            width: 100%;
+            height: 380px;
+            border-right: none;
+            border-bottom: 1px solid #e2e8f0;
+        }
+    }
+    .wa-contacts-header {
+        padding: 14px 16px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .wa-contacts-filter-bar {
+        padding: 8px 16px;
+        background: #ffffff;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .wa-contacts-filter-bar::-webkit-scrollbar {
+        display: none;
+        width: 0 !important;
+        height: 0 !important;
+    }
+    .wa-filter-chip {
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        color: #64748b;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+    }
+    .wa-filter-chip:hover, .wa-filter-chip.active {
+        background: #128c7e;
+        color: #ffffff;
+        border-color: #128c7e;
+    }
+
+    .wa-contacts-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 6px 0;
+    }
+    .wa-contact-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        cursor: pointer;
+        transition: background 0.15s ease;
+        position: relative;
+    }
+    .wa-contact-item:hover {
+        background: #f1f5f9;
+    }
+    .wa-contact-item.active {
+        background: #e6f4f1;
+        border-left: 4px solid #128c7e;
+    }
+    .wa-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #128c7e, #25d366);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.05rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-right: 12px;
+        box-shadow: 0 2px 6px rgba(18, 140, 126, 0.2);
+    }
+    .wa-avatar-lead {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    }
+    .wa-avatar-gym {
+        background: linear-gradient(135deg, #0284c7, #06b6d4);
+    }
+    .wa-contact-info {
+        flex: 1;
+        min-width: 0;
+    }
+    .wa-contact-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 3px;
+    }
+    .wa-contact-name {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #1e293b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .wa-contact-time {
+        font-size: 0.70rem;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+    .wa-contact-snippet {
+        font-size: 0.78rem;
+        color: #64748b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+    }
+    .wa-contact-meta {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 4px;
+    }
+
+    /* Right Chat Thread Pane */
+    .wa-thread-pane {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        min-width: 0;
+    }
+    .wa-thread-header {
+        padding: 12px 20px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 68px;
+    }
+    .wa-thread-user {
+        display: flex;
+        align-items: center;
+    }
+    .wa-messages-stream {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 24px;
+        background: #f7f9fa;
+        background-image: radial-gradient(#e2e8f0 0.8px, transparent 0.8px);
+        background-size: 16px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* Message Bubbles */
+    .wa-bubble-wrap {
+        display: flex;
+        flex-direction: column;
+        max-width: 75%;
+    }
+    .wa-bubble-wrap.inbound {
+        align-self: flex-start;
+    }
+    .wa-bubble-wrap.outbound {
+        align-self: flex-end;
+    }
+    .wa-bubble {
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.86rem;
+        line-height: 1.45;
+        position: relative;
+        word-break: break-word;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .wa-bubble.inbound {
+        background: #ffffff;
+        color: #1e293b;
+        border: 1px solid #e2e8f0;
+        border-top-left-radius: 2px;
+    }
+    .wa-bubble.outbound {
+        background: #dcf8c6;
+        color: #064e3b;
+        border: 1px solid #c3e6b5;
+        border-top-right-radius: 2px;
+    }
+    .wa-bubble-meta {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        font-size: 0.68rem;
+        color: #64748b;
+        margin-top: 5px;
+    }
+    .wa-bubble-type-tag {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+        opacity: 0.8;
+    }
+    .wa-bubble-personal-retry {
+        background: #f59e0b;
+        color: #ffffff;
+        border: none;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.15s ease;
+    }
+    .wa-bubble-personal-retry:hover {
+        background: #d97706;
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+    /* Quick Reply Templates Bar - Clean Scroll-Free Look */
+    .wa-quick-replies-bar {
+        padding: 8px 16px;
+        background: #ffffff;
+        border-top: 1px solid #eef2f6;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .wa-quick-replies-bar::-webkit-scrollbar {
+        display: none;
+        width: 0 !important;
+        height: 0 !important;
+    }
+    .wa-reply-chip {
+        font-size: 0.74rem;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 16px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #334155;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+    }
+    .wa-reply-chip:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+        border-color: #cbd5e1;
+    }
+
+    /* Composer Box */
+    .wa-composer-area {
+        padding: 12px 16px;
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+    }
+    .wa-composer-input {
+        resize: none;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 0.88rem;
+        padding: 10px 12px;
+        line-height: 1.4;
+    }
+    .wa-composer-input:focus {
+        border-color: #128c7e;
+        box-shadow: 0 0 0 3px rgba(18, 140, 126, 0.15);
+    }
+    .btn-wa-send {
+        background: #128c7e;
+        color: #ffffff;
+        border: 1px solid #0f766e;
+        transition: all 0.2s ease;
+    }
+    .btn-wa-send:hover {
+        background: #0d6e63;
+        color: #ffffff;
+    }
+
+    /* Table Styles */
+    .modern-table thead th {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        background: #f8fafc;
+        border-bottom: 2px solid #e2e8f0;
+        padding: 0.75rem 1rem;
+    }
+    .modern-table tbody td {
+        padding: 0.75rem 1rem;
+        vertical-align: middle;
+        font-size: 0.84rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .modern-table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+    .btn.btn-xs {
+        padding: 0.25rem 0.55rem;
+        font-size: 0.76rem;
+        line-height: 1.25;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-2 wa-console-root">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none">
+                    <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <i class="mdi mdi-whatsapp mdi-18px text-success"></i> WhatsApp Console
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Page Header (Clean Row Layout) -->
+    <div class="wa-header-row">
+        <div class="wa-header-left">
+            <div class="d-flex align-items-center flex-wrap mb-1">
+                <h3 class="dashboard-hero-title mb-0 mr-3">
+                    <i class="mdi mdi-whatsapp text-success mr-1"></i> WhatsApp Message Logs & Direct Chat Console
+                </h3>
+                <span class="badge-soft-gateway" title="Twilio WhatsApp Webhook is active and recording in/out traffic">
+                    <i class="mdi mdi-check-network text-success mr-1"></i> Twilio API Gateway
+                </span>
+            </div>
+            <p class="dashboard-hero-subtitle">
+                Inspect automatic gym triggers (memberships, dues, birthdays), converse in real-time, or instantly fall back to personal WhatsApp.
+            </p>
+        </div>
+        <div class="wa-header-actions">
+            <!-- Modern View Switcher Toggle -->
+            <div class="wa-nav-pills shadow-xs">
+                <button type="button" class="wa-nav-pill-btn active" id="btnViewLive" onclick="switchView('live')">
+                    <i class="mdi mdi-forum-outline mr-1"></i> Live Chat Console
+                </button>
+                <button type="button" class="wa-nav-pill-btn" id="btnViewAudit" onclick="switchView('audit')">
+                    <i class="mdi mdi-table mr-1"></i> Message Audit Log ({{ total_count }})
+                </button>
+            </div>
+            <button type="button" class="btn btn-wa-action" data-toggle="modal" data-target="#newChatModal">
+                <i class="mdi mdi-plus-circle mr-1"></i> New Chat / Alert
+            </button>
+        </div>
+    </div>
+
+    <!-- Top 4 KPI Metric Cards -->
+    <div class="row">
+        <!-- 1. Total Messages -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-primary">
+                <div>
+                    <div class="kpi-header">
+                        <span class="kpi-label">Total Messages</span>
+                        <div class="kpi-icon-wrap kpi-icon-primary">
+                            <i class="mdi mdi-message-text-outline"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{{ total_count }}</div>
+                </div>
+                <div class="kpi-meta">
+                    <span class="kpi-meta-badge kpi-badge-primary">
+                        <i class="mdi mdi-history mr-1"></i> All Time
+                    </span>
+                    <span class="kpi-meta-desc">Automated & Manual</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Delivered via Gateway (Sent) -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-success">
+                <div>
+                    <div class="kpi-header">
+                        <span class="kpi-label">Delivered (Sent)</span>
+                        <div class="kpi-icon-wrap kpi-icon-success">
+                            <i class="mdi mdi-check-all"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{{ sent_count }}</div>
+                </div>
+                <div class="kpi-meta">
+                    <span class="kpi-meta-badge kpi-badge-success">
+                        <i class="mdi mdi-cloud-check mr-1"></i> Gateway Sent
+                    </span>
+                    <span class="kpi-meta-desc">Twilio API Delivery</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Received / Incoming Replies -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-info">
+                <div>
+                    <div class="kpi-header">
+                        <span class="kpi-label">Received (Incoming)</span>
+                        <div class="kpi-icon-wrap kpi-icon-info">
+                            <i class="mdi mdi-arrow-bottom-left"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{{ received_count }}</div>
+                </div>
+                <div class="kpi-meta">
+                    <span class="kpi-meta-badge kpi-badge-info">
+                        <i class="mdi mdi-account-arrow-left mr-1"></i> Customer Replies
+                    </span>
+                    <span class="kpi-meta-desc">Webhook Captured</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Failed / Action Needed -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="kpi-card kpi-danger">
+                <div>
+                    <div class="kpi-header">
+                        <span class="kpi-label">Failed / Not Sent</span>
+                        <div class="kpi-icon-wrap kpi-icon-danger">
+                            <i class="mdi mdi-alert-circle-outline"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{{ failed_count }}</div>
+                </div>
+                <div class="kpi-meta">
+                    <span class="kpi-meta-badge kpi-badge-danger">
+                        <i class="mdi mdi-cellphone-arrow-down mr-1"></i> Action Needed
+                    </span>
+                    <span class="kpi-meta-desc">Send with Personal No.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 1: Live Chat Console -->
+    <div id="liveConsoleView" class="mb-4">
+        <div class="wa-chat-container">
+            <!-- Left Pane: Conversations List -->
+            <div class="wa-contacts-pane">
+                <div class="wa-contacts-header">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="font-weight-bold text-dark" style="font-size: 0.92rem;">
+                            <i class="mdi mdi-chat-processing-outline mr-1 text-primary"></i> Conversations
+                        </span>
+                        <button class="btn btn-xs btn-link text-muted p-0" onclick="refreshConversations()" title="Refresh List">
+                            <i class="mdi mdi-refresh"></i>
+                        </button>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="input-group input-group-sm mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-white border-right-0"><i class="mdi mdi-magnify text-muted"></i></span>
+                        </div>
+                        <input type="text" id="conversationSearchInput" class="form-control border-left-0" placeholder="Search contact, number..." onkeyup="filterConversationsList()">
+                    </div>
+
+                    <!-- Gym Filter -->
+                    <select id="conversationGymFilter" class="form-control form-control-sm" onchange="refreshConversations()">
+                        <option value="all">All Gyms & Platform</option>
+                        {% for g in all_gyms %}
+                            <option value="{{ g.id }}" {% if gym_filter == g.id|stringformat:'s' %}selected{% endif %}>{{ g.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Filter Chips -->
+                <div class="wa-contacts-filter-bar">
+                    <span class="wa-filter-chip active" data-filter="all" onclick="setContactFilter(this, 'all')">All</span>
+                    <span class="wa-filter-chip" data-filter="inbound" onclick="setContactFilter(this, 'inbound')">
+                        <i class="mdi mdi-arrow-bottom-left mr-1"></i> Inbound
+                    </span>
+                    <span class="wa-filter-chip" data-filter="failed" onclick="setContactFilter(this, 'failed')">
+                        <i class="mdi mdi-alert-circle mr-1"></i> Failed
+                    </span>
+                    <span class="wa-filter-chip" data-filter="outbound" onclick="setContactFilter(this, 'outbound')">
+                        <i class="mdi mdi-arrow-top-right mr-1"></i> Outbound
+                    </span>
+                </div>
+
+                <!-- Contacts Scrollable List -->
+                <div class="wa-contacts-list" id="conversationsContainer">
+                    <div class="text-center py-5 text-muted">
+                        <i class="mdi mdi-loading mdi-spin mdi-24px d-block mb-2"></i>
+                        <span>Loading active conversations...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Pane: Active Thread & Composer -->
+            <div class="wa-thread-pane">
+                <!-- Thread Header -->
+                <div class="wa-thread-header" id="threadHeader">
+                    <div class="wa-thread-user">
+                        <div class="wa-avatar" id="activeContactAvatar">FS</div>
+                        <div>
+                            <div class="d-flex align-items-center">
+                                <h6 class="font-weight-bold text-dark mb-0 mr-2" id="activeContactName">Select a conversation</h6>
+                                <span class="badge-soft badge-soft-secondary font-weight-bold" id="activeContactType" style="font-size: 0.70rem;">Contact</span>
+                            </div>
+                            <div class="small text-muted" id="activeContactDetails">
+                                Click on any contact from the left list to view message stream
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center" id="threadActions" style="display: none !important;">
+                        <a href="#" id="activeContactCallBtn" class="btn btn-xs btn-outline-secondary font-weight-bold mr-1" title="Call Contact">
+                            <i class="mdi mdi-phone mr-1"></i> Call
+                        </a>
+                        <a href="#" id="activeContactDirectWaBtn" target="_blank" class="btn btn-xs btn-outline-success font-weight-bold mr-1" title="Open in Personal WhatsApp Web/App">
+                            <i class="mdi mdi-whatsapp mr-1"></i> Open WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Messages Stream -->
+                <div class="wa-messages-stream" id="messagesStream">
+                    <div class="text-center py-5 text-muted my-auto" id="noActiveThreadNotice">
+                        <i class="mdi mdi-whatsapp mdi-48px text-muted d-block mb-2" style="opacity: 0.4;"></i>
+                        <h6 class="font-weight-bold text-dark">No Conversation Selected</h6>
+                        <p class="small text-muted mb-0">Select any contact on the left to start live messaging or inspect the message thread.</p>
+                    </div>
+                </div>
+
+                <!-- Quick Reply Suggestions (No scrollbar look) -->
+                <div class="wa-quick-replies-bar" id="quickReplyBar" style="display: none;">
+                    <span class="small font-weight-bold text-muted mr-1 flex-shrink-0">Templates:</span>
+                    <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('lead')">Lead Followup</button>
+                    <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('due')">Payment Reminder</button>
+                    <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('expiry')">Membership Renewal</button>
+                    <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('demo')">ONEXIVADemo Walkthrough</button>
+                    <button type="button" class="wa-reply-chip" onclick="applyChatTemplate('support')">Support Greeting</button>
+                </div>
+
+                <!-- Composer Box -->
+                <div class="wa-composer-area" id="composerArea" style="display: none;">
+                    <div class="d-flex flex-column">
+                        <textarea id="composerInput" class="form-control wa-composer-input mb-2" rows="2" placeholder="Type your WhatsApp message or pick a template above..."></textarea>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 8px;">
+                            <div class="small text-muted">
+                                <span id="composerCharCount">0</span> characters
+                            </div>
+                            <div class="d-flex align-items-center" style="gap: 8px;">
+                                <button type="button" class="btn btn-sm btn-outline-dark font-weight-bold shadow-xs" onclick="sendChatMessage('personal_whatsapp')" title="Open prefilled WhatsApp message to send from your personal number">
+                                    <i class="mdi mdi-whatsapp text-success mr-1"></i> Send via Personal WA
+                                </button>
+                                <button type="button" class="btn btn-sm btn-wa-send font-weight-bold px-3 shadow-xs" id="btnSendTwilio" onclick="sendChatMessage('twilio')" title="Send directly via Twilio Cloud WhatsApp API">
+                                    <i class="mdi mdi-send mr-1"></i> Send via Twilio API
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 2: Message Audit Log Table -->
+    <div id="auditTableView" class="gym-card mb-4" style="display: none;">
+        <!-- Card Header with Filters & Search -->
+        <div class="gym-card-header flex-wrap py-3 px-3">
+            <!-- Filter Action Buttons -->
+            <div class="d-flex flex-wrap align-items-center mb-2 mb-md-0">
+                <a href="?status=all{% if gym_filter != 'all' %}&gym_id={{ gym_filter }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+                   class="btn btn-sm mr-2 mb-1 {% if status_filter == 'all' and direction_filter == 'all' %}btn-primary font-weight-bold shadow-sm{% else %}btn-outline-secondary{% endif %}">
+                    All Messages <span class="badge badge-light ml-1">{{ total_count }}</span>
+                </a>
+                <a href="?status=sent{% if gym_filter != 'all' %}&gym_id={{ gym_filter }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+                   class="btn btn-sm mr-2 mb-1 {% if status_filter == 'sent' %}btn-success font-weight-bold shadow-sm text-white{% else %}btn-outline-success{% endif %}">
+                    <i class="mdi mdi-arrow-top-right mr-1"></i> Sent <span class="badge badge-light ml-1">{{ sent_count }}</span>
+                </a>
+                <a href="?status=received{% if gym_filter != 'all' %}&gym_id={{ gym_filter }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+                   class="btn btn-sm mr-2 mb-1 {% if status_filter == 'received' %}btn-info font-weight-bold shadow-sm text-white{% else %}btn-outline-info{% endif %}">
+                    <i class="mdi mdi-arrow-bottom-left mr-1"></i> Received <span class="badge badge-light ml-1">{{ received_count }}</span>
+                </a>
+                <a href="?status=failed{% if gym_filter != 'all' %}&gym_id={{ gym_filter }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+                   class="btn btn-sm mr-2 mb-1 {% if status_filter == 'failed' %}btn-danger font-weight-bold shadow-sm text-white{% else %}btn-outline-danger{% endif %}">
+                    <i class="mdi mdi-alert-circle mr-1"></i> Not Sent / Failed <span class="badge badge-light ml-1">{{ failed_count }}</span>
+                </a>
+                <a href="?status=sent_manually{% if gym_filter != 'all' %}&gym_id={{ gym_filter }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+                   class="btn btn-sm mb-1 {% if status_filter == 'sent_manually' %}btn-dark font-weight-bold shadow-sm text-white{% else %}btn-outline-dark{% endif %}">
+                    <i class="mdi mdi-whatsapp mr-1 text-success"></i> Personal WhatsApp <span class="badge badge-light ml-1">{{ manual_count }}</span>
+                </a>
+            </div>
+
+            <!-- Gym Filter & Search Form -->
+            <div class="d-flex flex-wrap align-items-center mt-2 mt-md-0">
+                <form method="GET" class="d-flex align-items-center">
+                    {% if status_filter != 'all' %}
+                        <input type="hidden" name="status" value="{{ status_filter }}">
+                    {% endif %}
+                    
+                    <!-- Gym Filter Dropdown -->
+                    <div class="mr-2" style="min-width: 170px;">
+                        <select name="gym_id" class="form-control form-control-sm" onchange="this.form.submit()" title="Filter by Gym">
+                            <option value="all">All Gyms & Platform</option>
+                            {% for g in all_gyms %}
+                                <option value="{{ g.id }}" {% if gym_filter == g.id|stringformat:'s' %}selected{% endif %}>
+                                    {{ g.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="input-group input-group-sm" style="min-width: 200px; max-width: 260px;">
+                        <input type="text" name="q" class="form-control" placeholder="Search name, phone..." value="{{ search_query|default:'' }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit" title="Search">
+                                <i class="mdi mdi-magnify"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% if search_query or gym_filter != 'all' %}
+                        <a href="?status={{ status_filter }}" class="btn btn-sm btn-link text-muted ml-1 p-0 small">Clear</a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        <!-- Table Body -->
+        <div class="gym-card-body p-0">
+            <div class="table-responsive">
+                <table class="modern-table mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;" class="pl-3">Contact</th>
+                            <th style="width: 16%;">Gym / Type</th>
+                            <th style="width: 25%;">Message Content</th>
+                            <th style="width: 14%;">Flow & Status</th>
+                            <th style="width: 11%; white-space: nowrap;">Date</th>
+                            <th style="width: 14%; text-align: right;" class="pr-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in page_obj %}
+                        <tr id="row-log-{{ log.id }}">
+                            <td class="pl-3">
+                                <div class="d-flex align-items-center">
+                                    {% if log.is_inbound %}
+                                        <span class="badge badge-light border text-primary font-weight-bold mr-2" title="Received message from contact">
+                                            <i class="mdi mdi-arrow-bottom-left text-primary"></i>
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-light border text-success font-weight-bold mr-2" title="Sent outgoing message">
+                                            <i class="mdi mdi-arrow-top-right text-success"></i>
+                                        </span>
+                                    {% endif %}
+                                    <div>
+                                        <strong class="text-dark d-block" style="font-size: 0.86rem;">
+                                            {{ log.recipient_name }}
+                                        </strong>
+                                        <span class="text-muted small">
+                                            <i class="mdi mdi-phone mr-1"></i>{{ log.recipient_phone }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if log.gym %}
+                                    <div class="font-weight-bold text-dark small">
+                                        <i class="mdi mdi-domain text-primary mr-1"></i>{{ log.gym.name }}
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted small">ONEXIVAPlatform</span>
+                                {% endif %}
+                                <span class="badge-soft badge-soft-secondary mt-1" style="font-size: 0.68rem; padding: 2px 6px;">
+                                    {{ log.get_message_type_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="text-truncate text-dark small" style="max-width: 230px;" title="{{ log.message_content }}">
+                                    {{ log.message_content|truncatechars:65 }}
+                                </div>
+                                <a href="javascript:void(0)" class="small text-primary font-weight-bold" data-toggle="modal" data-target="#viewMessageModal{{ log.id }}">
+                                    <i class="mdi mdi-eye-outline mr-1"></i> View Full
+                                </a>
+                            </td>
+                            <td id="status-cell-{{ log.id }}">
+                                {% if log.status == 'received' or log.direction == 'inbound' %}
+                                    <span class="badge-soft badge-soft-inbound font-weight-bold">
+                                        <i class="mdi mdi-arrow-bottom-left mr-1"></i> Received
+                                    </span>
+                                {% elif log.status == 'sent' %}
+                                    <span class="badge-soft badge-soft-success font-weight-bold">
+                                        <i class="mdi mdi-check-all mr-1"></i> Delivered (API)
+                                    </span>
+                                {% elif log.status == 'sent_manually' %}
+                                    <span class="badge-soft badge-soft-wa font-weight-bold">
+                                        <i class="mdi mdi-whatsapp mr-1"></i> Personal WA
+                                    </span>
+                                {% elif log.status == 'failed' %}
+                                    <div>
+                                        <span class="badge-soft badge-soft-danger font-weight-bold" title="{{ log.error_message }}">
+                                            <i class="mdi mdi-alert-circle mr-1"></i> Not Sent / Failed
+                                        </span>
+                                        {% if log.error_message %}
+                                        <div class="small text-danger mt-1 text-truncate" style="max-width: 140px; font-size: 0.70rem;" title="{{ log.error_message }}">
+                                            {{ log.error_message|truncatechars:28 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <span class="badge-soft badge-soft-warning font-weight-bold">
+                                        <i class="mdi mdi-clock-outline mr-1"></i> Pending
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td style="white-space: nowrap;">
+                                <span class="text-dark font-weight-bold small d-block">{{ log.created_at|date:"d M, Y" }}</span>
+                                <span class="text-muted small">{{ log.created_at|date:"H:i A" }}</span>
+                            </td>
+                            <td class="text-right pr-3" style="white-space: nowrap;">
+                                <!-- Open in Live Chat Console -->
+                                <button type="button" class="btn btn-xs btn-outline-primary font-weight-bold mr-1" onclick="openContactInLiveChat('{{ log.clean_phone }}')">
+                                    <i class="mdi mdi-forum mr-1"></i> Chat
+                                </button>
+
+                                {% if log.status == 'failed' or log.status == 'pending' %}
+                                    <!-- Send via Personal WhatsApp Action -->
+                                    <a href="{{ log.whatsapp_url }}" target="_blank" 
+                                       onclick="markLogSentManually({{ log.id }})" 
+                                       class="btn btn-xs btn-success font-weight-bold mr-1 shadow-xs"
+                                       title="Open WhatsApp with prefilled text to send from your personal number">
+                                        <i class="mdi mdi-whatsapp mr-1"></i> Personal Send
+                                    </a>
+                                {% endif %}
+
+                                <!-- View Modal Button -->
+                                <button type="button" class="btn btn-xs btn-light border" 
+                                        data-toggle="modal" data-target="#viewMessageModal{{ log.id }}" title="View Details">
+                                    <i class="mdi mdi-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- View Message Details Modal -->
+                        <div class="modal fade" id="viewMessageModal{{ log.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-light">
+                                        <h5 class="modal-title font-weight-bold">
+                                            <i class="mdi mdi-whatsapp text-success mr-1"></i> 
+                                            {% if log.is_inbound %}Incoming Message from{% else %}Message to{% endif %} {{ log.recipient_name }}
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <div class="d-flex justify-content-between mb-3 pb-2 border-bottom">
+                                            <span class="text-muted font-weight-bold">Contact:</span>
+                                            <span class="font-weight-bold text-dark">{{ log.recipient_name }} ({{ log.recipient_phone }})</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-3 pb-2 border-bottom">
+                                            <span class="text-muted font-weight-bold">Flow Direction:</span>
+                                            <span>
+                                                {% if log.is_inbound %}
+                                                    <span class="badge-soft badge-soft-inbound font-weight-bold"><i class="mdi mdi-arrow-bottom-left mr-1"></i> Inbound (Received)</span>
+                                                {% else %}
+                                                    <span class="badge-soft badge-soft-success font-weight-bold"><i class="mdi mdi-arrow-top-right mr-1"></i> Outbound (Sent)</span>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-3 pb-2 border-bottom">
+                                            <span class="text-muted font-weight-bold">Delivery Status:</span>
+                                            <span>
+                                                {% if log.status == 'received' %}
+                                                    <span class="badge-soft badge-soft-inbound font-weight-bold">Received from WhatsApp</span>
+                                                {% elif log.status == 'sent' %}
+                                                    <span class="badge-soft badge-soft-success font-weight-bold">Delivered (Twilio Gateway)</span>
+                                                {% elif log.status == 'sent_manually' %}
+                                                    <span class="badge-soft badge-soft-wa font-weight-bold">Sent via Personal WhatsApp</span>
+                                                {% elif log.status == 'failed' %}
+                                                    <span class="badge-soft badge-soft-danger font-weight-bold">Not Sent / Delivery Failed</span>
+                                                {% else %}
+                                                    <span class="badge-soft badge-soft-warning font-weight-bold">Pending</span>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        {% if log.gym %}
+                                        <div class="d-flex justify-content-between mb-3 pb-2 border-bottom">
+                                            <span class="text-muted font-weight-bold">Associated Gym:</span>
+                                            <span class="font-weight-bold text-dark">{{ log.gym.name }}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if log.error_message %}
+                                        <div class="alert alert-danger p-2 small mb-3">
+                                            <strong>Error Details:</strong> {{ log.error_message }}
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="form-group mb-0">
+                                            <label class="font-weight-bold text-muted small text-uppercase">Full Message Content:</label>
+                                            <div class="p-3 bg-light rounded text-dark" style="white-space: pre-wrap; font-size: 0.88rem; max-height: 200px; overflow-y: auto;">{{ log.message_content }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light d-flex justify-content-between">
+                                        <a href="{{ log.direct_chat_url }}" target="_blank" class="btn btn-outline-success btn-sm font-weight-bold">
+                                            <i class="mdi mdi-chat-outline mr-1"></i> Open Direct Chat
+                                        </a>
+                                        <div>
+                                            {% if log.status != 'sent' and log.status != 'sent_manually' and not log.is_inbound %}
+                                            <a href="{{ log.whatsapp_url }}" target="_blank" onclick="markLogSentManually({{ log.id }})" class="btn btn-success btn-sm font-weight-bold mr-1">
+                                                <i class="mdi mdi-whatsapp mr-1"></i> Send with Personal No.
+                                            </a>
+                                            {% endif %}
+                                            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="mdi mdi-whatsapp mdi-48px text-muted d-block mb-2"></i>
+                                <h5 class="font-weight-bold text-dark">No WhatsApp communication records found</h5>
+                                <p class="small text-muted mb-3">Automatic gym messages via Twilio and incoming customer messages will appear here.</p>
+                                <button type="button" class="btn btn-primary btn-sm font-weight-bold px-3 py-2" data-toggle="modal" data-target="#newChatModal">
+                                    <i class="mdi mdi-plus-circle mr-1"></i> Start a Direct WhatsApp Chat
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="d-flex justify-content-between align-items-center p-3 border-top">
+                <span class="text-muted small">
+                    Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                <ul class="pagination pagination-sm mb-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&status={{ status_filter }}{% if gym_filter != 'all' %}&gym_id={{ gym_filter }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">Previous</a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }}</span>
+                    </li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&status={{ status_filter }}{% if gym_filter != 'all' %}&gym_id={{ gym_filter }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Compose New WhatsApp Message & Direct Chat -->
+<div class="modal fade" id="newChatModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title font-weight-bold text-white">
+                    <i class="mdi mdi-whatsapp mr-1"></i> Direct WhatsApp Message & Chat
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'superadmin:send_direct_whatsapp_message' %}" target="_blank" onsubmit="setTimeout(function(){ window.location.reload(); }, 1200);">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <!-- Quick Select Contact -->
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold small text-muted text-uppercase">Pick a Recent Lead or Gym (Optional)</label>
+                        <select class="form-control form-control-sm" id="quickContactSelect" onchange="applyQuickContact(this)">
+                            <option value="">-- Or enter custom number below --</option>
+                            <optgroup label="Website Leads">
+                                {% for lead in quick_leads %}
+                                <option value="{{ lead.phone }}" data-name="{{ lead.first_name }} {{ lead.last_name }}" data-type="Website Lead">
+                                    {{ lead.first_name }} {{ lead.last_name }} ({{ lead.phone }}) - {{ lead.business_name|default:"Lead" }}
+                                </option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="Registered Gyms">
+                                {% for gym in quick_gyms %}
+                                <option value="{{ gym.phone }}" data-name="{{ gym.name }}" data-type="Gym Admin">
+                                    {{ gym.name }} ({{ gym.phone }})
+                                </option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold small text-dark">Recipient Name <span class="text-danger">*</span></label>
+                        <input type="text" name="recipient_name" id="modalRecipientName" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold small text-dark">WhatsApp Phone Number <span class="text-danger">*</span></label>
+                        <input type="text" name="recipient_phone" id="modalRecipientPhone" class="form-control" placeholder="e.g. 9876543210 (with or without 91)" required>
+                        <small class="text-muted">Enter 10-digit mobile number or with country code.</small>
+                    </div>
+
+                    <input type="hidden" name="recipient_type" id="modalRecipientType" value="Direct Contact">
+
+                    <!-- Message Template Quick Picker -->
+                    <div class="form-group mb-2">
+                        <label class="font-weight-bold small text-muted text-uppercase">Template Shortcuts</label>
+                        <div class="d-flex flex-wrap">
+                            <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1" onclick="insertModalTemplate('lead')">Lead Inquiry Followup</button>
+                            <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1" onclick="insertModalTemplate('renewal')">Subscription Renewal</button>
+                            <button type="button" class="btn btn-xs btn-outline-secondary mr-1 mb-1" onclick="insertModalTemplate('demo')">ONEXIVADemo Link</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <label class="font-weight-bold small text-dark">Message Text <span class="text-danger">*</span></label>
+                        <textarea name="message_content" id="modalMessageContent" rows="4" class="form-control" placeholder="Type your WhatsApp message text here..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success btn-sm font-weight-bold px-3 py-2">
+                        <i class="mdi mdi-whatsapp mr-1"></i> Open & Send in WhatsApp
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    // State management for live console
+    var currentFilter = 'all';
+    var activePhone = null;
+    var activeContactData = null;
+    var conversationsData = [];
+
+    // Initialize Console on Load
+    document.addEventListener('DOMContentLoaded', function() {
+        refreshConversations();
+
+        var composerInput = document.getElementById('composerInput');
+        if (composerInput) {
+            composerInput.addEventListener('input', function() {
+                var len = this.value.length;
+                document.getElementById('composerCharCount').innerText = len;
+            });
+            composerInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChatMessage('twilio');
+                }
+            });
+        }
+    });
+
+    // Switch between Live Chat Console and Message Audit Log Table
+    function switchView(mode) {
+        var liveView = document.getElementById('liveConsoleView');
+        var auditView = document.getElementById('auditTableView');
+        var btnLive = document.getElementById('btnViewLive');
+        var btnAudit = document.getElementById('btnViewAudit');
+
+        if (mode === 'live') {
+            liveView.style.display = 'block';
+            auditView.style.display = 'none';
+            btnLive.classList.add('active');
+            btnAudit.classList.remove('active');
+        } else {
+            liveView.style.display = 'none';
+            auditView.style.display = 'block';
+            btnLive.classList.remove('active');
+            btnAudit.classList.add('active');
+        }
+    }
+
+    function openContactInLiveChat(cleanPhone) {
+        switchView('live');
+        loadThread(cleanPhone);
+    }
+
+    // Contact List Filtering (All / Inbound / Failed / Outbound)
+    function setContactFilter(chipElem, filterType) {
+        document.querySelectorAll('.wa-filter-chip').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        chipElem.classList.add('active');
+        currentFilter = filterType;
+        renderConversations();
+    }
+
+    // Fetch conversation summaries via API
+    function refreshConversations() {
+        var gymId = document.getElementById('conversationGymFilter').value;
+        var searchQ = document.getElementById('conversationSearchInput').value.trim();
+        var url = `/superadmin/whatsapp-messages/api/conversations/?gym_id=${encodeURIComponent(gymId)}&q=${encodeURIComponent(searchQ)}`;
+
+        fetch(url, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                conversationsData = data.conversations || [];
+                renderConversations();
+
+                // If an active phone is already selected, maintain it; else select first
+                if (activePhone) {
+                    highlightActiveContact(activePhone);
+                } else if (conversationsData.length > 0) {
+                    loadThread(conversationsData[0].phone);
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Failed to load conversations:', err);
+        });
+    }
+
+    function filterConversationsList() {
+        var query = document.getElementById('conversationSearchInput').value.toLowerCase();
+        var items = document.querySelectorAll('.wa-contact-item');
+        items.forEach(function(item) {
+            var text = item.innerText.toLowerCase();
+            item.style.display = text.indexOf(query) !== -1 ? 'flex' : 'none';
+        });
+    }
+
+    function renderConversations() {
+        var container = document.getElementById('conversationsContainer');
+        var filtered = conversationsData;
+
+        if (currentFilter === 'inbound') {
+            filtered = conversationsData.filter(c => c.inbound_count > 0 || c.last_direction === 'inbound');
+        } else if (currentFilter === 'failed') {
+            filtered = conversationsData.filter(c => c.has_failed || c.last_status === 'failed');
+        } else if (currentFilter === 'outbound') {
+            filtered = conversationsData.filter(c => c.last_direction === 'outbound');
+        }
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-5 text-muted px-3">
+                    <i class="mdi mdi-account-search-outline mdi-36px d-block mb-2 text-muted"></i>
+                    <p class="small mb-0">No conversations matching this filter.</p>
+                </div>
+            `;
+            return;
+        }
+
+        var html = '';
+        filtered.forEach(function(c) {
+            var initials = getInitials(c.name);
+            var avatarClass = 'wa-avatar';
+            if (c.recipient_type && c.recipient_type.toLowerCase().indexOf('lead') !== -1) {
+                avatarClass += ' wa-avatar-lead';
+            } else if (c.gym_name && c.gym_name !== 'ONEXIVAPlatform') {
+                avatarClass += ' wa-avatar-gym';
+            }
+
+            var statusIcon = '';
+            if (c.last_direction === 'inbound' || c.last_status === 'received') {
+                statusIcon = '<i class="mdi mdi-arrow-bottom-left text-primary mr-1" title="Inbound reply"></i>';
+            } else if (c.last_status === 'sent') {
+                statusIcon = '<i class="mdi mdi-check-all text-success mr-1" title="Delivered via API"></i>';
+            } else if (c.last_status === 'sent_manually') {
+                statusIcon = '<i class="mdi mdi-whatsapp text-success mr-1" title="Sent with Personal WhatsApp"></i>';
+            } else if (c.last_status === 'failed') {
+                statusIcon = '<i class="mdi mdi-alert-circle text-danger mr-1" title="Delivery failed"></i>';
+            } else {
+                statusIcon = '<i class="mdi mdi-clock-outline text-muted mr-1"></i>';
+            }
+
+            var isActive = (activePhone && (c.phone === activePhone || c.clean_digits === activePhone)) ? 'active' : '';
+
+            html += `
+                <div class="wa-contact-item ${isActive}" data-phone="${c.phone}" data-digits="${c.clean_digits}" onclick="loadThread('${c.phone}')">
+                    <div class="${avatarClass}">${initials}</div>
+                    <div class="wa-contact-info">
+                        <div class="wa-contact-top">
+                            <span class="wa-contact-name">${escapeHtml(c.name)}</span>
+                            <span class="wa-contact-time">${c.last_time || ''}</span>
+                        </div>
+                        <div class="wa-contact-snippet">
+                            ${statusIcon}
+                            <span class="text-truncate">${escapeHtml(c.last_message || 'No messages')}</span>
+                        </div>
+                        <div class="wa-contact-meta">
+                            <span class="badge-soft badge-soft-secondary" style="font-size: 0.65rem; padding: 1px 5px;">${escapeHtml(c.recipient_type)}</span>
+                            ${c.gym_name ? `<span class="badge-soft badge-soft-info" style="font-size: 0.65rem; padding: 1px 5px;"><i class="mdi mdi-domain mr-1"></i>${escapeHtml(c.gym_name)}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function highlightActiveContact(phone) {
+        document.querySelectorAll('.wa-contact-item').forEach(function(item) {
+            var itemPhone = item.getAttribute('data-phone');
+            var itemDigits = item.getAttribute('data-digits');
+            if (itemPhone === phone || itemDigits === phone) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    // Load full message thread for selected contact
+    function loadThread(phone) {
+        activePhone = phone;
+        highlightActiveContact(phone);
+
+        var stream = document.getElementById('messagesStream');
+        stream.innerHTML = `
+            <div class="text-center py-5 text-muted my-auto">
+                <i class="mdi mdi-loading mdi-spin mdi-24px d-block mb-2"></i>
+                <span>Loading conversation thread...</span>
+            </div>
+        `;
+
+        fetch(`/superadmin/whatsapp-messages/api/thread/${encodeURIComponent(phone)}/`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                activeContactData = data.contact;
+                renderThreadHeader(data.contact);
+                renderThreadMessages(data.messages);
+                document.getElementById('quickReplyBar').style.display = 'flex';
+                document.getElementById('composerArea').style.display = 'block';
+                document.getElementById('threadActions').style.display = 'flex';
+            } else {
+                stream.innerHTML = `<div class="alert alert-danger my-auto">${data.error || 'Failed to load thread'}</div>`;
+            }
+        })
+        .catch(err => {
+            console.error('Error loading thread:', err);
+            stream.innerHTML = `<div class="alert alert-danger my-auto">Failed to load conversation messages.</div>`;
+        });
+    }
+
+    function renderThreadHeader(contact) {
+        document.getElementById('activeContactName').innerText = contact.name;
+        document.getElementById('activeContactAvatar').innerText = getInitials(contact.name);
+        document.getElementById('activeContactType').innerText = contact.recipient_type || 'Contact';
+
+        var detailsText = `${contact.phone}`;
+        if (contact.gym_name && contact.gym_name !== 'ONEXIVAPlatform') {
+            detailsText += ` • ${contact.gym_name}`;
+        }
+        document.getElementById('activeContactDetails').innerText = detailsText;
+
+        document.getElementById('activeContactCallBtn').href = `tel:${contact.phone}`;
+        document.getElementById('activeContactDirectWaBtn').href = contact.direct_chat_url || `https://wa.me/${contact.clean_phone}`;
+    }
+
+    function renderThreadMessages(messages) {
+        var stream = document.getElementById('messagesStream');
+        if (!messages || messages.length === 0) {
+            stream.innerHTML = `
+                <div class="text-center py-5 text-muted my-auto">
+                    <i class="mdi mdi-chat-outline mdi-36px d-block mb-2 text-muted"></i>
+                    <p class="small">No messages recorded in this conversation yet. Send a message below.</p>
+                </div>
+            `;
+            return;
+        }
+
+        var html = '';
+        var lastDate = '';
+
+        messages.forEach(function(m) {
+            if (m.date !== lastDate) {
+                lastDate = m.date;
+                html += `
+                    <div class="text-center my-2">
+                        <span class="badge badge-light border text-muted px-2 py-1 font-weight-normal" style="font-size: 0.70rem;">
+                            ${m.date}
+                        </span>
+                    </div>
+                `;
+            }
+
+            var isInbound = m.is_inbound || m.direction === 'inbound';
+            var wrapClass = isInbound ? 'inbound' : 'outbound';
+            var bubbleClass = isInbound ? 'inbound' : 'outbound';
+
+            var statusMeta = '';
+            if (isInbound) {
+                statusMeta = `
+                    <span class="badge-soft badge-soft-inbound" style="font-size: 0.65rem; padding: 1px 5px;">
+                        <i class="mdi mdi-arrow-bottom-left mr-1"></i> Inbound Webhook
+                    </span>
+                `;
+            } else if (m.status === 'sent') {
+                statusMeta = `
+                    <span class="text-success font-weight-bold" title="Delivered via Twilio API">
+                        <i class="mdi mdi-check-all"></i> Delivered
+                    </span>
+                `;
+            } else if (m.status === 'sent_manually') {
+                statusMeta = `
+                    <span class="text-success font-weight-bold" title="Sent via Personal WhatsApp">
+                        <i class="mdi mdi-whatsapp"></i> Personal WA
+                    </span>
+                `;
+            } else if (m.status === 'failed') {
+                statusMeta = `
+                    <span class="text-danger font-weight-bold" title="${escapeHtml(m.error_message)}">
+                        <i class="mdi mdi-alert-circle"></i> Failed
+                    </span>
+                    <a href="${m.whatsapp_url}" target="_blank" onclick="markLogSentManually(${m.id})" class="wa-bubble-personal-retry ml-1">
+                        <i class="mdi mdi-whatsapp mr-1"></i> Personal Send
+                    </a>
+                `;
+            } else {
+                statusMeta = `<span class="text-muted"><i class="mdi mdi-clock-outline"></i> Pending</span>`;
+            }
+
+            html += `
+                <div class="wa-bubble-wrap ${wrapClass}">
+                    <div class="wa-bubble ${bubbleClass}">
+                        <div class="wa-bubble-type-tag text-muted">
+                            ${isInbound ? 'Customer Reply' : escapeHtml(m.message_type || 'Message')}
+                        </div>
+                        <div>${escapeHtml(m.message_content)}</div>
+                        <div class="wa-bubble-meta">
+                            <span>${m.time}</span>
+                            ${statusMeta}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        stream.innerHTML = html;
+        stream.scrollTop = stream.scrollHeight;
+    }
+
+    // Dispatch message via Twilio API or Personal WhatsApp
+    function sendChatMessage(sendMethod) {
+        if (!activeContactData || !activePhone) {
+            alert('Please select a contact thread first.');
+            return;
+        }
+
+        var input = document.getElementById('composerInput');
+        var content = input.value.trim();
+        if (!content) {
+            input.focus();
+            return;
+        }
+
+        var btnTwilio = document.getElementById('btnSendTwilio');
+        btnTwilio.disabled = true;
+        btnTwilio.innerHTML = '<i class="mdi mdi-loading mdi-spin mr-1"></i> Sending...';
+
+        var formData = new FormData();
+        formData.append('recipient_phone', activeContactData.phone);
+        formData.append('recipient_name', activeContactData.name);
+        formData.append('message_content', content);
+        formData.append('send_method', sendMethod);
+        if (activeContactData.gym_id) {
+            formData.append('gym_id', activeContactData.gym_id);
+        }
+
+        fetch('/superadmin/whatsapp-messages/api/send/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            btnTwilio.disabled = false;
+            btnTwilio.innerHTML = '<i class="mdi mdi-send mr-1"></i> Send via Twilio API';
+
+            if (data.success || data.whatsapp_url) {
+                input.value = '';
+                document.getElementById('composerCharCount').innerText = '0';
+
+                // If sent via personal whatsapp, open wa.me in new tab
+                if (sendMethod === 'personal_whatsapp' && data.whatsapp_url) {
+                    window.open(data.whatsapp_url, '_blank');
+                }
+
+                // If Twilio failed, offer 1-click fallback notification
+                if (!data.success && data.error) {
+                    showFallbackAlert(data.error, data.whatsapp_url);
+                }
+
+                // Append message to stream immediately
+                if (data.message) {
+                    appendMessageToStream(data.message);
+                } else {
+                    loadThread(activePhone);
+                }
+
+                // Refresh conversation snippets
+                refreshConversations();
+            } else {
+                alert('Error sending message: ' + (data.error || 'Unknown error occurred.'));
+            }
+        })
+        .catch(err => {
+            btnTwilio.disabled = false;
+            btnTwilio.innerHTML = '<i class="mdi mdi-send mr-1"></i> Send via Twilio API';
+            console.error('Error sending message:', err);
+            alert('Server error when dispatching message.');
+        });
+    }
+
+    function appendMessageToStream(msg) {
+        var stream = document.getElementById('messagesStream');
+        var notice = document.getElementById('noActiveThreadNotice');
+        if (notice) notice.remove();
+
+        var statusMeta = '';
+        if (msg.status === 'sent') {
+            statusMeta = '<span class="text-success font-weight-bold"><i class="mdi mdi-check-all"></i> Delivered</span>';
+        } else if (msg.status === 'sent_manually') {
+            statusMeta = '<span class="text-success font-weight-bold"><i class="mdi mdi-whatsapp"></i> Personal WA</span>';
+        } else if (msg.status === 'failed') {
+            statusMeta = `
+                <span class="text-danger font-weight-bold"><i class="mdi mdi-alert-circle"></i> Failed</span>
+                <a href="${msg.whatsapp_url}" target="_blank" class="wa-bubble-personal-retry ml-1">
+                    <i class="mdi mdi-whatsapp mr-1"></i> Personal Send
+                </a>
+            `;
+        }
+
+        var bubbleHtml = `
+            <div class="wa-bubble-wrap outbound">
+                <div class="wa-bubble outbound">
+                    <div class="wa-bubble-type-tag text-muted">Direct Chat</div>
+                    <div>${escapeHtml(msg.message_content)}</div>
+                    <div class="wa-bubble-meta">
+                        <span>${msg.time}</span>
+                        ${statusMeta}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        stream.insertAdjacentHTML('beforeend', bubbleHtml);
+        stream.scrollTop = stream.scrollHeight;
+    }
+
+    function showFallbackAlert(errorMsg, fallbackUrl) {
+        var stream = document.getElementById('messagesStream');
+        var alertHtml = `
+            <div class="alert alert-warning alert-dismissible fade show my-2 small p-2 shadow-xs" role="alert">
+                <i class="mdi mdi-alert mr-1"></i>
+                <strong>Twilio Notice:</strong> ${escapeHtml(errorMsg)}
+                <div class="mt-1">
+                    <a href="${fallbackUrl}" target="_blank" class="btn btn-xs btn-success font-weight-bold text-white">
+                        <i class="mdi mdi-whatsapp mr-1"></i> Send via Personal WhatsApp Now
+                    </a>
+                </div>
+                <button type="button" class="close p-1" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `;
+        stream.insertAdjacentHTML('beforeend', alertHtml);
+        stream.scrollTop = stream.scrollHeight;
+    }
+
+    // Quick Reply Template Inserts for Live Chat
+    function applyChatTemplate(type) {
+        var name = (activeContactData && activeContactData.name) ? activeContactData.name : 'Customer';
+        var input = document.getElementById('composerInput');
+
+        if (type === 'lead') {
+            input.value = `Hello ${name}, thank you for reaching out to ONEXIVA! When is a good time for a quick 5-minute walkthrough of our gym management system?`;
+        } else if (type === 'due') {
+            input.value = `Dear ${name}, this is a gentle payment reminder regarding your pending membership balance. Kindly clear the dues or reach out to us if you need any assistance.`;
+        } else if (type === 'expiry') {
+            input.value = `Hello ${name}, your fitness membership plan is due for renewal soon. Renew today to enjoy uninterrupted access to workouts and personalized training!`;
+        } else if (type === 'demo') {
+            input.value = `Hi ${name}! Check out the ONEXIVAlive software demo at https://fitstack.com - discover automatic billing, member attendance, and WhatsApp automation.`;
+        } else if (type === 'support') {
+            input.value = `Hello ${name}, ONEXIVASupport here! How may we assist you today?`;
+        }
+
+        input.focus();
+        document.getElementById('composerCharCount').innerText = input.value.length;
+    }
+
+    // Modal Helpers
+    function applyQuickContact(selectElem) {
+        var opt = selectElem.options[selectElem.selectedIndex];
+        if (opt.value) {
+            document.getElementById('modalRecipientPhone').value = opt.value;
+            document.getElementById('modalRecipientName').value = opt.getAttribute('data-name') || '';
+            document.getElementById('modalRecipientType').value = opt.getAttribute('data-type') || 'Contact';
+        }
+    }
+
+    function insertModalTemplate(type) {
+        var name = document.getElementById('modalRecipientName').value || 'Customer';
+        var textarea = document.getElementById('modalMessageContent');
+        if (type === 'lead') {
+            textarea.value = `Hello ${name}, thank you for contacting ONEXIVA! We noticed your inquiry regarding our gym software platform. When would be a good time for a quick walkthrough demo?`;
+        } else if (type === 'renewal') {
+            textarea.value = `Hello ${name}, greetings from ONEXIVA! This is a friendly reminder regarding your platform subscription plan renewal. Please let us know if you need assistance with payment or upgrades.`;
+        } else if (type === 'demo') {
+            textarea.value = `Hi ${name}! Check out ONEXIVAlive demo at: https://fitstack.com. Discover automated billing, WhatsApp reminders, and member portal tools!`;
+        }
+    }
+
+    function markLogSentManually(logId) {
+        fetch(`/superadmin/whatsapp-messages/${logId}/mark-sent/?format=json`, {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var cell = document.getElementById('status-cell-' + logId);
+                if (cell) {
+                    cell.innerHTML = '<span class="badge-soft badge-soft-wa font-weight-bold"><i class="mdi mdi-whatsapp mr-1"></i> Personal WA</span>';
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Error marking log status:', err);
+        });
+    }
+
+    // Utility Helpers
+    function getInitials(name) {
+        if (!name) return 'FS';
+        var parts = name.trim().split(' ');
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.slice(0, 2).toUpperCase();
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock scripts %}

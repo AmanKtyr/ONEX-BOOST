@@ -1,0 +1,2085 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Help Center & System Guide - ONEXIVAGYM Management{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Base Help Page Layout */
+  .help-page-root {
+    padding-bottom: 3rem;
+  }
+
+  /* Custom Breadcrumb */
+  .custom-breadcrumb .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .custom-breadcrumb .breadcrumb-item a {
+    color: #4b5563;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .custom-breadcrumb .breadcrumb-item a:hover {
+    color: #2563eb;
+  }
+
+  .custom-breadcrumb .breadcrumb-item.active {
+    color: #1f2937;
+    font-weight: 600;
+  }
+
+  /* Hero Banner */
+  .help-hero-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    padding: 2.25rem 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .help-hero-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+  }
+
+  .help-hero-subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    max-width: 680px;
+    margin: 0.5rem auto 1.5rem auto;
+    line-height: 1.5;
+  }
+
+  /* Search Box */
+  .help-search-box {
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .help-search-box .form-control {
+    height: 48px;
+    border-radius: 24px;
+    padding-left: 46px;
+    padding-right: 42px;
+    font-size: 0.95rem;
+    border: 1.5px solid #cbd5e1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+  }
+
+  .help-search-box .form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  }
+
+  .help-search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #94a3b8;
+    pointer-events: none;
+  }
+
+  .help-search-clear {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #94a3b8;
+    cursor: pointer;
+    display: none;
+  }
+
+  .help-search-clear:hover {
+    color: #475569;
+  }
+
+  /* Quick Search Chips */
+  .quick-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 16px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 3px 2px;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .quick-chip:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+  }
+
+  /* Left Sidebar Navigation */
+  .help-sidebar {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 0.85rem;
+    position: sticky;
+    top: 90px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .help-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    color: #334155;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+    margin-bottom: 2px;
+    cursor: pointer;
+  }
+
+  .help-nav-link:hover {
+    background: #f8fafc;
+    color: #2563eb;
+  }
+
+  .help-nav-link.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 700;
+  }
+
+  .help-nav-link .nav-icon {
+    font-size: 17px;
+    margin-right: 8px;
+    vertical-align: -2px;
+  }
+
+  .help-nav-link .badge-count {
+    font-size: 0.72rem;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: #e2e8f0;
+    color: #475569;
+    font-weight: 600;
+  }
+
+  .help-nav-link.active .badge-count {
+    background: #2563eb;
+    color: #ffffff;
+  }
+
+  /* Section Cards */
+  .doc-section-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    margin-bottom: 1.75rem;
+    overflow: hidden;
+  }
+
+  .doc-section-header {
+    padding: 1.15rem 1.5rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .doc-section-body {
+    padding: 1.5rem;
+  }
+
+  /* Visual Step Guides */
+  .workflow-steps-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .step-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .step-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 0.85rem;
+    margin-top: 2px;
+  }
+
+  .step-details h6 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.2rem;
+  }
+
+  .step-details p {
+    font-size: 0.84rem;
+    color: #64748b;
+    margin-bottom: 0;
+    line-height: 1.5;
+  }
+
+  /* Page Directory Table */
+  .page-directory-table th {
+    background: #f8fafc;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 700;
+    color: #475569;
+    padding: 8px 12px;
+  }
+
+  .page-directory-table td {
+    font-size: 0.84rem;
+    padding: 10px 12px;
+    vertical-align: middle;
+  }
+
+  .role-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    display: inline-block;
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+  }
+
+  .role-badge.admin {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+  }
+
+  .role-badge.staff {
+    background: #f0fdf4;
+    color: #15803d;
+    border-color: #bbf7d0;
+  }
+
+  .role-badge.trainer {
+    background: #fefce8;
+    color: #a16207;
+    border-color: #fef08a;
+  }
+
+  .role-badge.member {
+    background: #faf5ff;
+    color: #7e22ce;
+    border-color: #e9d5ff;
+  }
+
+  /* Accordion Item Styling */
+  .faq-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    background: #ffffff;
+    overflow: hidden;
+    transition: all 0.15s ease;
+  }
+
+  .faq-card:hover {
+    border-color: #cbd5e1;
+  }
+
+  .faq-trigger {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: none;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: #1e293b;
+    cursor: pointer;
+    text-decoration: none !important;
+  }
+
+  .faq-trigger:hover {
+    background: #f8fafc;
+    color: #2563eb;
+  }
+
+  .faq-trigger[aria-expanded="true"] {
+    background: #f8fafc;
+    color: #2563eb;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .faq-trigger .chevron {
+    transition: transform 0.2s ease;
+    font-size: 18px;
+    color: #64748b;
+  }
+
+  .faq-trigger[aria-expanded="true"] .chevron {
+    transform: rotate(180deg);
+    color: #2563eb;
+  }
+
+  .faq-content {
+    padding: 1.25rem;
+    color: #475569;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    background: #ffffff;
+  }
+
+  /* Callout Boxes */
+  .callout-box {
+    padding: 0.85rem 1.15rem;
+    border-radius: 8px;
+    font-size: 0.84rem;
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    border: 1px solid transparent;
+  }
+
+  .callout-info {
+    background: #eff6ff;
+    border-color: #dbeafe;
+    color: #1e40af;
+  }
+
+  .callout-warning {
+    background: #fffbeb;
+    border-color: #fef3c7;
+    color: #92400e;
+  }
+
+  .callout-success {
+    background: #f0fdf4;
+    border-color: #dcfce7;
+    color: #065f46;
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="help-page-root">
+  <!-- Compact Breadcrumb Navigation -->
+  <nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'dashboard' %}" class="text-decoration-none">
+          <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="mdi mdi-book-open-page-variant mdi-18px"></i> Help Center & Documentation
+      </li>
+    </ol>
+  </nav>
+
+  <!-- Clean Top Search Header -->
+  <div class="help-hero-card text-center">
+    <h2 class="help-hero-title mb-1">ONEXIVAHelp Center & System Guide</h2>
+    <p class="help-hero-subtitle">
+      Comprehensive documentation of every page, URL route, operational pipeline, and permission flow across your gym management software.
+    </p>
+
+    <!-- Search Box -->
+    <div class="help-search-box">
+      <i class="mdi mdi-magnify help-search-icon"></i>
+      <input type="text" id="helpSearchInput" class="form-control" 
+             placeholder="Search any page or workflow (e.g. 'member registration', 'submit due', 'qr attendance', 'gst invoices', 'events')..."
+             autocomplete="off">
+      <i class="mdi mdi-close-circle help-search-clear" id="helpSearchClear" title="Clear search"></i>
+    </div>
+
+    <!-- Quick Search Chips -->
+    <div class="d-flex justify-content-center flex-wrap gap-1 mt-3">
+      <span class="text-muted small mr-2" style="font-size: 0.78rem; line-height: 28px;">Quick topics:</span>
+      <span class="quick-chip" data-query="member registration"><i class="mdi mdi-account-plus mr-1"></i> Add Member</span>
+      <span class="quick-chip" data-query="submit due"><i class="mdi mdi-cash-check mr-1"></i> Due Collection</span>
+      <span class="quick-chip" data-query="qr attendance"><i class="mdi mdi-qrcode mr-1"></i> QR Attendance</span>
+      <span class="quick-chip" data-query="enquiry lead"><i class="mdi mdi-comment-question-outline mr-1"></i> Enquiries</span>
+      <span class="quick-chip" data-query="gst invoices"><i class="mdi mdi-receipt mr-1"></i> GST Invoices</span>
+      <span class="quick-chip" data-query="personal training"><i class="mdi mdi-dumbbell mr-1"></i> Personal Training</span>
+      <span class="quick-chip" data-query="inventory pos"><i class="mdi mdi-package-variant-closed mr-1"></i> Inventory POS</span>
+      <span class="quick-chip" data-query="events"><i class="mdi mdi-calendar-star mr-1"></i> Events</span>
+      <span class="quick-chip" data-query="business profit"><i class="mdi mdi-chart-line mr-1"></i> Net Profit</span>
+      <span class="quick-chip" data-query="subadmin roles"><i class="mdi mdi-shield-account mr-1"></i> Staff Roles</span>
+      <span class="quick-chip" data-query="payment qr"><i class="mdi mdi-bank mr-1"></i> Payment Settings</span>
+      <span class="quick-chip" data-query="member portal"><i class="mdi mdi-cellphone-link mr-1"></i> Member Portal</span>
+    </div>
+  </div>
+
+  <!-- 2-Column Knowledge Base Layout -->
+  <div class="row">
+    
+    <!-- Left Navigation Sidebar -->
+    <div class="col-lg-3 mb-4">
+      <div class="help-sidebar">
+        <div class="px-3 py-2 border-bottom mb-2 d-flex justify-content-between align-items-center">
+          <span class="text-uppercase font-weight-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.05em;">System Directory</span>
+          <span class="badge bg-light text-dark font-weight-bold" style="font-size: 0.7rem;">10 Modules</span>
+        </div>
+
+        <nav class="nav flex-column" id="helpNavMenu">
+          <a class="help-nav-link active" data-target="pane-getting-started">
+            <span><i class="mdi mdi-rocket-launch-outline nav-icon text-primary"></i> 1. System Overview</span>
+            <span class="badge-count">All</span>
+          </a>
+          <a class="help-nav-link" data-target="pane-enquiry">
+            <span><i class="mdi mdi-comment-question-outline nav-icon text-primary"></i> 2. Enquiries & Leads</span>
+            <span class="badge-count">3</span>
+          </a>
+          <a class="help-nav-link" data-target="pane-members">
+            <span><i class="mdi mdi-account-multiple-outline nav-icon text-primary"></i> 3. Members & Plans</span>
+            <span class="badge-count">5</span>
+          </a>
+          <a class="help-nav-link" data-target="pane-billing">
+            <span><i class="mdi mdi-receipt-text-outline nav-icon text-primary"></i> 4. Billing, Dues & GST</span>
+            <span class="badge-count">4</span>
+          </a>
+          <a class="help-nav-link" data-target="pane-attendance">
+            <span><i class="mdi mdi-qrcode-scan nav-icon text-primary"></i> 5. QR Attendance & Leaves</span>
+            <span class="badge-count">5</span>
+          </a>
+          <a class="help-nav-link" data-target="pane-trainers">
+            <span><i class="mdi mdi-human-male-female nav-icon text-primary"></i> 6. Trainers & PT</span>
+            <span class="badge-count">3</span>
+          </a>
+          <a class="help-nav-link" data-target="pane-inventory">
+            <span><i class="mdi mdi-package-variant-closed nav-icon text-primary"></i> 7. Inventory & Assets</span>
+            <span class="badge-count">4</span>
+          </a>
+          <a class="help-nav-link" data-target="pane-events">
+            <span><i class="mdi mdi-calendar-star nav-icon text-primary"></i> 8. Events & Workshops</span>
+            <span class="badge-count">3</span>
+          </a>
+          <a class="help-nav-link" data-target="pane-reports">
+            <span><i class="mdi mdi-chart-box-outline nav-icon text-primary"></i> 9. Analytics & Expenses</span>
+            <span class="badge-count">4</span>
+          </a>
+          <a class="help-nav-link" data-target="pane-settings">
+            <span><i class="mdi mdi-cog-outline nav-icon text-primary"></i> 10. Settings & Portals</span>
+            <span class="badge-count">6</span>
+          </a>
+        </nav>
+
+        <!-- Technical Software Help Desk Info -->
+        <div class="mt-3 p-3 bg-light rounded border small">
+          <div class="d-flex align-items-center mb-2">
+            <i class="mdi mdi-headset text-primary mr-2 me-2 mdi-18px"></i>
+            <strong class="text-dark font-weight-bold">Support & Helpdesk</strong>
+          </div>
+          <p class="text-muted small mb-3" style="font-size: 0.78rem; line-height: 1.4;">
+            For software licensing, branch activation, or platform assistance:
+          </p>
+
+          <a href="tel:{{ superadmin_phone|default:'+919205983996' }}" 
+             class="d-flex align-items-center p-2 mb-2 bg-white rounded border text-decoration-none text-dark" 
+             style="font-size: 0.78rem; transition: border-color 0.15s ease;">
+            <div class="rounded bg-primary text-white d-flex align-items-center justify-content-center mr-2 me-2" style="width: 28px; height: 28px; min-width: 28px;">
+              <i class="mdi mdi-phone" style="font-size: 14px;"></i>
+            </div>
+            <div style="min-width: 0; flex: 1;">
+              <span class="d-block font-weight-bold text-dark text-truncate">{{ superadmin_phone|default:'+91 92059 83996' }}</span>
+            </div>
+          </a>
+
+          <a href="mailto:{{ superadmin_email|default:'bhattsquare1@gmail.com' }}" 
+             class="d-flex align-items-center p-2 mb-2 bg-white rounded border text-decoration-none text-dark" 
+             style="font-size: 0.74rem; transition: border-color 0.15s ease;"
+             title="{{ superadmin_email|default:'bhattsquare1@gmail.com' }}">
+            <div class="rounded bg-primary text-white d-flex align-items-center justify-content-center mr-2 me-2" style="width: 28px; height: 28px; min-width: 28px;">
+              <i class="mdi mdi-email" style="font-size: 14px;"></i>
+            </div>
+            <div style="min-width: 0; flex: 1;">
+              <span class="d-block font-weight-bold text-dark text-truncate" style="font-size: 0.72rem;">{{ superadmin_email|default:'bhattsquare1@gmail.com' }}</span>
+            </div>
+          </a>
+
+          <div class="text-center mt-2 pt-2 border-top">
+            <span class="text-muted" style="font-size: 0.72rem;">ONEXIVASystem v3.6.14</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Dynamic Content Pane -->
+    <div class="col-lg-9">
+      
+      <!-- Global Search Notice Banner -->
+      <div id="searchNoticeBanner" class="alert alert-info py-2 px-3 mb-3 d-none align-items-center justify-content-between">
+        <span><i class="mdi mdi-magnify mr-1"></i> Filtered results for: <strong id="searchEchoText"></strong></span>
+        <button type="button" class="btn btn-sm btn-link text-dark p-0 text-decoration-none" id="clearSearchLink">Clear Filter</button>
+      </div>
+
+      <!-- No Results State -->
+      <div id="emptySearchState" class="doc-section-card p-5 text-center d-none">
+        <i class="mdi mdi-text-box-search-outline text-muted" style="font-size: 48px;"></i>
+        <h5 class="font-weight-bold text-dark mt-3 mb-1">No matching articles found</h5>
+        <p class="text-muted small mb-3">Try searching with terms like "member registration", "due", "attendance", "invoice", "trainer", or "inventory".</p>
+        <button type="button" class="btn btn-primary btn-sm font-weight-bold" id="resetEmptySearchBtn">
+          Show All Guides
+        </button>
+      </div>
+
+      <!-- =========================================================================
+           1. GETTING STARTED & COMPLETE OPERATIONAL FLOW
+           ========================================================================= -->
+      <div class="doc-pane" id="pane-getting-started">
+        <div class="doc-section-card doc-searchable" data-keywords="overview flow architecture pipeline getting started lifecycle role permissions dashboard home kpi">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-rocket-launch-outline text-primary mr-1"></i> Complete Gym Operational Lifecycle & System Map
+              </h5>
+              <small class="text-muted">How ONEXIVAconnects leads, admissions, payments, QR check-ins, PT coaching, and financials.</small>
+            </div>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-sm font-weight-bold">
+              <i class="mdi mdi-view-dashboard mr-1"></i> Open Dashboard
+            </a>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- High-Level Operational Pipeline Box -->
+            <div class="workflow-steps-box mb-4">
+              <h6 class="font-weight-bold text-dark mb-3">
+                <i class="mdi mdi-swap-horizontal-bold text-primary mr-1"></i> The 6-Stage Gym Operational Pipeline
+              </h6>
+              <div class="step-row">
+                <div class="step-badge">1</div>
+                <div class="step-details">
+                  <h6>Lead Capture & Enquiry Nurturing</h6>
+                  <p>Walk-in or social lead recorded &rarr; Trial batch scheduled &rarr; Follow-up logged &rarr; Click <em>Convert to Member</em> to transfer all contact data automatically.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">2</div>
+                <div class="step-details">
+                  <h6>Member Admission & Plan Assignment</h6>
+                  <p>Webcam profile photo captured &rarr; 6-digit Pincode auto-fills City/State &rarr; Select Membership Plan &rarr; Unique Member ID (<code>MEM-YYYY-XXXX</code>) issued.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">3</div>
+                <div class="step-details">
+                  <h6>Billing, Payment & GST Invoicing</h6>
+                  <p>System calculates Package Fee + Registration + CGST/SGST &rarr; Accept Cash, UPI QR, or Card &rarr; Print GST Tax Invoice &rarr; Pending amounts route to Submit Due.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">4</div>
+                <div class="step-details">
+                  <h6>Daily Anti-Proxy QR Check-In & Coaching</h6>
+                  <p>Member punches in via 4-digit dynamic QR screen &rarr; Dedicated Trainer Portal assigns custom workout & diet routines &rarr; Temporary leave freezing.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">5</div>
+                <div class="step-details">
+                  <h6>Inventory Sales & Member Engagement</h6>
+                  <p>Sell protein/supplements via Inventory Stock Out &rarr; Host bootcamps & fitness competitions via Events with public registration links.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">6</div>
+                <div class="step-details">
+                  <h6>Executive Financial Analytics & P&L Reports</h6>
+                  <p>All collections balance against operating expenses (Rent, Salaries, Maintenance) to calculate real-time Net Profit with exportable CSV spreadsheets.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Roles and Access Matrix -->
+            <h6 class="font-weight-bold text-dark mb-2">User Roles & Access Levels</h6>
+            <div class="table-responsive mb-3">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Role</th>
+                    <th>Default Portal</th>
+                    <th>Permissions & Access Scope</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="role-badge admin">Gym Owner / Admin</span></td>
+                    <td><code>/dashboard</code></td>
+                    <td>Full access: All members, billing, inventory, settings, financial profit reports, staff matrix.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="role-badge staff">Manager / Sub-Admin</span></td>
+                    <td><code>/dashboard</code></td>
+                    <td>Configurable access: Members, enquiries, attendance, billing dues, operational oversight.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="role-badge staff">Receptionist</span></td>
+                    <td><code>/dashboard</code></td>
+                    <td>Front desk operations: Add member, lead follow-ups, QR check-in terminal, collect dues.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="role-badge staff">Accountant</span></td>
+                    <td><code>/dashboard</code></td>
+                    <td>Financial scope: Invoices ledger, submit dues, operating expenses, business reports.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="role-badge trainer">Trainer</span></td>
+                    <td><code>/portal/trainer/</code></td>
+                    <td>Dedicated coach portal: Assigned client roster, personal training, workouts, diets, attendance.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="role-badge member">Member</span></td>
+                    <td><code>/portal/member/</code></td>
+                    <td>Self-service portal: Active membership validity, check-in history, workout routines, diet charts, receipts.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           2. ENQUIRIES & LEADS
+           ========================================================================= -->
+      <div class="doc-pane d-none" id="pane-enquiry">
+        <div class="doc-section-card doc-searchable" data-keywords="enquiry enquiries lead leads prospect conversion prospect walkin trial follow up add enquiry enquiry list convert to member">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-comment-question-outline text-primary mr-1"></i> Enquiry & Lead Pipeline Management
+              </h5>
+              <small class="text-muted">Capture walk-in leads, track trial batches, schedule follow-ups, and convert to full members with 1 click.</small>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'add_new_enquiry' %}" class="btn btn-primary btn-sm font-weight-bold">
+                <i class="mdi mdi-plus-circle mr-1"></i> Add Enquiry
+              </a>
+              <a href="{% url 'enquiry_list' %}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+                All Enquiries
+              </a>
+            </div>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- Page Directory Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Page Name</th>
+                    <th>URL Route</th>
+                    <th>Permitted Roles</th>
+                    <th>Operational Purpose</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Enquiry List</strong></td>
+                    <td><code>/enquiry/list/</code></td>
+                    <td><span class="role-badge staff">Receptionist</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Filter leads by status (Pending, Follow Up, Joined, Lost), search phone/name, quick status change.</td>
+                    <td><a href="{% url 'enquiry_list' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Add New Enquiry</strong></td>
+                    <td><code>/enquiry/add-enquiry/</code></td>
+                    <td><span class="role-badge staff">Receptionist</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Capture lead details: full name, mobile, lead source (Walk-in, Instagram, Referral), fitness goal, follow-up date.</td>
+                    <td><a href="{% url 'add_new_enquiry' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Edit Enquiry</strong></td>
+                    <td><code>/enquiry/edit/&lt;id&gt;/</code></td>
+                    <td><span class="role-badge staff">Receptionist</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Update lead notes, rescheduled follow-up callbacks, address, and trial batch times.</td>
+                    <td><span class="text-muted small">Via Enquiry List</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Step by Step Flow -->
+            <div class="workflow-steps-box mb-4">
+              <h6 class="font-weight-bold text-dark mb-3">
+                <i class="mdi mdi-account-convert text-primary mr-1"></i> Step-by-Step Lead-to-Member Conversion Flow
+              </h6>
+              <div class="step-row">
+                <div class="step-badge">1</div>
+                <div class="step-details">
+                  <h6>Log the Prospect</h6>
+                  <p>Open <em>Add Enquiry</em> when a prospective client visits or calls. Enter their phone, fitness goal (e.g. Weight Loss), and source.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">2</div>
+                <div class="step-details">
+                  <h6>Set Follow-Up Date & Status</h6>
+                  <p>Mark status as <em>Follow Up</em> or <em>Interested</em> and set a callback date to stay on top of prospective admissions.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">3</div>
+                <div class="step-details">
+                  <h6>1-Click Convert to Member</h6>
+                  <p>When the client agrees to join, click the <strong>Convert</strong> button beside their name in the Enquiry List. The system opens the Member Registration form with their name, mobile, gender, and address pre-filled.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="accordion" id="accEnquiry">
+              <div class="faq-card doc-searchable" data-keywords="convert enquiry into member prospect transfer auto fill">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qenq1" data-toggle="collapse" data-target="#qenq1" aria-expanded="false">
+                  <span>How does 1-click Convert to Member work?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qenq1" class="collapse" data-bs-parent="#accEnquiry" data-parent="#accEnquiry">
+                  <div class="faq-content">
+                    <p class="mb-2">In <a href="{% url 'enquiry_list' %}">All Enquiries</a>, locate the prospect who has agreed to join. Click the <strong>Convert</strong> button beside their entry.</p>
+                    <p class="mb-0">The system loads the <em>Add Member</em> form with their full name, phone number, gender, and address already populated. After you select their membership plan, the enquiry is automatically marked as <strong>Joined</strong>.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="enquiry status follow up pipeline stages pending joined lost">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qenq2" data-toggle="collapse" data-target="#qenq2" aria-expanded="false">
+                  <span>What are the Enquiry Pipeline statuses?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qenq2" class="collapse" data-bs-parent="#accEnquiry" data-parent="#accEnquiry">
+                  <div class="faq-content">
+                    <ul class="mb-0 pl-3">
+                      <li><strong>Pending:</strong> Newly captured lead awaiting first contact or free trial workout.</li>
+                      <li><strong>Follow Up:</strong> Lead has taken a tour or trial; follow-up callback scheduled.</li>
+                      <li><strong>Joined:</strong> Prospect has officially registered and paid for a membership plan.</li>
+                      <li><strong>Lost:</strong> Prospect decided not to join (moved away, pricing objection, etc.).</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           3. MEMBERS & SUBSCRIPTIONS
+           ========================================================================= -->
+      <div class="doc-pane d-none" id="pane-members">
+        <div class="doc-section-card doc-searchable" data-keywords="member registration add member new admission register onboarding profile photo webcam id syntax freeze renew membership plans diet workout routine id card">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-account-multiple-outline text-primary mr-1"></i> Member Management & Membership Packages
+              </h5>
+              <small class="text-muted">Onboarding, webcam photo capture, auto-generated Member IDs, freezing, renewing, and workout/diet assignments.</small>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'add_new_member' %}" class="btn btn-primary btn-sm font-weight-bold">
+                <i class="mdi mdi-plus-circle mr-1"></i> Add Member
+              </a>
+              <a href="{% url 'member_list' %}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+                All Members
+              </a>
+            </div>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- Page Directory Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Page Name</th>
+                    <th>URL Route</th>
+                    <th>Permitted Roles</th>
+                    <th>Operational Purpose</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>All Members</strong></td>
+                    <td><code>/members/list/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Filter active, expired, or frozen members, search by mobile/ID, export CSV, download ID cards.</td>
+                    <td><a href="{% url 'member_list' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Add New Member</strong></td>
+                    <td><code>/members/add/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Member registration form: live webcam capture, package selection, initial payment, GST invoice.</td>
+                    <td><a href="{% url 'add_new_member' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Member Profile (360&deg;)</strong></td>
+                    <td><code>/members/profile/&lt;id&gt;/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Attendance streak, payment history, freeze toggle, assign trainer, assign workout & diet charts.</td>
+                    <td><span class="text-muted small">Via Member List</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Membership Plans</strong></td>
+                    <td><code>/management/membership-plans/</code></td>
+                    <td><span class="role-badge admin">Admin</span></td>
+                    <td>Configure branch packages: Monthly, Quarterly, Half-Yearly, Annual durations & base fees.</td>
+                    <td><a href="{% url 'membership_plans' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Workout & Diet Templates</strong></td>
+                    <td><code>/management/workout-plans/</code></td>
+                    <td><span class="role-badge admin">Admin</span> <span class="role-badge trainer">Trainer</span></td>
+                    <td>Master template library for workout splits (PPL, Bro Split) and diet meal plans (Keto, High Protein).</td>
+                    <td><a href="{% url 'workout_plans' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Visual Step Guide -->
+            <div class="workflow-steps-box mb-4">
+              <h6 class="font-weight-bold text-dark mb-3">
+                <i class="mdi mdi-format-list-numbered text-primary mr-1"></i> Member Registration & Onboarding Walkthrough
+              </h6>
+              <div class="step-row">
+                <div class="step-badge">1</div>
+                <div class="step-details">
+                  <h6>Profile Info & Live Webcam Snap</h6>
+                  <p>Input Name, Mobile, Email, Gender, and DOB. Use the live webcam button to snap an immediate passport photo or upload from disk.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">2</div>
+                <div class="step-details">
+                  <h6>Postal Pincode Auto-Lookup</h6>
+                  <p>Enter the 6-digit Indian Pincode. The system calls the national postal directory to automatically populate City, State, and Area.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">3</div>
+                <div class="step-details">
+                  <h6>Plan Selection & Fee Calculation</h6>
+                  <p>Select the Membership Package (e.g. 3 Months, 6 Months, Annual). Enter registration fees and discounts; CGST/SGST taxes compute dynamically.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">4</div>
+                <div class="step-details">
+                  <h6>Initial Payment & Tax Invoice</h6>
+                  <p>Record initial payment (Full or Partial). The system immediately generates an official GST Tax Invoice and assigns the unique Member ID.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="accordion" id="accMem">
+              <div class="faq-card doc-searchable" data-keywords="member id generation format prefix syntax serial">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qmem1" data-toggle="collapse" data-target="#qmem1" aria-expanded="false">
+                  <span>How is the Member ID generated?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qmem1" class="collapse" data-bs-parent="#accMem" data-parent="#accMem">
+                  <div class="faq-content">
+                    <p class="mb-2">Member IDs follow the standard enterprise pattern: <code>MEM-YYYY-XXXX</code> (e.g., <code>MEM-2026-0042</code>).</p>
+                    <p class="mb-0">This format guarantees unique, sequential identification per gym branch and integrates seamlessly into QR check-in and tax invoices.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="freeze pause suspend membership temporary injury travel">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qmem2" data-toggle="collapse" data-target="#qmem2" aria-expanded="false">
+                  <span>How do I freeze or pause a membership?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qmem2" class="collapse" data-bs-parent="#accMem" data-parent="#accMem">
+                  <div class="faq-content">
+                    <p class="mb-2">Open the member's profile from <a href="{% url 'member_list' %}">Members List</a>. In the membership status card, click <strong>Freeze Membership</strong>.</p>
+                    <p class="mb-0">Specify the freeze start date, return date, and reason (e.g. travel or medical injury). The system pauses check-in access and automatically shifts the membership expiry date forward by the exact number of frozen days upon unfreezing.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="renew membership expire expired renewal plan upgrade package">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qmem3" data-toggle="collapse" data-target="#qmem3" aria-expanded="false">
+                  <span>How do I renew an expired membership?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qmem3" class="collapse" data-bs-parent="#accMem" data-parent="#accMem">
+                  <div class="faq-content">
+                    <p class="mb-2">Navigate to <a href="{% url 'member_list' %}">Members List</a> and filter by <em>Expired</em>.</p>
+                    <p class="mb-0">Click <strong>Renew</strong> on the member's row. Select a new package or upgrade their existing plan, record the renewal fee, and the system instantly generates a new Tax Invoice and updates their valid-until date.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="member portal login client view attendance routine diet">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qmem4" data-toggle="collapse" data-target="#qmem4" aria-expanded="false">
+                  <span>How do members log in to their Member Portal?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qmem4" class="collapse" data-bs-parent="#accMem" data-parent="#accMem">
+                  <div class="faq-content">
+                    <p class="mb-0">Members log in at the main login screen using their assigned credentials. They are routed directly to <code>/portal/member/</code> to view check-in streaks, active plan validity, workout routines, diet charts, and invoice receipts.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           4. BILLING, DUES & GST INVOICES
+           ========================================================================= -->
+      <div class="doc-pane d-none" id="pane-billing">
+        <div class="doc-section-card doc-searchable" data-keywords="billing dues submit due invoices payments receipts gst tax cgst sgst partial payment trash invoice recovery">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-receipt-text-outline text-primary mr-1"></i> Billing, GST Invoices & Due Collections
+              </h5>
+              <small class="text-muted">Tax invoice generation, partial due collection, cash/UPI/card split reconciliation, and invoice trash recovery.</small>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'billing:submit_due' %}" class="btn btn-success btn-sm font-weight-bold text-white">
+                <i class="mdi mdi-cash-check mr-1"></i> Submit Due
+              </a>
+              <a href="{% url 'billing:invoices_list' %}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+                Invoices Ledger
+              </a>
+            </div>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- Page Directory Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Page Name</th>
+                    <th>URL Route</th>
+                    <th>Permitted Roles</th>
+                    <th>Operational Purpose</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Invoices Ledger</strong></td>
+                    <td><code>/billing/invoices/</code></td>
+                    <td><span class="role-badge staff">Accountant</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Ledger of all generated invoices, payment status (Paid/Unpaid/Partial), print receipts.</td>
+                    <td><a href="{% url 'billing:invoices_list' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Submit Due</strong></td>
+                    <td><code>/billing/submit_due/</code></td>
+                    <td><span class="role-badge staff">Receptionist</span> <span class="role-badge staff">Accountant</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Collect pending membership balances; record partial payments via Cash, UPI, or Card.</td>
+                    <td><a href="{% url 'billing:submit_due' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Invoice Trash</strong></td>
+                    <td><code>/billing/trash/</code></td>
+                    <td><span class="role-badge admin">Admin</span></td>
+                    <td>Soft-delete recovery bin to inspect or restore accidentally removed invoices.</td>
+                    <td><a href="{% url 'billing:trash_invoices' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Step by Step Due Collection Flow -->
+            <div class="workflow-steps-box mb-4">
+              <h6 class="font-weight-bold text-dark mb-3">
+                <i class="mdi mdi-cash-multiple text-primary mr-1"></i> Due Payment Collection Workflow
+              </h6>
+              <div class="step-row">
+                <div class="step-badge">1</div>
+                <div class="step-details">
+                  <h6>Locate Pending Balance</h6>
+                  <p>Open <em>Billing &rarr; Submit Due</em>. Filter members with outstanding dues or search by member name or phone.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">2</div>
+                <div class="step-details">
+                  <h6>Input Payment Amount</h6>
+                  <p>Click <strong>Pay Due</strong>. Enter the collected amount (system handles both partial installment payments and full clearance).</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">3</div>
+                <div class="step-details">
+                  <h6>Choose Payment Mode</h6>
+                  <p>Select Cash, UPI QR code transfer, or Card. The payment timestamp and collecting staff user are logged for financial audit.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">4</div>
+                <div class="step-details">
+                  <h6>Instant Receipt Generation</h6>
+                  <p>The system recalibrates the member's remaining due, updates the invoice ledger, and produces a printable payment receipt.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="accordion" id="accBill">
+              <div class="faq-card doc-searchable" data-keywords="submit due collect balance pending outstanding partial payment">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qbill1" data-toggle="collapse" data-target="#qbill1" aria-expanded="false">
+                  <span>How do I collect partial pending dues from a member?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qbill1" class="collapse" data-bs-parent="#accBill" data-parent="#accBill">
+                  <div class="faq-content">
+                    <ol class="mb-2 pl-3">
+                      <li>Go to <a href="{% url 'billing:submit_due' %}">Billing &rarr; Submit Due</a>.</li>
+                      <li>Locate the member using their name, phone, or Member ID.</li>
+                      <li>Click <strong>Pay Due</strong> beside their pending record.</li>
+                      <li>Enter the received payment amount and select payment method (Cash, UPI, or Card).</li>
+                      <li>Submit to instantly update their balance and print the updated payment receipt.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="gst tax rate cgst sgst invoices invoice tax calculation">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qbill2" data-toggle="collapse" data-target="#qbill2" aria-expanded="false">
+                  <span>How is GST calculated on invoices?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qbill2" class="collapse" data-bs-parent="#accBill" data-parent="#accBill">
+                  <div class="faq-content">
+                    <p class="mb-2">If GST is enabled in <a href="{% url 'settings:general_settings' %}">General Settings</a>, invoices automatically split tax calculations:</p>
+                    <ul class="mb-2 pl-3">
+                      <li><strong>Intra-State:</strong> 9% CGST + 9% SGST (Total 18%).</li>
+                      <li><strong>Inter-State:</strong> 18% Integrated IGST.</li>
+                    </ul>
+                    <p class="mb-0 text-muted small">Your Gym GSTIN, Legal Trade Name, and SAC code (999723 for fitness services) print directly on all member invoices.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="trash restore delete recover invoice soft delete">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qbill3" data-toggle="collapse" data-target="#qbill3" aria-expanded="false">
+                  <span>What happens when an invoice is moved to Trash?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qbill3" class="collapse" data-bs-parent="#accBill" data-parent="#accBill">
+                  <div class="faq-content">
+                    <p class="mb-0">Deleting an invoice performs a safe soft-delete. It is immediately routed to <a href="{% url 'billing:trash_invoices' %}">Invoice Trash</a>, preventing accidental financial loss. Gym Admins can inspect and restore it with 1 click or choose permanent deletion.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="bank account upi qr on invoice receipt print">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qbill4" data-toggle="collapse" data-target="#qbill4" aria-expanded="false">
+                  <span>Where do the Bank details and UPI QR code on invoices come from?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qbill4" class="collapse" data-bs-parent="#accBill" data-parent="#accBill">
+                  <div class="faq-content">
+                    <p class="mb-0">The bank name, account holder, account number, IFSC code, and payment QR code come directly from <a href="{% url 'settings:payment_setting' %}">Payment Settings</a>. Updating them there updates all newly generated invoices immediately.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           5. QR CODE ATTENDANCE, PIN SECURITY & LEAVES
+           ========================================================================= -->
+      <div class="doc-pane d-none" id="pane-attendance">
+        <div class="doc-section-card doc-searchable" data-keywords="attendance checkin checkout qr code pin security 4-digit leaves leave management trainer attendance member attendance reports terminal streak anti proxy">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-qrcode-scan text-primary mr-1"></i> QR Attendance, Anti-Proxy PIN & Leave Management
+              </h5>
+              <small class="text-muted">Kiosk QR terminal, 4-digit PIN verification, check-in streaks, staff rosters, and leave approvals.</small>
+            </div>
+            <a href="{% url 'attendance:member_attendance' %}" class="btn btn-primary btn-sm font-weight-bold">
+              <i class="mdi mdi-account-check mr-1"></i> Member Attendance
+            </a>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- Page Directory Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Page Name</th>
+                    <th>URL Route</th>
+                    <th>Permitted Roles</th>
+                    <th>Operational Purpose</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Member Attendance</strong></td>
+                    <td><code>/attendance/member-attendance/</code></td>
+                    <td><span class="role-badge staff">Receptionist</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Live daily check-in sheet; view entry time, active streak, manual check-in override.</td>
+                    <td><a href="{% url 'attendance:member_attendance' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Trainer Attendance</strong></td>
+                    <td><code>/attendance/trainer-attendance/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Coach attendance sheet; clock-in/out timestamps, shift hours, monthly trainer summaries.</td>
+                    <td><a href="{% url 'attendance:trainer_attendance' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Desk QR Terminal</strong></td>
+                    <td><code>/attendance/qr-code/</code></td>
+                    <td><span class="role-badge staff">Receptionist</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Full-screen dynamic kiosk QR code displayed on front desk tablet or monitor for member scanning.</td>
+                    <td><a href="{% url 'attendance:qr_code' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Attendance Reports</strong></td>
+                    <td><code>/attendance/attendance-report/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Monthly and date-range attendance logs with CSV export for member habit tracking.</td>
+                    <td><a href="{% url 'attendance:attendance_report' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Leave Management</strong></td>
+                    <td><code>/attendance/leave-management/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Staff and member leave applications, medical records, and one-click approve/reject actions.</td>
+                    <td><a href="{% url 'attendance:leave_management' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Step by Step QR Checkin Flow -->
+            <div class="workflow-steps-box mb-4">
+              <h6 class="font-weight-bold text-dark mb-3">
+                <i class="mdi mdi-shield-check text-primary mr-1"></i> Anti-Proxy 4-Digit PIN Attendance Flow
+              </h6>
+              <div class="step-row">
+                <div class="step-badge">1</div>
+                <div class="step-details">
+                  <h6>Display Kiosk Terminal</h6>
+                  <p>Launch <code>/attendance/qr-code/</code> on a front desk tablet or display facing gym entrants.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">2</div>
+                <div class="step-details">
+                  <h6>Scan with Smartphone Camera</h6>
+                  <p>Member or Trainer scans the displayed QR code using their mobile phone camera or scanner.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">3</div>
+                <div class="step-details">
+                  <h6>4-Digit Security PIN Verification</h6>
+                  <p>Member enters their personal 4-digit security PIN. This strictly prevents friends or teammates from punching attendance remotely.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">4</div>
+                <div class="step-details">
+                  <h6>Immediate Timestamp & Streak Counter</h6>
+                  <p>System validates the punch, logs entry time, plays a confirmation chime, and increments the member's active workout streak.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="accordion" id="accAtt">
+              <div class="faq-card doc-searchable" data-keywords="4-digit pin qr code anti proxy security scan checkin">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qatt1" data-toggle="collapse" data-target="#qatt1" aria-expanded="false">
+                  <span>How does Anti-Proxy PIN security prevent buddy punching?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qatt1" class="collapse" data-bs-parent="#accAtt" data-parent="#accAtt">
+                  <div class="faq-content">
+                    <p class="mb-2">A static QR code can be photographed and shared over WhatsApp, allowing members to check in from home. ONEXIVAeliminates this via two security layers:</p>
+                    <ol class="mb-0 pl-3">
+                      <li><strong>Dynamic Auto-Refresh:</strong> The desk QR code refreshes periodically.</li>
+                      <li><strong>4-Digit PIN Authentication:</strong> Each member must enter their secret 4-digit security PIN upon scanning to confirm physical identity.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="export attendance csv spreadsheet report monthly">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qatt2" data-toggle="collapse" data-target="#qatt2" aria-expanded="false">
+                  <span>How can I export monthly attendance records to Excel or CSV?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qatt2" class="collapse" data-bs-parent="#accAtt" data-parent="#accAtt">
+                  <div class="faq-content">
+                    <p class="mb-0">Go to <a href="{% url 'attendance:attendance_report' %}">Attendance &rarr; Attendance Report</a>. Select your desired date range and click <strong>Export CSV</strong> for complete monthly spreadsheets.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           6. TRAINERS & PERSONAL TRAINING (PT)
+           ========================================================================= -->
+      <div class="doc-pane d-none" id="pane-trainers">
+        <div class="doc-section-card doc-searchable" data-keywords="trainers personal training pt assign coach workout routine diet chart staff roster trainer portal specialization package commission">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-human-male-female text-primary mr-1"></i> Trainers & Personal Training Management
+              </h5>
+              <small class="text-muted">Coach onboarding, specializations, personal training assignment, and trainer portals.</small>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'add_trainer' %}" class="btn btn-primary btn-sm font-weight-bold">
+                <i class="mdi mdi-plus-circle mr-1"></i> Add Trainer
+              </a>
+              <a href="{% url 'trainer_list' %}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+                All Trainers
+              </a>
+            </div>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- Page Directory Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Page Name</th>
+                    <th>URL Route</th>
+                    <th>Permitted Roles</th>
+                    <th>Operational Purpose</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>All Trainers</strong></td>
+                    <td><code>/trainers/list/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Roster of gym coaches, specializations (Bodybuilding, CrossFit, Yoga), active client count.</td>
+                    <td><a href="{% url 'trainer_list' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Add Trainer</strong></td>
+                    <td><code>/trainers/add/</code></td>
+                    <td><span class="role-badge admin">Admin</span></td>
+                    <td>Onboard new coach: credentials, certifications, mobile, salary, and commission rate.</td>
+                    <td><a href="{% url 'add_trainer' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Trainer Portal</strong></td>
+                    <td><code>/portal/trainer/</code></td>
+                    <td><span class="role-badge trainer">Trainer</span></td>
+                    <td>Dedicated coach surface: view assigned personal training clients, assign diet & workouts.</td>
+                    <td><a href="{% url 'trainer_portal:dashboard' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Visual PT Flow -->
+            <div class="workflow-steps-box mb-4">
+              <h6 class="font-weight-bold text-dark mb-3">
+                <i class="mdi mdi-dumbbell text-primary mr-1"></i> Personal Trainer (PT) Assignment Flow
+              </h6>
+              <div class="step-row">
+                <div class="step-badge">1</div>
+                <div class="step-details">
+                  <h6>Select Member</h6>
+                  <p>Open the member's profile from <em>Members List</em> and click <strong>Assign PT Trainer</strong>.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">2</div>
+                <div class="step-details">
+                  <h6>Select Coach & Package</h6>
+                  <p>Choose the trainer and package rate (Monthly PT, 12-session pack). A separate PT Tax Invoice is generated automatically.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">3</div>
+                <div class="step-details">
+                  <h6>Roster & Portal Synchronization</h6>
+                  <p>The member immediately appears in the coach's dedicated Trainer Portal client roster, allowing the coach to log body measurements and assign custom workout splits.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="accordion" id="accTrain">
+              <div class="faq-card doc-searchable" data-keywords="assign personal trainer pt client member coach">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qtrn1" data-toggle="collapse" data-target="#qtrn1" aria-expanded="false">
+                  <span>How do I assign a Personal Trainer to an existing member?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qtrn1" class="collapse" data-bs-parent="#accTrain" data-parent="#accTrain">
+                  <div class="faq-content">
+                    <p class="mb-2">Open the member's profile from <a href="{% url 'member_list' %}">Members List</a>. In the quick actions menu, click <strong>Assign PT Trainer</strong>.</p>
+                    <p class="mb-0 text-muted small">Select the trainer and package rate. The member will immediately sync to that trainer's personal portal roster.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           7. INVENTORY, CONSUMABLES POS & ASSETS
+           ========================================================================= -->
+      <div class="doc-pane d-none" id="pane-inventory">
+        <div class="doc-section-card doc-searchable" data-keywords="inventory consumables products supplements stock in stock out equipment assets maintenance log pos retail sales machinery repairs">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-package-variant-closed text-primary mr-1"></i> Inventory POS & Fixed Equipment Maintenance
+              </h5>
+              <small class="text-muted">Retail supplement sales, stock-out deductions, heavy gym machinery maintenance, and inspection logs.</small>
+            </div>
+            <a href="{% url 'inventory:dashboard' %}" class="btn btn-primary btn-sm font-weight-bold">
+              <i class="mdi mdi-package-variant mr-1"></i> Inventory Dashboard
+            </a>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- Page Directory Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Page Name</th>
+                    <th>URL Route</th>
+                    <th>Permitted Roles</th>
+                    <th>Operational Purpose</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Inventory Dashboard</strong></td>
+                    <td><code>/inventory/inventory/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Total stock valuation, low-stock warnings, recent POS sales transactions, equipment count.</td>
+                    <td><a href="{% url 'inventory:dashboard' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Products & Consumables</strong></td>
+                    <td><code>/inventory/all-items/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Stock catalog for whey proteins, BCAAs, energy drinks, belts, lifting straps, and gym shakers.</td>
+                    <td><a href="{% url 'inventory:all_items' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Add Stock Item</strong></td>
+                    <td><code>/inventory/add-item/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Register new retail products: SKU, purchase cost, selling price, reorder threshold.</td>
+                    <td><a href="{% url 'inventory:add_item' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>POS Stock Out</strong></td>
+                    <td><code>/inventory/stock-out/</code></td>
+                    <td><span class="role-badge staff">Receptionist</span> <span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Log retail sales to members or walk-in guests; auto-deducts inventory quantity and records revenue.</td>
+                    <td><a href="{% url 'inventory:stock_out' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Equipment & Assets</strong></td>
+                    <td><code>/inventory/all-equipment/</code></td>
+                    <td><span class="role-badge admin">Admin</span> <span class="role-badge staff">Staff</span></td>
+                    <td>Fixed gym machinery inventory: treadmills, cable cross, smith machines, warranties, operational status.</td>
+                    <td><a href="{% url 'inventory:all_equipment' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Maintenance Log</strong></td>
+                    <td><code>/inventory/maintenance-log/</code></td>
+                    <td><span class="role-badge admin">Admin</span> <span class="role-badge staff">Staff</span></td>
+                    <td>Log technician servicing, belt replacements, machine cable repairs, and maintenance expenditures.</td>
+                    <td><a href="{% url 'inventory:maintenance_log' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Workflow Steps Box -->
+            <div class="workflow-steps-box mb-4">
+              <h6 class="font-weight-bold text-dark mb-3">
+                <i class="mdi mdi-cart-arrow-right text-primary mr-1"></i> Retail Sales (Stock Out) & Maintenance Flow
+              </h6>
+              <div class="step-row">
+                <div class="step-badge">1</div>
+                <div class="step-details">
+                  <h6>Supplement / Retail Checkout</h6>
+                  <p>When a member buys protein powder or a shaker bottle, navigate to <em>Stock Out</em>. Select the item, enter the quantity, and choose the paying member.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">2</div>
+                <div class="step-details">
+                  <h6>Real-Time Stock Decrement</h6>
+                  <p>The system instantly decrements the remaining stock count, flags low-stock warnings if below threshold, and routes the revenue to the Business Report.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">3</div>
+                <div class="step-details">
+                  <h6>Equipment Servicing Scheduling</h6>
+                  <p>When gym machines require lubrication, cable tightening, or motor maintenance, create a service entry in <em>Maintenance Log</em> to track repair costs and vendor warranties.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="accordion" id="accInv">
+              <div class="faq-card doc-searchable" data-keywords="consumables stock out sales retail supplements machinery difference">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qinv1" data-toggle="collapse" data-target="#qinv1" aria-expanded="false">
+                  <span>How does Consumables Stock Out differ from Fixed Equipment Assets?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qinv1" class="collapse" data-bs-parent="#accInv" data-parent="#accInv">
+                  <div class="faq-content">
+                    <p class="mb-2"><strong>Consumables (Supplements, apparel):</strong> Track items sold to customers. Recording a <em>Stock Out</em> decreases stock and logs retail revenue.</p>
+                    <p class="mb-0"><strong>Fixed Equipment (Treadmills, Dumbbells):</strong> Capital gym assets that do not get sold. They are tracked for preventive servicing and repairs in the <em>Maintenance Log</em>.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           8. EVENTS & WORKSHOPS
+           ========================================================================= -->
+      <div class="doc-pane d-none" id="pane-events">
+        <div class="doc-section-card doc-searchable" data-keywords="events workshops fitness challenge bootcamp marathon registration attendee public link competitions seminars">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-calendar-star text-primary mr-1"></i> Events, Fitness Challenges & Workshops
+              </h5>
+              <small class="text-muted">Host member bootcamps, powerlifting meets, nutrition seminars, and public enrollment pages.</small>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'events:create_event' %}" class="btn btn-primary btn-sm font-weight-bold">
+                <i class="mdi mdi-plus-circle mr-1"></i> Create Event
+              </a>
+              <a href="{% url 'events:event_list' %}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+                All Events
+              </a>
+            </div>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- Page Directory Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Page Name</th>
+                    <th>URL Route</th>
+                    <th>Permitted Roles</th>
+                    <th>Operational Purpose</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Events Directory</strong></td>
+                    <td><code>/events/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Active, upcoming, and past gym events; filter by date, track participant counts and status.</td>
+                    <td><a href="{% url 'events:event_list' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Create Event</strong></td>
+                    <td><code>/events/create/</code></td>
+                    <td><span class="role-badge admin">Admin</span> <span class="role-badge staff">Staff</span></td>
+                    <td>Create new event: title, start/end dates, location/floor, ticket entry fee, maximum participant limit.</td>
+                    <td><a href="{% url 'events:create_event' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Event Registrations</strong></td>
+                    <td><code>/events/registrations/</code></td>
+                    <td><span class="role-badge staff">Staff</span> <span class="role-badge admin">Admin</span></td>
+                    <td>Attendee ledger: track member and public participant signups, payment statuses, check-in marks.</td>
+                    <td><a href="{% url 'events:all_event_registrations' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Workflow Steps Box -->
+            <div class="workflow-steps-box mb-4">
+              <h6 class="font-weight-bold text-dark mb-3">
+                <i class="mdi mdi-calendar-check text-primary mr-1"></i> Event Lifecycle & Public Enrollment Flow
+              </h6>
+              <div class="step-row">
+                <div class="step-badge">1</div>
+                <div class="step-details">
+                  <h6>Event Creation</h6>
+                  <p>Go to <em>Events &rarr; Create Event</em>. Enter details (e.g. "Summer Fat Loss Bootcamp"), date, max capacity, and ticket price.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">2</div>
+                <div class="step-details">
+                  <h6>Share Public Registration Link</h6>
+                  <p>Each event provides a public registration URL (<code>/events/&lt;id&gt;/register/</code>) to share on Instagram or WhatsApp for public signups.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">3</div>
+                <div class="step-details">
+                  <h6>Track Attendees & Collect Fees</h6>
+                  <p>View all registrants in <em>Event Registrations</em>, mark payment collection status, and print participant badges.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           9. BUSINESS ANALYTICS & EXPENSES
+           ========================================================================= -->
+      <div class="doc-pane d-none" id="pane-reports">
+        <div class="doc-section-card doc-searchable" data-keywords="business report revenue collections profit expenses financial export expenses trash expense add net profit loss cashflow audit">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-chart-box-outline text-primary mr-1"></i> Business Analytics & Operating Expenses
+              </h5>
+              <small class="text-muted">Executive financial analytics, expense categorization, net profit calculations, and audit exports.</small>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'business_report' %}" class="btn btn-primary btn-sm font-weight-bold">
+                <i class="mdi mdi-file-chart mr-1"></i> Business Report
+              </a>
+              <a href="{% url 'expenses' %}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+                All Expenses
+              </a>
+            </div>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- Page Directory Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Page Name</th>
+                    <th>URL Route</th>
+                    <th>Permitted Roles</th>
+                    <th>Operational Purpose</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Business Report</strong></td>
+                    <td><code>/business_report/</code></td>
+                    <td><span class="role-badge admin">Admin</span> <span class="role-badge staff">Accountant</span></td>
+                    <td>Gross membership collections, total operating expenses, net profit, date-range filters, CSV export.</td>
+                    <td><a href="{% url 'business_report' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>All Expenses</strong></td>
+                    <td><code>/expenses/expenses/</code></td>
+                    <td><span class="role-badge admin">Admin</span> <span class="role-badge staff">Accountant</span></td>
+                    <td>Operating expense ledger; filter by category (Rent, Salaries, Electricity, Maintenance), receipts.</td>
+                    <td><a href="{% url 'expenses' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Add Expense</strong></td>
+                    <td><code>/expenses/expenses/add/</code></td>
+                    <td><span class="role-badge admin">Admin</span> <span class="role-badge staff">Accountant</span></td>
+                    <td>Log operating bill payments: enter category, vendor, amount, payment method, and attach receipt photo.</td>
+                    <td><a href="{% url 'expense_add' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Expense Trash</strong></td>
+                    <td><code>/expenses/expenses/trash/</code></td>
+                    <td><span class="role-badge admin">Admin</span></td>
+                    <td>Soft-delete recovery bin for deleted expenses to audit or restore accidentally removed entries.</td>
+                    <td><a href="{% url 'expense_trash' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Visual Flow Box -->
+            <div class="workflow-steps-box mb-4">
+              <h6 class="font-weight-bold text-dark mb-3">
+                <i class="mdi mdi-calculator-variant text-primary mr-1"></i> Net Profit & Cashflow Calculation Flow
+              </h6>
+              <div class="step-row">
+                <div class="step-badge">1</div>
+                <div class="step-details">
+                  <h6>Aggregate Collections</h6>
+                  <p>Membership admissions + Renewal fees + Due collections + PT coaching fees + Supplement retail POS sales.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">2</div>
+                <div class="step-details">
+                  <h6>Deduct Operating Overheads</h6>
+                  <p>Facility rent + Electricity bills + Staff salaries + Trainer commissions + Equipment maintenance.</p>
+                </div>
+              </div>
+              <div class="step-row">
+                <div class="step-badge">3</div>
+                <div class="step-details">
+                  <h6>Automated Net Profit Calculation</h6>
+                  <p>The Business Report automatically balances both ledgers, displaying net operational profit and margins with 1-click CSV spreadsheet export.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="accordion" id="accRep">
+              <div class="faq-card doc-searchable" data-keywords="net profit formula calculation collections expenses">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qrep1" data-toggle="collapse" data-target="#qrep1" aria-expanded="false">
+                  <span>How is Net Profit calculated in the Business Report?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qrep1" class="collapse" data-bs-parent="#accRep" data-parent="#accRep">
+                  <div class="faq-content">
+                    <code class="p-1 px-2 bg-light rounded text-success font-weight-bold">Net Profit = Total Member Collections - Total Operating Expenses</code>
+                    <p class="mt-2 mb-0 text-muted small">You can filter by custom date intervals (This Month, Last Quarter, Year-to-Date) and export formatted CSV records for tax audits.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+           10. SETTINGS, STAFF ROLES & PORTALS
+           ========================================================================= -->
+      <div class="doc-pane d-none" id="pane-settings">
+        <div class="doc-section-card doc-searchable" data-keywords="settings gym profile general settings payment settings bank account upi qr pincode lookup subadmin roles permissions staff matrix member portal trainer portal rbac">
+          <div class="doc-section-header">
+            <div>
+              <h5 class="font-weight-bold text-dark mb-1">
+                <i class="mdi mdi-cog-outline text-primary mr-1"></i> Settings, Staff Roles & Multi-User Portals
+              </h5>
+              <small class="text-muted">Branch identity, bank settlement accounts, desk UPI QR code, staff permissions matrix, and member/trainer portals.</small>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'settings:payment_setting' %}" class="btn btn-primary btn-sm font-weight-bold">
+                <i class="mdi mdi-bank mr-1"></i> Payment Settings
+              </a>
+              <a href="{% url 'add_gym_subadmin' %}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+                Add Sub-Admin
+              </a>
+            </div>
+          </div>
+          <div class="doc-section-body">
+
+            <!-- Page Directory Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-sm page-directory-table">
+                <thead>
+                  <tr>
+                    <th>Page Name</th>
+                    <th>URL Route</th>
+                    <th>Permitted Roles</th>
+                    <th>Operational Purpose</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Gym Profile</strong></td>
+                    <td><code>/settings/profile/</code></td>
+                    <td><span class="role-badge admin">Admin</span></td>
+                    <td>View branch location, slogan, contact channels, active subscription, and operational badges.</td>
+                    <td><a href="{% url 'settings:gym_profile' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>General Settings</strong></td>
+                    <td><code>/settings/general/</code></td>
+                    <td><span class="role-badge admin">Admin</span></td>
+                    <td>Edit gym profile, postal pincode API lookup, logo upload, GST toggle, QR switch.</td>
+                    <td><a href="{% url 'settings:general_settings' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Payment Settings</strong></td>
+                    <td><code>/settings/payment/</code></td>
+                    <td><span class="role-badge admin">Admin</span></td>
+                    <td>Official bank account (with 1-click copy) and desk UPI QR code upload/download.</td>
+                    <td><a href="{% url 'settings:payment_setting' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Add Sub-Admin</strong></td>
+                    <td><code>/add_subadmin/</code></td>
+                    <td><span class="role-badge admin">Admin</span></td>
+                    <td>Role presets (Receptionist, Manager, Accountant) with granular module permissions matrix.</td>
+                    <td><a href="{% url 'add_gym_subadmin' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>View Sub-Admins</strong></td>
+                    <td><code>/view_subadmins/</code></td>
+                    <td><span class="role-badge admin">Admin</span></td>
+                    <td>Manage staff credentials, reset passwords, change designated roles, and revoke active permissions.</td>
+                    <td><a href="{% url 'view_subadmins' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Member Portal</strong></td>
+                    <td><code>/portal/member/</code></td>
+                    <td><span class="role-badge member">Member</span></td>
+                    <td>Self-service client dashboard: view active plan validity, attendance calendar, workouts, diets, receipts.</td>
+                    <td><a href="{% url 'member_portal:dashboard' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Trainer Portal</strong></td>
+                    <td><code>/portal/trainer/</code></td>
+                    <td><span class="role-badge trainer">Trainer</span></td>
+                    <td>Dedicated coach dashboard: assigned client roster, personal training, client progress tracking.</td>
+                    <td><a href="{% url 'trainer_portal:dashboard' %}" class="btn btn-xs btn-outline-primary py-0">Open</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- FAQs -->
+            <div class="accordion" id="accSet">
+              <div class="faq-card doc-searchable" data-keywords="bank account upi qr payment settings desk payment">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qset1" data-toggle="collapse" data-target="#qset1" aria-expanded="false">
+                  <span>How do I set up our Bank Account & Desk UPI QR Code?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qset1" class="collapse" data-bs-parent="#accSet" data-parent="#accSet">
+                  <div class="faq-content">
+                    <p class="mb-2">Go to <a href="{% url 'settings:payment_setting' %}" class="font-weight-bold">Payment Settings</a>. Enter your Bank Name, Account Number, and IFSC Code, and upload your UPI QR code image.</p>
+                    <p class="mb-0 text-muted small">These bank credentials automatically appear on generated member receipts and invoices.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="subadmin presets matrix privileges receptionist manager accountant">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qset2" data-toggle="collapse" data-target="#qset2" aria-expanded="false">
+                  <span>How do Sub-Admin presets and matrix privileges work?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qset2" class="collapse" data-bs-parent="#accSet" data-parent="#accSet">
+                  <div class="faq-content">
+                    <p class="mb-2">In <a href="{% url 'add_gym_subadmin' %}">Add Sub-Admin</a>, selecting a Designated Role automatically presets module access:</p>
+                    <ul class="mb-0 pl-3">
+                      <li><strong>Receptionist:</strong> Auto-selects Enquiry, Members, and Attendance.</li>
+                      <li><strong>Accountant:</strong> Auto-selects Billing, Invoicing, Due Collection, and Expenses.</li>
+                      <li><strong>Manager:</strong> Full operational privileges excluding root gym settings.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-card doc-searchable" data-keywords="pincode address lookup city state area postal">
+                <button class="faq-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qset3" data-toggle="collapse" data-target="#qset3" aria-expanded="false">
+                  <span>How does the 6-digit Pincode Address Lookup work?</span>
+                  <i class="mdi mdi-chevron-down chevron"></i>
+                </button>
+                <div id="qset3" class="collapse" data-bs-parent="#accSet" data-parent="#accSet">
+                  <div class="faq-content">
+                    <p class="mb-0">When adding members, trainers, or updating your gym profile, entering a valid 6-digit Indian Postal Pincode automatically contacts the national postal API to auto-fill your <strong>City</strong>, <strong>State</strong>, and <strong>Area</strong>, saving time and preventing typos.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("helpSearchInput");
+    const searchClear = document.getElementById("helpSearchClear");
+    const navLinks = document.querySelectorAll(".help-nav-link");
+    const docPanes = document.querySelectorAll(".doc-pane");
+    const quickChips = document.querySelectorAll(".quick-chip");
+    const searchNotice = document.getElementById("searchNoticeBanner");
+    const searchEcho = document.getElementById("searchEchoText");
+    const emptyState = document.getElementById("emptySearchState");
+    const clearLink = document.getElementById("clearSearchLink");
+    const resetEmptyBtn = document.getElementById("resetEmptySearchBtn");
+
+    // 1. Sidebar Tab Switching
+    navLinks.forEach(link => {
+      link.addEventListener("click", function(e) {
+        e.preventDefault();
+        
+        // If there is an active search, clear it when clicking a category
+        if (searchInput && searchInput.value) {
+          searchInput.value = "";
+          clearSearch();
+        }
+
+        navLinks.forEach(l => l.classList.remove("active"));
+        this.classList.add("active");
+
+        const targetId = this.getAttribute("data-target");
+        docPanes.forEach(pane => {
+          if (pane.id === targetId) {
+            pane.classList.remove("d-none");
+          } else {
+            pane.classList.add("d-none");
+          }
+        });
+      });
+    });
+
+    // 2. High-Precision Token-Based Search Engine
+    function runSearch(query) {
+      const rawQuery = (query || "").trim();
+      const normalizedQuery = rawQuery.toLowerCase();
+
+      if (!normalizedQuery) {
+        clearSearch();
+        return;
+      }
+
+      searchClear.style.display = "block";
+      searchNotice.classList.remove("d-none");
+      searchNotice.classList.add("d-flex");
+      searchEcho.innerText = '"' + rawQuery + '"';
+
+      // Deselect nav links highlight during global search
+      navLinks.forEach(l => l.classList.remove("active"));
+
+      // Tokenize search query words
+      const searchTokens = normalizedQuery.split(/\s+/).filter(Boolean);
+
+      let totalMatches = 0;
+
+      docPanes.forEach(pane => {
+        let paneHasMatch = false;
+        const sectionCards = pane.querySelectorAll(".doc-section-card");
+
+        sectionCards.forEach(card => {
+          const cardKeywords = (card.getAttribute("data-keywords") || "").toLowerCase();
+          const cardText = (card.innerText || "").toLowerCase();
+          const cardCombined = cardText + " " + cardKeywords;
+
+          const cardMatchesDirect = cardCombined.includes(normalizedQuery);
+          const cardMatchesTokens = searchTokens.every(token => cardCombined.includes(token));
+          const cardMatched = cardMatchesDirect || cardMatchesTokens;
+
+          // Check child FAQ cards
+          const faqs = card.querySelectorAll(".faq-card");
+          let anyFaqMatched = false;
+
+          faqs.forEach(faq => {
+            const faqText = (faq.innerText || "").toLowerCase();
+            const faqKeywords = (faq.getAttribute("data-keywords") || "").toLowerCase();
+            const faqCombined = faqText + " " + faqKeywords;
+
+            const faqMatches = faqCombined.includes(normalizedQuery) || searchTokens.every(t => faqCombined.includes(t));
+            if (faqMatches) {
+              faq.classList.remove("d-none");
+              anyFaqMatched = true;
+              totalMatches++;
+              const collapse = faq.querySelector(".collapse");
+              if (collapse) collapse.classList.add("show");
+              const trigger = faq.querySelector(".faq-trigger");
+              if (trigger) trigger.setAttribute("aria-expanded", "true");
+            } else {
+              faq.classList.add("d-none");
+            }
+          });
+
+          // Check directory table rows
+          const tableRows = card.querySelectorAll(".page-directory-table tbody tr");
+          let anyRowMatched = false;
+          tableRows.forEach(row => {
+            const rowText = (row.innerText || "").toLowerCase();
+            const rowMatches = rowText.includes(normalizedQuery) || searchTokens.every(t => rowText.includes(t));
+            if (rowMatches) {
+              row.style.backgroundColor = "rgba(37, 99, 235, 0.08)";
+              anyRowMatched = true;
+            } else {
+              row.style.backgroundColor = "";
+            }
+          });
+
+          if (cardMatched || anyFaqMatched || anyRowMatched) {
+            card.classList.remove("d-none");
+            paneHasMatch = true;
+            if (!anyFaqMatched) {
+              // If card matched generally, keep all faqs visible
+              faqs.forEach(faq => faq.classList.remove("d-none"));
+              totalMatches++;
+            }
+          } else {
+            card.classList.add("d-none");
+          }
+        });
+
+        if (paneHasMatch) {
+          pane.classList.remove("d-none");
+        } else {
+          pane.classList.add("d-none");
+        }
+      });
+
+      if (totalMatches === 0) {
+        emptyState.classList.remove("d-none");
+      } else {
+        emptyState.classList.add("d-none");
+      }
+    }
+
+    function clearSearch() {
+      searchClear.style.display = "none";
+      searchNotice.classList.add("d-none");
+      searchNotice.classList.remove("d-flex");
+      emptyState.classList.add("d-none");
+
+      // Reset all cards, faqs, and table rows
+      document.querySelectorAll(".doc-section-card").forEach(c => c.classList.remove("d-none"));
+      document.querySelectorAll(".faq-card").forEach(f => f.classList.remove("d-none"));
+      document.querySelectorAll(".page-directory-table tbody tr").forEach(r => r.style.backgroundColor = "");
+
+      // Show first tab by default
+      docPanes.forEach((pane, idx) => {
+        if (idx === 0) {
+          pane.classList.remove("d-none");
+        } else {
+          pane.classList.add("d-none");
+        }
+      });
+
+      navLinks.forEach((link, idx) => {
+        if (idx === 0) link.classList.add("active");
+        else link.classList.remove("active");
+      });
+    }
+
+    // Input listeners
+    if (searchInput) {
+      searchInput.addEventListener("input", function(e) {
+        runSearch(e.target.value);
+      });
+
+      searchInput.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+          searchInput.value = "";
+          clearSearch();
+        }
+      });
+    }
+
+    if (searchClear) {
+      searchClear.addEventListener("click", function() {
+        searchInput.value = "";
+        clearSearch();
+      });
+    }
+
+    if (clearLink) {
+      clearLink.addEventListener("click", function() {
+        searchInput.value = "";
+        clearSearch();
+      });
+    }
+
+    if (resetEmptyBtn) {
+      resetEmptyBtn.addEventListener("click", function() {
+        searchInput.value = "";
+        clearSearch();
+      });
+    }
+
+    // Quick Chips
+    quickChips.forEach(chip => {
+      chip.addEventListener("click", function() {
+        const query = this.getAttribute("data-query");
+        if (searchInput && query) {
+          searchInput.value = query;
+          runSearch(query);
+          searchInput.focus();
+        }
+      });
+    });
+  });
+</script>
+{% endblock extra_js %}

@@ -1,0 +1,57 @@
+# =============================================
+# robots.txt for ONEXIVA— fitstack.nextgenapplication.com
+# Generated: 2026-04-27
+# =============================================
+
+# Allow all reputable search engine crawlers
+User-agent: *
+Allow: /
+
+# Block access to internal admin and auth pages
+Disallow: /admin/
+Disallow: /superadmin/
+Disallow: /login/
+Disallow: /dashboard/
+Disallow: /tenant-admin/
+
+# Block static and media files from being indexed
+Disallow: /static/
+Disallow: /media/
+
+# Block internal API routes
+Disallow: /api/
+
+# Block duplicate query-string URLs
+Disallow: /*?*
+
+# =============================================
+# Google-specific rules
+# =============================================
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /superadmin/
+Disallow: /login/
+
+# Allow Googlebot-Image to index public images
+User-agent: Googlebot-Image
+Allow: /static/images/
+
+# =============================================
+# Bing-specific rules
+# =============================================
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /superadmin/
+Disallow: /login/
+
+# =============================================
+# Crawl rate guidance (optional, seconds)
+# =============================================
+Crawl-delay: 10
+
+# =============================================
+# Sitemap location
+# =============================================
+Sitemap: https://fitstack.nextgenapplication.com/sitemap.xml

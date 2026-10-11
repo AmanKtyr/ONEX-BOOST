@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load form_tags %}
+
+{% block title %}Assign Diet Plan - ONEXIVAGYM{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'member_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-account-multiple-outline mdi-18px"></i> Members
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'member_profile' member.id %}" class="text-decoration-none">
+                <i class="mdi mdi-account-outline mdi-18px"></i> {{ member.name }}
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-food-apple-outline mdi-18px"></i> Assign Diet Plan
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-8 mx-auto px-0">
+    <div class="card shadow-sm border-0">
+        <!-- Header -->
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div>
+                <h4 class="mb-1 font-weight-bold text-white d-flex align-items-center">
+                    <i class="mdi mdi-silverware-fork-knife mr-2 me-2"></i> Assign Diet Plan
+                </h4>
+                <p class="mb-0 text-white-50 small">
+                    Assign nutrition regimen for member: <strong class="text-white">{{ member.name }}</strong> (ID: #{{ member.id }})
+                </p>
+            </div>
+            <a href="{% url 'member_profile' member.id %}" class="btn btn-sm btn-light mt-2 mt-md-0 shadow-sm">
+                <i class="mdi mdi-arrow-left mr-1"></i> Back to Profile
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger shadow-sm mb-4">
+                        {% for error in form.non_field_errors %}
+                            <div><i class="mdi mdi-alert-circle mr-1"></i> {{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Section: Diet Plan Selection -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-food-apple mr-1"></i> Nutrition Program
+                    </legend>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="id_diet_plan">
+                            Select Diet Plan <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="mdi mdi-food-variant"></i></span>
+                            {{ form.diet_plan }}
+                        </div>
+                        <div class="helper-text mt-1">The member will be able to view their meals and daily nutritional goals from their portal and via WhatsApp.</div>
+                        {% if form.diet_plan.errors %}
+                            <div class="text-danger small mt-1"><i class="mdi mdi-alert-circle-outline"></i> {{ form.diet_plan.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-end align-items-center gap-2 pt-3 border-top mt-4">
+                    <a href="{% url 'member_profile' member.id %}" class="btn btn-light px-4">
+                        <i class="mdi mdi-close mr-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                        <i class="mdi mdi-check-circle-outline mr-1"></i> Assign Diet Plan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

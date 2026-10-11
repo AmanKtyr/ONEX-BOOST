@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-account-group mdi-18px"></i> Billing
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-currency-usd mdi-18px"></i> Due Payment List
+        </li>
+    </ol>
+</nav>
+
+
+<div class="col-md-12 px-0">
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Due Payment List</h4>
+        </div>
+        <div class="card-body">
+            {% csrf_token %}
+            <!-- =========================================================================
+                 SMART AUTO-FILTER TOOLBAR
+                 ========================================================================= -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <form method="get" action="{% url 'billing:submit_due' %}" id="duePaymentFilterForm">
+                        <div class="filter-card-box">
+                            <div class="row g-2 g-md-3 align-items-end">
+                                
+                                <!-- 1. Live Search Input -->
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-12">
+                                    <label for="due_search" class="filter-label">Search Member</label>
+                                    <div class="filter-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
+                                        <i class="mdi mdi-magnify filter-search-icon" style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 17px; line-height: 1; z-index: 4; margin: 0;"></i>
+                                        <input
+                                            type="text"
+                                            name="q"
+                                            id="due_search"
+                                            class="form-control filter-control filter-search-input"
+                                            placeholder="Name, phone, member ID..."
+                                            value="{{ query|default:'' }}"
+                                            autocomplete="off"
+                                            style="padding-left: 35px; padding-right: 32px;"
+                                        />
+                                        <button type="button" class="filter-clear-btn" id="clearDueSearchBtn" title="Clear search text" style="position: absolute; right: 9px; top: 50%; transform: translateY(-50%); background: transparent; border: none; outline: none; box-shadow: none; color: #9ca3af; font-size: 17px; cursor: pointer; padding: 0; line-height: 1; z-index: 5; {% if not query %}display: none;{% endif %}">
+                                            <i class="mdi mdi-close-circle"></i>
+                                        </button>
+                                        <div class="filter-spinner" id="dueSearchSpinner"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Due Type Select -->
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-12">
+                                    <label for="due_type" class="filter-label">Due Type</label>
+                                    <select
+                                        name="due_type"
+                                        id="due_type"
+                                        class="form-control filter-control"
+                                    >
+                                        <option value="">All Due Types</option>
+                                        <option value="membership" {% if due_type == 'membership' %}selected{% endif %}>Membership Due</option>
+                                        <option value="pt" {% if due_type == 'pt' %}selected{% endif %}>PT Due</option>
+                                        <option value="both" {% if due_type == 'both' %}selected{% endif %}>Both (Membership & PT)</option>
+                                    </select>
+                                </div>
+
+                                <!-- 3. From Date -->
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-6">
+                                    <label for="from_date" class="filter-label">From</label>
+                                    <input
+                                        type="date"
+                                        name="from_date"
+                                        id="from_date"
+                                        class="form-control filter-control"
+                                        value="{{ from_date|default:'' }}"
+                                    />
+                                </div>
+
+                                <!-- 4. To Date -->
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-6">
+                                    <label for="to_date" class="filter-label">To</label>
+                                    <input
+                                        type="date"
+                                        name="to_date"
+                                        id="to_date"
+                                        class="form-control filter-control"
+                                        value="{{ to_date|default:'' }}"
+                                    />
+                                </div>
+
+                                <!-- 5. Follow Up Date -->
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-6">
+                                    <label for="follow_up_date" class="filter-label">Follow Up Date</label>
+                                    <input
+                                        type="date"
+                                        name="follow_up_date"
+                                        id="follow_up_date"
+                                        class="form-control filter-control"
+                                        value="{{ follow_up_date|default:'' }}"
+                                    />
+                                </div>
+
+                                <!-- 6. Reset / Reload Button -->
+                                <div class="col-xl-1 col-lg-1 col-md-3 col-6">
+                                    <button type="button" class="btn btn-secondary w-100 filter-control filter-reset-btn" id="resetDueFilterBtn" title="Reset all filters">
+                                        <i class="mdi mdi-reload font-weight-bold"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive" id="duePaymentTableContainer">
+               <table class="table table-hover table-sm table-stack-on-mobile">
+                    <thead>
+                        <tr>
+                            <th class="font-weight-semibold py-2">#</th>
+                            <th class="font-weight-semibold py-2">Profile</th>
+                            <th class="font-weight-semibold py-2">Member Name</th>
+                            <th class="font-weight-semibold py-2">Number</th>
+                            <th class="font-weight-semibold py-2">Total Due</th>
+                            <th class="font-weight-semibold py-2">Due Type</th>
+                            <th class="font-weight-semibold py-2">Follow Up Date</th> 
+                            <th class="font-weight-semibold py-2 text-center" style="min-width: 200px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                        <tr>
+                            <td data-label="SR. No.">{{ forloop.counter }}</td>
+                            <td data-label="Profile">
+                                <img src="{% if member.profile_picture %}{{ member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}"
+                                    class="rounded-circle border" style="width: 40px; height: 40px; object-fit: cover;"
+                                    alt="{{ member.first_name }} {{ member.last_name }}">
+                            </td>
+                            <td data-label="Name">
+                                <strong> <a href="{% url 'member_profile' member.id %}" class="text-decoration-none">{{ member.name }}</a></strong><br>
+                                <small class="text-muted">#{{ member.member_id }}</small>
+                            </td>
+                            <td data-label="Contact Number">{{ member.mobile_number }}</td>
+                            <td data-label="Total Due">
+                                <strong class="text-danger">
+                                    {% with membership_due=member.membership_due|default:0 pt_due=member.pt_due|default:0 %}
+                                         ₹{{ membership_due|add:pt_due }}
+                                     {% endwith %}
+                                </strong>
+                            </td>
+                            <td data-label="Due Type">
+                                {% if member.membership_due > 0 %}
+                                    <span class="badge badge-pill badge-light text-primary border border-primary shadow-sm mb-1">
+                                        <i class="mdi mdi-wallet-membership mr-1"></i> Membership
+                                    </span>
+                                {% endif %}
+                                {% if member.pt_due > 0 %}
+                                    <span class="badge badge-pill badge-light text-success border border-success shadow-sm mb-1">
+                                        <i class="mdi mdi-dumbbell mr-1"></i> PT
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td data-label="Follow Up Date">
+                                {% if member.latest_follow_up_date %}
+                                    <span class="badge badge-light border text-dark font-weight-normal px-2 py-1">
+                                        <i class="mdi mdi-calendar-clock text-warning mr-1"></i>
+                                        {{ member.latest_follow_up_date|date:"d-m-Y" }}
+                                    </span>
+                                {% elif member.membership_history.first.follow_up_date %}
+                                    <span class="badge badge-light border text-dark font-weight-normal px-2 py-1">
+                                        <i class="mdi mdi-calendar-clock text-warning mr-1"></i>
+                                        {{ member.membership_history.first.follow_up_date|date:"d-m-Y" }}
+                                    </span>
+                                {% elif member.personal_trainer.first.follow_up_date %}
+                                    <span class="badge badge-light border text-dark font-weight-normal px-2 py-1">
+                                        <i class="mdi mdi-calendar-clock text-warning mr-1"></i>
+                                        {{ member.personal_trainer.first.follow_up_date|date:"d-m-Y" }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td data-label="Action" class="text-center">
+                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#followUpModal-{{ member.id }}" title="Update Follow-up">
+                                    <i class="mdi mdi-calendar-clock"></i>
+                                </button>
+                                <a href="tel:{{ member.mobile_number }}" class="btn btn-secondary btn-sm" title="Call">
+                                    <i class="mdi mdi-phone"></i>
+                                </a>
+                                <a class="btn btn-primary btn-sm btn-action-text font-weight-bold" href="{% url 'billing:pay_due_payment' member.id %}" title="Pay Due">
+                                    <i class="mdi mdi-cash-multiple mr-1"></i> Pay Due
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="mdi mdi-check-circle-outline text-muted mb-2" style="font-size: 40px; display: block;"></i>
+                                <h6 class="font-weight-bold text-dark mb-1">No pending dues found</h6>
+                                <p class="small text-muted mb-0">All accounts are settled or no members match your search criteria.</p>
+                            </td>
+                        </tr>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div id="duePaymentPaginationContainer">
+            {% if members.has_other_pages %}
+                {% include 'includes/pagination.html' with page_obj=members query=query %}
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="duePaymentModalsContainer">
+{% for member in members %}
+<!-- Follow-up Modal -->
+<div class="modal fade" id="followUpModal-{{ member.id }}" tabindex="-1" role="dialog" aria-labelledby="followUpModalLabel-{{ member.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="followUpModalLabel-{{ member.id }}">Update Follow Up Date for {{ member.first_name }} {{ member.last_name }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'billing:update_follow_up' member.id %}" class="follow-up-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="follow_up_date-{{ member.id }}">New Follow Up Date</label>
+                        <input type="date" class="form-control" name="follow_up_date" id="follow_up_date-{{ member.id }}" value="{% if member.latest_follow_up_date %}{{ member.latest_follow_up_date|date:'Y-m-d' }}{% elif member.membership_history.first.follow_up_date %}{{ member.membership_history.first.follow_up_date|date:'Y-m-d' }}{% elif member.personal_trainer.first.follow_up_date %}{{ member.personal_trainer.first.follow_up_date|date:'Y-m-d' }}{% endif %}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+    
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function initFollowUpMinDates() {
+        const today = new Date().toISOString().split('T')[0];
+        const followUpForms = document.querySelectorAll('.follow-up-form');
+
+        followUpForms.forEach(form => {
+            const dateInput = form.querySelector('input[type="date"]');
+            if (dateInput) {
+                dateInput.setAttribute('min', today);
+            }
+        });
+    }
+    initFollowUpMinDates();
+
+    const filterForm = document.getElementById("duePaymentFilterForm");
+    const searchInput = document.getElementById("due_search");
+    const clearSearchBtn = document.getElementById("clearDueSearchBtn");
+    const searchSpinner = document.getElementById("dueSearchSpinner");
+    const dueTypeSelect = document.getElementById("due_type");
+    const fromDateInput = document.getElementById("from_date");
+    const toDateInput = document.getElementById("to_date");
+    const followUpInput = document.getElementById("follow_up_date");
+    const resetBtn = document.getElementById("resetDueFilterBtn");
+    const tableContainer = document.getElementById("duePaymentTableContainer");
+    const paginationContainer = document.getElementById("duePaymentPaginationContainer");
+
+    let debounceTimer = null;
+    let currentAbortController = null;
+
+    function toggleClearBtn() {
+        if (clearSearchBtn) {
+            clearSearchBtn.style.display = (searchInput && searchInput.value.trim().length > 0) ? "block" : "none";
+        }
+    }
+
+    function buildFilterUrl() {
+        const baseUrl = filterForm.getAttribute("action") || window.location.pathname;
+        const params = new URLSearchParams();
+
+        const qVal = (searchInput?.value || "").trim();
+        const dueTypeVal = dueTypeSelect?.value || "";
+        const fromVal = fromDateInput?.value || "";
+        const toVal = toDateInput?.value || "";
+        const followVal = followUpInput?.value || "";
+
+        if (qVal) params.set("q", qVal);
+        if (dueTypeVal) params.set("due_type", dueTypeVal);
+        if (fromVal) params.set("from_date", fromVal);
+        if (toVal) params.set("to_date", toVal);
+        if (followVal) params.set("follow_up_date", followVal);
+
+        const queryString = params.toString();
+        return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    }
+
+    function runFilterRequest(url) {
+        if (currentAbortController) currentAbortController.abort();
+        currentAbortController = new AbortController();
+
+        if (searchSpinner) searchSpinner.style.display = "block";
+        if (clearSearchBtn) clearSearchBtn.style.display = "none";
+        if (tableContainer) tableContainer.classList.add("is-filtering");
+
+        fetch(url, {
+            signal: currentAbortController.signal,
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Network error");
+            return res.text();
+        })
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const newTable = doc.querySelector("#duePaymentTableContainer");
+            if (newTable && tableContainer) {
+                tableContainer.innerHTML = newTable.innerHTML;
+            }
+            const newPagination = doc.querySelector("#duePaymentPaginationContainer");
+            if (newPagination && paginationContainer) {
+                paginationContainer.innerHTML = newPagination.innerHTML;
+            }
+            const newModals = doc.querySelector("#duePaymentModalsContainer");
+            const modalsContainer = document.getElementById("duePaymentModalsContainer");
+            if (newModals && modalsContainer) {
+                modalsContainer.innerHTML = newModals.innerHTML;
+                initFollowUpMinDates();
+            }
+            window.history.replaceState(null, "", url);
+        })
+        .catch(err => {
+            if (err.name !== "AbortError") {
+                filterForm.submit();
+            }
+        })
+        .finally(() => {
+            if (searchSpinner) searchSpinner.style.display = "none";
+            toggleClearBtn();
+            if (tableContainer) tableContainer.classList.remove("is-filtering");
+        });
+    }
+
+    function triggerAutoFilter(delay = 350) {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        toggleClearBtn();
+
+        debounceTimer = setTimeout(() => {
+            const targetUrl = buildFilterUrl();
+            runFilterRequest(targetUrl);
+        }, delay);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            triggerAutoFilter(350);
+        });
+        searchInput.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                triggerAutoFilter(0);
+            }
+        });
+    }
+
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener("click", function() {
+            if (searchInput) {
+                searchInput.value = "";
+                searchInput.focus();
+            }
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (dueTypeSelect) {
+        dueTypeSelect.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (fromDateInput) {
+        fromDateInput.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (toDateInput) {
+        toDateInput.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (followUpInput) {
+        followUpInput.addEventListener("change", function() {
+            triggerAutoFilter(0);
+        });
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener("click", function() {
+            if (searchInput) searchInput.value = "";
+            if (dueTypeSelect) dueTypeSelect.value = "";
+            if (fromDateInput) fromDateInput.value = "";
+            if (toDateInput) toDateInput.value = "";
+            if (followUpInput) followUpInput.value = "";
+            toggleClearBtn();
+            const baseUrl = filterForm.getAttribute("action") || window.location.pathname;
+            runFilterRequest(baseUrl);
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,886 @@
+{% extends "superadmin/base.html" %}
+{% load static %}
+
+{% block title %}Gym Profile - {{ gym.name }}{% endblock %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'superadmin:dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'superadmin:gym_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-dumbbell mdi-18px"></i> All Gyms
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-office-building mdi-18px"></i> Gym Profile
+        </li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <!-- Header matching Member Profile with pure icon action buttons -->
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Gym Profile</h2>
+
+                <!-- Desktop Action Bar (Icons Only - No text labels) -->
+                <div class="d-none d-md-flex">
+                    <a href="{% url 'superadmin:impersonate_gym_admin' gym.id %}" target="_blank" class="btn btn-sm btn-dark mr-2" data-toggle="tooltip" title="Open / Login as Gym Admin">
+                        <i class="mdi mdi-account-switch"></i>
+                    </a>
+                    <a href="{% url 'superadmin:update_gym' gym.id %}" class="btn btn-sm btn-secondary mr-2" data-toggle="tooltip" title="Edit Gym">
+                        <i class="mdi mdi-pencil"></i>
+                    </a>
+                    <a href="{% url 'superadmin:create_gym_admin' gym.id %}" class="btn btn-sm btn-success mr-2" data-toggle="tooltip" title="Add Gym Admin">
+                        <i class="mdi mdi-account-plus"></i>
+                    </a>
+                    <a href="{% url 'superadmin:assign_subscription' %}?gym_id={{ gym.id }}" class="btn btn-sm btn-warning mr-2" data-toggle="tooltip" title="Assign Subscription Plan">
+                        <i class="mdi mdi-tag-plus"></i>
+                    </a>
+                    <button type="button" class="btn btn-sm btn-info mr-2" data-toggle="modal" data-target="#collectDueModal" title="Submit Due Payment">
+                        <i class="mdi mdi-currency-usd"></i>
+                    </button>
+                    <a href="javascript:void(0);" onclick="confirmToggleWhatsApp('{% url 'superadmin:toggle_whatsapp' gym.id %}', {% if gym.whatsapp_enabled %}true{% else %}false{% endif %})" class="btn btn-sm {% if gym.whatsapp_enabled %}btn-success{% else %}btn-secondary{% endif %} mr-2" data-toggle="tooltip" title="{% if gym.whatsapp_enabled %}WhatsApp Active (Click to Disable){% else %}WhatsApp Disabled (Click to Enable){% endif %}">
+                        <i class="mdi mdi-whatsapp"></i>
+                    </a>
+                    <a href="javascript:void(0);" onclick="confirmToggleFreeze('{% url 'superadmin:toggle_gym_freeze' gym.id %}', {% if gym.is_frozen %}true{% else %}false{% endif %})" class="btn btn-sm {% if gym.is_frozen %}btn-danger{% else %}btn-dark{% endif %} mr-2" data-toggle="tooltip" title="{% if gym.is_frozen %}Account Frozen (Click to Unfreeze){% else %}Account Active (Click to Freeze){% endif %}">
+                        <i class="mdi {% if gym.is_frozen %}mdi-lock{% else %}mdi-lock-open-outline{% endif %}"></i>
+                    </a>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmDeleteGym('{{ gym.id }}', '{{ gym.name|escapejs }}')" data-toggle="tooltip" title="Delete Gym">
+                        <i class="mdi mdi-delete-outline"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Responsive Dropdown (Exact Member Profile Pattern) -->
+                <div class="d-md-none">
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle font-weight-bold shadow-sm" type="button" id="gymActionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="mdi mdi-settings mr-1"></i> Actions
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right shadow-lg border-0 rounded-lg" aria-labelledby="gymActionsDropdown">
+                            <h6 class="dropdown-header text-uppercase font-weight-bold text-muted">Manage Gym</h6>
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'superadmin:impersonate_gym_admin' gym.id %}" target="_blank">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-account-switch text-dark"></i></div> Open Gym Dashboard
+                            </a>
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'superadmin:update_gym' gym.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-pencil text-secondary"></i></div> Edit Gym
+                            </a>
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'superadmin:create_gym_admin' gym.id %}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-account-plus text-success"></i></div> Add Admin
+                            </a>
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="{% url 'superadmin:assign_subscription' %}?gym_id={{ gym.id }}">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-tag-plus text-warning"></i></div> Assign Subscription
+                            </a>
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="#" data-toggle="modal" data-target="#collectDueModal">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-currency-usd text-info"></i></div> Submit Due Payment
+                            </a>
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="javascript:void(0);" onclick="confirmToggleWhatsApp('{% url 'superadmin:toggle_whatsapp' gym.id %}', {% if gym.whatsapp_enabled %}true{% else %}false{% endif %})">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-whatsapp text-success"></i></div> Toggle WhatsApp
+                            </a>
+                            <a class="dropdown-item py-2 d-flex align-items-center" href="javascript:void(0);" onclick="confirmToggleFreeze('{% url 'superadmin:toggle_gym_freeze' gym.id %}', {% if gym.is_frozen %}true{% else %}false{% endif %})">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi {% if gym.is_frozen %}mdi-lock text-danger{% else %}mdi-lock-open-outline text-dark{% endif %}"></i></div> {% if gym.is_frozen %}Unfreeze Gym{% else %}Freeze Gym{% endif %}
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item py-2 d-flex align-items-center text-danger font-weight-bold" href="javascript:void(0);" onclick="confirmDeleteGym('{{ gym.id }}', '{{ gym.name|escapejs }}')">
+                                <div class="bg-light rounded p-1 mr-3"><i class="mdi mdi-delete-outline text-danger"></i></div> Delete Gym
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                {% csrf_token %}
+                <div class="row">
+                    <!-- Left Column: Exact Member Profile Profile-Card Layout -->
+                    <div class="col-lg-4">
+                        <div class="border-bottom text-center pb-4">
+                            {% if gym.logo %}
+                                <img src="{{ gym.logo.url }}" alt="{{ gym.name }}" class="img-lg rounded-circle mb-3 shadow-sm" style="width: 110px; height: 110px; object-fit: cover;"
+                                     onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-flex';"/>
+                                <div class="rounded-circle text-white font-weight-bold align-items-center justify-content-center mb-3 shadow-sm mx-auto"
+                                     style="display: none; width: 110px; height: 110px; font-size: 38px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);">
+                                    {{ gym.name|slice:":2"|upper|default:"GY" }}
+                                </div>
+                            {% else %}
+                                <div class="rounded-circle text-white font-weight-bold d-inline-flex align-items-center justify-content-center mb-3 shadow-sm mx-auto"
+                                     style="width: 110px; height: 110px; font-size: 38px; background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);">
+                                    {{ gym.name|slice:":2"|upper|default:"GY" }}
+                                </div>
+                            {% endif %}
+                            <h4 class="font-weight-bold">{{ gym.name }}</h4>
+                            <p class="text-muted mb-2">#{{ gym.gym_id }}</p>
+                            {% if due_amount > 0 %}
+                                <h5 class="text-danger font-weight-bold">Due: ₹{{ due_amount|floatformat:2 }}</h5>
+                            {% endif %}
+
+                            <!-- Quick Action Buttons -->
+                            <div class="d-flex justify-content-center mt-3">
+                                {% if gym.phone %}
+                                <a href="tel:{{ gym.phone }}" class="btn btn-outline-primary btn-sm mr-2 d-flex align-items-center rounded-pill px-3 shadow-sm" style="transition: all 0.2s ease-in-out;" data-toggle="tooltip" title="Call Gym" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    <i class="mdi mdi-phone mr-1 mdi-18px"></i> Call
+                                </a>
+                                <a href="https://wa.me/91{{ gym.phone }}?text=Hello%20*{{ gym.name|urlencode }}*,%20greetings%20from%20ONEXIVA%20Superadmin!%20{% if due_amount > 0 %}This%20is%20a%20reminder%20regarding%20your%20pending%20platform%20due%20of%20*₹{{ due_amount|floatformat:2|urlencode }}*.%20{% endif %}How%20can%20we%20help%20you%20today?" target="_blank" class="btn btn-outline-success btn-sm d-flex align-items-center rounded-pill px-3 shadow-sm" style="transition: all 0.2s ease-in-out;" data-toggle="tooltip" title="WhatsApp Message" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    <i class="mdi mdi-whatsapp mr-1 mdi-18px"></i> WhatsApp
+                                </a>
+                                {% else %}
+                                <span class="text-muted small">No contact number</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Basic Key-Value Details -->
+                        <div class="py-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="mdi mdi-checkbox-marked-circle-outline mr-2 text-primary"></i>Status</span>
+                                <span class="text-muted">
+                                    <span class="badge {% if gym.is_frozen %}badge-danger{% else %}badge-success{% endif %}">
+                                        {% if gym.is_frozen %}Frozen{% else %}Active{% endif %}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="mdi mdi-phone mr-2 text-primary"></i>Phone</span>
+                                <span>
+                                    {% if gym.phone %}
+                                    <a href="tel:{{ gym.phone }}" class="text-decoration-none text-dark font-weight-bold hover-primary">{{ gym.phone }}</a>
+                                    {% else %}
+                                    <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="mdi mdi-email-outline mr-2 text-primary"></i>Mail</span>
+                                <span>
+                                    {% if gym.email %}
+                                    <a href="mailto:{{ gym.email }}" class="text-decoration-none text-dark font-weight-bold hover-primary">{{ gym.email }}</a>
+                                    {% else %}
+                                    <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="mdi mdi-whatsapp mr-2 text-primary"></i>WhatsApp</span>
+                                <span class="text-muted">
+                                    <span class="badge {% if gym.whatsapp_enabled %}badge-success{% else %}badge-secondary{% endif %}">
+                                        {% if gym.whatsapp_enabled %}Active{% else %}Disabled{% endif %}
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Current Platform Plan Section with Live Quotas & Modules -->
+                        <div class="py-4 border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0 font-weight-bold">Current Platform Plan</h5>
+                                <a href="{% url 'superadmin:assign_subscription' %}?gym_id={{ gym.id }}" class="btn btn-sm btn-primary" title="Assign / Renew Plan">
+                                    <i class="mdi mdi-tag-plus"></i> Renew / Change
+                                </a>
+                            </div>
+                            {% if active_subscription %}
+                                <div class="p-3 rounded-lg mb-3" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="font-weight-bold text-dark">{{ active_subscription.subscription.name }}</span>
+                                        <span class="badge badge-primary px-2 py-1 font-weight-bold">{{ active_subscription.subscription.get_plan_tier_display }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <span><i class="mdi mdi-calendar-clock mr-1 text-primary"></i>Expires:</span>
+                                        <span class="font-weight-bold text-dark">{{ active_subscription.end_date|date:"d M Y" }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Quota Utilization Bars -->
+                                <div class="mb-3">
+                                    <h6 class="font-weight-bold text-dark small text-uppercase mb-2" style="letter-spacing: 0.5px;">Resource Quota Limits</h6>
+                                    
+                                    <!-- Members Quota -->
+                                    <div class="mb-2">
+                                        <div class="d-flex justify-content-between align-items-center small mb-1">
+                                            <span class="text-muted"><i class="mdi mdi-account-group mr-1 text-primary"></i>Members:</span>
+                                            <span class="font-weight-bold text-dark">
+                                                {{ registered_members_count }} / {% if max_members %}{{ max_members }}{% else %}&infin;{% endif %}
+                                                {% if max_members %}<span class="text-muted">({{ members_pct }}%)</span>{% endif %}
+                                            </span>
+                                        </div>
+                                        {% if max_members %}
+                                        <div class="progress" style="height: 6px; background-color: #e2e8f0;">
+                                            <div class="progress-bar {% if members_pct > 90 %}bg-danger{% elif members_pct > 75 %}bg-warning{% else %}bg-primary{% endif %}" style="width: {{ members_pct }}%"></div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Trainers Quota -->
+                                    <div class="mb-2">
+                                        <div class="d-flex justify-content-between align-items-center small mb-1">
+                                            <span class="text-muted"><i class="mdi mdi-dumbbell mr-1 text-success"></i>Trainers:</span>
+                                            <span class="font-weight-bold text-dark">
+                                                {{ trainers_count }} / {% if max_trainers %}{{ max_trainers }}{% else %}&infin;{% endif %}
+                                                {% if max_trainers %}<span class="text-muted">({{ trainers_pct }}%)</span>{% endif %}
+                                            </span>
+                                        </div>
+                                        {% if max_trainers %}
+                                        <div class="progress" style="height: 6px; background-color: #e2e8f0;">
+                                            <div class="progress-bar {% if trainers_pct > 90 %}bg-danger{% elif trainers_pct > 75 %}bg-warning{% else %}bg-success{% endif %}" style="width: {{ trainers_pct }}%"></div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Admins Quota -->
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center small mb-1">
+                                            <span class="text-muted"><i class="mdi mdi-shield-account mr-1 text-info"></i>Admin Accounts:</span>
+                                            <span class="font-weight-bold text-dark">
+                                                {{ admins_count }} / {% if max_admins %}{{ max_admins }}{% else %}&infin;{% endif %}
+                                                {% if max_admins %}<span class="text-muted">({{ admins_pct }}%)</span>{% endif %}
+                                            </span>
+                                        </div>
+                                        {% if max_admins %}
+                                        <div class="progress" style="height: 6px; background-color: #e2e8f0;">
+                                            <div class="progress-bar {% if admins_pct > 90 %}bg-danger{% elif admins_pct > 75 %}bg-warning{% else %}bg-info{% endif %}" style="width: {{ admins_pct }}%"></div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Included SaaS Modules -->
+                                <div>
+                                    <h6 class="font-weight-bold text-dark small text-uppercase mb-2" style="letter-spacing: 0.5px;">SaaS Modules Enabled</h6>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% for mod in plan_modules %}
+                                            <span class="badge {% if mod.enabled %}badge-light text-dark border{% else %}badge-light text-muted border text-decoration-line-through opacity-50{% endif %} px-2 py-1 mr-1 mb-1 font-weight-normal" style="font-size: 11px;">
+                                                <i class="mdi {{ mod.icon }} mr-1 {% if mod.enabled %}text-success{% else %}text-muted{% endif %}"></i>
+                                                {{ mod.name }}
+                                                {% if mod.enabled %}
+                                                    <i class="mdi mdi-check text-success ml-1"></i>
+                                                {% else %}
+                                                    <i class="mdi mdi-close text-muted ml-1"></i>
+                                                {% endif %}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-3 bg-light rounded">
+                                    <i class="mdi mdi-alert-circle-outline text-warning mdi-24px d-block mb-1"></i>
+                                    <p class="text-muted small mb-2">No active platform subscription plan.</p>
+                                    <a href="{% url 'superadmin:assign_subscription' %}?gym_id={{ gym.id }}" class="btn btn-sm btn-primary">
+                                        <i class="mdi mdi-plus-circle mr-1"></i> Assign Subscription Plan
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Gym Admin Credentials Section (Matches Personal Trainer Info in Member Profile) -->
+                        <div class="py-4 border-top">
+                            <h5 class="mb-3">Gym Admin Info</h5>
+                            {% if gym_admins %}
+                                {% with admin=gym_admins.first %}
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-account-star mr-2 text-primary"></i>Admin</span>
+                                    <span class="text-muted">{{ admin.name }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="mdi mdi-account-circle mr-2 text-primary"></i>Username</span>
+                                    <span class="text-muted"><code>{{ admin.user.username }}</code></span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="mdi mdi-phone mr-2 text-primary"></i>Phone</span>
+                                    <span class="text-muted">{{ admin.Phone_number|default:"N/A" }}</span>
+                                </div>
+                                {% endwith %}
+                            {% else %}
+                                <p class="text-muted">No gym admin assigned.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Tabs (Exact Member Profile Layout & Classes) -->
+                    <div class="col-lg-8">
+                        <div class="mt-4 py-2">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="personal-tab" data-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="true">Personal Details</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="plan-tab" data-toggle="tab" href="#plan" role="tab" aria-controls="plan" aria-selected="false">Subscription Plans</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="admins-tab" data-toggle="tab" href="#admins" role="tab" aria-controls="admins" aria-selected="false">Admin Credentials</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="invoices-tab" data-toggle="tab" href="#invoices" role="tab" aria-controls="invoices" aria-selected="false">Invoice/ Payment History</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings & Controls</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="myTabContent">
+                                <!-- TAB 1: PERSONAL DETAILS -->
+                                <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                                    <div class="py-3">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Gym Name:</strong> {{ gym.name }}</p>
+                                                <p><strong>Gym ID:</strong> #{{ gym.gym_id }}</p>
+                                                <p><strong>Slogan:</strong> {{ gym.slogan|default:"None" }}</p>
+                                                <p><strong>Phone:</strong> {{ gym.phone|default:"None" }}</p>
+                                                <p><strong>Mail:</strong> {{ gym.email|default:"None" }}</p>
+                                                <p><strong>Website:</strong> {% if gym.website %}<a href="{{ gym.website }}" target="_blank">{{ gym.website }}</a>{% else %}None{% endif %}</p>
+                                                <p><strong>WhatsApp Service:</strong> {% if gym.whatsapp_enabled %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-secondary">Disabled</span>{% endif %}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Address:</strong></p>
+                                                <p>{{ gym.address|default:"None" }}</p>
+                                                {% if gym.area %}<p>{{ gym.area }}</p>{% endif %}
+                                                <p>{{ gym.city }}{% if gym.state %}, {{ gym.state }}{% endif %}{% if gym.pincode %} - {{ gym.pincode }}{% endif %}</p>
+                                                <hr>
+                                                <p><strong>GST Enabled:</strong> {% if gym.gst_enabled %}<span class="badge badge-success">Yes ({{ gym.gst_rate }}%)</span>{% else %}<span class="badge badge-secondary">Disabled</span>{% endif %}</p>
+                                                {% if gym.gst_enabled %}
+                                                    <p><strong>GST Number:</strong> {{ gym.gst_number }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- TAB 2: SUBSCRIPTION PLANS -->
+                                <div class="tab-pane fade" id="plan" role="tabpanel" aria-labelledby="plan-tab">
+                                    <div class="py-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h4>Subscription Plans</h4>
+                                            <a href="{% url 'superadmin:assign_subscription' %}?gym_id={{ gym.id }}" class="btn btn-primary btn-sm">
+                                                <i class="mdi mdi-plus-circle mr-1"></i> Assign New Plan
+                                            </a>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Plan Name</th>
+                                                        <th>Total (₹)</th>
+                                                        <th>Paid (₹)</th>
+                                                        <th>Due (₹)</th>
+                                                        <th>Period</th>
+                                                        <th>Status</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for gym_subscription in gym_subscriptions %}
+                                                    <tr>
+                                                        <td><strong>{{ gym_subscription.subscription.name }}</strong></td>
+                                                        <td>₹{{ gym_subscription.total_amount|floatformat:2 }}</td>
+                                                        <td class="text-success font-weight-bold">₹{{ gym_subscription.paid_amount|floatformat:2 }}</td>
+                                                        <td class="text-danger font-weight-bold">₹{{ gym_subscription.due_amount|floatformat:2 }}</td>
+                                                        <td>
+                                                            <small class="text-muted">{{ gym_subscription.start_date|date:"d M Y" }} to {{ gym_subscription.end_date|date:"d M Y" }}</small>
+                                                        </td>
+                                                        <td>
+                                                            {% if gym_subscription.due_amount == 0 %}
+                                                                <span class="badge badge-success">Fully Paid</span>
+                                                            {% else %}
+                                                                <span class="badge badge-warning">Due: ₹{{ gym_subscription.due_amount|floatformat:2 }}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <a href="{% url 'superadmin:invoice' gym_subscription.id %}" class="btn btn-sm btn-primary" target="_blank" data-toggle="tooltip" title="View Invoice">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="7" class="text-center text-muted py-4">No subscription plans assigned to this gym yet.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- TAB 3: ADMIN CREDENTIALS -->
+                                <div class="tab-pane fade" id="admins" role="tabpanel" aria-labelledby="admins-tab">
+                                    <div class="py-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h4>Admin Credentials</h4>
+                                            <a href="{% url 'superadmin:create_gym_admin' gym.id %}" class="btn btn-sm btn-success">
+                                                <i class="mdi mdi-account-plus mr-1"></i> Add Admin
+                                            </a>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Phone</th>
+                                                        <th>Department</th>
+                                                        <th>Username</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for admin in gym_admins %}
+                                                    <tr>
+                                                        <td><strong>{{ admin.name }}</strong></td>
+                                                        <td>{{ admin.Phone_number|default:"N/A" }}</td>
+                                                        <td>{{ admin.Department|default:"Staff" }}</td>
+                                                        <td><code>{{ admin.user.username }}</code></td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="tooltip" title="Reset Password" onclick="confirmResetAdminPassword('{% url 'superadmin:reset_admin_password' admin.id %}', '{{ admin.user.username|escapejs }}')">
+                                                                <i class="mdi mdi-lock-reset"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-4">No gym admin accounts created yet.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- TAB 4: INVOICE / PAYMENT HISTORY (GYM TO SUPERADMIN ONLY) -->
+                                <div class="tab-pane fade" id="invoices" role="tabpanel" aria-labelledby="invoices-tab">
+                                    <div class="py-3">
+                                        <!-- Financial Overview Summary -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-4 mb-2">
+                                                <div class="card bg-light border-0 p-3 shadow-sm rounded">
+                                                    <div class="small font-weight-bold text-muted">TOTAL BILLED TO GYM</div>
+                                                    <div class="h4 font-weight-bold text-primary mb-0">₹{{ total_billed|floatformat:2 }}</div>
+                                                    <small class="text-muted">Total platform fees</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-2">
+                                                <div class="card bg-light border-0 p-3 shadow-sm rounded">
+                                                    <div class="small font-weight-bold text-muted">PAID BY GYM</div>
+                                                    <div class="h4 font-weight-bold text-success mb-0">₹{{ total_paid|floatformat:2 }}</div>
+                                                    <small class="text-muted">Received by Superadmin</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-2">
+                                                <div class="card bg-light border-0 p-3 shadow-sm rounded">
+                                                    <div class="small font-weight-bold text-muted">OUTSTANDING DUE</div>
+                                                    <div class="h4 font-weight-bold {% if due_amount > 0 %}text-danger{% else %}text-info{% endif %} mb-0">₹{{ due_amount|floatformat:2 }}</div>
+                                                    <small class="text-muted">Pending balance</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h4>Invoice/ Payment History</h4>
+                                                <small class="text-muted">Direct transactions received from <strong>{{ gym.name }}</strong> to Superadmin</small>
+                                            </div>
+                                            {% if due_amount > 0 %}
+                                                <button type="button" class="btn btn-success btn-sm shadow-sm font-weight-bold" data-toggle="modal" data-target="#collectDueModal">
+                                                    <i class="mdi mdi-currency-usd mr-1"></i> Collect Due Payment
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Date</th>
+                                                        <th>Type</th>
+                                                        <th>Description / Plan</th>
+                                                        <th>Amount Paid</th>
+                                                        <th>Payment Mode</th>
+                                                        <th>Transaction ID</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for item in payment_history %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        {% if item.is_subscription %}
+                                                            <td>{{ item.start_date|date:"d M, Y" }}</td>
+                                                            <td>
+                                                                <span class="badge badge-primary">Subscription</span>
+                                                            </td>
+                                                            <td>
+                                                                <strong>{{ item.subscription.name }}</strong>
+                                                                <div class="small text-muted">{{ item.start_date|date:"d M Y" }} - {{ item.end_date|date:"d M Y" }}</div>
+                                                            </td>
+                                                            <td class="font-weight-bold text-success">₹{{ item.paid_amount|floatformat:2 }}</td>
+                                                            <td>
+                                                                <span class="badge badge-secondary">{{ item.get_payment_mode_display }}</span>
+                                                            </td>
+                                                            <td><code>{{ item.transaction_id|default:"—" }}</code></td>
+                                                            <td class="text-center">
+                                                                <a href="{% url 'superadmin:invoice' item.id %}" target="_blank" class="btn btn-sm btn-primary" data-toggle="tooltip" title="View Invoice">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </a>
+                                                            </td>
+                                                        {% else %}
+                                                            <td>{{ item.payment_date|date:"d M, Y" }}</td>
+                                                            <td>
+                                                                <span class="badge badge-success">Due Clearance</span>
+                                                            </td>
+                                                            <td>
+                                                                <strong>Platform Due Payment</strong>
+                                                                {% if item.comment %}
+                                                                    <div class="small text-muted">{{ item.comment }}</div>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td class="font-weight-bold text-success">₹{{ item.amount|floatformat:2 }}</td>
+                                                            <td>
+                                                                <span class="badge badge-secondary">{{ item.get_payment_mode_display }}</span>
+                                                            </td>
+                                                            <td><code>{{ item.transaction_id|default:"—" }}</code></td>
+                                                            <td class="text-center">
+                                                                <span class="badge badge-success"><i class="mdi mdi-check-circle mr-1"></i>Cleared</span>
+                                                            </td>
+                                                        {% endif %}
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="8" class="text-center text-muted py-4">
+                                                            <i class="mdi mdi-currency-usd-off mdi-36px"></i>
+                                                            <p class="mb-0 mt-2">No gym payments to Superadmin recorded yet.</p>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- TAB 5: SETTINGS & CONTROLS -->
+                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                    <div class="py-3">
+                                        <div class="row">
+                                            <!-- WhatsApp Messaging Control -->
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card shadow-sm border h-100" style="border-radius: 8px;">
+                                                    <div class="card-header bg-white py-3 px-3 d-flex justify-content-between align-items-center flex-nowrap" style="border-bottom: 1px solid #f1f5f9;">
+                                                        <div class="d-flex align-items-center" style="min-width: 0;">
+                                                            <i class="mdi mdi-whatsapp text-success mr-2" style="font-size: 1.25rem;"></i>
+                                                            <span class="font-weight-bold text-truncate" style="font-size: 0.95rem; color: #1e293b;">WhatsApp Messaging</span>
+                                                        </div>
+                                                        {% if gym.whatsapp_enabled %}
+                                                            <span class="badge badge-success px-2 py-1 font-weight-bold flex-shrink-0">Active</span>
+                                                        {% else %}
+                                                            <span class="badge badge-secondary px-2 py-1 font-weight-bold flex-shrink-0">Disabled</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="card-body p-3 d-flex flex-column justify-content-between">
+                                                        <p class="small text-muted mb-3" style="line-height: 1.5;">
+                                                            Controls whether automated WhatsApp notifications (member welcome, payment receipts, expiry alerts, birthday wishes) are dispatched for this gym.
+                                                        </p>
+                                                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                                                            <span class="font-weight-bold small text-muted">Current Status:</span>
+                                                            <a href="javascript:void(0);" onclick="confirmToggleWhatsApp('{% url 'superadmin:toggle_whatsapp' gym.id %}', {% if gym.whatsapp_enabled %}true{% else %}false{% endif %})" class="btn btn-sm {% if gym.whatsapp_enabled %}btn-danger{% else %}btn-success{% endif %} text-nowrap font-weight-bold px-3 py-1">
+                                                                {% if gym.whatsapp_enabled %}
+                                                                    <i class="mdi mdi-cancel mr-1"></i> Disable WhatsApp
+                                                                {% else %}
+                                                                    <i class="mdi mdi-check mr-1"></i> Enable WhatsApp
+                                                                {% endif %}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Account Freeze Control -->
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card shadow-sm border h-100" style="border-radius: 8px;">
+                                                    <div class="card-header bg-white py-3 px-3 d-flex justify-content-between align-items-center flex-nowrap" style="border-bottom: 1px solid #f1f5f9;">
+                                                        <div class="d-flex align-items-center" style="min-width: 0;">
+                                                            <i class="mdi mdi-shield-lock-outline text-warning mr-2" style="font-size: 1.25rem;"></i>
+                                                            <span class="font-weight-bold text-truncate" style="font-size: 0.95rem; color: #1e293b;">Gym Account Access</span>
+                                                        </div>
+                                                        {% if gym.is_frozen %}
+                                                            <span class="badge badge-danger px-2 py-1 font-weight-bold flex-shrink-0">Frozen</span>
+                                                        {% else %}
+                                                            <span class="badge badge-success px-2 py-1 font-weight-bold flex-shrink-0">Unlocked</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="card-body p-3 d-flex flex-column justify-content-between">
+                                                        <p class="small text-muted mb-3" style="line-height: 1.5;">
+                                                            Freezing an account immediately locks gym admins out from managing members and records. Use for overdue subscriptions or policy violations.
+                                                        </p>
+                                                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                                                            <span class="font-weight-bold small text-muted">Access State:</span>
+                                                            <a href="javascript:void(0);" onclick="confirmToggleFreeze('{% url 'superadmin:toggle_gym_freeze' gym.id %}', {% if gym.is_frozen %}true{% else %}false{% endif %})" class="btn btn-sm {% if gym.is_frozen %}btn-success{% else %}btn-danger{% endif %} text-nowrap font-weight-bold px-3 py-1">
+                                                                {% if gym.is_frozen %}
+                                                                    <i class="mdi mdi-lock-open mr-1"></i> Unfreeze Account
+                                                                {% else %}
+                                                                    <i class="mdi mdi-lock mr-1"></i> Freeze Account
+                                                                {% endif %}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Attendance & GST Configuration -->
+                                            <div class="col-12 mb-3">
+                                                <div class="card shadow-sm border" style="border-radius: 8px;">
+                                                    <div class="card-header bg-white py-3 px-3 font-weight-bold d-flex align-items-center" style="border-bottom: 1px solid #f1f5f9;">
+                                                        <i class="mdi mdi-tune text-primary mr-2" style="font-size: 1.25rem;"></i>
+                                                        <span style="font-size: 0.95rem; color: #1e293b;">Attendance & GST Configuration</span>
+                                                    </div>
+                                                    <div class="card-body p-3">
+                                                        <form action="{% url 'superadmin:update_gym_settings' gym.id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <div class="row">
+                                                                <div class="col-md-6 border-right">
+                                                                    <h6 class="font-weight-bold text-primary mb-3">Attendance Check-in Settings</h6>
+                                                                    <div class="form-group form-check mb-3">
+                                                                        <input type="checkbox" class="form-check-input" id="attendance_code_required" name="attendance_code_required" {% if gym.attendance_code_required %}checked{% endif %}>
+                                                                        <label class="form-check-label font-weight-bold" for="attendance_code_required">Require 4-Digit Attendance Code for Check-in</label>
+                                                                        <small class="form-text text-muted">Members must enter this code when checking in.</small>
+                                                                    </div>
+                                                                    <div class="form-group mb-3">
+                                                                        <label class="font-weight-bold small text-muted">Current Attendance Code</label>
+                                                                        <input type="text" class="form-control" name="attendance_code" value="{{ gym.attendance_code|default:'' }}" maxlength="4" placeholder="e.g. 1234">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <h6 class="font-weight-bold text-primary mb-3">Tax & GST Settings</h6>
+                                                                    <div class="form-group form-check mb-3">
+                                                                        <input type="checkbox" class="form-check-input" id="gst_enabled" name="gst_enabled" {% if gym.gst_enabled %}checked{% endif %}>
+                                                                        <label class="form-check-label font-weight-bold" for="gst_enabled">Enable GST for this Gym</label>
+                                                                    </div>
+                                                                    <div class="form-group mb-3">
+                                                                        <label class="font-weight-bold small text-muted">GST Number</label>
+                                                                        <input type="text" class="form-control" name="gst_number" value="{{ gym.gst_number|default:'' }}" placeholder="e.g. 07AAAAA0000A1Z5">
+                                                                    </div>
+                                                                    <div class="form-group mb-3">
+                                                                        <label class="font-weight-bold small text-muted">GST Rate (%)</label>
+                                                                        <input type="number" class="form-control" name="gst_rate" value="{{ gym.gst_rate|default:0 }}" min="0" max="100">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-right mt-3 pt-2 border-top">
+                                                                <button type="submit" class="btn btn-primary btn-sm px-4 font-weight-bold text-nowrap">
+                                                                    <i class="mdi mdi-content-save mr-1"></i> Save Settings
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Danger Zone -->
+                                            <div class="col-12 mt-1">
+                                                <div class="card shadow-sm" style="border: 1px solid #fee2e2; border-radius: 8px; overflow: hidden;">
+                                                    <div class="card-header py-2 px-3 font-weight-bold d-flex align-items-center" style="background-color: #fef2f2; color: #991b1b; border-bottom: 1px solid #fee2e2;">
+                                                        <i class="mdi mdi-alert-circle-outline mr-2" style="color: #dc2626; font-size: 1.25rem;"></i>
+                                                        <span style="font-size: 0.95rem;">Danger Zone</span>
+                                                    </div>
+                                                    <div class="card-body p-3 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center" style="background-color: #ffffff;">
+                                                        <div class="mb-2 mb-sm-0 pr-sm-3">
+                                                            <h6 class="font-weight-bold mb-1" style="color: #dc2626; font-size: 14px;">Delete Gym Account</h6>
+                                                            <p class="small text-muted mb-0">Permanently delete this gym and all associated admin records, members, and financial history. This action cannot be undone.</p>
+                                                        </div>
+                                                        <button type="button" class="btn btn-danger btn-sm text-nowrap font-weight-bold px-3 py-2 flex-shrink-0" onclick="confirmDeleteGym('{{ gym.id }}', '{{ gym.name|escapejs }}')">
+                                                            <i class="mdi mdi-delete-forever mr-1"></i> Delete Gym
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Collect Due Payment Modal -->
+<div class="modal fade" id="collectDueModal" tabindex="-1" role="dialog" aria-labelledby="collectDueModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title font-weight-bold" id="collectDueModalLabel">
+                    <i class="mdi mdi-currency-usd mr-1"></i> Record Platform Due Payment
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'superadmin:submit_due' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="gym" value="{{ gym.id }}">
+                <input type="hidden" name="next" value="{% url 'superadmin:gym_profile' gym.id %}">
+                <div class="modal-body">
+                    <div class="alert alert-info py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Gym: <strong>{{ gym.name }}</strong></span>
+                            <span class="badge badge-primary">#{{ gym.gym_id }}</span>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold">Current Outstanding Due</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text font-weight-bold">₹</span>
+                            </div>
+                            <input type="text" class="form-control font-weight-bold text-danger bg-light" value="{{ due_amount|floatformat:2 }}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold">Amount to Collect (₹) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" max="{{ due_amount }}" class="form-control font-weight-bold" name="amount_to_pay" value="{{ due_amount|floatformat:2 }}" required>
+                        <small class="form-text text-muted">Cannot exceed the outstanding due of ₹{{ due_amount|floatformat:2 }}</small>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold">Payment Mode <span class="text-danger">*</span></label>
+                        <select class="form-control" name="payment_method" required>
+                            {% for mode_val, mode_label in payment_modes %}
+                                <option value="{{ mode_val }}" {% if mode_val == 'upi' %}selected{% endif %}>{{ mode_label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold">Transaction Reference / Notes</label>
+                        <textarea class="form-control" name="notes" rows="2" placeholder="e.g., UPI Ref: 829103... or Cash payment"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success btn-sm font-weight-bold px-4">
+                        <i class="mdi mdi-check-circle mr-1"></i> Confirm & Save Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+function confirmResetAdminPassword(url, username) {
+    Swal.fire({
+        title: 'Reset Admin Password?',
+        html: `Are you sure you want to reset the password for <strong>${username}</strong>?<br><br><div class="alert alert-info py-2 px-3 text-left small mb-0" style="background-color: #f0fdf4; border-color: #bbf7d0; color: #166534;"><i class="mdi mdi-information mr-1"></i> New Password will be set to: <strong>BTsquare@123</strong></div>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: '<i class="mdi mdi-lock-reset mr-1"></i> Yes, Reset Password',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+
+function confirmToggleWhatsApp(url, isEnabled) {
+    const action = isEnabled ? 'disable' : 'enable';
+    const btnColor = isEnabled ? '#dc2626' : '#10b981';
+    Swal.fire({
+        title: (isEnabled ? 'Disable' : 'Enable') + ' WhatsApp Service?',
+        text: 'Are you sure you want to ' + action + ' automated WhatsApp notifications for this gym?',
+        icon: isEnabled ? 'warning' : 'question',
+        showCancelButton: true,
+        confirmButtonColor: btnColor,
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, ' + action.charAt(0).toUpperCase() + action.slice(1),
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+
+function confirmToggleFreeze(url, isFrozen) {
+    const action = isFrozen ? 'unfreeze' : 'freeze';
+    const btnColor = isFrozen ? '#10b981' : '#dc2626';
+    Swal.fire({
+        title: (isFrozen ? 'Unfreeze' : 'Freeze') + ' Gym Account?',
+        text: isFrozen 
+            ? 'This will immediately restore access for gym administrators and staff.' 
+            : 'Gym admins and staff will be immediately locked out from managing records.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: btnColor,
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, ' + action.charAt(0).toUpperCase() + action.slice(1),
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+
+function confirmDeleteGym(gymId, gymName) {
+    Swal.fire({
+        title: 'Delete Gym Account?',
+        html: `Are you ABSOLUTELY sure you want to permanently delete <strong>${gymName}</strong>?<br><br><span class="text-danger small font-weight-bold"><i class="mdi mdi-alert-circle mr-1"></i> All associated members, plans, payments, and data will be permanently removed.</span>`,
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: '<i class="mdi mdi-delete-forever mr-1"></i> Yes, Delete Gym',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Deleting Gym...',
+                text: 'Please wait while records are removed.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch("{% url 'superadmin:delete_gym' 0 %}".replace('/0/', '/' + gymId + '/'), {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Gym has been deleted successfully.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = "{% url 'superadmin:gym_list' %}";
+                    });
+                } else {
+                    Swal.fire('Error', data.message || 'Unable to delete gym.', 'error');
+                }
+            })
+            .catch(err => {
+                Swal.fire('Error', 'Network or server error: ' + err, 'error');
+            });
+        }
+    });
+}
+</script>
+{% endblock %}

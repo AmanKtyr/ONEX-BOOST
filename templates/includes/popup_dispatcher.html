@@ -1,0 +1,78 @@
+{% if request.user.is_authenticated %}
+<script>
+(function() {
+    function initActivePopupChecker() {
+        fetch('/notifications/active-popup/')
+        .then(function(res) {
+            if (!res.ok) return null;
+            return res.json();
+        })
+        .then(function(data) {
+            if (data && data.status === 'success' && data.has_popup && data.popup) {
+                var p = data.popup;
+                var iconMap = {
+                    'info': 'info',
+                    'success': 'success',
+                    'warning': 'warning',
+                    'danger': 'error'
+                };
+                var confirmBtnColorMap = {
+                    'info': '#0284c7',
+                    'success': '#10b981',
+                    'warning': '#f59e0b',
+                    'danger': '#dc2626'
+                };
+
+                var footerHtml = '';
+                if (p.action_label && p.action_url) {
+                    footerHtml = '<a href="' + p.action_url + '" class="btn btn-primary btn-sm px-3 py-1 font-weight-bold" style="text-decoration:none;"><i class="mdi mdi-open-in-new mr-1"></i>' + p.action_label + '</a>';
+                }
+
+                var contentHtml = '';
+                if (p.image_url) {
+                    contentHtml += '<div class="mb-3 text-center"><img src="' + p.image_url + '" alt="Announcement" class="img-fluid rounded shadow-sm" style="max-height: 240px; width: 100%; object-fit: cover;"></div>';
+                }
+                contentHtml += '<div class="text-muted text-left py-2" style="font-size: 14px; line-height: 1.6; white-space: pre-wrap;">' + p.message + '</div>' +
+                               '<div class="text-muted text-left small mt-2" style="font-size: 11px;"><i class="mdi mdi-clock-outline mr-1"></i>Published: ' + p.created_at + '</div>';
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: p.title,
+                        html: contentHtml,
+                        icon: iconMap[p.notification_type] || 'info',
+                        showConfirmButton: true,
+                        confirmButtonText: '<i class="mdi mdi-check mr-1"></i> I Understand / Dismiss',
+                        confirmButtonColor: confirmBtnColorMap[p.notification_type] || '#2563eb',
+                        showCancelButton: false,
+                        allowOutsideClick: p.is_dismissible,
+                        allowEscapeKey: p.is_dismissible,
+                        footer: footerHtml || undefined,
+                        customClass: {
+                            popup: 'border-radius-12 shadow-lg'
+                        }
+                    }).then(function() {
+                        var csrfToken = '{{ csrf_token }}';
+                        fetch('/notifications/' + p.id + '/acknowledge-popup/', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                    });
+                }
+            }
+        })
+        .catch(function(err) {
+            // Silently ignore background polling errors
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initActivePopupChecker);
+    } else {
+        initActivePopupChecker();
+    }
+})();
+</script>
+{% endif %}

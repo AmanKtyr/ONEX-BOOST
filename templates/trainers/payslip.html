@@ -1,0 +1,449 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}Payslip - {{ trainer.name }} - {{ month_name }} {{ year }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}" />
+<style>
+  /* Payslip Sheet Styling matching reference document */
+  .payslip-container {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+  #payslipPdfWrapper {
+    background: #ffffff;
+    padding: 3px 6px 5px 3px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .payslip-sheet {
+    box-sizing: border-box;
+    border: 2px solid #333333;
+    padding: 0;
+    background: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111111;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .payslip-sheet *, .payslip-sheet *::before, .payslip-sheet *::after {
+    box-sizing: border-box;
+  }
+  .payslip-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+    box-sizing: border-box;
+  }
+  .payslip-table th, 
+  .payslip-table td {
+    box-sizing: border-box;
+    border: 1px solid #444444;
+    padding: 7px 12px;
+    font-size: 0.88rem;
+    vertical-align: middle;
+  }
+  .payslip-header-box {
+    border-bottom: 2px solid #333333;
+    padding: 16px 20px;
+  }
+  .payslip-title-row {
+    border-top: 1.5px solid #333333;
+    border-bottom: 1.5px solid #333333;
+    background-color: #ffffff;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 9px 12px;
+    letter-spacing: 0.5px;
+  }
+  .section-header-cell {
+    background-color: #ffffff;
+    font-weight: 700;
+    text-align: center;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+  }
+  .field-label {
+    font-weight: 600;
+    width: 18%;
+    background-color: #fafafa;
+  }
+  .field-val {
+    width: 32%;
+  }
+  .amount-col {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .bold-row td {
+    font-weight: 700;
+  }
+  .net-pay-row td {
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+
+  @media print {
+    *, *::before, *::after {
+      box-sizing: border-box !important;
+    }
+    body {
+      background-color: #ffffff !important;
+      color: #000000 !important;
+    }
+    .navbar, .sidebar, .custom-breadcrumb, .action-bar, footer, .d-print-none {
+      display: none !important;
+    }
+    .container-scroller, .page-body-wrapper, .main-panel, .content-wrapper, .container, .payslip-container {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+    #payslipPdfWrapper {
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .payslip-sheet {
+      box-sizing: border-box !important;
+      border: 2px solid #000000 !important;
+      box-shadow: none !important;
+      margin: 0 auto !important;
+      width: 99.4% !important;
+      max-width: 99.4% !important;
+    }
+    .payslip-table {
+      box-sizing: border-box !important;
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    .payslip-table th, .payslip-table td {
+      box-sizing: border-box !important;
+      border: 1px solid #000000 !important;
+    }
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3 d-print-none">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      {% if is_trainer_portal %}
+        <a href="{% url 'trainer_portal:dashboard' %}" class="text-decoration-none">
+          <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+        </a>
+      {% else %}
+        <a href="{% url 'dashboard' %}" class="text-decoration-none">
+          <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+        </a>
+      {% endif %}
+    </li>
+    <li class="breadcrumb-item">
+      {% if is_trainer_portal %}
+        <a href="{% url 'trainer_portal:salary' %}" class="text-decoration-none">
+          <i class="mdi mdi-cash-multiple mdi-18px"></i> My Salary
+        </a>
+      {% else %}
+        <a href="{% url 'trainer_salary_list' %}?month={{ salary.month }}&year={{ salary.year }}" class="text-decoration-none">
+          <i class="mdi mdi-cash-multiple mdi-18px"></i> Trainer Payroll
+        </a>
+      {% endif %}
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <i class="mdi mdi-file-document-outline mdi-18px"></i> Official Payslip
+    </li>
+  </ol>
+</nav>
+
+<div class="payslip-container py-2">
+
+  <!-- Top Action Bar (Hidden when printing / exporting PDF) -->
+  <div class="d-flex justify-content-between align-items-center mb-3 d-print-none action-bar">
+    <div>
+      {% if is_trainer_portal %}
+        <a href="{% url 'trainer_portal:salary' %}?month={{ salary.month }}&year={{ salary.year }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center">
+          <i class="mdi mdi-arrow-left mr-1 me-1"></i> Back to My Salary
+        </a>
+      {% else %}
+        <a href="{% url 'trainer_salary_list' %}?month={{ salary.month }}&year={{ salary.year }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center">
+          <i class="mdi mdi-arrow-left mr-1 me-1"></i> Back to Payroll Register
+        </a>
+      {% endif %}
+    </div>
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-outline-secondary btn-sm font-weight-bold d-flex align-items-center" onclick="window.print();" title="Print document">
+        <i class="mdi mdi-printer mr-1 me-1"></i> Print
+      </button>
+      <button type="button" id="downloadPdfBtn" class="btn btn-primary btn-sm font-weight-bold shadow-sm d-flex align-items-center" onclick="downloadPayslipPDF();" title="Download official PDF invoice">
+        <i class="mdi mdi-download mr-1 me-1"></i> Print Payslip / Download PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- EXACT REFERENCE PAYSLIP SHEET (WITH WRAPPER TO PREVENT PRINT CLIPPING) -->
+  <div id="payslipPdfWrapper">
+    <div class="payslip-sheet shadow-sm" id="payslipPrintArea">
+
+    <!-- 1. Header Section (Company Logo on left, Gym Name & Address on right) -->
+    <div class="payslip-header-box">
+      <div class="row align-items-center">
+        <!-- Logo Column -->
+        <div class="col-4 col-sm-3 border-end pe-3" style="border-right: 1.5px solid #444444;">
+          {% if gym.logo %}
+            <img src="{{ gym.logo.url }}" alt="{{ gym.name }}" style="max-height: 75px; max-width: 100%; object-fit: contain;">
+          {% else %}
+            <div style="font-weight: 800; font-size: 1.4rem; color: #ea580c; line-height: 1.05; letter-spacing: -0.5px;">
+              COMPANY<br><span style="font-size: 1.7rem;">LOGO</span>
+            </div>
+          {% endif %}
+        </div>
+        <!-- Gym Info Column (Centered) -->
+        <div class="col-8 col-sm-9 text-center ps-3">
+          <h3 class="mb-1 font-weight-bold text-dark" style="font-size: 1.55rem; letter-spacing: 0.5px; text-transform: uppercase;">
+            {{ gym.name|default:"XYZ Logistics Pvt. Ltd." }}
+          </h3>
+          <p class="mb-0 text-muted small" style="font-size: 0.88rem;">
+            {{ gym.address|default:"Madhurawada, Visakhapatnam, Andhra Pradesh 530045" }}
+          </p>
+          {% if gym.phone or gym.email %}
+            <p class="mb-0 text-muted small" style="font-size: 0.82rem;">
+              {% if gym.phone %}Phone: {{ gym.phone }}{% endif %}
+              {% if gym.phone and gym.email %} &bull; {% endif %}
+              {% if gym.email %}Email: {{ gym.email }}{% endif %}
+            </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Pay Slip Month Header Banner -->
+    <div class="payslip-title-row">
+      Pay Slip for the Month of {{ month_name }} {{ year }}
+      <span class="d-none">Official Salary Slip</span>
+    </div>
+
+    <!-- 3. Employee & Employment Grid (4-Column Table matching reference) -->
+    <table class="payslip-table">
+      <tbody>
+        <tr>
+          <td class="field-label">Name</td>
+          <td class="field-val"><strong>{{ trainer.name }}</strong></td>
+          <td class="field-label">Department</td>
+          <td class="field-val">{{ trainer.get_specialization_display|default:trainer.specialization|default:"Fitness Training" }}</td>
+        </tr>
+        <tr>
+          <td class="field-label">Emp. No</td>
+          <td class="field-val"><strong>{{ trainer.trainer_id }}</strong></td>
+          <td class="field-label">Bank Name</td>
+          <td class="field-val">{{ salary.get_payment_mode_display|default:"Bank Transfer" }}</td>
+        </tr>
+        <tr>
+          <td class="field-label">Designation</td>
+          <td class="field-val">Fitness Coach / Trainer</td>
+          <td class="field-label">A/c No. / Ref</td>
+          <td class="field-val">{% if salary.transaction_id %}{{ salary.transaction_id }}{% else %}N/A{% endif %}</td>
+        </tr>
+        <tr>
+          <td class="field-label">Joining Date</td>
+          <td class="field-val">{{ trainer.joining_date|date:"d M, Y"|default:"-" }}</td>
+          <td class="field-label">Status</td>
+          <td class="field-val">
+            {% if salary.status == 'paid' %}
+              <strong class="text-success">PAID</strong> ({{ salary.payment_date|date:"d M, Y"|default:"-" }})
+            {% elif salary.status == 'approved' %}
+              <strong class="text-primary">APPROVED</strong>
+            {% else %}
+              <strong class="text-muted">DRAFT / CALCULATION</strong>
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 4. Attendance Summary Sub-strip -->
+    <table class="payslip-table" style="background-color: #fafafa;">
+      <tbody>
+        <tr style="font-size: 0.8rem; text-align: center;">
+          <td>Total Month Days: <strong>{{ salary.total_days }}</strong></td>
+          <td>Present: <strong class="text-success">{{ salary.present_days|floatformat:1 }}</strong></td>
+          <td>Half Days (0.5x): <strong>{{ salary.half_days }}</strong></td>
+          <td>Paid Leaves: <strong class="text-primary">{{ salary.paid_leave_days|floatformat:1 }}</strong></td>
+          <td>Unpaid Leaves: <strong class="text-warning">{{ salary.unpaid_leave_days|floatformat:1 }}</strong></td>
+          <td>Absent: <strong class="text-danger">{{ salary.absent_days|floatformat:1 }}</strong></td>
+          <td style="background-color: #f1f5f9;"><strong>Payable Days: {{ salary.payable_days|floatformat:1 }} / {{ salary.total_days }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 5. Earnings & Deductions Table (exact split format from image) -->
+    <table class="payslip-table">
+      <thead>
+        <tr>
+          <th colspan="2" class="section-header-cell" style="width: 50%;">Earnings</th>
+          <th colspan="2" class="section-header-cell" style="width: 50%;">Deductions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Row 1: Basic Base Salary vs Deductions -->
+        <tr>
+          <td style="width: 32%;">Basic Fixed Salary</td>
+          <td class="amount-col" style="width: 18%;">{{ salary.base_salary|floatformat:2|intcomma }}</td>
+          <td style="width: 32%;">Salary Deductions / Penalty</td>
+          <td class="amount-col" style="width: 18%;">
+            {% if salary.deductions > 0 %}{{ salary.deductions|floatformat:2|intcomma }}{% else %}-{% endif %}
+          </td>
+        </tr>
+
+        <!-- Row 2: Earned Base vs Leave Loss -->
+        <tr>
+          <td>
+            Base Salary Earned
+            <small class="text-muted d-block" style="font-size: 0.73rem;">({{ salary.payable_days|floatformat:1 }} / {{ salary.total_days }} days worked)</small>
+          </td>
+          <td class="amount-col font-weight-bold">{{ salary.base_salary_earned|floatformat:2|intcomma }}</td>
+          <td>
+            Unpaid Leave Days
+            <small class="text-muted d-block" style="font-size: 0.73rem;">({{ salary.unpaid_leave_days|floatformat:1 }} days non-payable)</small>
+          </td>
+          <td class="amount-col">-</td>
+        </tr>
+
+        <!-- Row 3: PT Commission vs Taxes -->
+        <tr>
+          <td>
+            PT Client Commission
+            <small class="text-muted d-block" style="font-size: 0.73rem;">({{ salary.pt_clients_count }} active PT client{{ salary.pt_clients_count|pluralize }})</small>
+          </td>
+          <td class="amount-col font-weight-bold">{{ salary.pt_commission|floatformat:2|intcomma }}</td>
+          <td>Professional Tax / TDS</td>
+          <td class="amount-col">-</td>
+        </tr>
+
+        <!-- Row 4: Performance Bonus / Incentive vs Other -->
+        <tr>
+          <td>
+            Performance Bonus / Incentive
+            {% if salary.remarks %}<small class="text-muted d-block" style="font-size: 0.73rem;">{{ salary.remarks }}</small>{% endif %}
+          </td>
+          <td class="amount-col font-weight-bold">
+            {% if salary.bonus > 0 %}{{ salary.bonus|floatformat:2|intcomma }}{% else %}-{% endif %}
+          </td>
+          <td>Other Deductions</td>
+          <td class="amount-col">-</td>
+        </tr>
+
+        <!-- Blank Spacing Row matching layout in reference image -->
+        <tr>
+          <td style="height: 26px;"></td>
+          <td class="amount-col"></td>
+          <td></td>
+          <td class="amount-col"></td>
+        </tr>
+
+        <!-- Gross Salary & Total Deductions Row -->
+        <tr class="bold-row" style="background-color: #fafafa;">
+          <td>Gross Salary</td>
+          <td class="amount-col">{{ salary.total_earnings|floatformat:2|intcomma }}</td>
+          <td>Total Deductions</td>
+          <td class="amount-col">{{ salary.total_deductions|floatformat:2|intcomma }}</td>
+        </tr>
+
+        <!-- Net Pay Row -->
+        <tr class="net-pay-row">
+          <td class="text-center font-weight-bold" style="background-color: #f8fafc;">Net Pay</td>
+          <td colspan="3" class="text-center font-weight-bold" style="font-size: 1.2rem; letter-spacing: 0.5px;">
+            ₹{{ salary.net_salary|floatformat:2|intcomma }}
+          </td>
+        </tr>
+
+        <!-- Amount in Words Row -->
+        <tr>
+          <td class="font-weight-bold text-end" style="background-color: #fafafa;">Amount in Words:</td>
+          <td colspan="3" class="font-weight-bold" style="font-size: 0.92rem;">
+            {{ net_in_words }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 6. Signatures Footer -->
+    <div class="p-4" style="background-color: #ffffff;">
+      <div class="row pt-5 mt-2">
+        <div class="col-6 text-center">
+          <div class="pt-2 mx-auto" style="max-width: 220px; border-top: 1.5px solid #333333;">
+            <div class="small font-weight-bold">Trainer's Signature</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">{{ trainer.name }}</div>
+          </div>
+        </div>
+        <div class="col-6 text-center">
+          <div class="pt-2 mx-auto" style="max-width: 220px; border-top: 1.5px solid #333333;">
+            <div class="small font-weight-bold">Authorized Signatory</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">{{ gym.name }} Administration</div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center text-muted small mt-4 pt-2" style="font-size: 0.72rem;">
+        This is a computer-generated salary slip and does not require a physical signature when authenticated electronically.
+      </div>
+    </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'vendors/html2pdf/html2pdf.bundle.min.js' %}"></script>
+<script>
+function downloadPayslipPDF() {
+  const btn = document.getElementById('downloadPdfBtn');
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = '<i class="mdi mdi-loading mdi-spin mr-1 me-1"></i> Generating PDF...';
+  btn.disabled = true;
+
+  const element = document.getElementById('payslipPdfWrapper') || document.getElementById('payslipPrintArea');
+
+  if (typeof html2pdf !== 'undefined') {
+    const opt = {
+      margin:       [8, 8, 8, 8],
+      filename:     'Payslip_{{ trainer.name|slugify }}_{{ month_name }}_{{ year }}.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: '#ffffff', 
+        scrollY: 0,
+        scrollX: 0
+      },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(function() {
+      btn.innerHTML = originalHtml;
+      btn.disabled = false;
+    }).catch(function(err) {
+      console.warn('html2pdf failed, falling back to server-side PDF generation:', err);
+      window.location.href = window.location.pathname + '?download=pdf';
+      btn.innerHTML = originalHtml;
+      btn.disabled = false;
+    });
+  } else {
+    window.location.href = window.location.pathname + '?download=pdf';
+    btn.innerHTML = originalHtml;
+    btn.disabled = false;
+  }
+}
+</script>
+{% endblock %}

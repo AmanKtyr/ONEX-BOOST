@@ -1,0 +1,129 @@
+<form method="get" class="mb-3 search-auto-form" onsubmit="event.preventDefault(); triggerGlobalAutoSearch(this, 0);">
+    {% csrf_token %}
+    <div class="filter-search-wrapper" style="position: relative; display: flex; align-items: center; max-width: 420px; width: 100%;">
+        <i class="mdi mdi-magnify filter-search-icon" style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 17px; line-height: 1; z-index: 4; margin: 0;"></i>
+        <input 
+            type="text" 
+            class="form-control filter-control filter-search-input search-auto-input" 
+            name="q" 
+            placeholder="{{ placeholder|default:'Search...' }}" 
+            value="{{ request.GET.q|default:'' }}"
+            autocomplete="off"
+            style="padding-left: 35px; padding-right: 32px;"
+        >
+        <button type="button" class="filter-clear-btn search-auto-clear" title="Clear Search" style="position: absolute; right: 9px; top: 50%; transform: translateY(-50%); background: transparent; border: none; outline: none; box-shadow: none; color: #9ca3af; font-size: 17px; cursor: pointer; padding: 0; line-height: 1; z-index: 5; {% if not request.GET.q %}display: none;{% endif %}">
+            <i class="mdi mdi-close-circle"></i>
+        </button>
+        <div class="filter-spinner search-auto-spinner"></div>
+    </div>
+</form>
+
+<script>
+(function() {
+    let searchDebounceTimer = null;
+    let searchAbortCtrl = null;
+
+    function handleSearch(form, delay = 350) {
+        if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+        const input = form.querySelector('.search-auto-input');
+        const clearBtn = form.querySelector('.search-auto-clear');
+        const spinner = form.querySelector('.search-auto-spinner');
+        if (clearBtn && input) {
+            clearBtn.style.display = input.value.trim() ? 'block' : 'none';
+        }
+
+        searchDebounceTimer = setTimeout(() => {
+            const val = input ? input.value.trim() : '';
+            const url = new URL(window.location.href);
+            if (val) {
+                url.searchParams.set('q', val);
+            } else {
+                url.searchParams.delete('q');
+            }
+            url.searchParams.delete('page'); // Reset to page 1 on new search
+
+            const tableResp = document.querySelector('.table-responsive');
+            if (!tableResp) {
+                // Fallback to traditional form submit
+                window.location.href = url.toString();
+                return;
+            }
+
+            if (searchAbortCtrl) searchAbortCtrl.abort();
+            searchAbortCtrl = new AbortController();
+
+            if (spinner) spinner.style.display = 'block';
+            if (clearBtn) clearBtn.style.display = 'none';
+            tableResp.classList.add('is-filtering');
+
+            fetch(url.toString(), {
+                signal: searchAbortCtrl.signal,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Search failed');
+                return res.text();
+            })
+            .then(html => {
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const newTable = doc.querySelector('.table-responsive');
+                if (newTable && tableResp) {
+                    tableResp.innerHTML = newTable.innerHTML;
+                }
+
+                // Update pagination if exists
+                const currPagination = document.querySelector('nav[aria-label="Page navigation"], .pagination');
+                const newPagination = doc.querySelector('nav[aria-label="Page navigation"], .pagination');
+                if (currPagination && newPagination) {
+                    currPagination.innerHTML = newPagination.innerHTML;
+                }
+
+                window.history.replaceState(null, '', url.toString());
+            })
+            .catch(err => {
+                if (err.name !== 'AbortError') {
+                    window.location.href = url.toString();
+                }
+            })
+            .finally(() => {
+                if (spinner) spinner.style.display = 'none';
+                if (clearBtn && input && input.value.trim()) clearBtn.style.display = 'block';
+                tableResp.classList.remove('is-filtering');
+            });
+        }, delay);
+    }
+
+    window.triggerGlobalAutoSearch = function(form, delay) {
+        handleSearch(form, delay);
+    };
+
+    document.querySelectorAll('.search-auto-form').forEach(form => {
+        if (form.dataset.initialized) return;
+        form.dataset.initialized = "true";
+
+        const input = form.querySelector('.search-auto-input');
+        const clearBtn = form.querySelector('.search-auto-clear');
+
+        if (input) {
+            input.addEventListener('input', () => handleSearch(form, 350));
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch(form, 0);
+                }
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                if (input) {
+                    input.value = '';
+                    input.focus();
+                }
+                clearBtn.style.display = 'none';
+                handleSearch(form, 0);
+            });
+        }
+    });
+})();
+</script>

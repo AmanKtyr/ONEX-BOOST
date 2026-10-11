@@ -1,0 +1,1063 @@
+{% extends 'website/base_website.html' %}
+{% load static %}
+
+{% block title %}Free BMI Calculator India (WHO & Asian Standards) | ONEXIVA{% endblock %}
+
+{% block seo %}
+<meta name="description" content="Free clinical-grade BMI calculator for gym members and fitness studios. Evaluate Body Mass Index, ideal weight range, BMR, and daily calories (TDEE) with WHO and Asian-Indian ICMR standards.">
+<meta name="keywords" content="BMI calculator India, online BMI calculator, body mass index calculator, WHO BMI standard, Asian Indian BMI cutoff, ICMR BMI guidelines, ideal weight calculator, BMR calculator, TDEE calculator, gym fitness assessment, ONEXIVAhealth tools">
+<meta name="author" content="ONEXIVAby BhattSquare">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+{% endblock %}
+
+{% block canonical %}
+<link rel="canonical" href="https://fitstack.nextgenapplication.com/bmi-calculator/">
+{% endblock %}
+
+{% block og_tags %}
+<meta property="og:site_name" content="ONEXIVA">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fitstack.nextgenapplication.com/bmi-calculator/">
+<meta property="og:title" content="Free BMI & Metabolic Fitness Calculator — ONEXIVA">
+<meta property="og:description" content="Accurate BMI calculation with WHO and Indian ICMR standards, ideal weight target, BMR, and daily calorie needs.">
+<meta property="og:image" content="{% static 'images/about_dashboard_features.png' %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_IN">
+{% endblock %}
+
+{% block twitter_tags %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free BMI & Fitness Calculator | ONEXIVAIndia">
+<meta name="twitter:description" content="Calculate your BMI, ideal weight target, BMR, and TDEE calories instantly. Supports metric and imperial units.">
+<meta name="twitter:image" content="{% static 'images/about_dashboard_features.png' %}">
+{% endblock %}
+
+{% block schema_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "ONEXIVABMI & Metabolic Fitness Calculator",
+      "url": "https://fitstack.nextgenapplication.com/bmi-calculator/",
+      "description": "An interactive, clinical-grade fitness calculator providing BMI, ideal weight, BMR, and daily calorie expenditure under WHO and Asian-Indian health standards.",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Body Mass Index (BMI) and how is it calculated?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Body Mass Index (BMI) is an internationally recognized screening metric derived from a person's mass (weight) and height. The formula is: BMI = weight (kg) / [height (m)]². It categorizes individuals into underweight, normal weight, overweight, or obese ranges to screen for weight-related health risks."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do Asian and Indian populations have lower BMI cutoffs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The World Health Organization (WHO) and the Indian Council of Medical Research (ICMR) established lower BMI cutoffs for South Asian populations because individuals of Indian descent tend to have a higher percentage of body fat and visceral adiposity at lower BMI levels compared to European populations. In India, a BMI of 23.0 to 24.9 is considered overweight, and 25.0+ is considered obese."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between BMI, BMR, and TDEE?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "BMI measures your weight relative to height. BMR (Basal Metabolic Rate) is the number of calories your body burns at complete rest just to keep vital organs functioning. TDEE (Total Daily Energy Expenditure) is your total daily calorie burn after factoring in your exercise, workouts, and daily movement."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does BMI sometimes misclassify muscular gym members or bodybuilders?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "BMI does not distinguish between muscle mass and fat tissue. Muscle is significantly denser than fat, meaning highly trained athletes, bodybuilders, and powerlifters often register as 'overweight' or 'obese' on BMI charts despite having low body fat percentages. For strength athletes, waist-to-hip ratio and body fat calipers provide a more complete assessment."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How should gym owners and trainers use BMI assessments for new members?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Gym owners and personal trainers use initial BMI and metabolic screenings as a benchmark during client onboarding. Tracking initial measurements and re-evaluating progress every 60-90 days demonstrates tangible fitness progress, strengthens member retention, and helps coaches customize calorie targets and progressive workout plans."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="page-hero !min-h-0 !py-10 md:!py-14">
+    <img src="{% static 'images/hero_image_gym.png' %}" alt="ONEXIVAfitness assessment tools" class="page-hero-media">
+    <div class="brand-container page-hero-content">
+        <div class="max-w-4xl site-reveal">
+            <span class="brand-eyebrow brand-eyebrow-dark">
+                <i class="fa-solid fa-heart-pulse"></i>
+                Clinical Fitness Utility
+            </span>
+            <h1 class="brand-heading mt-6">Body Mass Index &amp; Metabolic Fitness Calculator</h1>
+            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
+                Accurately evaluate your Body Mass Index (BMI), ideal weight range, Basal Metabolic Rate (BMR), and daily maintenance calories (TDEE) with instant switching between WHO International and Asian-Indian ICMR standards.
+            </p>
+            <div class="flex flex-wrap items-center gap-3 mt-8 pt-2">
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white backdrop-blur-md border border-white/15">
+                    <i class="fa-solid fa-certificate text-emerald-400"></i> WHO &amp; Indian ICMR Standards
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white backdrop-blur-md border border-white/15">
+                    <i class="fa-solid fa-fire text-amber-400"></i> BMR &amp; TDEE Calories
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white backdrop-blur-md border border-white/15">
+                    <i class="fa-solid fa-sliders text-sky-400"></i> Metric &amp; Imperial Units
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white backdrop-blur-md border border-white/15">
+                    <i class="fa-solid fa-shield-halved text-emerald-400"></i> 100% Free &amp; Private
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Calculator Interactive Workspace Section -->
+<section class="brand-section">
+    <div class="brand-container">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Column: Input Form (5 cols on lg) -->
+            <div class="lg:col-span-5 grid gap-6">
+                <div class="brand-card p-6 md:p-8 site-reveal">
+                    
+                    <!-- Header with Unit Switcher -->
+                    <div class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+                        <div>
+                            <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500">Calculator Settings</p>
+                            <h2 class="text-xl md:text-2xl font-bold mt-1 text-slate-900">Your Measurements</h2>
+                        </div>
+                        <div class="flex p-1 rounded-xl bg-slate-100 border border-slate-200">
+                            <button id="metricBtn" type="button" class="btn btn-primary btn-sm px-3.5 py-1 text-xs font-semibold">Metric</button>
+                            <button id="imperialBtn" type="button" class="btn btn-ghost btn-sm px-3.5 py-1 text-xs text-slate-600 font-semibold">Imperial</button>
+                        </div>
+                    </div>
+
+                    <!-- Health Standard Selector -->
+                    <div class="mb-5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Population Standard</label>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <button type="button" id="stdAsianBtn" class="flex flex-col items-start p-3 rounded-xl border-2 border-primary bg-sky-50/70 text-left transition-all shadow-sm">
+                                <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-flag text-sky-600"></i> Asian / Indian
+                                </span>
+                                <span class="text-[11px] text-slate-500 mt-1">ICMR (Normal: 18.5–22.9)</span>
+                            </button>
+                            <button type="button" id="stdWhoBtn" class="flex flex-col items-start p-3 rounded-xl border border-slate-200 bg-white text-left hover:border-slate-300 transition-all opacity-70">
+                                <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-globe text-slate-500"></i> WHO Global
+                                </span>
+                                <span class="text-[11px] text-slate-500 mt-1">WHO (Normal: 18.5–24.9)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Age & Biological Sex -->
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="form-control">
+                            <label for="age" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Age (Years)</label>
+                            <input type="number" id="age" class="input w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-primary focus:outline-none" value="26" min="14" max="100">
+                        </div>
+                        <div class="form-control">
+                            <label for="gender" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Biological Sex</label>
+                            <select id="gender" class="select w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-primary focus:outline-none">
+                                <option value="male" selected>Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Weight Input -->
+                    <div class="form-control mb-4">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label id="weightLabel" for="weight" class="text-xs font-bold uppercase tracking-wider text-slate-600">Weight (kg)</label>
+                            <span id="weightDisplay" class="text-xs font-semibold text-primary">70 kg</span>
+                        </div>
+                        <input type="number" id="weight" class="input w-full border border-slate-300 rounded-xl px-3 py-2 text-base font-semibold focus:border-primary focus:outline-none" value="70" step="0.5" min="20" max="250">
+                    </div>
+
+                    <!-- Height Inputs (Metric vs Imperial) -->
+                    <div id="heightMetric" class="form-control mb-4">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="heightCm" class="text-xs font-bold uppercase tracking-wider text-slate-600">Height (cm)</label>
+                            <span id="heightDisplay" class="text-xs font-semibold text-primary">175 cm (~5'9")</span>
+                        </div>
+                        <input type="number" id="heightCm" class="input w-full border border-slate-300 rounded-xl px-3 py-2 text-base font-semibold focus:border-primary focus:outline-none" value="175" min="90" max="240">
+                    </div>
+
+                    <div id="heightImperial" class="hidden grid grid-cols-2 gap-4 mb-4">
+                        <div class="form-control">
+                            <label for="heightFt" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Feet</label>
+                            <input type="number" id="heightFt" class="input w-full border border-slate-300 rounded-xl px-3 py-2 text-base font-semibold focus:border-primary focus:outline-none" value="5" min="3" max="8">
+                        </div>
+                        <div class="form-control">
+                            <label for="heightIn" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Inches</label>
+                            <input type="number" id="heightIn" class="input w-full border border-slate-300 rounded-xl px-3 py-2 text-base font-semibold focus:border-primary focus:outline-none" value="9" min="0" max="11">
+                        </div>
+                    </div>
+
+                    <!-- Daily Activity Level (For TDEE & Calories) -->
+                    <div class="form-control mb-5">
+                        <label for="activityLevel" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Workout &amp; Activity Level</label>
+                        <select id="activityLevel" class="select w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-primary focus:outline-none">
+                            <option value="1.2">Sedentary (Little or no workout, desk job)</option>
+                            <option value="1.375">Lightly Active (Gym workout 1–3 days/week)</option>
+                            <option value="1.55" selected>Moderately Active (Gym workout 3–5 days/week)</option>
+                            <option value="1.725">Very Active (Intense training 6–7 days/week)</option>
+                            <option value="1.9">Extremely Active (Athletic training / physical labor)</option>
+                        </select>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="flex items-center gap-3 pt-2">
+                        <button type="button" id="resetBtn" class="btn btn-outline btn-sm flex-1 text-slate-600">
+                            <i class="fa-solid fa-arrow-rotate-left mr-1.5"></i> Reset
+                        </button>
+                        <button type="button" id="calculateBtn" class="btn btn-primary btn-sm flex-2 font-semibold">
+                            <i class="fa-solid fa-bolt mr-1.5"></i> Calculate Live
+                        </button>
+                    </div>
+
+                    <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                        <span class="inline-flex items-center gap-1.5 text-emerald-700 font-medium">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Live auto-calculation active
+                        </span>
+                        <span id="currentStandardNote" class="text-slate-400 font-medium">Asian ICMR Standard Active</span>
+                    </div>
+
+                </div>
+
+                <!-- Professional Disclaimer Card -->
+                <div class="brand-card brand-card-dark p-6 site-reveal">
+                    <div class="flex items-center gap-2 mb-2 text-amber-400">
+                        <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                        <span class="brand-mono text-xs uppercase tracking-wider font-semibold">Trainer Clinical Notice</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">BMI is a screening metric, not a body composition test.</h3>
+                    <p class="text-white/70 text-xs leading-relaxed">
+                        For athletes, weightlifters, and bodybuilders with high muscle mass, BMI may register in the overweight category despite lean body fat. In professional gyms, pair BMI with caliper testing, waist measurements, and personal trainer consultations.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive Results Dashboard (7 cols on lg) -->
+            <div class="lg:col-span-7 grid gap-6">
+                
+                <!-- Main Result Card with Speedometer Gauge -->
+                <div class="brand-card p-6 md:p-8 site-reveal">
+                    
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div>
+                            <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500">Clinical Evaluation</p>
+                            <h2 class="text-xl md:text-2xl font-bold mt-1 text-slate-900">Your Body Mass Index (BMI)</h2>
+                        </div>
+                        <div id="bmiStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            Normal Weight
+                        </div>
+                    </div>
+
+                    <!-- Precision Speedometer Gauge SVG -->
+                    <div class="relative w-full max-w-[360px] mx-auto mt-2 mb-2">
+                        <svg viewBox="0 0 280 165" class="w-full h-auto calculator-gauge select-none overflow-visible" aria-hidden="true">
+                            <defs>
+                                <filter id="needleShadow" x="-30%" y="-30%" width="160%" height="160%">
+                                    <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.28"/>
+                                </filter>
+                                <linearGradient id="needleBody" x1="0%" y1="50%" x2="100%" y2="50%">
+                                    <stop offset="0%" stop-color="#0f172a"/>
+                                    <stop offset="70%" stop-color="#1e293b"/>
+                                    <stop offset="100%" stop-color="#334155"/>
+                                </linearGradient>
+                                <linearGradient id="hubBezel" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#f8fafc"/>
+                                    <stop offset="50%" stop-color="#cbd5e1"/>
+                                    <stop offset="100%" stop-color="#64748b"/>
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Subtle Background Track -->
+                            <path d="M 38,135 A 102,102 0 0,1 242,135" fill="none" stroke="#f1f5f9" stroke-width="16" stroke-linecap="round"/>
+
+                            <!-- 4 Precision Segment Arcs with clean gaps -->
+                            <!-- Blue: Underweight -->
+                            <path d="M 40.1,129.8 A 100,100 0 0,1 65.7,68.1" fill="none" stroke="#38bdf8" stroke-width="11" stroke-linecap="round"/>
+                            <!-- Green: Normal -->
+                            <path d="M 73.1,60.7 A 100,100 0 0,1 134.8,35.1" fill="none" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
+                            <!-- Amber: Overweight -->
+                            <path d="M 145.2,35.1 A 100,100 0 0,1 206.9,60.7" fill="none" stroke="#f59e0b" stroke-width="11" stroke-linecap="round"/>
+                            <!-- Red: Obese -->
+                            <path d="M 214.3,68.1 A 100,100 0 0,1 239.9,129.8" fill="none" stroke="#f43f5e" stroke-width="11" stroke-linecap="round"/>
+
+                            <!-- Inner Radial Ticks -->
+                            <line x1="52" y1="135" x2="59" y2="135" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round"/>
+                            <line x1="78.5" y1="73.5" x2="83.5" y2="78.5" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="140" y1="48" x2="140" y2="55" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="201.5" y1="73.5" x2="196.5" y2="78.5" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="228" y1="135" x2="221" y2="135" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round"/>
+
+                            <!-- Calibrated Boundary Scale Labels -->
+                            <text id="gaugeLabel1" x="20" y="140" fill="#94a3b8" font-size="9.5" font-weight="600" text-anchor="middle">&lt;18.5</text>
+                            <text id="gaugeLabel2" x="54" y="52" fill="#64748b" font-size="10" font-weight="700" text-anchor="middle">18.5</text>
+                            <text id="gaugeLabel3" x="140" y="18" fill="#059669" font-size="11" font-weight="800" text-anchor="middle">23.0</text>
+                            <text id="gaugeLabel4" x="226" y="52" fill="#d97706" font-size="10" font-weight="700" text-anchor="middle">25.0</text>
+                            <text id="gaugeLabel5" x="260" y="140" fill="#e11d48" font-size="9.5" font-weight="600" text-anchor="middle">&ge;30</text>
+
+                            <!-- Base Horizon Line -->
+                            <line x1="30" y1="136" x2="250" y2="136" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+                            <!-- Aerodynamic Tapered Needle (Pivot at 140, 135) -->
+                            <g id="needleGroup" style="transform-origin: 140px 135px; transform: rotate(72deg); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);">
+                                <path d="M 56,135 L 132,131 L 148,133.5 L 149,135 L 148,136.5 L 132,139 Z" 
+                                      fill="url(#needleBody)" 
+                                      filter="url(#needleShadow)"/>
+                            </g>
+
+                            <!-- Multi-tier Precision Metallic Centerpiece -->
+                            <circle cx="140" cy="135" r="13" fill="url(#hubBezel)" filter="url(#needleShadow)"/>
+                            <circle cx="140" cy="135" r="10" fill="#0f172a"/>
+                            <circle cx="140" cy="135" r="7" fill="#1e293b"/>
+                            <circle id="gaugePivotCore" cx="140" cy="135" r="3.5" fill="#10b981"/>
+                        </svg>
+
+                        <!-- Centered Integrated Score Readout -->
+                        <div class="mt-2 text-center">
+                            <span class="brand-mono text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Calculated Score</span>
+                            <div class="flex items-baseline justify-center gap-1.5 mt-0.5">
+                                <span id="bmiValue" class="text-5xl font-black text-slate-900 tracking-tight transition-colors duration-300">22.9</span>
+                                <span class="text-sm font-bold text-slate-400">BMI</span>
+                            </div>
+                            <div class="mt-2 flex items-center justify-center">
+                                <span id="bmiCategoryDetail" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs">
+                                    <i class="fa-solid fa-circle-check text-xs"></i> Healthy &amp; Recommended Range
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Range Legend Bars with Dynamic Active Glow -->
+                    <div class="grid grid-cols-4 gap-2 text-center mt-6 pt-4 border-t border-slate-100">
+                        <div id="cardUnder" class="p-2.5 rounded-xl border border-transparent bg-slate-50 transition-all duration-300">
+                            <div class="text-xs font-bold text-sky-700">Underweight</div>
+                            <div id="legendUnder" class="brand-mono text-[11px] text-slate-500 mt-0.5">&lt; 18.5</div>
+                        </div>
+                        <div id="cardNormal" class="p-2.5 rounded-xl border border-emerald-300 bg-emerald-50/80 shadow-sm transition-all duration-300 ring-2 ring-emerald-500/20">
+                            <div class="text-xs font-bold text-emerald-700">Normal</div>
+                            <div id="legendNormal" class="brand-mono text-[11px] text-emerald-800 font-semibold mt-0.5">18.5 – 22.9</div>
+                        </div>
+                        <div id="cardOver" class="p-2.5 rounded-xl border border-transparent bg-slate-50 transition-all duration-300">
+                            <div class="text-xs font-bold text-amber-700">Overweight</div>
+                            <div id="legendOver" class="brand-mono text-[11px] text-slate-500 mt-0.5">23.0 – 24.9</div>
+                        </div>
+                        <div id="cardObese" class="p-2.5 rounded-xl border border-transparent bg-slate-50 transition-all duration-300">
+                            <div class="text-xs font-bold text-rose-700">Obese</div>
+                            <div id="legendObese" class="brand-mono text-[11px] text-slate-500 mt-0.5">&ge; 25.0</div>
+                        </div>
+                    </div>
+
+                    <!-- 4-Stat Metric Grid: Ideal Weight, BMR, TDEE, Water Intake -->
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
+                        
+                        <!-- Metric 1: Ideal Weight -->
+                        <div class="calculator-stat p-3.5 rounded-xl border border-slate-200 bg-slate-50/80">
+                            <div class="flex items-center gap-1.5 text-slate-500 text-xs font-semibold">
+                                <i class="fa-solid fa-scale-balanced text-primary"></i>
+                                <span>Ideal Weight</span>
+                            </div>
+                            <div id="idealRange" class="text-base font-extrabold text-slate-900 mt-1.5">56.7 – 70.1 kg</div>
+                            <div id="weightDiff" class="text-[11px] font-semibold text-emerald-600 mt-0.5">Optimal Range</div>
+                        </div>
+
+                        <!-- Metric 2: BMR (Resting Metabolism) -->
+                        <div class="calculator-stat p-3.5 rounded-xl border border-slate-200 bg-slate-50/80">
+                            <div class="flex items-center gap-1.5 text-slate-500 text-xs font-semibold">
+                                <i class="fa-solid fa-fire-flame-curved text-amber-500"></i>
+                                <span>Resting (BMR)</span>
+                            </div>
+                            <div id="bmrValue" class="text-base font-extrabold text-slate-900 mt-1.5">1,668 kcal</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">Daily burn at rest</div>
+                        </div>
+
+                        <!-- Metric 3: Maintenance Calories (TDEE) -->
+                        <div class="calculator-stat p-3.5 rounded-xl border border-slate-200 bg-slate-50/80">
+                            <div class="flex items-center gap-1.5 text-slate-500 text-xs font-semibold">
+                                <i class="fa-solid fa-utensils text-emerald-600"></i>
+                                <span>Maintain (TDEE)</span>
+                            </div>
+                            <div id="tdeeValue" class="text-base font-extrabold text-slate-900 mt-1.5">2,585 kcal</div>
+                            <div id="tdeeActivityLabel" class="text-[11px] text-slate-500 mt-0.5">3–5 days workout</div>
+                        </div>
+
+                        <!-- Metric 4: Daily Hydration Target -->
+                        <div class="calculator-stat p-3.5 rounded-xl border border-slate-200 bg-slate-50/80">
+                            <div class="flex items-center gap-1.5 text-slate-500 text-xs font-semibold">
+                                <i class="fa-solid fa-glass-water text-sky-500"></i>
+                                <span>Daily Water</span>
+                            </div>
+                            <div id="waterValue" class="text-base font-extrabold text-slate-900 mt-1.5">2.5 Liters</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">~10 glasses daily</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Dynamic Personalized Action Plan Card (PURE ICONS, ZERO EMOJIS) -->
+                    <div id="actionPlanCard" class="mt-6 p-5 rounded-2xl border border-slate-200 bg-slate-50/70">
+                        <div class="flex items-center gap-2 mb-3 text-slate-900 font-bold text-sm">
+                            <i class="fa-solid fa-clipboard-check text-primary"></i>
+                            <span>Personalized Fitness &amp; Nutrition Roadmap</span>
+                        </div>
+                        <div id="actionPlanContent" class="text-xs leading-relaxed text-slate-700 grid gap-2.5">
+                            <div id="trainingGuidance" class="flex items-start gap-2">
+                                <i class="fa-solid fa-dumbbell text-primary mt-0.5 shrink-0"></i>
+                                <div><strong>Training Strategy:</strong> Maintain progressive overload in the 8–12 rep range with 3–4 strength sessions per week to build functional muscle while keeping body fat in check.</div>
+                            </div>
+                            <div id="nutritionGuidance" class="flex items-start gap-2">
+                                <i class="fa-solid fa-bowl-food text-emerald-600 mt-0.5 shrink-0"></i>
+                                <div><strong>Nutrition &amp; Protein Target:</strong> Aim for 1.6g–2.0g of protein per kg of bodyweight (~110g–140g). Include high-protein staples like Paneer, Soya, Eggs, Lentils, or Whey Protein.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action CTAs -->
+                    <div class="flex flex-col sm:flex-row items-center gap-3 mt-6 pt-2">
+                        <button type="button" onclick="copyAssessment()" class="btn btn-outline btn-sm w-full sm:w-auto flex items-center justify-center gap-2 text-slate-700">
+                            <i class="fa-solid fa-copy"></i>
+                            <span id="copyBtnText">Copy Assessment Summary</span>
+                        </button>
+                        <a id="whatsappShareBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm w-full sm:w-auto flex items-center justify-center gap-2 text-emerald-700 border-emerald-300 hover:bg-emerald-50">
+                            <i class="fa-brands fa-whatsapp text-emerald-600"></i>
+                            Share on WhatsApp
+                        </a>
+                        <a href="{% url 'contact' %}" class="btn btn-primary btn-sm w-full sm:w-auto sm:ml-auto flex items-center justify-center gap-2 font-semibold">
+                            Get Custom Gym Plan
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Gym Owner CTA Banner inside Dashboard -->
+                <div class="brand-card p-6 border-l-4 border-l-primary bg-gradient-to-r from-sky-50/50 to-white site-reveal">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary mb-1.5">
+                                <i class="fa-solid fa-trophy"></i> For Gym Owners &amp; Coaches
+                            </span>
+                            <h3 class="text-base font-bold text-slate-900">Run a Gym or Fitness Studio in India?</h3>
+                            <p class="text-xs text-slate-600 mt-1 max-w-xl leading-relaxed">
+                                ONEXIVAgives you automated WhatsApp fee reminders, member check-in tracking, expense management, and digital workout charts in one clean software.
+                            </p>
+                        </div>
+                        <a href="{% url 'contact' %}" class="btn btn-primary btn-sm whitespace-nowrap font-semibold">
+                            Book Live Demo
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- WHO vs Asian-Indian Comparison Standards Section -->
+<section class="brand-section bg-slate-50/60 border-y border-slate-200/80">
+    <div class="brand-container">
+        <div class="max-w-3xl mb-10 site-reveal">
+            <span class="brand-eyebrow">
+                <i class="fa-solid fa-book-medical"></i>
+                Clinical Reference Guide
+            </span>
+            <h2 class="brand-section-title mt-4">Understanding WHO vs. Asian Indian BMI Cutoffs</h2>
+            <p class="brand-section-copy mt-3">
+                Research published by the World Health Organization and the Indian Council of Medical Research (ICMR) indicates that individuals of South Asian origin have a higher percentage of body fat and higher cardiovascular risk at lower BMI scores.
+            </p>
+        </div>
+
+        <div class="brand-card overflow-hidden shadow-sm site-reveal">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100/90 text-slate-700 font-bold border-b border-slate-200">
+                            <th class="py-3.5 px-5">Classification</th>
+                            <th class="py-3.5 px-5">Asian / Indian Cutoff (ICMR)</th>
+                            <th class="py-3.5 px-5">International Cutoff (WHO)</th>
+                            <th class="py-3.5 px-5">Health &amp; Metabolic Risk</th>
+                            <th class="py-3.5 px-5">Recommended Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-3.5 px-5 font-bold text-sky-700 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Underweight
+                            </td>
+                            <td class="py-3.5 px-5 font-mono">&lt; 18.5</td>
+                            <td class="py-3.5 px-5 font-mono">&lt; 18.5</td>
+                            <td class="py-3.5 px-5 text-slate-600">Nutritional deficiency, lower bone density</td>
+                            <td class="py-3.5 px-5 text-slate-600">Caloric surplus, progressive resistance training</td>
+                        </tr>
+                        <tr class="bg-emerald-50/30 hover:bg-emerald-50/50 transition-colors">
+                            <td class="py-3.5 px-5 font-bold text-emerald-700 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Normal / Healthy
+                            </td>
+                            <td class="py-3.5 px-5 font-mono font-bold text-emerald-800">18.5 – 22.9</td>
+                            <td class="py-3.5 px-5 font-mono text-slate-600">18.5 – 24.9</td>
+                            <td class="py-3.5 px-5 text-emerald-800 font-medium">Optimal health &amp; lowest metabolic risk</td>
+                            <td class="py-3.5 px-5 text-slate-600">Strength maintenance, cardiovascular conditioning</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-3.5 px-5 font-bold text-amber-700 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Overweight
+                            </td>
+                            <td class="py-3.5 px-5 font-mono font-bold text-amber-800">23.0 – 24.9</td>
+                            <td class="py-3.5 px-5 font-mono text-slate-600">25.0 – 29.9</td>
+                            <td class="py-3.5 px-5 text-slate-600">Increased risk of diabetes and hypertension</td>
+                            <td class="py-3.5 px-5 text-slate-600">Moderate caloric deficit, 10,000 steps, lifting</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-3.5 px-5 font-bold text-rose-700 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Obesity (Class I &amp; II)
+                            </td>
+                            <td class="py-3.5 px-5 font-mono font-bold text-rose-800">&ge; 25.0</td>
+                            <td class="py-3.5 px-5 font-mono text-slate-600">&ge; 30.0</td>
+                            <td class="py-3.5 px-5 text-slate-600">High risk of cardiovascular disease, fatty liver</td>
+                            <td class="py-3.5 px-5 text-slate-600">Structured gym regimen, nutritional guidance</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Frequently Asked Questions (Accordion) -->
+<section class="brand-section">
+    <div class="brand-container max-w-4xl">
+        <div class="text-center mb-12 site-reveal">
+            <span class="brand-eyebrow">
+                <i class="fa-solid fa-circle-question"></i>
+                Frequently Asked Questions
+            </span>
+            <h2 class="brand-section-title mt-4">Common Questions About BMI &amp; Body Composition</h2>
+            <p class="brand-section-copy mx-auto mt-3">
+                Expert answers compiled for fitness enthusiasts, personal trainers, and gym owners.
+            </p>
+        </div>
+
+        <div class="grid gap-4 site-reveal">
+            
+            <div class="brand-card p-6 cursor-pointer select-none" onclick="toggleFaq(this)">
+                <div class="flex items-center justify-between gap-4">
+                    <h3 class="text-base font-bold text-slate-900">How is Body Mass Index (BMI) calculated?</h3>
+                    <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-200"></i>
+                </div>
+                <div class="faq-content hidden mt-3 pt-3 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                    BMI is calculated using the formula: <strong>Weight in kilograms divided by Height in meters squared</strong> (kg/m²). For example, a person weighing 70 kg with a height of 1.75 meters has a BMI of 70 / (1.75 × 1.75) = 22.86 kg/m². For imperial measurements, the formula is: [Weight (lbs) × 703] / [Height (inches)²].
+                </div>
+            </div>
+
+            <div class="brand-card p-6 cursor-pointer select-none" onclick="toggleFaq(this)">
+                <div class="flex items-center justify-between gap-4">
+                    <h3 class="text-base font-bold text-slate-900">Why are Indian and Asian BMI thresholds lower than WHO standards?</h3>
+                    <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-200"></i>
+                </div>
+                <div class="faq-content hidden mt-3 pt-3 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                    South Asian individuals naturally have a higher percentage of body fat and visceral fat around internal organs compared to other ethnicities with the same BMI. As a result, the risk for Type-2 Diabetes, cardiovascular disease, and metabolic syndrome increases at a lower threshold (BMI 23.0 instead of 25.0).
+                </div>
+            </div>
+
+            <div class="brand-card p-6 cursor-pointer select-none" onclick="toggleFaq(this)">
+                <div class="flex items-center justify-between gap-4">
+                    <h3 class="text-base font-bold text-slate-900">What is the difference between BMI, BMR, and TDEE?</h3>
+                    <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-200"></i>
+                </div>
+                <div class="faq-content hidden mt-3 pt-3 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                    <strong>BMI (Body Mass Index)</strong> evaluates weight relative to height.<br>
+                    <strong>BMR (Basal Metabolic Rate)</strong> is the baseline calories your body expends purely at rest to sustain brain, heart, and lung function.<br>
+                    <strong>TDEE (Total Daily Energy Expenditure)</strong> is your total daily calorie burn when accounting for your daily physical activity and gym workouts. Eating below TDEE leads to fat loss; eating above TDEE with resistance training promotes muscle hypertrophy.
+                </div>
+            </div>
+
+            <div class="brand-card p-6 cursor-pointer select-none" onclick="toggleFaq(this)">
+                <div class="flex items-center justify-between gap-4">
+                    <h3 class="text-base font-bold text-slate-900">Why can bodybuilders and muscular athletes register as "Overweight" on BMI?</h3>
+                    <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-200"></i>
+                </div>
+                <div class="faq-content hidden mt-3 pt-3 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                    BMI only looks at total body scale weight and cannot distinguish between dense lean muscle tissue and fat. A 5'10" competitive bodybuilder weighing 90 kg with 10% body fat will register a BMI of 28.5 (technically "Overweight"), even though they are extremely lean and physically fit. In strength training communities, skinfold calipers, DEXA scans, and waist-to-height ratio are superior body composition indicators.
+                </div>
+            </div>
+
+            <div class="brand-card p-6 cursor-pointer select-none" onclick="toggleFaq(this)">
+                <div class="flex items-center justify-between gap-4">
+                    <h3 class="text-base font-bold text-slate-900">How should gym owners and personal trainers use this tool?</h3>
+                    <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-200"></i>
+                </div>
+                <div class="faq-content hidden mt-3 pt-3 border-t border-slate-100 text-sm text-slate-600 leading-relaxed">
+                    Fitness trainers can use this calculator as a standard baseline screening during new member consultations. By showing members their estimated daily maintenance calories and suggested weight goals, coaches can build structured workout programs and nutrition plans. ONEXIVAprovides gyms with centralized member tracking so transformation milestones can be celebrated and recorded.
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Final Conversion Strip -->
+<section class="brand-section brand-section-soft border-t border-slate-200">
+    <div class="brand-container text-center max-w-3xl site-reveal">
+        <span class="brand-eyebrow">
+            <i class="fa-solid fa-rocket"></i>
+            Take Action Today
+        </span>
+        <h2 class="brand-section-title mt-4">Ready to reach your ideal fitness and body composition?</h2>
+        <p class="brand-section-copy mx-auto mt-3">
+            Whether you want to drop fat, pack on lean muscle, or digitize your entire gym business with automated WhatsApp billing and attendance, ONEXIVAis built for modern Indian fitness.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
+            <a href="{% url 'contact' %}" class="btn btn-primary px-7 py-3 font-semibold">
+                Book a Free ONEXIVAWalkthrough
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+            <a href="{% url 'features' %}" class="btn btn-outline px-6 py-3">
+                Explore Gym Management Features
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Form Inputs
+        const ageInput = document.getElementById("age");
+        const genderSelect = document.getElementById("gender");
+        const weightInput = document.getElementById("weight");
+        const heightCmInput = document.getElementById("heightCm");
+        const heightFtInput = document.getElementById("heightFt");
+        const heightInInput = document.getElementById("heightIn");
+        const activitySelect = document.getElementById("activityLevel");
+
+        // Units & Standards
+        const metricBtn = document.getElementById("metricBtn");
+        const imperialBtn = document.getElementById("imperialBtn");
+        const stdAsianBtn = document.getElementById("stdAsianBtn");
+        const stdWhoBtn = document.getElementById("stdWhoBtn");
+        const currentStandardNote = document.getElementById("currentStandardNote");
+
+        // Containers
+        const hMetricCont = document.getElementById("heightMetric");
+        const hImperialCont = document.getElementById("heightImperial");
+        const weightLabel = document.getElementById("weightLabel");
+        const weightDisplay = document.getElementById("weightDisplay");
+        const heightDisplay = document.getElementById("heightDisplay");
+
+        // Output Display Elements
+        const bmiValue = document.getElementById("bmiValue");
+        const bmiBadge = document.getElementById("bmiStatusBadge");
+        const bmiCatDetail = document.getElementById("bmiCategoryDetail");
+        const needleGroup = document.getElementById("needleGroup");
+        const idealRange = document.getElementById("idealRange");
+        const weightDiff = document.getElementById("weightDiff");
+        const bmrValue = document.getElementById("bmrValue");
+        const tdeeValue = document.getElementById("tdeeValue");
+        const tdeeActivityLabel = document.getElementById("tdeeActivityLabel");
+        const waterValue = document.getElementById("waterValue");
+        const trainingGuidance = document.getElementById("trainingGuidance");
+        const nutritionGuidance = document.getElementById("nutritionGuidance");
+        const whatsappShareBtn = document.getElementById("whatsappShareBtn");
+
+        // Legends
+        const legendUnder = document.getElementById("legendUnder");
+        const legendNormal = document.getElementById("legendNormal");
+        const legendOver = document.getElementById("legendOver");
+        const legendObese = document.getElementById("legendObese");
+
+        let unitMode = "metric"; // 'metric' or 'imperial'
+        let standardMode = "asian"; // 'asian' or 'who'
+
+        function updateStandardUI() {
+            const gl3 = document.getElementById("gaugeLabel3");
+            const gl4 = document.getElementById("gaugeLabel4");
+            const gl5 = document.getElementById("gaugeLabel5");
+
+            if (standardMode === "asian") {
+                stdAsianBtn.className = "flex flex-col items-start p-3 rounded-xl border-2 border-primary bg-sky-50/70 text-left transition-all shadow-sm";
+                stdWhoBtn.className = "flex flex-col items-start p-3 rounded-xl border border-slate-200 bg-white text-left hover:border-slate-300 transition-all opacity-70";
+                currentStandardNote.textContent = "Asian ICMR Standard Active";
+                legendUnder.textContent = "< 18.5";
+                legendNormal.textContent = "18.5 – 22.9";
+                legendOver.textContent = "23.0 – 24.9";
+                legendObese.textContent = "≥ 25.0";
+                if (gl3) gl3.textContent = "23.0";
+                if (gl4) gl4.textContent = "25.0";
+                if (gl5) gl5.textContent = "≥30";
+            } else {
+                stdWhoBtn.className = "flex flex-col items-start p-3 rounded-xl border-2 border-primary bg-sky-50/70 text-left transition-all shadow-sm";
+                stdAsianBtn.className = "flex flex-col items-start p-3 rounded-xl border border-slate-200 bg-white text-left hover:border-slate-300 transition-all opacity-70";
+                currentStandardNote.textContent = "WHO International Standard Active";
+                legendUnder.textContent = "< 18.5";
+                legendNormal.textContent = "18.5 – 24.9";
+                legendOver.textContent = "25.0 – 29.9";
+                legendObese.textContent = "≥ 30.0";
+                if (gl3) gl3.textContent = "25.0";
+                if (gl4) gl4.textContent = "30.0";
+                if (gl5) gl5.textContent = "≥35";
+            }
+        }
+
+        function calculate() {
+            let weightKg = parseFloat(weightInput.value);
+            let heightCm = parseFloat(heightCmInput.value);
+            const age = parseInt(ageInput.value) || 26;
+            const gender = genderSelect.value;
+            const activityMultiplier = parseFloat(activitySelect.value) || 1.55;
+
+            if (unitMode === "imperial") {
+                const weightLbs = parseFloat(weightInput.value);
+                weightKg = weightLbs * 0.453592;
+                const feet = parseFloat(heightFtInput.value) || 5;
+                const inches = parseFloat(heightInInput.value) || 9;
+                heightCm = ((feet * 12) + inches) * 2.54;
+            }
+
+            if (isNaN(weightKg) || isNaN(heightCm) || weightKg <= 0 || heightCm <= 50) {
+                return;
+            }
+
+            const heightM = heightCm / 100;
+            const bmi = weightKg / (heightM * heightM);
+
+            // Update Label Displays
+            if (unitMode === "metric") {
+                weightDisplay.textContent = `${weightKg.toFixed(1)} kg`;
+                const ftExact = (heightCm / 30.48);
+                const ft = Math.floor(ftExact);
+                const inches = Math.round((ftExact - ft) * 12);
+                heightDisplay.textContent = `${heightCm.toFixed(0)} cm (~${ft}'${inches}")`;
+            } else {
+                weightDisplay.textContent = `${parseFloat(weightInput.value).toFixed(1)} lbs`;
+            }
+
+            // Normal thresholds based on standard
+            const minNormalBmi = 18.5;
+            const maxNormalBmi = standardMode === "asian" ? 22.9 : 24.9;
+            const overweightBmi = standardMode === "asian" ? 24.9 : 29.9;
+
+            let category = "Normal";
+            let categoryDetail = "Healthy & Recommended Range";
+            let catIcon = "fa-circle-check";
+            let colorHex = "#10b981";
+            let badgeBg = "bg-emerald-50 text-emerald-700 border-emerald-200";
+            let badgeDot = "bg-emerald-500";
+            let gaugeAngle = 65;
+
+            const cUnder = document.getElementById("cardUnder");
+            const cNormal = document.getElementById("cardNormal");
+            const cOver = document.getElementById("cardOver");
+            const cObese = document.getElementById("cardObese");
+
+            // Reset benchmark pill cards
+            [cUnder, cNormal, cOver, cObese].forEach(c => {
+                if (c) c.className = "p-2.5 rounded-xl border border-transparent bg-slate-50 opacity-60 transition-all duration-300";
+            });
+
+            // Needle angle mapping: 0 to 180 degrees
+            if (bmi < 18.5) {
+                category = "Underweight";
+                categoryDetail = "Below Recommended Weight Range";
+                catIcon = "fa-circle-info";
+                colorHex = "#0284c7";
+                badgeBg = "bg-sky-50 text-sky-700 border-sky-200";
+                badgeDot = "bg-sky-500";
+                const ratio = Math.max(0, Math.min(1, (bmi - 12) / (18.5 - 12)));
+                gaugeAngle = ratio * 45;
+                if (cUnder) cUnder.className = "p-2.5 rounded-xl border border-sky-300 bg-sky-50/90 shadow-sm transition-all duration-300 ring-2 ring-sky-500/20";
+            } else if (bmi <= maxNormalBmi) {
+                category = "Normal Weight";
+                categoryDetail = "Healthy & Optimal Weight Range";
+                catIcon = "fa-circle-check";
+                colorHex = "#059669";
+                badgeBg = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                badgeDot = "bg-emerald-500";
+                const ratio = Math.max(0, Math.min(1, (bmi - 18.5) / (maxNormalBmi - 18.5)));
+                gaugeAngle = 45 + (ratio * 45);
+                if (cNormal) cNormal.className = "p-2.5 rounded-xl border border-emerald-300 bg-emerald-50/90 shadow-sm transition-all duration-300 ring-2 ring-emerald-500/20";
+            } else if (bmi <= overweightBmi) {
+                category = "Overweight";
+                categoryDetail = "Moderately Above Optimal Range";
+                catIcon = "fa-triangle-exclamation";
+                colorHex = "#d97706";
+                badgeBg = "bg-amber-50 text-amber-700 border-amber-200";
+                badgeDot = "bg-amber-500";
+                const ratio = Math.max(0, Math.min(1, (bmi - maxNormalBmi) / (overweightBmi - maxNormalBmi)));
+                gaugeAngle = 90 + (ratio * 45);
+                if (cOver) cOver.className = "p-2.5 rounded-xl border border-amber-300 bg-amber-50/90 shadow-sm transition-all duration-300 ring-2 ring-amber-500/20";
+            } else {
+                category = "Obesity Range";
+                categoryDetail = "High Cardiovascular & Metabolic Risk";
+                catIcon = "fa-circle-exclamation";
+                colorHex = "#e11d48";
+                badgeBg = "bg-rose-50 text-rose-700 border-rose-200";
+                badgeDot = "bg-rose-500";
+                const ratio = Math.max(0, Math.min(1, (bmi - overweightBmi) / (standardMode === "asian" ? 10 : 15)));
+                gaugeAngle = 135 + (ratio * 45);
+                if (cObese) cObese.className = "p-2.5 rounded-xl border border-rose-300 bg-rose-50/90 shadow-sm transition-all duration-300 ring-2 ring-rose-500/20";
+            }
+
+            // Update UI elements
+            bmiValue.textContent = bmi.toFixed(1);
+            bmiValue.style.color = colorHex;
+            bmiCatDetail.className = `inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold ${badgeBg} shadow-xs`;
+            bmiCatDetail.innerHTML = `<i class="fa-solid ${catIcon} text-xs"></i> ${categoryDetail}`;
+            bmiBadge.className = `inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${badgeBg} shadow-sm`;
+            bmiBadge.innerHTML = `<span class="w-2 h-2 rounded-full ${badgeDot}"></span> ${category}`;
+
+            const pivotCore = document.getElementById("gaugePivotCore");
+            if (pivotCore) pivotCore.setAttribute("fill", colorHex);
+
+            needleGroup.style.transform = `rotate(${Math.min(180, Math.max(0, gaugeAngle))}deg)`;
+
+            // Ideal Weight Range Calculation
+            const minIdealKg = minNormalBmi * (heightM * heightM);
+            const maxIdealKg = maxNormalBmi * (heightM * heightM);
+
+            if (unitMode === "metric") {
+                idealRange.textContent = `${minIdealKg.toFixed(1)} – ${maxIdealKg.toFixed(1)} kg`;
+                if (weightKg < minIdealKg) {
+                    const diff = (minIdealKg - weightKg).toFixed(1);
+                    weightDiff.textContent = `Target: +${diff} kg gain`;
+                    weightDiff.className = "text-[11px] font-semibold text-sky-600 mt-0.5";
+                } else if (weightKg > maxIdealKg) {
+                    const diff = (weightKg - maxIdealKg).toFixed(1);
+                    weightDiff.textContent = `Target: -${diff} kg loss`;
+                    weightDiff.className = "text-[11px] font-semibold text-amber-600 mt-0.5";
+                } else {
+                    weightDiff.textContent = "Optimal Target Achieved";
+                    weightDiff.className = "text-[11px] font-semibold text-emerald-600 mt-0.5";
+                }
+            } else {
+                const minIdealLbs = minIdealKg / 0.453592;
+                const maxIdealLbs = maxIdealKg / 0.453592;
+                const weightLbs = parseFloat(weightInput.value);
+                idealRange.textContent = `${minIdealLbs.toFixed(1)} – ${maxIdealLbs.toFixed(1)} lbs`;
+                if (weightLbs < minIdealLbs) {
+                    const diff = (minIdealLbs - weightLbs).toFixed(1);
+                    weightDiff.textContent = `Target: +${diff} lbs gain`;
+                    weightDiff.className = "text-[11px] font-semibold text-sky-600 mt-0.5";
+                } else if (weightLbs > maxIdealLbs) {
+                    const diff = (weightLbs - maxIdealLbs).toFixed(1);
+                    weightDiff.textContent = `Target: -${diff} lbs loss`;
+                    weightDiff.className = "text-[11px] font-semibold text-amber-600 mt-0.5";
+                } else {
+                    weightDiff.textContent = "Optimal Target Achieved";
+                    weightDiff.className = "text-[11px] font-semibold text-emerald-600 mt-0.5";
+                }
+            }
+
+            // BMR (Mifflin-St Jeor formula)
+            let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
+            bmr = gender === "male" ? bmr + 5 : bmr - 161;
+            bmr = Math.round(Math.max(800, bmr));
+            bmrValue.textContent = `${bmr.toLocaleString()} kcal`;
+
+            // TDEE (Maintenance Calories)
+            const tdee = Math.round(bmr * activityMultiplier);
+            tdeeValue.textContent = `${tdee.toLocaleString()} kcal`;
+            const actLabel = activitySelect.options[activitySelect.selectedIndex].text.split('(')[0].trim();
+            tdeeActivityLabel.textContent = `${actLabel} target`;
+
+            // Daily Hydration (35ml per kg)
+            const waterLiters = ((weightKg * 35) / 1000).toFixed(1);
+            waterValue.textContent = `${waterLiters} Liters`;
+
+            // Personalized Action Guidance (NO EMOJIS - PURE FONTAWESOME ICONS)
+            if (bmi < 18.5) {
+                trainingGuidance.innerHTML = '<i class="fa-solid fa-dumbbell text-primary mt-0.5 shrink-0"></i><div><strong>Training Strategy:</strong> Prioritize compound resistance exercises (Squats, Bench Press, Deadlifts, Overhead Press) 3–4x weekly. Avoid excessive high-intensity cardio to preserve calories.</div>';
+                nutritionGuidance.innerHTML = `<i class="fa-solid fa-bowl-food text-emerald-600 mt-0.5 shrink-0"></i><div><strong>Nutrition &amp; Protein Target:</strong> Maintain a gentle caloric surplus (~${(tdee + 350).toLocaleString()} kcal/day). Target 1.8g–2.2g protein per kg (~${Math.round(weightKg * 2)}g) with nutrient-dense foods (Paneer, Peanut Butter, Nuts, Soya, Chicken, Whey).</div>`;
+            } else if (bmi <= maxNormalBmi) {
+                trainingGuidance.innerHTML = '<i class="fa-solid fa-dumbbell text-primary mt-0.5 shrink-0"></i><div><strong>Training Strategy:</strong> Maintain progressive overload across compound and hypertrophy movements. Aim for 4 strength sessions plus 2 functional cardio or mobility days.</div>';
+                nutritionGuidance.innerHTML = `<i class="fa-solid fa-bowl-food text-emerald-600 mt-0.5 shrink-0"></i><div><strong>Nutrition &amp; Protein Target:</strong> Eat at your maintenance level (~${tdee.toLocaleString()} kcal/day). Prioritize 1.6g–2.0g protein/kg (~${Math.round(weightKg * 1.8)}g) to support lean muscle recomposition and recovery.</div>`;
+            } else if (bmi <= overweightBmi) {
+                trainingGuidance.innerHTML = '<i class="fa-solid fa-dumbbell text-primary mt-0.5 shrink-0"></i><div><strong>Training Strategy:</strong> Combine full-body strength training 4x/week with daily NEAT movement (aim for 8,000–10,000 daily steps) to maximize sustainable fat oxidation.</div>';
+                nutritionGuidance.innerHTML = `<i class="fa-solid fa-bowl-food text-emerald-600 mt-0.5 shrink-0"></i><div><strong>Nutrition &amp; Protein Target:</strong> Aim for a moderate caloric deficit of 350–500 kcal (~${(tdee - 400).toLocaleString()} kcal/day). Keep protein high (~${Math.round(weightKg * 1.8)}g) to prevent muscle loss while shedding fat.</div>`;
+            } else {
+                trainingGuidance.innerHTML = '<i class="fa-solid fa-dumbbell text-primary mt-0.5 shrink-0"></i><div><strong>Training Strategy:</strong> Begin with joint-friendly resistance training, incline walking, rowing, or swimming. Structure consistent 40-minute sessions without high-impact joint strain.</div>';
+                nutritionGuidance.innerHTML = `<i class="fa-solid fa-bowl-food text-emerald-600 mt-0.5 shrink-0"></i><div><strong>Nutrition &amp; Protein Target:</strong> Structure a sustainable caloric deficit (~${(tdee - 500).toLocaleString()} kcal/day). Focus on fiber-rich vegetables, lean protein sources, and eliminating sugary beverages.</div>`;
+            }
+
+            // WhatsApp Share URL Builder (Clean text format, no emojis)
+            const shareMsg = encodeURIComponent(
+                `ONEXIVAFitness Assessment Summary:
+` +
+                `- BMI: ${bmi.toFixed(1)} (${category})
+` +
+                `- Standard: ${standardMode === 'asian' ? 'Asian / Indian ICMR' : 'WHO Global'}
+` +
+                `- Weight: ${weightKg.toFixed(1)} kg | Height: ${heightCm.toFixed(0)} cm
+` +
+                `- Ideal Range: ${minIdealKg.toFixed(1)} – ${maxIdealKg.toFixed(1)} kg
+` +
+                `- BMR: ${bmr.toLocaleString()} kcal | Maintenance (TDEE): ${tdee.toLocaleString()} kcal
+` +
+                `- Water Goal: ${waterLiters} L/day
+
+` +
+                `Calculate yours free at: https://fitstack.nextgenapplication.com/bmi-calculator/`
+            );
+            whatsappShareBtn.href = `https://wa.me/?text=${shareMsg}`;
+        }
+
+        // Unit Mode Switchers
+        metricBtn.addEventListener("click", () => {
+            if (unitMode === "metric") return;
+            unitMode = "metric";
+            metricBtn.className = "btn btn-primary btn-sm px-3.5 py-1 text-xs font-semibold";
+            imperialBtn.className = "btn btn-ghost btn-sm px-3.5 py-1 text-xs text-slate-600 font-semibold";
+            hMetricCont.classList.remove("hidden");
+            hImperialCont.classList.add("hidden");
+            weightLabel.textContent = "Weight (kg)";
+            
+            const curLbs = parseFloat(weightInput.value) || 154;
+            weightInput.value = (curLbs * 0.453592).toFixed(1);
+            weightInput.min = "20";
+            weightInput.max = "250";
+            calculate();
+        });
+
+        imperialBtn.addEventListener("click", () => {
+            if (unitMode === "imperial") return;
+            unitMode = "imperial";
+            imperialBtn.className = "btn btn-primary btn-sm px-3.5 py-1 text-xs font-semibold";
+            metricBtn.className = "btn btn-ghost btn-sm px-3.5 py-1 text-xs text-slate-600 font-semibold";
+            hMetricCont.classList.add("hidden");
+            hImperialCont.classList.remove("hidden");
+            weightLabel.textContent = "Weight (lbs)";
+            
+            const curKg = parseFloat(weightInput.value) || 70;
+            weightInput.value = (curKg / 0.453592).toFixed(1);
+            weightInput.min = "45";
+            weightInput.max = "550";
+
+            const curCm = parseFloat(heightCmInput.value) || 175;
+            const totalInches = curCm / 2.54;
+            heightFtInput.value = Math.floor(totalInches / 12);
+            heightInInput.value = Math.round(totalInches % 12);
+            calculate();
+        });
+
+        // Standard Switchers
+        stdAsianBtn.addEventListener("click", () => {
+            standardMode = "asian";
+            updateStandardUI();
+            calculate();
+        });
+
+        stdWhoBtn.addEventListener("click", () => {
+            standardMode = "who";
+            updateStandardUI();
+            calculate();
+        });
+
+        // Reset Button
+        document.getElementById("resetBtn").addEventListener("click", () => {
+            ageInput.value = "26";
+            genderSelect.value = "male";
+            weightInput.value = unitMode === "metric" ? "70" : "154";
+            heightCmInput.value = "175";
+            heightFtInput.value = "5";
+            heightInInput.value = "9";
+            activitySelect.value = "1.55";
+            standardMode = "asian";
+            updateStandardUI();
+            calculate();
+        });
+
+        document.getElementById("calculateBtn").addEventListener("click", calculate);
+
+        // Input change listeners
+        [ageInput, genderSelect, weightInput, heightCmInput, heightFtInput, heightInInput, activitySelect].forEach(input => {
+            input?.addEventListener("input", calculate);
+            input?.addEventListener("change", calculate);
+        });
+
+        // Initial render
+        updateStandardUI();
+        calculate();
+    });
+
+    // Copy Assessment to Clipboard
+    function copyAssessment() {
+        const bmi = document.getElementById("bmiValue").textContent;
+        const badge = document.getElementById("bmiStatusBadge").textContent.trim();
+        const ideal = document.getElementById("idealRange").textContent;
+        const bmr = document.getElementById("bmrValue").textContent;
+        const tdee = document.getElementById("tdeeValue").textContent;
+        const water = document.getElementById("waterValue").textContent;
+
+        const summaryText = 
+            `ONEXIVAFitness & Metabolic Assessment:
+` +
+            `- BMI: ${bmi} (${badge})
+` +
+            `- Ideal Weight Range: ${ideal}
+` +
+            `- Resting Metabolism (BMR): ${bmr}
+` +
+            `- Daily Maintenance Calories (TDEE): ${tdee}
+` +
+            `- Recommended Daily Water: ${water}
+
+` +
+            `Calculated at ONEXIVA: https://fitstack.nextgenapplication.com/bmi-calculator/`;
+
+        navigator.clipboard.writeText(summaryText).then(() => {
+            const btnText = document.getElementById("copyBtnText");
+            const original = btnText.textContent;
+            btnText.textContent = "Copied to Clipboard!";
+            setTimeout(() => {
+                btnText.textContent = original;
+            }, 2500);
+        }).catch(() => {
+            alert("Assessment copied:\n\n" + summaryText);
+        });
+    }
+
+    // FAQ Accordion Toggle
+    function toggleFaq(card) {
+        const content = card.querySelector(".faq-content");
+        const icon = card.querySelector("i.fa-chevron-down");
+        const isHidden = content.classList.contains("hidden");
+
+        document.querySelectorAll(".faq-content").forEach(el => el.classList.add("hidden"));
+        document.querySelectorAll(".fa-chevron-down").forEach(el => el.style.transform = "rotate(0deg)");
+
+        if (isHidden) {
+            content.classList.remove("hidden");
+            if (icon) icon.style.transform = "rotate(180deg)";
+        }
+    }
+</script>
+{% endblock %}

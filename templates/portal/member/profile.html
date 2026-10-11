@@ -1,0 +1,1316 @@
+{% extends 'base.html' %}
+{% load static humanize custom_tags %}
+
+{% block title %}My Profile & ID Pass - {{ member.name }}{% endblock %}
+
+{% block content %}
+<style>
+/* ==========================================================================
+   VERTICAL PHONE-VIEW SMART PASS DESIGN SYSTEM (MULTI-THEME)
+   Modeled after modern digital boarding passes & standee QR posters
+   ========================================================================== */
+.pvc-id-card-wrapper {
+  perspective: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 4px 0;
+}
+
+/* Vertical Smartphone Card Geometry (Reference: Mobile Wallet / Standee Format) */
+.phone-smart-pass {
+  width: 350px;
+  max-width: 100%;
+  box-sizing: border-box;
+  border-radius: 22px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.3s ease;
+  transform-style: preserve-3d;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* -------------------------------------------------------------
+   THEME 1: MINIMAL WHITE (With Official Geometric ID Card Background)
+   ------------------------------------------------------------- */
+.phone-smart-pass.theme-corporate-white {
+  background-color: #f0f7ff;
+  background-image: url('{% if id_card_bg_data_uri %}{{ id_card_bg_data_uri }}{% else %}{% static "images/id_card_bg.png" %}{% endif %}');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #0f172a;
+  border: 1px solid #bfdbfe;
+  box-shadow: 
+    0 24px 55px -12px rgba(15, 23, 42, 0.16),
+    0 8px 18px -4px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.phone-smart-pass.theme-corporate-white:hover {
+  box-shadow: 
+    0 32px 65px -12px rgba(15, 23, 42, 0.22),
+    0 12px 24px -4px rgba(15, 23, 42, 0.08);
+}
+.phone-smart-pass.theme-corporate-white .pass-brand-title { color: #0f172a; }
+.phone-smart-pass.theme-corporate-white .pass-brand-sub { color: #2563eb; }
+.phone-smart-pass.theme-corporate-white .pass-divider { border-color: rgba(37, 99, 235, 0.15); }
+.phone-smart-pass.theme-corporate-white .pass-member-card { 
+  background: rgba(255, 255, 255, 0.82); 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.06);
+}
+.phone-smart-pass.theme-corporate-white .pass-id-pill { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+.phone-smart-pass.theme-corporate-white .pass-qr-frame { 
+  background: #ffffff; 
+  border: 1.5px solid rgba(37, 99, 235, 0.22); 
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12); 
+}
+.phone-smart-pass.theme-corporate-white .reticle-bracket { border-color: #2563eb; }
+.phone-smart-pass.theme-corporate-white .pass-scan-line { background: rgba(37, 99, 235, 0.18); }
+.phone-smart-pass.theme-corporate-white .pass-scan-text { color: #1e40af; }
+.phone-smart-pass.theme-corporate-white .pass-credential-box { 
+  background: rgba(255, 255, 255, 0.82); 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.05);
+}
+.phone-smart-pass.theme-corporate-white .cred-label { color: #64748b; }
+.phone-smart-pass.theme-corporate-white .cred-val { color: #0f172a; }
+.phone-smart-pass.theme-corporate-white .feature-item { color: #475569; }
+.phone-smart-pass.theme-corporate-white .feature-item i { color: #2563eb; }
+.phone-smart-pass.theme-corporate-white .pass-footer-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+  color: #ffffff;
+}
+
+/* -------------------------------------------------------------
+   THEME 2: OBSIDIAN TITANIUM (Stealth Luxury / Equinox Aesthetic)
+   ------------------------------------------------------------- */
+.phone-smart-pass.theme-obsidian-titanium {
+  background: linear-gradient(160deg, #131a26 0%, #080c14 100%);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 24px 55px -12px rgba(0, 0, 0, 0.7),
+    0 10px 22px -4px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.phone-smart-pass.theme-obsidian-titanium:hover {
+  box-shadow: 
+    0 32px 65px -12px rgba(0, 0, 0, 0.85),
+    0 14px 28px -4px rgba(0, 0, 0, 0.6);
+}
+.phone-smart-pass.theme-obsidian-titanium .pass-brand-title { color: #ffffff; }
+.phone-smart-pass.theme-obsidian-titanium .pass-brand-sub { color: #cbd5e1; }
+.phone-smart-pass.theme-obsidian-titanium .pass-divider { border-color: rgba(255, 255, 255, 0.08); }
+.phone-smart-pass.theme-obsidian-titanium .pass-member-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
+.phone-smart-pass.theme-obsidian-titanium .pass-id-pill { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #f8fafc; }
+.phone-smart-pass.theme-obsidian-titanium .pass-qr-frame { background: #ffffff; border: 1.5px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); }
+.phone-smart-pass.theme-obsidian-titanium .reticle-bracket { border-color: #cbd5e1; }
+.phone-smart-pass.theme-obsidian-titanium .pass-scan-line { background: rgba(255, 255, 255, 0.12); }
+.phone-smart-pass.theme-obsidian-titanium .pass-scan-text { color: #cbd5e1; }
+.phone-smart-pass.theme-obsidian-titanium .pass-credential-box { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); }
+.phone-smart-pass.theme-obsidian-titanium .cred-label { color: #94a3b8; }
+.phone-smart-pass.theme-obsidian-titanium .cred-val { color: #ffffff; }
+.phone-smart-pass.theme-obsidian-titanium .feature-item { color: #94a3b8; }
+.phone-smart-pass.theme-obsidian-titanium .feature-item i { color: #cbd5e1; }
+.phone-smart-pass.theme-obsidian-titanium .pass-footer-banner {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #ffffff;
+}
+
+/* -------------------------------------------------------------
+   THEME 3: EXECUTIVE NAVY (Athletic Corporate / Royal Midnight)
+   ------------------------------------------------------------- */
+.phone-smart-pass.theme-executive-navy {
+  background: linear-gradient(160deg, #0f1c3f 0%, #070d1e 100%);
+  color: #f8fafc;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 
+    0 24px 55px -12px rgba(7, 13, 30, 0.75),
+    0 10px 22px -4px rgba(7, 13, 30, 0.5),
+    inset 0 1px 0 rgba(147, 197, 253, 0.18);
+}
+.phone-smart-pass.theme-executive-navy:hover {
+  box-shadow: 
+    0 32px 65px -12px rgba(7, 13, 30, 0.9),
+    0 14px 28px -4px rgba(7, 13, 30, 0.6);
+}
+.phone-smart-pass.theme-executive-navy .pass-brand-title { color: #ffffff; }
+.phone-smart-pass.theme-executive-navy .pass-brand-sub { color: #38bdf8; }
+.phone-smart-pass.theme-executive-navy .pass-divider { border-color: rgba(255, 255, 255, 0.08); }
+.phone-smart-pass.theme-executive-navy .pass-member-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(59, 130, 246, 0.25); }
+.phone-smart-pass.theme-executive-navy .pass-id-pill { background: rgba(37, 99, 235, 0.22); border: 1px solid rgba(96, 165, 250, 0.45); color: #bfdbfe; }
+.phone-smart-pass.theme-executive-navy .pass-qr-frame { background: #ffffff; border: 1.5px solid rgba(56, 189, 248, 0.35); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45); }
+.phone-smart-pass.theme-executive-navy .reticle-bracket { border-color: #38bdf8; }
+.phone-smart-pass.theme-executive-navy .pass-scan-line { background: rgba(59, 130, 246, 0.25); }
+.phone-smart-pass.theme-executive-navy .pass-scan-text { color: #38bdf8; }
+.phone-smart-pass.theme-executive-navy .pass-credential-box { background: rgba(15, 28, 63, 0.6); border: 1px solid rgba(59, 130, 246, 0.22); }
+.phone-smart-pass.theme-executive-navy .cred-label { color: #93c5fd; }
+.phone-smart-pass.theme-executive-navy .cred-val { color: #ffffff; }
+.phone-smart-pass.theme-executive-navy .feature-item { color: #93c5fd; }
+.phone-smart-pass.theme-executive-navy .feature-item i { color: #38bdf8; }
+.phone-smart-pass.theme-executive-navy .pass-footer-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  color: #ffffff;
+}
+
+/* -------------------------------------------------------------
+   COMMON PHONE PASS COMPONENT STYLES
+   ------------------------------------------------------------- */
+.pass-brand-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+.pass-brand-sub {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+.pass-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.pass-status-badge.status-active {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid #10b981;
+}
+.pass-status-badge.status-expired {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid #f87171;
+}
+
+/* Member Avatar & Identity */
+.pass-avatar-img {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+.pass-avatar-verified {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.58rem;
+}
+.pass-member-name {
+  font-size: 1.18rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.pass-id-pill {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 5px;
+  display: inline-block;
+  letter-spacing: 0.03em;
+}
+.pass-member-meta {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* Big Central QR Code Reticle Frame */
+.pass-qr-frame {
+  position: relative;
+  display: inline-block;
+  padding: 8px;
+  border-radius: 14px;
+}
+.pass-qr-image {
+  width: 148px;
+  height: 148px;
+  display: block;
+  border-radius: 6px;
+}
+.reticle-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+}
+.bracket-tl { top: -3px; left: -3px; border-top: 3px solid; border-left: 3px solid; border-top-left-radius: 4px; }
+.bracket-tr { top: -3px; right: -3px; border-top: 3px solid; border-right: 3px solid; border-top-right-radius: 4px; }
+.bracket-bl { bottom: -3px; left: -3px; border-bottom: 3px solid; border-left: 3px solid; border-bottom-left-radius: 4px; }
+.bracket-br { bottom: -3px; right: -3px; border-bottom: 3px solid; border-right: 3px solid; border-bottom-right-radius: 4px; }
+
+/* Scan Instruction Divider Line (Like Reference Image) */
+.pass-scan-instruction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+.pass-scan-instruction .line {
+  height: 1px;
+  flex: 1;
+}
+.pass-scan-instruction .text {
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Credential Capsule (Plan & Valid Thru) */
+.pass-credential-box {
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+.cred-label {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.cred-val {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* 4 Trust Feature Icons (Exact Match to Reference Image!) */
+.pass-features-row {
+  padding: 6px 0;
+}
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.feature-item i {
+  font-size: 1rem;
+}
+
+/* Active Beacon Pulse Dot */
+.pass-pulse-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  box-shadow: 0 0 5px currentColor;
+  animation: passPulseAnim 2s infinite ease-in-out;
+  vertical-align: middle;
+}
+@keyframes passPulseAnim {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* Theme Selector Bar - Clean, Robust Segmented Control (Zero Overlap) */
+.pass-theme-selector-wrapper {
+  margin: 0 auto 16px auto;
+  text-align: center;
+}
+.pass-theme-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin-right: 8px;
+  display: inline-flex;
+  align-items: center;
+}
+.pass-theme-pill-track {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
+}
+.pass-theme-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1.2;
+  outline: none;
+  user-select: none;
+}
+.pass-theme-tab:hover {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Individual Active Theme Colors */
+#themeBtnWhite.active {
+  background: #ffffff !important;
+  color: #1e3a8a !important;
+  border: 1px solid #2563eb !important;
+  font-weight: 800;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.22) !important;
+}
+#themeBtnWhite.active i {
+  color: #2563eb !important;
+}
+
+#themeBtnObsidian.active {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  font-weight: 800;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.45) !important;
+}
+#themeBtnObsidian.active i {
+  color: #cbd5e1 !important;
+}
+
+#themeBtnNavy.active {
+  background: linear-gradient(135deg, #070d1e 0%, #1e3a8a 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid #3b82f6 !important;
+  font-weight: 800;
+  box-shadow: 0 3px 12px rgba(30, 58, 138, 0.5) !important;
+}
+#themeBtnNavy.active i {
+  color: #38bdf8 !important;
+}
+@media (max-width: 576px) {
+  .pass-theme-label {
+    display: block;
+    margin-bottom: 6px;
+    margin-right: 0;
+  }
+  .pass-theme-pill-track {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .pass-theme-tab {
+    padding: 6px 8px;
+    font-size: 0.67rem;
+    flex: 1;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+  .sidebar, 
+  .navbar, 
+  .footer, 
+  .dashboard-hero-header, 
+  #profileHeroCard,
+  #personalInfoCardCol, 
+  .print-hide {
+    display: none !important;
+  }
+  .page-body-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+  .gym-dashboard-root {
+    padding: 0 !important;
+  }
+  #officialMemberIdCard {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    page-break-inside: avoid;
+    margin: 20px auto !important;
+    max-width: 360px !important;
+  }
+}
+</style>
+
+<div class="container-fluid gym-dashboard-root px-3 px-md-4 py-3">
+
+  <!-- DJANGO NOTIFICATION MESSAGES -->
+  {% if messages %}
+    <div class="mb-3 print-hide">
+      {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% else %}info{% endif %} alert-dismissible fade show rounded-pill px-4 py-2.5 shadow-sm d-flex align-items-center justify-content-between mb-2" role="alert">
+          <div>
+            {% if message.tags == 'success' %}
+              <i class="fas fa-check-circle mr-2 text-success"></i>
+            {% elif message.tags == 'error' %}
+              <i class="fas fa-exclamation-circle mr-2 text-danger"></i>
+            {% else %}
+              <i class="fas fa-info-circle mr-2 text-info"></i>
+            {% endif %}
+            <span class="font-weight-medium text-dark">{{ message }}</span>
+          </div>
+          <button type="button" class="close p-0 m-0 ml-3" data-dismiss="alert" aria-label="Close" style="line-height: 1; outline: none;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- HERO / PAGE HEADER -->
+  <div class="dashboard-hero-header">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+        <span class="badge-soft badge-soft-primary">
+          <i class="fas fa-user-circle mr-1"></i> Member Profile
+        </span>
+        <span class="badge-soft badge-soft-info">
+          <i class="fas fa-building mr-1"></i> {{ gym.name }}
+        </span>
+      </div>
+      <h2 class="dashboard-hero-title">My Profile & ID Pass</h2>
+      <p class="dashboard-hero-subtitle">Manage personal profile details, official scannable ID pass, and account security</p>
+    </div>
+    <div class="d-flex align-items-center gap-2 flex-wrap mt-2 mt-md-0">
+      <a href="{% url 'member_portal:dashboard' %}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill">
+        <i class="fas fa-arrow-left mr-1"></i> Dashboard
+      </a>
+      <a href="{% url 'member_portal:progress' %}" class="btn btn-outline-primary btn-sm px-3 rounded-pill ml-1">
+        <i class="fas fa-chart-line mr-1"></i> Workout Progress
+      </a>
+      <button type="button" class="btn btn-outline-danger btn-sm px-3 rounded-pill ml-1" data-toggle="modal" data-target="#changePasswordModal">
+        <i class="fas fa-key mr-1"></i> Change Password
+      </button>
+      <button type="button" class="btn btn-primary btn-sm px-3 rounded-pill shadow-sm ml-1" onclick="window.print();">
+        <i class="fas fa-id-card mr-1"></i> Print ID Pass
+      </button>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE PROFILE HERO CARD -->
+  <div class="gym-card mb-4" id="profileHeroCard" style="overflow: hidden;">
+    <!-- Brand Color Gradient Accent Header Strip -->
+    <div style="height: 85px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%); position: relative;">
+      <div style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); opacity: 0.12; font-size: 80px; color: #ffffff; pointer-events: none;">
+        <i class="fas fa-dumbbell"></i>
+      </div>
+    </div>
+
+    <div class="px-4 pb-4">
+      <div class="row align-items-end">
+        <!-- Avatar & Member Identity -->
+        <div class="col-lg-7 col-md-8">
+          <div class="d-flex align-items-center flex-wrap" style="margin-top: -42px;">
+            <div class="position-relative mr-3 mb-2 mb-sm-0">
+              <img src="{% if member.profile_picture %}{{ member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                   onerror="this.src='{% static 'images/member_dp.jpg' %}';"
+                   alt="{{ member.name }}" 
+                   id="profileAvatarPreview"
+                   class="rounded-circle shadow" 
+                   style="width: 88px; height: 88px; object-fit: cover; border: 4px solid #ffffff; background: #f8fafc;">
+              <label for="profile_picture_input" class="position-absolute d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" style="bottom: 0; right: 0; width: 28px; height: 28px; background: #2563eb; color: #ffffff; cursor: pointer; border: 2px solid #ffffff;" title="Change Profile Photo">
+                <i class="fas fa-camera" style="font-size: 0.72rem;"></i>
+              </label>
+            </div>
+            <div>
+              <div class="d-flex align-items-center flex-wrap gap-2">
+                <h3 class="font-weight-bold text-dark mb-0 mr-2" style="font-size: 1.45rem;">{{ member.name }}</h3>
+                {% if is_active %}
+                  <span class="badge-soft badge-soft-success font-weight-bold">
+                    <i class="fas fa-check-circle mr-1"></i> Active Member
+                  </span>
+                {% else %}
+                  <span class="badge-soft badge-soft-danger font-weight-bold">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Membership Expired
+                  </span>
+                {% endif %}
+              </div>
+              <div class="d-flex align-items-center flex-wrap text-muted small mt-1 gap-2">
+                <span><i class="fas fa-id-card text-primary mr-1"></i> Member ID: <strong class="text-dark">{{ member.member_id }}</strong></span>
+                <span class="d-none d-sm-inline text-muted">&bull;</span>
+                <span><i class="fas fa-user-lock text-primary mr-1"></i> Login ID: <strong class="text-dark font-monospace">{{ member.user.username }}</strong></span>
+                <span class="d-none d-sm-inline text-muted">&bull;</span>
+                <span><i class="fas fa-venus-mars text-primary mr-1"></i> {{ member.gender|default:'Member' }}{% if member.age %}, {{ member.age }} yrs{% endif %}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Snapshot Tiles -->
+        <div class="col-lg-5 col-md-4 mt-3 mt-md-0">
+          <div class="d-flex justify-content-start justify-content-md-end align-items-center flex-wrap gap-2">
+            <div class="p-2.5 rounded-lg border text-center mr-2 mb-1" style="background: #f8fafc; min-width: 100px;">
+              <span class="d-block small text-muted font-weight-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.04em;">Check-Ins</span>
+              <strong class="text-dark font-weight-bold" style="font-size: 1.15rem;">{{ total_checkins }}</strong>
+            </div>
+            <div class="p-2.5 rounded-lg border text-center mr-2 mb-1" style="background: #f8fafc; min-width: 100px;">
+              <span class="d-block small text-muted font-weight-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.04em;">Current Weight</span>
+              <strong class="text-primary font-weight-bold" style="font-size: 1.15rem;">{% if latest_metric %}{{ latest_metric.weight_kg }}<span style="font-size: 0.75rem;"> kg</span>{% else %}--{% endif %}</strong>
+            </div>
+            <div class="p-2.5 rounded-lg border text-center mb-1" style="background: #f8fafc; min-width: 100px;">
+              <span class="d-block small text-muted font-weight-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.04em;">Target Goal</span>
+              <strong class="text-warning font-weight-bold" style="font-size: 1.15rem;">{% if fitness_goal %}{{ fitness_goal.target_weight_kg }}<span style="font-size: 0.75rem;"> kg</span>{% else %}--{% endif %}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Strength Progress Bar -->
+      <div class="mt-3 pt-3 border-top">
+        <div class="d-flex justify-content-between align-items-center mb-1 small">
+          <span class="font-weight-bold text-dark">
+            <i class="fas fa-shield-halved text-primary mr-1"></i> Profile Completeness
+          </span>
+          <span class="font-weight-bold text-primary">{{ profile_pct }}%</span>
+        </div>
+        <div class="progress" style="height: 6px; border-radius: 9999px; background: #e2e8f0;">
+          <div class="progress-bar font-weight-bold" role="progressbar" style="width: {{ profile_pct }}%; background: linear-gradient(90deg, #2563eb, #3b82f6);" aria-valuenow="{{ profile_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN SECTION: OFFICIAL DIGITAL ID CARD (HERO ON TABLET/MOBILE) & PERSONAL INFO -->
+  <div class="row" id="profileEditFormsRow">
+
+    <!-- COLUMN 1: OFFICIAL DIGITAL GYM MEMBERSHIP ID CARD (TOP ON MOBILE/TABLET, RIGHT ON DESKTOP) -->
+    <div class="col-xl-6 col-lg-12 order-xl-2 order-1 mb-4" id="digitalPassCardCol">
+      <div class="gym-card h-100 mb-0 shadow-sm">
+        <div class="gym-card-header d-flex justify-content-between align-items-center flex-wrap">
+          <div class="gym-card-title">
+            <i class="fas fa-id-card text-primary" style="font-size: 1.25rem;"></i>
+            <span>Membership ID Card</span>
+          </div>
+          <span class="badge-soft badge-soft-success font-weight-bold">
+            <i class="fas fa-qrcode mr-1"></i> Scannable PVC Card
+          </span>
+        </div>
+
+        <div class="gym-card-body px-2 py-3 px-sm-3 text-center">
+
+          <!-- INTERACTIVE CARD THEME SWITCHER -->
+          <div class="pass-theme-selector-wrapper print-hide">
+            <span class="pass-theme-label">
+              <i class="fas fa-palette mr-1 text-primary"></i> Card Style:
+            </span>
+            <div class="pass-theme-pill-track">
+              <button type="button" class="pass-theme-tab active" id="themeBtnWhite" data-theme="theme-corporate-white" onclick="switchCardTheme('theme-corporate-white');">
+                <i class="fas fa-id-card mr-1 text-primary"></i> Minimal White
+              </button>
+              <button type="button" class="pass-theme-tab" id="themeBtnObsidian" data-theme="theme-obsidian-titanium" onclick="switchCardTheme('theme-obsidian-titanium');">
+                <i class="fas fa-gem mr-1 text-secondary"></i> Obsidian Matte
+              </button>
+              <button type="button" class="pass-theme-tab" id="themeBtnNavy" data-theme="theme-executive-navy" onclick="switchCardTheme('theme-executive-navy');">
+                <i class="fas fa-shield-alt mr-1 text-info"></i> Executive Navy
+              </button>
+            </div>
+          </div>
+
+          <!-- 3D PERSPECTIVE TILT WRAPPER -->
+          <div class="pvc-id-card-wrapper" id="passTiltWrapper">
+
+            <!-- OFFICIAL DIGITAL ID CARD ELEMENT (CANVAS/EXPORT TARGET) -->
+            <div id="officialMemberIdCard" class="phone-smart-pass theme-corporate-white mx-auto text-left position-relative">
+
+              <!-- INNER CONTENT (Flush Rounded Clean Top) -->
+              <div class="p-3 text-center" style="padding: 18px 18px 12px 18px;">
+
+                <!-- HEADER ROW: GYM BRAND & INTEGRATED SMART STATUS -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 pass-divider" style="border-bottom-width: 1px; border-bottom-style: solid; gap: 8px;">
+                  <!-- Brand Identity -->
+                  <div class="d-flex align-items-center text-left" style="gap: 8px; min-width: 0; flex: 1;">
+                    {% if gym_logo_data_uri or gym.logo %}
+                      <div style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.08); background: #ffffff; padding: 2px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+                        <img src="{% if gym_logo_data_uri %}{{ gym_logo_data_uri }}{% else %}{{ gym.logo.url }}{% endif %}" alt="{{ gym.name }}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                      </div>
+                    {% else %}
+                      <div style="width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ffffff;">
+                        <i class="fas fa-dumbbell" style="font-size: 1rem;"></i>
+                      </div>
+                    {% endif %}
+                    <div style="min-width: 0;">
+                      <div class="font-weight-bold text-truncate pass-brand-title">
+                        {{ gym.name|default:'ONEXIVAGYM' }}
+                      </div>
+                      <div class="text-truncate pass-brand-sub">
+                        <i class="fas fa-qrcode mr-1"></i> DIGITAL SMART PASS
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Right: Status Pill -->
+                  <div class="flex-shrink-0">
+                    {% if is_active %}
+                      <span class="pass-status-badge status-active">
+                        <span class="pass-pulse-dot" style="color: #10b981;"></span> ACTIVE
+                      </span>
+                    {% else %}
+                      <span class="pass-status-badge status-expired">
+                        <span class="pass-pulse-dot" style="color: #ef4444;"></span> EXPIRED
+                      </span>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- MEMBER IDENTITY TILE -->
+                <div class="pass-member-card mb-3 p-2.5 rounded-lg d-flex align-items-center text-left" style="gap: 12px;">
+                  <div class="position-relative flex-shrink-0">
+                    <img src="{% if profile_pic_data_uri %}{{ profile_pic_data_uri }}{% elif member.profile_picture %}{{ member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
+                         onerror="this.src='{% static 'images/member_dp.jpg' %}';"
+                         alt="{{ member.name }}" 
+                         id="cardAvatarImg"
+                         class="rounded-circle pass-avatar-img">
+                    {% if is_active %}
+                      <span class="pass-avatar-verified shadow-sm" title="Verified Member">
+                        <i class="fas fa-check"></i>
+                      </span>
+                    {% endif %}
+                  </div>
+                  <div style="min-width: 0; flex: 1;">
+                    <div class="font-weight-bold text-truncate pass-member-name">
+                      {{ member.name }}
+                    </div>
+                    <div class="my-1">
+                      <span class="pass-id-pill">
+                        <i class="fas fa-id-badge mr-1" style="font-size: 0.68rem;"></i>{{ member.member_id }}
+                      </span>
+                    </div>
+                    <div class="pass-member-meta text-truncate">
+                      <span><i class="fas fa-venus-mars mr-1" style="font-size: 0.68rem;"></i>{{ member.gender|default:'Member' }}{% if member.age %}, {{ member.age }}y{% endif %}</span>
+                      <span class="mx-1.5 opacity-50">&bull;</span>
+                      <span><i class="fas fa-phone mr-1" style="font-size: 0.65rem;"></i>+91 {{ member.mobile_number }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PROMINENT CENTER QR CODE SECTION (Matching Image 2 Reference!) -->
+                <div class="my-2 position-relative d-inline-block">
+                  <div class="pass-qr-frame">
+                    <div class="reticle-bracket bracket-tl"></div>
+                    <div class="reticle-bracket bracket-tr"></div>
+                    <div class="reticle-bracket bracket-bl"></div>
+                    <div class="reticle-bracket bracket-br"></div>
+                    {% if qr_data_uri %}
+                      <img src="{{ qr_data_uri }}" alt="Verification QR Code" class="pass-qr-image">
+                    {% else %}
+                      <div class="pass-qr-image d-flex align-items-center justify-content-center bg-light">
+                        <i class="fas fa-qrcode text-dark" style="font-size: 4rem;"></i>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- SCAN INSTRUCTION DIVIDER (Like Reference Image "SCAN & CHAT WITH US") -->
+                <div class="pass-scan-instruction my-2">
+                  <span class="line pass-scan-line"></span>
+                  <span class="text pass-scan-text"><i class="fas fa-camera mr-1"></i> SCAN AT TURNSTILE TO ENTER</span>
+                  <span class="line pass-scan-line"></span>
+                </div>
+
+                <!-- CREDENTIAL BOX (Plan & Valid Thru - Zero Truncation) -->
+                <div class="pass-credential-box mb-3 border">
+                  <div class="row no-gutters">
+                    <div class="col-6 pr-2 text-left">
+                      <span class="cred-label">MEMBERSHIP PLAN</span>
+                      <span class="cred-val text-truncate">
+                        {{ latest_membership.plan.get_duration_display|default:latest_membership.plan.title|default:'1 Month' }}
+                      </span>
+                    </div>
+                    <div class="col-6 pl-2 text-left" style="border-left: 1px solid rgba(148, 163, 184, 0.2);">
+                      <span class="cred-label">VALID THRU</span>
+                      <span class="cred-val font-weight-bold" style="color: {% if is_active %}#2563eb{% else %}#dc2626{% endif %};">
+                        {% if end_date %}{{ end_date|date:'d M Y' }}{% else %}Active Access{% endif %}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 4 TRUST / SECURITY FEATURES (Matching Reference Image 2!) -->
+                <div class="pass-features-row d-flex justify-content-around align-items-center mb-1 pt-2 pass-divider" style="border-top-width: 1px; border-top-style: solid;">
+                  <div class="feature-item text-center">
+                    <i class="fas fa-bolt mb-1"></i>
+                    <span>Fast Entry</span>
+                  </div>
+                  <div class="feature-item text-center">
+                    <i class="fas fa-shield-alt mb-1"></i>
+                    <span>Verified</span>
+                  </div>
+                  <div class="feature-item text-center">
+                    <i class="fas fa-calendar-check mb-1"></i>
+                    <span>Attendance Pass</span>
+                  </div>
+                  <div class="feature-item text-center">
+                    <i class="fas fa-dumbbell mb-1"></i>
+                    <span>All Access</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- SIGNATURE SOLID BOTTOM BANNER STRIP (Matching Reference Image 2!) -->
+              <div class="pass-footer-banner d-flex justify-content-between align-items-center px-3 py-2">
+                <div class="d-flex align-items-center text-truncate" style="gap: 6px;">
+                  <i class="fas fa-shield-halved" style="font-size: 0.82rem;"></i>
+                  <span class="font-weight-bold" style="font-size: 0.7rem; letter-spacing: 0.04em;">Official ONEXIVAPass</span>
+                </div>
+                <div class="text-right">
+                  <span class="font-monospace opacity-75" style="font-size: 0.65rem; letter-spacing: 0.06em;">{{ member.member_id }}</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Action Buttons: Download Pass (PNG) -->
+          <div class="mt-4 pt-3 border-top print-hide text-center">
+            <div class="d-flex justify-content-center align-items-center flex-wrap">
+              <button type="button" id="btnDownloadCardImage" class="btn btn-primary rounded-pill font-weight-bold px-4 py-2.5 shadow-sm m-1" onclick="downloadIdCardAsImage();">
+                <i class="fas fa-download mr-1.5"></i> Download ID Card (PNG)
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMN 2: PERSONAL INFORMATION & DETAILS -->
+    <div class="col-xl-6 col-lg-12 order-xl-1 order-2 mb-4" id="personalInfoCardCol">
+      <div class="gym-card mb-0 shadow-sm">
+        <div class="gym-card-header d-flex justify-content-between align-items-center flex-wrap">
+          <div class="gym-card-title">
+            <i class="fas fa-user-edit text-primary" style="font-size: 1.25rem;"></i>
+            <span>Personal Information</span>
+          </div>
+          <span class="badge-soft badge-soft-primary">
+            <i class="fas fa-id-badge mr-1"></i> {{ member.member_id }}
+          </span>
+        </div>
+
+        <div class="gym-card-body p-4">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_profile">
+
+            <!-- Hidden File Input for Avatar -->
+            <input type="file" name="profile_picture" id="profile_picture_input" class="d-none" accept="image/*" onchange="previewProfilePic(this);">
+
+            <!-- Names -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="small font-weight-bold text-dark">
+                  <i class="fas fa-user text-primary mr-1"></i> First Name <span class="text-danger">*</span>
+                </label>
+                <input type="text" name="first_name" class="form-control rounded-pill" value="{{ member.first_name }}" required placeholder="First name">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="small font-weight-bold text-dark">
+                  <i class="fas fa-user text-primary mr-1"></i> Last Name
+                </label>
+                <input type="text" name="last_name" class="form-control rounded-pill" value="{{ member.last_name }}" placeholder="Last name">
+              </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="small font-weight-bold text-dark d-flex justify-content-between align-items-center">
+                  <span><i class="fas fa-phone-alt text-primary mr-1"></i> Mobile Number</span>
+                  <span class="badge-soft badge-soft-success" style="font-size: 0.68rem; padding: 2px 6px;">
+                    <i class="fas fa-check mr-1"></i> Verified
+                  </span>
+                </label>
+                <input type="text" class="form-control rounded-pill bg-light" value="{{ member.mobile_number }}" readonly title="Mobile number is locked for membership verification">
+                <small class="text-muted" style="font-size: 0.72rem;">Contact gym management to change registered mobile.</small>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="small font-weight-bold text-dark">
+                  <i class="fas fa-envelope text-primary mr-1"></i> Email Address
+                </label>
+                <input type="email" name="email" class="form-control rounded-pill" value="{{ member.email|default:'' }}" placeholder="e.g. member@example.com">
+              </div>
+            </div>
+
+            <!-- Profession & Demographic -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="small font-weight-bold text-dark">
+                  <i class="fas fa-briefcase text-primary mr-1"></i> Profession / Occupation
+                </label>
+                <input type="text" name="profession" class="form-control rounded-pill" value="{{ member.profession|default:'' }}" placeholder="e.g. Software Engineer, Student, Doctor">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="small font-weight-bold text-dark">
+                  <i class="fas fa-venus-mars text-primary mr-1"></i> Gender & Age
+                </label>
+                <input type="text" class="form-control rounded-pill bg-light" value="{{ member.gender|default:'Not Specified' }} &bull; Age: {{ member.age|default:'N/A' }}" readonly>
+              </div>
+            </div>
+
+            <!-- Residential Address -->
+            <div class="form-group mb-3">
+              <label class="small font-weight-bold text-dark">
+                <i class="fas fa-map-marker-alt text-primary mr-1"></i> Residential Address
+              </label>
+              <input type="text" name="address" class="form-control rounded-pill" value="{{ member.address|default:'' }}" placeholder="Street address, apartment or locality">
+            </div>
+
+            <!-- City, State, Pincode -->
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="small font-weight-bold text-dark">City</label>
+                <input type="text" name="city" class="form-control rounded-pill" value="{{ member.city|default:'' }}" placeholder="City">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="small font-weight-bold text-dark">State</label>
+                <input type="text" name="state" class="form-control rounded-pill" value="{{ member.state|default:'' }}" placeholder="State">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="small font-weight-bold text-dark">Pincode</label>
+                <input type="text" name="pincode" class="form-control rounded-pill" value="{{ member.pincode|default:'' }}" placeholder="Pincode">
+              </div>
+            </div>
+
+            <!-- Profile Photo File Chooser Info -->
+            <div class="p-3 rounded-lg mb-3 d-flex align-items-center justify-content-between" style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px;">
+              <div class="d-flex align-items-center">
+                <div class="mr-3 text-primary" style="font-size: 1.5rem;">
+                  <i class="fas fa-portrait"></i>
+                </div>
+                <div>
+                  <div class="font-weight-bold small text-dark">Profile Picture</div>
+                  <div class="text-muted small" style="font-size: 0.72rem;">JPG or PNG format, maximum file size 5MB</div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-primary rounded-pill font-weight-bold px-3" onclick="document.getElementById('profile_picture_input').click();">
+                <i class="fas fa-upload mr-1"></i> Choose File
+              </button>
+            </div>
+
+            <div class="text-right pt-2 border-top">
+              <button type="submit" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill shadow-sm">
+                <i class="fas fa-save mr-1"></i> Save Profile Details
+              </button>
+            </div>
+          </form>
+
+          <!-- Security & Password Quick Strip -->
+          <div class="mt-4 p-3 rounded-lg border d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: #f8fafc; border-color: #e2e8f0; border-radius: 14px;">
+            <div class="d-flex align-items-center">
+              <div class="mr-3 d-flex align-items-center justify-content-center rounded-circle text-primary" style="width: 42px; height: 42px; background: #eff6ff; font-size: 1.15rem;">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <div>
+                <strong class="text-dark d-block small" style="font-size: 0.88rem;">Account Password & Security</strong>
+                <small class="text-muted" style="font-size: 0.74rem;">Protect your portal access by setting a secure credentials password</small>
+              </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill font-weight-bold px-3 py-1.5" data-toggle="modal" data-target="#changePasswordModal">
+              <i class="fas fa-lock mr-1"></i> Reset Password
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ============================================================================== -->
+
+<!-- ============================================================================== -->
+<!-- POPUP MODAL: CHANGE / RESET ACCOUNT PASSWORD -->
+<!-- ============================================================================== -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 480px;">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+      
+      <!-- Modal Header -->
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff;">
+        <div class="d-flex align-items-center">
+          <div class="d-inline-flex align-items-center justify-content-center mr-2.5 rounded-circle" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.18);">
+            <i class="fas fa-key text-white" style="font-size: 1rem;"></i>
+          </div>
+          <div>
+            <h5 class="modal-title font-weight-bold text-white mb-0" id="changePasswordModalLabel">Change Account Password</h5>
+            <small class="text-white-50" style="font-size: 0.74rem;">Update login password for {{ member.name }}</small>
+          </div>
+        </div>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.9; text-shadow: none;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <form method="POST" id="passwordChangeModalForm" onsubmit="return validatePasswordForm();">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="change_password">
+
+        <div class="modal-body p-4">
+          <!-- Current Password -->
+          <div class="form-group mb-3">
+            <label class="small font-weight-bold text-dark">
+              <i class="fas fa-lock-open text-muted mr-1"></i> Current Password (Optional verification)
+            </label>
+            <div class="input-group">
+              <input type="password" name="current_password" id="modal_current_pwd" class="form-control" placeholder="Enter current password" style="border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility('modal_current_pwd', this);" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;" title="Show/Hide">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- New Password -->
+          <div class="form-group mb-3">
+            <label class="small font-weight-bold text-dark">
+              <i class="fas fa-lock text-primary mr-1"></i> New Password <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <input type="password" name="new_password" id="modal_new_pwd" class="form-control" required placeholder="Enter new password (min 6 chars)" minlength="6" oninput="checkPasswordMatch();" style="border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility('modal_new_pwd', this);" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;" title="Show/Hide">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="form-group mb-3">
+            <label class="small font-weight-bold text-dark">
+              <i class="fas fa-check-double text-success mr-1"></i> Confirm New Password <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <input type="password" name="confirm_password" id="modal_confirm_pwd" class="form-control" required placeholder="Re-type new password" oninput="checkPasswordMatch();" style="border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility('modal_confirm_pwd', this);" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;" title="Show/Hide">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            <div id="passwordMatchFeedback" class="small mt-1" style="font-size: 0.76rem; display: none;"></div>
+          </div>
+
+          <!-- Security Checklist -->
+          <div class="p-3 rounded-lg mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+            <div class="small font-weight-bold text-dark mb-1">
+              <i class="fas fa-shield-halved text-primary mr-1"></i> Password Best Practices:
+            </div>
+            <ul class="list-unstyled small text-muted mb-0" style="font-size: 0.74rem; line-height: 1.6;">
+              <li><i class="fas fa-check-circle text-success mr-1"></i> At least 6 characters long</li>
+              <li><i class="fas fa-check-circle text-success mr-1"></i> Mix of numbers and letters recommended</li>
+              <li><i class="fas fa-check-circle text-success mr-1"></i> Keep your credentials private</li>
+            </ul>
+          </div>
+
+          <!-- Quick Reference Box -->
+          <div class="p-2.5 rounded-lg d-flex align-items-start" style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px;">
+            <div class="text-primary mr-2 mt-0.5" style="font-size: 1rem;">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="small text-muted" style="line-height: 1.4; font-size: 0.74rem;">
+              Log in with your <strong>Login ID ({{ member.user.username }})</strong> or <strong>Mobile Number ({{ member.mobile_number }})</strong>.
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light py-3 px-4 border-top">
+          <button type="button" class="btn btn-outline-secondary font-weight-bold rounded-pill px-4" data-dismiss="modal">Cancel</button>
+          <button type="submit" name="change_password" class="btn btn-primary font-weight-bold px-4 rounded-pill shadow-sm">
+            <i class="fas fa-key mr-1"></i> Update My Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Libraries for Canvas / PDF Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<!-- JavaScript for Live Photo Preview, Modal Password Toggle, and Image/PDF Download -->
+<script>
+function previewProfilePic(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const avatarEl = document.getElementById('profileAvatarPreview');
+      if (avatarEl) avatarEl.src = e.target.result;
+      const cardAvatar = document.getElementById('cardAvatarImg');
+      if (cardAvatar) cardAvatar.src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const icon = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (icon) {
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    }
+  } else {
+    input.type = 'password';
+    if (icon) {
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  }
+}
+
+function checkPasswordMatch() {
+  const newPwd = document.getElementById('modal_new_pwd').value;
+  const confirmPwd = document.getElementById('modal_confirm_pwd').value;
+  const feedback = document.getElementById('passwordMatchFeedback');
+
+  if (!confirmPwd) {
+    feedback.style.display = 'none';
+    return;
+  }
+
+  feedback.style.display = 'block';
+  if (newPwd === confirmPwd) {
+    feedback.className = 'small mt-1 text-success font-weight-bold';
+    feedback.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Passwords match!';
+  } else {
+    feedback.className = 'small mt-1 text-danger font-weight-bold';
+    feedback.innerHTML = '<i class="fas fa-times-circle mr-1"></i> Passwords do not match yet.';
+  }
+}
+
+function validatePasswordForm() {
+  const newPwd = document.getElementById('modal_new_pwd').value;
+  const confirmPwd = document.getElementById('modal_confirm_pwd').value;
+  if (newPwd.length < 6) {
+    alert('New password must be at least 6 characters long.');
+    return false;
+  }
+  if (newPwd !== confirmPwd) {
+    alert('New passwords do not match. Please verify.');
+    return false;
+  }
+  return true;
+}
+
+// ==============================================================================
+// SMART PVC PASS THEME SWITCHER
+// ==============================================================================
+function switchCardTheme(themeName) {
+  const card = document.getElementById('officialMemberIdCard');
+  if (!card) return;
+
+  // Remove existing themes
+  card.classList.remove('theme-corporate-white', 'theme-obsidian-titanium', 'theme-executive-navy');
+  card.classList.add(themeName);
+
+  // Update button active state
+  document.querySelectorAll('.pass-theme-tab, .theme-switch-btn').forEach(btn => {
+    if (btn.getAttribute('data-theme') === themeName) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  try {
+    localStorage.setItem('fitstack_card_theme', themeName);
+  } catch (e) {}
+}
+
+// ==============================================================================
+// DIGITAL PASS CANVAS ENGINE, MOBILE PHOTO SAVING & MODAL PREVIEW
+// ==============================================================================
+// 1. Direct Download as High-Res Retina PNG
+function downloadIdCardAsImage() {
+  const btn = document.getElementById('btnDownloadCardImage');
+  const origHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1.5"></i> Generating ID Card...';
+  }
+
+  const card = document.getElementById('officialMemberIdCard');
+  if (!card) {
+    if (btn) btn.disabled = false;
+    return;
+  }
+
+  // Neutralize outer transform & outer box-shadow during capture
+  const prevTransform = card.style.transform;
+  const prevShadow = card.style.boxShadow;
+  const prevTransition = card.style.transition;
+
+  card.style.transform = 'none';
+  card.style.transition = 'none';
+  card.style.boxShadow = 'none';
+
+  html2canvas(card, {
+    scale: 3,                // 3x Super-Sampling for Retina Ultra-HD
+    useCORS: true,           // Allow base64 Data URIs & cross-origin images
+    allowTaint: false,
+    backgroundColor: null,   // Pristine transparent background outside the rounded card
+    logging: false,
+    imageTimeout: 15000,
+    removeContainer: true
+  }).then(canvas => {
+    // Restore original interactive styles immediately
+    card.style.transform = prevTransform;
+    card.style.boxShadow = prevShadow;
+    card.style.transition = prevTransition;
+
+    const dataUrl = canvas.toDataURL('image/png', 1.0);
+    const filename = 'Gym_Member_ID_Card_{{ member.member_id }}.png';
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = dataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check-circle mr-1.5 text-success"></i> Downloaded ID Card!';
+      setTimeout(() => { btn.innerHTML = origHtml; }, 2500);
+    }
+  }).catch(err => {
+    console.error('Error generating ID card image:', err);
+    card.style.transform = prevTransform;
+    card.style.boxShadow = prevShadow;
+    card.style.transition = prevTransition;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = origHtml;
+    }
+    alert('Unable to generate ID card image. Please try again or use the PDF option.');
+  });
+}
+
+// 2. Download ID Card as PDF
+function downloadIdCardAsPdf() {
+  const card = document.getElementById('officialMemberIdCard');
+  if (!card) return;
+
+  const btn = document.getElementById('btnDownloadCardPdf');
+  const origHtml = btn ? btn.innerHTML : '';
+  if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Generating PDF...';
+
+  const prevTransform = card.style.transform;
+  const prevShadow = card.style.boxShadow;
+  card.style.transform = 'none';
+  card.style.boxShadow = 'none';
+
+  let pdfBgColor = '#ffffff';
+  if (card.classList.contains('theme-obsidian-titanium')) {
+    pdfBgColor = '#080c14';
+  } else if (card.classList.contains('theme-executive-navy')) {
+    pdfBgColor = '#070d1e';
+  }
+
+  const opt = {
+    margin: [10, 10, 10, 10],
+    filename: 'Gym_Member_ID_Card_{{ member.member_id }}.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 3, useCORS: true, allowTaint: false, backgroundColor: pdfBgColor },
+    jsPDF: { unit: 'mm', format: 'a5', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(card).save().then(() => {
+    card.style.transform = prevTransform;
+    card.style.boxShadow = prevShadow;
+    if (btn) btn.innerHTML = origHtml;
+  }).catch(err => {
+    console.error('PDF generation error:', err);
+    card.style.transform = prevTransform;
+    card.style.boxShadow = prevShadow;
+    if (btn) btn.innerHTML = origHtml;
+    window.print();
+  });
+}
+
+// 3. Interactive 3D Perspective Tilt & Theme Restore on Load
+document.addEventListener('DOMContentLoaded', function() {
+  // Restore saved card style preference
+  try {
+    const savedTheme = localStorage.getItem('fitstack_card_theme');
+    if (savedTheme && ['theme-corporate-white', 'theme-obsidian-titanium', 'theme-executive-navy'].includes(savedTheme)) {
+      switchCardTheme(savedTheme);
+    }
+  } catch (e) {}
+
+  const card = document.getElementById('officialMemberIdCard');
+  const wrapper = document.getElementById('passTiltWrapper');
+  if (!card || !wrapper) return;
+
+  // Only enable on desktop pointer devices
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    wrapper.addEventListener('mousemove', function(e) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = ((y - centerY) / centerY) * -7;
+      const rotateY = ((x - centerX) / centerX) * 7;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.015, 1.015, 1.015)`;
+    });
+
+    wrapper.addEventListener('mouseleave', function() {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    });
+  }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,419 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice - {{ subscription.gym.name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #1e3a8a; /* Deep Navy */
+      --text-main: #1f2937;
+      --text-muted: #4b5563;
+      --border-color: #d1d5db;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--text-main);
+      background-color: #f3f4f6;
+      margin: 0;
+      padding: 40px 20px;
+    }
+
+    .invoice-container {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 50px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      border: 1px solid var(--border-color);
+    }
+
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .company-details {
+      display: flex;
+      gap: 20px;
+    }
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .main-logo {
+      width: 120px;
+      height: auto;
+    }
+
+    .parent-logo-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+    }
+
+    .parent-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+    }
+
+    .company-info {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .company-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+
+    .invoice-title-section {
+      text-align: right;
+    }
+
+    .invoice-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 0 0 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .invoice-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .info-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .billed-to {
+      width: 48%;
+      border: 1px solid var(--border-color);
+      padding: 15px;
+      border-radius: 4px;
+    }
+
+    .invoice-details {
+      width: 48%;
+      border: 1px solid var(--border-color);
+      padding: 15px;
+      border-radius: 4px;
+      background-color: #f9fafb;
+    }
+
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 4px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .info-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: var(--text-main);
+      text-align: right;
+    }
+
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .items-table th,
+    .items-table td {
+      border: 1px solid var(--border-color);
+      padding: 12px 15px;
+      font-size: 14px;
+    }
+
+    .items-table th {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .col-amount {
+      text-align: right;
+    }
+
+    .col-center {
+      text-align: center;
+    }
+
+    .summary-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 40px;
+    }
+
+    .summary-table {
+      width: 350px;
+      border-collapse: collapse;
+    }
+
+    .summary-table td {
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    .summary-label {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .summary-value {
+      text-align: right;
+      font-weight: 700;
+    }
+
+    .total-row td {
+      border-top: 2px solid var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+      font-size: 18px;
+      color: var(--primary-color);
+      background-color: #f9fafb;
+    }
+
+    .balance-row td {
+      font-size: 16px;
+      background-color: #eef2ff;
+      color: var(--primary-color);
+    }
+
+    .footer-section {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+    }
+
+    .terms-box {
+      width: 60%;
+    }
+
+    .terms-box h4 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary-color);
+    }
+
+    .terms-list {
+      margin: 0;
+      padding-left: 15px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .terms-list li {
+      margin-bottom: 4px;
+    }
+
+    .signature-box {
+      width: 30%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .signature-line {
+      border-top: 1px solid var(--text-main);
+      padding-top: 5px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .signature-role {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+      }
+      .invoice-container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-container">
+    
+    <div class="invoice-header">
+      <div class="company-details">
+        <div class="logo-container">
+          <img src="{% static 'images/onexiva-logo.png' %}" alt="ONEXIVA Logo" class="main-logo" style="max-height: 48px; width: auto; object-fit: contain;" />
+        </div>
+        <div class="company-info">
+          <div class="company-name">{{ system_setting.company_name|default:"Bhatt Square Pvt. Ltd." }}</div>
+          {% if system_setting.website_url %}<div style="font-size: 12px; color: var(--text-muted);">{{ system_setting.website_url }}</div>{% endif %}
+          <strong>Email:</strong> {{ system_setting.support_email|default:"bhathsquare1@gmail.com" }}<br>
+          <strong>Phone:</strong> {{ system_setting.support_phone|default:"+91 9205983996" }}
+        </div>
+      </div>
+      <div class="invoice-title-section">
+        <h1 class="invoice-title">INVOICE</h1>
+        <div class="invoice-meta">
+          <strong>Invoice No:</strong> INV-{{ subscription.id|stringformat:'05d' }}<br>
+          <strong>Date:</strong> {% now "F d, Y" %}
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <div class="billed-to">
+        <div class="section-title">Billed To</div>
+        <div style="font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--text-main);">
+          {{ subscription.gym.name }}
+        </div>
+        <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+          {{ subscription.gym.address }}<br>
+          {{ subscription.gym.city }}, {{ subscription.gym.state }} - {{ subscription.gym.pincode }}<br>
+          <strong>Phone:</strong> {{ subscription.gym.phone }}
+        </div>
+      </div>
+      
+      <div class="invoice-details">
+        <div class="section-title">Payment & Status Details</div>
+        <div class="info-row">
+          <span class="info-label">Payment Mode:</span>
+          <span class="info-value" style="text-transform: capitalize;">{{ subscription.payment_mode|default:"Not Specified" }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Subscription ID:</span>
+          <span class="info-value">SUB-{{ subscription.id|stringformat:'04d' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Status:</span>
+          <span class="info-value">
+            {% if subscription.due_amount <= 0 %}
+              <span style="color: #059669;">Paid in Full</span>
+            {% else %}
+              <span style="color: #dc2626;">Payment Due</span>
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 5%;">#</th>
+          <th style="width: 55%; text-align: left;">Description</th>
+          <th style="width: 20%;" class="col-center">HSN/SAC</th>
+          <th style="width: 20%;" class="col-amount">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-center">1</td>
+          <td>
+            <div style="font-weight: 600; margin-bottom: 4px;">{{ subscription.subscription.name }}</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Gym Management Software Subscription</div>
+          </td>
+          <td class="col-center">998314</td>
+          <td class="col-amount">{{ system_setting.currency_symbol|default:"₹" }}{{ subscription.subscription.price }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="summary-section">
+      <table class="summary-table">
+        <tr>
+          <td class="summary-label">Subtotal</td>
+          <td class="summary-value">{{ system_setting.currency_symbol|default:"₹" }}{{ subscription.subscription.price }}</td>
+        </tr>
+        {% if subscription.discount and subscription.discount > 0 %}
+        <tr>
+          <td class="summary-label" style="color: #059669;">Discount</td>
+          <td class="summary-value" style="color: #059669;">-{{ system_setting.currency_symbol|default:"₹" }}{{ subscription.discount }}</td>
+        </tr>
+        {% endif %}
+        <tr class="total-row">
+          <td class="summary-label" style="color: var(--primary-color);">Total Amount</td>
+          <td class="summary-value">{{ system_setting.currency_symbol|default:"₹" }}{{ subscription.total_amount }}</td>
+        </tr>
+        <tr>
+          <td class="summary-label">Amount Paid</td>
+          <td class="summary-value">{{ system_setting.currency_symbol|default:"₹" }}{{ subscription.paid_amount }}</td>
+        </tr>
+        <tr class="balance-row">
+          <td class="summary-label">Balance Due</td>
+          <td class="summary-value">{{ system_setting.currency_symbol|default:"₹" }}{{ subscription.due_amount }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="footer-section">
+      <div class="terms-box">
+        <h4>Terms & Conditions</h4>
+        <ol class="terms-list">
+          <li><strong>Payment Terms:</strong> Payment is due upon receipt. Late payments may incur an interest charge of 1.5% per month.</li>
+          <li><strong>Refund Policy:</strong> Software subscriptions are non-refundable. Billing discrepancies must be reported within 7 days.</li>
+          <li><strong>Jurisdiction:</strong> All disputes are subject to the exclusive jurisdiction of the courts in Lucknow, Uttar Pradesh.</li>
+          <li><strong>Authorization:</strong> This is a computer-generated tax invoice and is legally valid without a physical signature.</li>
+        </ol>
+      </div>
+      <div class="signature-box">
+        <br><br><br>
+        <div class="signature-line">Authorized Signatory</div>
+        <div class="signature-role">Bhatt Square Pvt. Ltd.</div>
+      </div>
+    </div>
+    
+  </div>
+</body>
+</html>

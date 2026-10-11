@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+<!-- Compact Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'events:event_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-calendar-multiple-check mdi-18px"></i> Events
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-pencil-circle-outline mdi-18px"></i> Edit Event
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Edit Event</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_event_name">Event Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="id_event_name" name="event_name"
+                                value="{{ event.event_name }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_event_type">Event Type</label>
+                            <select class="form-control" id="id_event_type" name="event_type">
+                                {% for type in event_types %}
+                                <option value="{{ type.0 }}" {% if event.event_type == type.0 %}selected{% endif %}>{{ type.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_description">Description</label>
+                    <textarea class="form-control" id="id_description" name="description"
+                        rows="4">{{ event.description }}</textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_start_date">Start Date & Time <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="id_start_date" name="start_date"
+                                value="{{ event.start_date|date:'Y-m-d\TH:i' }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_end_date">End Date & Time <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="id_end_date" name="end_date"
+                                value="{{ event.end_date|date:'Y-m-d\TH:i' }}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_trainer_name">Trainer / Guest Name</label>
+                            <input type="text" class="form-control" id="id_trainer_name" name="trainer_name"
+                                value="{{ event.trainer_name }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_address">Address <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="id_address" name="address"
+                                value="{{ event.address }}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_max_participants">Max Participants <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="id_max_participants" name="max_participants"
+                                value="{{ event.max_participants }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_registration_deadline">Registration Deadline <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="id_registration_deadline"
+                                name="registration_deadline" value="{{ event.registration_deadline|date:'Y-m-d\TH:i' }}"
+                                required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_banner_image">Event Banner Image</label>
+                            <input type="file" class="form-control-file" id="id_banner_image" name="banner_image">
+                            {% if event.banner_image %}
+                            <img src="{{ event.banner_image.url }}" class="mt-2" style="max-width: 200px;" />
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_status">Status</label>
+                            <select class="form-control" id="id_status" name="status">
+                                {% for status in statuses %}
+                                <option value="{{ status.0 }}" {% if event.status == status.0 %}selected{% endif %}>{{ status.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="paid_event_toggle">
+                                <label class="custom-control-label" for="paid_event_toggle">Paid Event</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="payment_details" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="id_fee">Fee</label>
+                                <input type="number" step="0.01" class="form-control" id="id_fee" name="fee_amount"
+                                    value="{{ event.fee_amount }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="id_payment_qr_code">Payment QR Code</label>
+                                <input type="file" class="form-control-file" id="id_payment_qr_code" name="payment_qr_code">
+                                {% if event.payment_qr_code %}
+                                <img src="{{ event.payment_qr_code.url }}" class="mt-2" style="max-width: 200px;" />
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="id_upi_id">UPI ID</label>
+                                <input type="text" class="form-control" id="id_upi_id" name="upi_id"
+                                    value="{{ event.upi_id }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <a href="{% url 'events:event_list' %}" class="btn btn-secondary mr-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const paidEventToggle = document.getElementById('paid_event_toggle');
+        const paymentDetails = document.getElementById('payment_details');
+        const feeInput = document.getElementById('id_fee');
+
+        // Set initial state based on fee value
+        if (feeInput.value && parseFloat(feeInput.value) > 0) {
+            paidEventToggle.checked = true;
+            paymentDetails.style.display = 'block';
+        }
+
+        paidEventToggle.addEventListener('change', function () {
+            if (this.checked) {
+                paymentDetails.style.display = 'block';
+            } else {
+                paymentDetails.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

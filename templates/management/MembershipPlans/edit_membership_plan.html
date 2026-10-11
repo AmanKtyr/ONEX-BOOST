@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Membership Plan - ONEXIVAGYM{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
+
+<nav aria-label="breadcrumb" class="custom-breadcrumb mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'membership_plans' %}" class="text-decoration-none">
+                <i class="mdi mdi-package-variant-closed mdi-18px"></i> Membership Plans
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="mdi mdi-pencil-circle-outline mdi-18px"></i> Edit Plan
+        </li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 px-0">
+    <div class="card shadow-sm border-0">
+        <!-- Header -->
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
+            <div>
+                <h4 class="mb-1 font-weight-bold text-white d-flex align-items-center">
+                    <i class="mdi mdi-package-variant-closed mr-2 me-2"></i> Edit Membership Plan
+                </h4>
+                <p class="mb-0 text-white-50 small">Modify plan pricing, validity duration, add-on bonus days, and inclusions.</p>
+            </div>
+            <a href="{% url 'membership_plans' %}" class="btn btn-sm btn-light mt-2 mt-md-0 shadow-sm">
+                <i class="mdi mdi-arrow-left mr-1"></i> Back to Plans
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger shadow-sm mb-4">
+                        {% for error in form.non_field_errors %}
+                            <div><i class="mdi mdi-alert-circle mr-1"></i> {{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Section 1: Plan Details & Term -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-card-bulleted-outline mr-1"></i> Plan Identification & Duration
+                    </legend>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_title" class="form-label">Plan Title <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-format-title"></i></span>
+                                {{ form.title }}
+                            </div>
+                            {% if form.title.errors %}
+                                <div class="text-danger small mt-1"><i class="mdi mdi-alert-circle-outline"></i> {{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="id_duration" class="form-label">Validity Duration <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-calendar-clock"></i></span>
+                                {{ form.duration }}
+                            </div>
+                            {% if form.duration.errors %}
+                                <div class="text-danger small mt-1"><i class="mdi mdi-alert-circle-outline"></i> {{ form.duration.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="id_add_on_days" class="form-label">Bonus Add-on Days</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="mdi mdi-calendar-plus"></i></span>
+                                {{ form.add_on_days }}
+                            </div>
+                            {% if form.add_on_days.errors %}
+                                <div class="text-danger small mt-1"><i class="mdi mdi-alert-circle-outline"></i> {{ form.add_on_days.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section 2: Pricing & Discount -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-currency-inr mr-1"></i> Pricing & Offer Calculation
+                    </legend>
+
+                    <div class="row g-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_amount" class="form-label">Catalog Price (MRP) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text font-weight-bold text-muted">₹</span>
+                                {{ form.amount }}
+                            </div>
+                            {% if form.amount.errors %}
+                                <div class="text-danger small mt-1"><i class="mdi mdi-alert-circle-outline"></i> {{ form.amount.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="id_discount" class="form-label">Standard Discount</label>
+                            <div class="input-group">
+                                <span class="input-group-text font-weight-bold text-muted">₹</span>
+                                {{ form.discount }}
+                            </div>
+                            {% if form.discount.errors %}
+                                <div class="text-danger small mt-1"><i class="mdi mdi-alert-circle-outline"></i> {{ form.discount.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="id_offer_price" class="form-label">Net Offer Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text font-weight-bold text-muted">₹</span>
+                                <input type="text" id="id_offer_price" name="offer_price" class="form-control" value="{{ form.instance.offer_price|default_if_none:'' }}" readonly>
+                            </div>
+                            <div class="helper-text mt-1">Calculated automatically as (Price - Discount).</div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section 3: Description -->
+                <fieldset class="form-section-fieldset">
+                    <legend class="form-section-legend">
+                        <i class="mdi mdi-text mr-1"></i> Description & Inclusions
+                    </legend>
+
+                    <div class="mb-2">
+                        <label for="id_description" class="form-label">Plan Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small mt-1"><i class="mdi mdi-alert-circle-outline"></i> {{ form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-end align-items-center gap-2 pt-3 border-top mt-4">
+                    <a href="{% url 'membership_plans' %}" class="btn btn-light px-4">
+                        <i class="mdi mdi-close mr-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                        <i class="mdi mdi-check-circle-outline mr-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const amountInput = document.getElementById('id_amount');
+        const discountInput = document.getElementById('id_discount');
+        const offerPriceInput = document.getElementById('id_offer_price');
+
+        function calculateOfferPrice() {
+            if (!amountInput || !discountInput || !offerPriceInput) return;
+            const amount = parseFloat(amountInput.value) || 0;
+            const discount = parseFloat(discountInput.value) || 0;
+            const offerPrice = Math.max(0, amount - discount);
+            offerPriceInput.value = offerPrice.toFixed(2);
+        }
+
+        if (amountInput) amountInput.addEventListener('input', calculateOfferPrice);
+        if (discountInput) discountInput.addEventListener('input', calculateOfferPrice);
+    });
+</script>
+{% endblock %}

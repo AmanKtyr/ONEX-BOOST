@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="alert alert-danger text-center" role="alert">
+        <h4 class="alert-heading">Error!</h4>
+        <p>{{ message }}</p>
+        <hr>
+        <p class="mb-0">Please contact support if you believe this is an error.</p>
+    </div>
+</div>
+{% endblock %}

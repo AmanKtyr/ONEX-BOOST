@@ -4,15 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}OneX-Fitness | Powering Smarter Fitness Businesses by HELYONEX{% endblock %}</title>
+    <title>{% block title %}ONEX BOOST | Powering Smarter Fitness Businesses by HELYONEX{% endblock %}</title>
 
     {# ── Core SEO ── #}
     {% block seo %}
-    <meta name="description" content="OneX-Fitness by HELYONEX is India's leading gym management software. Manage memberships, billing, attendance, trainer workflows, follow-ups, and operations from one powerful platform.">
-    <meta name="keywords" content="OneX-Fitness, HELYONEX, gym management software India, fitness studio software, gym billing software, gym CRM, member management system, gym attendance tracking, personal trainer software, fitness business software">
-    <meta name="author" content="OneX-Fitness by HELYONEX">
+    <meta name="description" content="ONEX BOOST by HELYONEX is India's premier gym management software. Streamline memberships, automated billing, QR & biometric attendance, trainer workflows, and follow-ups.">
+    <meta name="keywords" content="ONEX BOOST, OneX Boost, HELYONEX, gym management software India, gym billing software, gym CRM, member management system, gym attendance tracking, fitness club software">
+    <meta name="author" content="ONEX BOOST by HELYONEX">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="revisit-after" content="7 days">
     <meta name="language" content="English">
     <meta name="geo.region" content="IN-UP">
     <meta name="geo.placename" content="Lucknow, Uttar Pradesh, India">
@@ -20,17 +19,17 @@
 
     {# ── Canonical ── #}
     {% block canonical %}
-    <link rel="canonical" href="https://onex-fitness.com/">
+    <link rel="canonical" href="https://ONEX BOOST.com/">
     {% endblock %}
 
     {# ── Open Graph ── #}
     {% block og_tags %}
-    <meta property="og:site_name" content="OneX-Fitness">
+    <meta property="og:site_name" content="ONEX BOOST">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://onex-fitness.com/">
-    <meta property="og:title" content="OneX-Fitness | Powering Smarter Fitness Businesses">
-    <meta property="og:description" content="Run your gym smarter. OneX-Fitness by HELYONEX manages memberships, billing, attendance, trainers, and follow-ups from one premium platform.">
-    <meta property="og:image" content="{% static 'images/ONEX-FITNESS-Logo.png' %}">
+    <meta property="og:url" content="https://ONEX BOOST.com/">
+    <meta property="og:title" content="ONEX BOOST | Powering Smarter Fitness Businesses">
+    <meta property="og:description" content="Run your gym smarter. ONEX BOOST by HELYONEX automates memberships, GST billing, attendance, trainers, and retention from one unified platform.">
+    <meta property="og:image" content="{% static 'images/ONEX-BOOST-Logo.png' %}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_IN">
@@ -39,10 +38,10 @@
     {# ── Twitter Card ── #}
     {% block twitter_tags %}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@OneXFitness">
-    <meta name="twitter:title" content="OneX-Fitness | Gym Management Software">
-    <meta name="twitter:description" content="India's premium gym management platform by HELYONEX — memberships, billing, attendance, trainers & more.">
-    <meta name="twitter:image" content="{% static 'images/ONEX-FITNESS-Logo.png' %}">
+    <meta name="twitter:site" content="@ONEXBOOST">
+    <meta name="twitter:title" content="ONEX BOOST | Gym Management Software">
+    <meta name="twitter:description" content="India's leading gym management OS by HELYONEX — memberships, billing, attendance, trainer workflows & more.">
+    <meta name="twitter:image" content="{% static 'images/ONEX-BOOST-Logo.png' %}">
     {% endblock %}
 
     {# ── Schema.org — Organisation ── #}
@@ -50,10 +49,10 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "OneX-Fitness",
-      "url": "https://onex-fitness.com",
-      "logo": "https://onex-fitness.com/static/images/ONEX-FITNESS-Logo.png",
-      "description": "OneX-Fitness is India's premium gym management software by HELYONEX for memberships, billing, attendance, and trainer workflows.",
+      "name": "ONEX BOOST",
+      "url": "https://ONEX BOOST.com",
+      "logo": "https://ONEX BOOST.com/static/images/ONEX-BOOST-Logo.png",
+      "description": "ONEX BOOST is India's premium gym management software platform by HELYONEX.",
       "parentOrganization": {
         "@type": "Organization",
         "name": "HELYONEX"
@@ -68,73 +67,37 @@
     }
     </script>
 
-
-
-    {# ── Page-level JSON-LD (override per page) ── #}
     {% block schema_ld %}{% endblock %}
-
     {% block meta_tags %}{% endblock %}
 
-    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
+    <!-- Favicon & Touch Icons -->
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon.png' %}?v=2">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/favicon.png' %}?v=2">
+    <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}?v=2">
+
+    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800&family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/website.css' %}?v=2.0">
-    {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
-    {% endblock %}
-    <style>
-        .marquee {
-            display: flex;
-            overflow: hidden;
-            user-select: none;
-        }
-
-        .marquee-content {
-            display: flex;
-            flex-shrink: 0;
-            justify-content: space-around;
-            min-width: 100%;
-            animation: marquee 30s linear infinite;
-        }
-
-        .marquee-item {
-            flex: 0 0 auto;
-            margin: 0 2rem;
-            height: 5rem;
-            width: auto;
-            opacity: 0.8;
-            transition: opacity 0.3s;
-            max-width: none; /* Add this line */
-        }
-
-        .marquee-item:hover {
-            opacity: 1;
-        }
-
-        @keyframes marquee {
-            0% {
-                transform: translateX(0%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-    </style>
+    
+    <!-- Design System Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/website.css' %}?v=3.0">
+    {% block extra_css %}{% endblock %}
     {% block head_extra %}{% endblock %}
 </head>
 <body class="site-body">
-    <header class="site-header">
+    <!-- ── Floating Glass Navbar ────────────────────────────────────────────── -->
+    <header class="site-header" id="siteHeader">
         <div class="brand-container site-header-inner">
             <a href="{% url 'index' %}" class="site-logo">
-                <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="OneX-Fitness logo" style="max-height: 48px; width: auto; object-fit: contain;">
+                <div class="site-logo-wrap">
+                    <img src="{% static 'images/ONEX-BOOST-Logo.png' %}" alt="ONEX BOOST">
+                </div>
             </a>
 
-            <nav class="hidden lg:flex items-center gap-7">
+            <nav class="nav-links">
                 <a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}is-active{% endif %}">Home</a>
                 <a href="{% url 'features' %}" class="nav-link {% if request.resolver_match.url_name == 'features' %}is-active{% endif %}">Features</a>
                 <a href="{% url 'pricing' %}" class="nav-link {% if request.resolver_match.url_name == 'pricing' %}is-active{% endif %}">Pricing</a>
@@ -144,181 +107,215 @@
                 <a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}is-active{% endif %}">Contact</a>
             </nav>
 
-            <div class="hidden sm:flex items-center gap-3">
-                <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Login</a>
-                <a href="{% url 'contact' %}" class="btn btn-primary btn-sm">
-                    Book Demo
-                    <i class="fa-solid fa-arrow-right"></i>
+            <div class="header-actions">
+                <a href="{% url 'login' %}" class="btn-ox btn-ox-ghost btn-ox-sm">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Login
                 </a>
+                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-sm">
+                    <i class="fa-solid fa-calendar-check"></i> Book Free Demo
+                </a>
+                <button class="mobile-hamburger-btn" id="mobileMenuOpen" aria-label="Open mobile navigation">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
             </div>
-
-            <label for="mobile-drawer" class="btn btn-ghost btn-square lg:hidden" aria-label="Open menu">
-                <i class="fa-solid fa-bars text-lg"></i>
-            </label>
         </div>
     </header>
 
-    <input type="checkbox" id="mobile-drawer" class="drawer-toggle">
-    <div class="drawer-side z-[80]">
-        <label for="mobile-drawer" class="drawer-overlay"></label>
-        <div class="mobile-panel min-h-full w-80 p-6 shadow-2xl">
-            <div class="flex items-center justify-between gap-3 mb-8">
-                <a href="{% url 'index' %}" class="site-logo">
-                    <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="OneX-Fitness logo" style="max-height: 40px; width: auto; object-fit: contain;">
-                </a>
-                <label for="mobile-drawer" class="btn btn-ghost btn-circle">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </label>
+    <!-- ── Mobile Drawer Navigation ─────────────────────────────────────────── -->
+    <div class="mobile-drawer-backdrop" id="drawerBackdrop"></div>
+    <div class="mobile-nav-drawer" id="mobileDrawer">
+        <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                <div class="site-logo-wrap">
+                    <img src="{% static 'images/ONEX-BOOST-Logo.png' %}" alt="ONEX BOOST" style="max-height: 32px;">
+                </div>
+                <button id="mobileMenuClose" style="background: transparent; border: none; color: #94a3b8; font-size: 1.35rem; cursor: pointer;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <div class="grid gap-2">
-                <a href="{% url 'index' %}" class="btn btn-ghost justify-start">Home</a>
-                <a href="{% url 'features' %}" class="btn btn-ghost justify-start">Features</a>
-                <a href="{% url 'pricing' %}" class="btn btn-ghost justify-start">Pricing</a>
-                <a href="{% url 'about' %}" class="btn btn-ghost justify-start">About</a>
-                <a href="{% url 'blogs' %}" class="btn btn-ghost justify-start">Blog</a>
-                <a href="{% url 'bmi_calculator' %}" class="btn btn-ghost justify-start">BMI Calculator</a>
-                <a href="{% url 'contact' %}" class="btn btn-ghost justify-start">Contact</a>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}is-active{% endif %}" style="font-size: 1.05rem;">Home</a>
+                <a href="{% url 'features' %}" class="nav-link {% if request.resolver_match.url_name == 'features' %}is-active{% endif %}" style="font-size: 1.05rem;">Features</a>
+                <a href="{% url 'pricing' %}" class="nav-link {% if request.resolver_match.url_name == 'pricing' %}is-active{% endif %}" style="font-size: 1.05rem;">Pricing</a>
+                <a href="{% url 'bmi_calculator' %}" class="nav-link {% if request.resolver_match.url_name == 'bmi_calculator' %}is-active{% endif %}" style="font-size: 1.05rem;">BMI Calculator</a>
+                <a href="{% url 'blogs' %}" class="nav-link {% if request.resolver_match.url_name == 'blogs' %}is-active{% endif %}" style="font-size: 1.05rem;">Blog</a>
+                <a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}is-active{% endif %}" style="font-size: 1.05rem;">About</a>
+                <a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}is-active{% endif %}" style="font-size: 1.05rem;">Contact</a>
             </div>
-            <div class="grid gap-3 mt-4">
-                <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
-                <a href="{% url 'contact' %}" class="btn btn-primary">Let's Talk</a>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.85rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+            <a href="{% url 'login' %}" class="btn-ox btn-ox-secondary" style="width: 100%;">Client Login</a>
+            <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary" style="width: 100%;">Book Free Demo</a>
+            <div style="text-align: center; margin-top: 0.5rem;">
+                <span class="parent-company-chip">
+                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="HELYONEX">
+                    <span>A <strong>HELYONEX</strong> Product</span>
+                </span>
             </div>
         </div>
     </div>
 
+    <!-- ── Main Content Area ───────────────────────────────────────────────── -->
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="site-footer bg-gray-900 text-white">
-        <div class="brand-container py-12 md:py-16">
-            <div class="grid gap-10 md:grid-cols-12 md:gap-8">
-                
-                <div class="md:col-span-4 lg:col-span-5">
-                    <a href="{% url 'index' %}" class="site-logo text-white mb-3 inline-flex">
-                        <img src="{% static 'images/ONEX-FITNESS-Logo.png' %}" alt="OneX-Fitness logo" class="h-10 w-auto" style="max-height: 44px; width: auto; object-fit: contain;">
+    <!-- ── Mega Footer ─────────────────────────────────────────────────────── -->
+    <footer class="site-footer">
+        <div class="brand-container">
+            <div class="footer-grid">
+                <!-- Brand Info -->
+                <div>
+                    <a href="{% url 'index' %}" class="site-logo">
+                        <div class="site-logo-wrap">
+                            <img src="{% static 'images/ONEX-BOOST-Logo.png' %}" alt="ONEX BOOST" style="max-height: 38px;">
+                        </div>
                     </a>
-                    <div class="flex items-center gap-2 mb-3">
-                        <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" class="w-5 h-5 rounded-full object-cover">
-                        <span class="text-xs uppercase tracking-wider text-blue-400 font-semibold">A HELYONEX Product</span>
+                    <p class="footer-tagline">
+                        India's next-generation gym management operating system. Automate memberships, biometric attendance, billing, and member engagement without manual hassles.
+                    </p>
+                    <div style="margin-bottom: 1.25rem;">
+                        <span class="parent-company-chip">
+                            <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="HELYONEX">
+                            <span>A Product of <strong>HELYONEX</strong></span>
+                        </span>
                     </div>
-                    <p class="text-gray-400 leading-relaxed text-sm md:pr-8">
-                        OneX-Fitness gives gym owners one unified, clean system for memberships, billing, attendance, staff workflows, follow-ups, and member experience.
-                    </p> 
-                    <div class="flex items-center gap-4 mt-6">
-                        <a href="https://www.instagram.com/OneX-Fitness" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://www.facebook.com/OneX-Fitness" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="https://wa.me/916392348731?text=Hello%20OneX-Fitness%2C%20I%20want%20to%20book%20a%20demo." class="social-icon" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                    <div class="footer-social-links">
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
                     </div>
                 </div>
 
-                <div class="md:col-span-8 lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
-                    <div>
-                        <h3 class="font-bold text-base mb-4 tracking-wide">Platform</h3>
-                        <div class="grid gap-3 text-sm">
-                            <a href="{% url 'features' %}" class="footer-link">Features</a>
-                            <a href="{% url 'pricing' %}" class="footer-link">Pricing</a>
-                            <a href="{% url 'bmi_calculator' %}" class="footer-link">BMI Calculator</a>
-                            <a href="{% url 'blogs' %}" class="footer-link">Insights</a>
-                        </div>
-                    </div>
+                <!-- Product Modules -->
+                <div>
+                    <h4 class="footer-col-title">Modules</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'features' %}#memberships" class="footer-link">Member Management</a></li>
+                        <li><a href="{% url 'features' %}#attendance" class="footer-link">QR & Biometrics</a></li>
+                        <li><a href="{% url 'features' %}#billing" class="footer-link">GST Invoicing & Dues</a></li>
+                        <li><a href="{% url 'features' %}#whatsapp" class="footer-link">WhatsApp Automation</a></li>
+                        <li><a href="{% url 'features' %}#portals" class="footer-link">Trainer & Member Portals</a></li>
+                        <li><a href="{% url 'features' %}#analytics" class="footer-link">Revenue Analytics</a></li>
+                    </ul>
+                </div>
 
-                    <div>
-                        <h3 class="font-bold text-base mb-4 tracking-wide">Company</h3>
-                        <div class="grid gap-3 text-sm">
-                            <a href="{% url 'about' %}" class="footer-link">About</a>
-                            <a href="{% url 'contact' %}" class="footer-link">Contact</a>
-                            <a href="{% url 'privacy_policy' %}" class="footer-link">Privacy Policy</a>
-                            <a href="{% url 'terms_of_service' %}" class="footer-link">Terms of Service</a>
-                        </div>
-                    </div>
+                <!-- Solutions -->
+                <div>
+                    <h4 class="footer-col-title">Solutions</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'features' %}" class="footer-link">Single Gyms & Studios</a></li>
+                        <li><a href="{% url 'features' %}" class="footer-link">CrossFit Boxes</a></li>
+                        <li><a href="{% url 'features' %}" class="footer-link">Multi-Branch Chains</a></li>
+                        <li><a href="{% url 'pricing' %}" class="footer-link">Affordable Pricing</a></li>
+                        <li><a href="{% url 'bmi_calculator' %}" class="footer-link">Free BMI Calculator</a></li>
+                    </ul>
+                </div>
 
-                    <div>
-                        <h3 class="font-bold text-base mb-4 tracking-wide">Support</h3>
-                        <div class="grid gap-3 text-sm">
-                            <a href="mailto:support@helyonex.com" class="footer-link">support@helyonex.com</a>
-                            <a href="tel:+916392348731" class="footer-link">+91 63923 48731</a>
-                            <a href="{% url 'refund_policy' %}" class="footer-link">Refund Policy</a>
-                        </div>
-                    </div>
+                <!-- Company -->
+                <div>
+                    <h4 class="footer-col-title">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'about' %}" class="footer-link">About ONEX BOOST</a></li>
+                        <li><a href="{% url 'blogs' %}" class="footer-link">Gym Growth Blog</a></li>
+                        <li><a href="{% url 'contact' %}" class="footer-link">Schedule a Demo</a></li>
+                        <li><a href="{% url 'login' %}" class="footer-link">Owner & Staff Login</a></li>
+                        <li><a href="{% url 'contact' %}" class="footer-link">Help & Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact & Office -->
+                <div>
+                    <h4 class="footer-col-title">Headquarters</h4>
+                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.6; margin-bottom: 0.75rem;">
+                        <i class="fa-solid fa-location-dot" style="color: #38bdf8; margin-right: 6px;"></i>
+                        HELYONEX Hub, Lucknow, Uttar Pradesh, India
+                    </p>
+                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.6; margin-bottom: 0.75rem;">
+                        <i class="fa-solid fa-phone" style="color: #38bdf8; margin-right: 6px;"></i>
+                        <a href="tel:+916392348731" style="color: #cbd5e1;">+91 63923 48731</a>
+                    </p>
+                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.25rem;">
+                        <i class="fa-solid fa-envelope" style="color: #38bdf8; margin-right: 6px;"></i>
+                        <a href="mailto:support@onex-boost.com" style="color: #cbd5e1;">support@onex-boost.com</a>
+                    </p>
+                    <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-sm" style="width: 100%;">
+                        Request Callback
+                    </a>
                 </div>
             </div>
 
-            <div class="mt-12 pt-6 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-                <p class="text-center sm:text-left flex items-center justify-center sm:justify-start gap-2 flex-wrap">
-                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="Helyonex" class="w-4 h-4 rounded-full object-cover">
-                    <span>&copy; {% now "Y" %} <strong>OneX-Fitness</strong>. A <strong>HELYONEX</strong> Product. All rights reserved.</span>
-                    <a href="{% url 'superadmin_login' %}" aria-label="Super admin" class="hover:text-white transition-colors">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </a> 
-                </p>
-                <div class="flex items-center gap-5">
-                    <a href="{% url 'privacy_policy' %}" class="footer-link">Privacy</a>
-                    <a href="{% url 'terms_of_service' %}" class="footer-link">Terms</a>
-                    <a href="{% url 'refund_policy' %}" class="footer-link">Refunds</a>
+            <div class="footer-bottom">
+                <div>
+                    &copy; {% now "Y" %} <strong>ONEX BOOST</strong>. All rights reserved. Powered by <strong>HELYONEX</strong>.
+                </div>
+                <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                    <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+                    <a href="{% url 'terms_of_service' %}">Terms of Service</a>
+                    <a href="{% url 'refund_policy' %}">Refund Policy</a>
+                    <a href="{% url 'sitemap' %}">Sitemap</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <a href="https://wa.me/916392348731?text=Hello%20OneX-Fitness%2C%20I%20want%20to%20book%20a%20demo." class="floating-action" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" style=" background-color: #25D366 !important;">
-        <i class="fa-brands fa-whatsapp text-xl"></i>
-        <span>Chat with us</span>
-    </a>
+    <!-- ── Floating Quick Action Widgets ───────────────────────────────────── -->
+    <div class="floating-widgets">
+        <a href="https://wa.me/916392348731?text=Hello%20ONEX%20BOOST%2C%20I%20want%20to%20know%20more%20about%20your%20Gym%20Management%20Software" 
+           target="_blank" rel="noopener noreferrer" 
+           class="floating-whatsapp" 
+           aria-label="Chat with ONEX BOOST on WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <button class="floating-back-to-top" id="backToTopBtn" aria-label="Back to top">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+    </div>
 
-    <button id="back-to-top" class="hidden" type="button" aria-label="Back to top">
-        <i class="fa-solid fa-arrow-up"></i>
-    </button>
-
+    <!-- ── Interactive Scripts ─────────────────────────────────────────────── -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const backToTopBtn = document.getElementById("back-to-top");
-            const revealItems = document.querySelectorAll(".site-reveal");
+        // Header scroll behavior
+        const siteHeader = document.getElementById('siteHeader');
+        const backToTopBtn = document.getElementById('backToTopBtn');
 
-            function onScroll() {
-                if (backToTopBtn) {
-                    if (window.scrollY > 320) {
-                        backToTopBtn.classList.remove("hidden");
-                    } else {
-                        backToTopBtn.classList.add("hidden");
-                    }
-                }
-
-                revealItems.forEach((item) => {
-                    const bounds = item.getBoundingClientRect();
-                    if (bounds.top < window.innerHeight - 70) {
-                        item.classList.add("is-visible");
-                    }
-                });
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 40) {
+                siteHeader.classList.add('is-scrolled');
+                backToTopBtn.classList.add('is-visible');
+            } else {
+                siteHeader.classList.remove('is-scrolled');
+                backToTopBtn.classList.remove('is-visible');
             }
-
-            if (backToTopBtn) {
-                backToTopBtn.addEventListener("click", function () {
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                });
-            }
-
-            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-                anchor.addEventListener("click", function (event) {
-                    const target = this.getAttribute("href");
-                    if (!target || target === "#") {
-                        return;
-                    }
-                    const node = document.querySelector(target);
-                    if (!node) {
-                        return;
-                    }
-                    event.preventDefault();
-                    window.scrollTo({
-                        top: node.offsetTop - 90,
-                        behavior: "smooth"
-                    });
-                });
-            });
-
-            window.addEventListener("scroll", onScroll);
-            onScroll();
         });
+
+        // Back to top click
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Mobile drawer toggles
+        const mobileMenuOpen = document.getElementById('mobileMenuOpen');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+        const mobileDrawer = document.getElementById('mobileDrawer');
+        const drawerBackdrop = document.getElementById('drawerBackdrop');
+
+        function openDrawer() {
+            mobileDrawer.classList.add('is-open');
+            drawerBackdrop.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            mobileDrawer.classList.remove('is-open');
+            drawerBackdrop.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+
+        if (mobileMenuOpen) mobileMenuOpen.addEventListener('click', openDrawer);
+        if (mobileMenuClose) mobileMenuClose.addEventListener('click', closeDrawer);
+        if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
     </script>
     {% block extra_js %}{% endblock %}
 </body>

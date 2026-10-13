@@ -1,7 +1,7 @@
 {% extends 'superadmin/base.html' %}
 {% load static humanize %}
 
-{% block title %}System Settings | {{ system_setting.platform_name|default:"OneX-Fitness" }}{% endblock %}
+{% block title %}System Settings | {{ system_setting.platform_name|default:"ONEX BOOST" }}{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/customstyle.css' %}">
@@ -92,7 +92,7 @@
         </ol>
     </nav>
 
-    <!-- HERO / PAGE HEADER (Standard OneX-Fitness Executive Header) -->
+    <!-- HERO / PAGE HEADER (Standard ONEX BOOST Executive Header) -->
     <div class="dashboard-hero-header mb-4">
         <div class="d-flex align-items-center">
             <div class="d-flex align-items-center justify-content-center text-white shadow-sm mr-3" style="width: 48px; height: 48px; min-width: 48px; border-radius: 12px; font-size: 22px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;">
@@ -502,7 +502,7 @@
                             </div>
                             <div class="col-md-6 form-group">
                                 <label class="font-weight-bold text-dark">Sender 'From' Email Address</label>
-                                <input type="email" name="smtp_from_email" id="smtp_from_email" class="form-control" value="{{ setting.smtp_from_email|default:'' }}" placeholder="no-reply@OneX-Fitness.com">
+                                <input type="email" name="smtp_from_email" id="smtp_from_email" class="form-control" value="{{ setting.smtp_from_email|default:'' }}" placeholder="no-reply@ONEX BOOST.com">
                                 <small class="text-muted">Must be authorized/verified by your email relay provider.</small>
                             </div>
                             <div class="col-md-6 d-flex align-items-center mt-3">
@@ -653,7 +653,7 @@
                     <h5 class="modal-title font-weight-bold mb-1">
                         <i class="fas fa-book-reader mr-2"></i> Outbound SMTP Gateway Setup Guide
                     </h5>
-                    <p class="small text-white-50 mb-0">Follow our step-by-step instructions to configure reliable email delivery for OneX-Fitness.</p>
+                    <p class="small text-white-50 mb-0">Follow our step-by-step instructions to configure reliable email delivery for ONEX BOOST.</p>
                 </div>
                 <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" onclick="closeSmtpGuideModal()" aria-label="Close" style="background: transparent; border: none; font-size: 1.5rem; opacity: 0.9; cursor: pointer;">
                     <span aria-hidden="true">&times;</span>
@@ -715,13 +715,13 @@
                                 <em>(Or search "App passwords" in the top Google search bar)</em>.
                             </li>
                             <li class="mb-2">
-                                <strong>Create Password:</strong> Name your app (e.g. <code>OneX-FitnessGym Platform</code>) and click <strong>Create</strong>.
+                                <strong>Create Password:</strong> Name your app (e.g. <code>ONEX BOOSTGym Platform</code>) and click <strong>Create</strong>.
                             </li>
                             <li class="mb-2">
                                 <strong>Copy 16-Character Password:</strong> Google displays a 16-letter code in a yellow box (e.g. <code>abcd efgh ijkl mnop</code>). Copy it without spaces.
                             </li>
                             <li class="mb-2">
-                                <strong>Configure in OneX-Fitness:</strong>
+                                <strong>Configure in ONEX BOOST:</strong>
                                 <table class="table table-sm table-bordered mt-2 mb-0 small">
                                     <thead class="thead-light">
                                         <tr><th>Field</th><th>Required Value</th></tr>
@@ -729,7 +729,7 @@
                                     <tbody>
                                         <tr><td><strong>SMTP Host</strong></td><td><code>smtp.gmail.com</code></td></tr>
                                         <tr><td><strong>Port</strong></td><td><code>587</code></td></tr>
-                                        <tr><td><strong>SMTP Username</strong></td><td>Your full Gmail address (e.g. <code>OneX-Fitnessgym@gmail.com</code>)</td></tr>
+                                        <tr><td><strong>SMTP Username</strong></td><td>Your full Gmail address (e.g. <code>ONEX BOOSTgym@gmail.com</code>)</td></tr>
                                         <tr><td><strong>SMTP Password</strong></td><td>Your 16-character Google App Password</td></tr>
                                         <tr><td><strong>Sender 'From' Email</strong></td><td>Same as your Gmail address</td></tr>
                                         <tr><td><strong>Encryption</strong></td><td>Check <strong>Enable TLS (Port 587)</strong></td></tr>
@@ -763,13 +763,13 @@
                                 <strong>Find SMTP Credentials:</strong> In Brevo dashboard, click your account name at top-right &rarr; select <strong>SMTP &amp; API</strong> &rarr; open the <strong>SMTP</strong> tab.
                             </li>
                             <li class="mb-2">
-                                <strong>Generate SMTP Key:</strong> Click <strong>Generate a new SMTP key</strong>, name it <code>OneX-FitnessGym</code>, and copy your master key.
+                                <strong>Generate SMTP Key:</strong> Click <strong>Generate a new SMTP key</strong>, name it <code>ONEX BOOSTGym</code>, and copy your master key.
                             </li>
                             <li class="mb-2">
                                 <strong>Verify Sender:</strong> Go to <strong>Senders, Domains &amp; Dedicated IPs</strong> in Brevo to verify the email address you will send from.
                             </li>
                             <li class="mb-2">
-                                <strong>Configure in OneX-Fitness:</strong>
+                                <strong>Configure in ONEX BOOST:</strong>
                                 <table class="table table-sm table-bordered mt-2 mb-0 small">
                                     <thead class="thead-light">
                                         <tr><th>Field</th><th>Required Value</th></tr>
@@ -807,10 +807,10 @@
                                 <strong>Generate API Key:</strong> Navigate to <strong>Settings</strong> &rarr; <strong>API Keys</strong> &rarr; click <strong>Create API Key</strong>.
                             </li>
                             <li class="mb-2">
-                                <strong>Set Permissions:</strong> Name it <code>OneX-Fitness SMTP</code>, select <strong>Full Access</strong> (or Restricted: <em>Mail Send</em>), and click <strong>Create &amp; View</strong>. Copy the key (starts with <code>SG.</code>).
+                                <strong>Set Permissions:</strong> Name it <code>ONEX BOOST SMTP</code>, select <strong>Full Access</strong> (or Restricted: <em>Mail Send</em>), and click <strong>Create &amp; View</strong>. Copy the key (starts with <code>SG.</code>).
                             </li>
                             <li class="mb-2">
-                                <strong>Configure in OneX-Fitness:</strong>
+                                <strong>Configure in ONEX BOOST:</strong>
                                 <table class="table table-sm table-bordered mt-2 mb-0 small">
                                     <thead class="thead-light">
                                         <tr><th>Field</th><th>Required Value</th></tr>
@@ -848,7 +848,7 @@
                                 Notice your Outgoing Server name (often <code>mail.yourdomain.com</code> or <code>smtp.hostinger.com</code>).
                             </li>
                             <li class="mb-2">
-                                <strong>Configure in OneX-Fitness:</strong>
+                                <strong>Configure in ONEX BOOST:</strong>
                                 <table class="table table-sm table-bordered mt-2 mb-0 small">
                                     <thead class="thead-light">
                                         <tr><th>Field</th><th>SSL Option (Port 465)</th><th>TLS Option (Port 587)</th></tr>
@@ -857,7 +857,7 @@
                                         <tr><td><strong>SMTP Host</strong></td><td><code>mail.yourdomain.com</code></td><td><code>mail.yourdomain.com</code></td></tr>
                                         <tr><td><strong>Port</strong></td><td><code>465</code></td><td><code>587</code></td></tr>
                                         <tr><td><strong>Encryption</strong></td><td>Check <strong>Enable SSL (Port 465)</strong></td><td>Check <strong>Enable TLS (Port 587)</strong></td></tr>
-                                        <tr><td><strong>SMTP Username</strong></td><td colspan="2">Your complete email address (e.g. <code>info@OneX-Fitness.com</code>)</td></tr>
+                                        <tr><td><strong>SMTP Username</strong></td><td colspan="2">Your complete email address (e.g. <code>info@ONEX BOOST.com</code>)</td></tr>
                                         <tr><td><strong>SMTP Password</strong></td><td colspan="2">Your mailbox password</td></tr>
                                         <tr><td><strong>Sender 'From' Email</strong></td><td colspan="2">Same mailbox email address</td></tr>
                                     </tbody>

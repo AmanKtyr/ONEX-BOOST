@@ -1887,10 +1887,10 @@ def system_settings_view(request):
                     use_ssl=use_ssl,
                     timeout=12,
                 )
-                platform_name = setting.platform_name or 'OneX-Fitness'
+                platform_name = setting.platform_name or 'ONEX BOOST'
                 timestamp_str = timezone.now().strftime('%d %b %Y, %I:%M:%S %p')
                 subject = f"[{platform_name}] SMTP Gateway Test Verification"
-                text_body = f"Hello,\n\nThis is a verification test from {platform_name}.\nYour Outbound Email & SMTP Gateway has been successfully configured and connected.\n\nDispatched at: {timestamp_str}\nHost: {host}:{port}\nSender: {from_email}\n\nOneX-Fitness SaaS Platform"
+                text_body = f"Hello,\n\nThis is a verification test from {platform_name}.\nYour Outbound Email & SMTP Gateway has been successfully configured and connected.\n\nDispatched at: {timestamp_str}\nHost: {host}:{port}\nSender: {from_email}\n\nONEX BOOST SaaS Platform"
 
                 html_body = f"""
                 <div style="max-width:600px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid #e2e8f0;font-family:sans-serif;">

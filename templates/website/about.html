@@ -1,194 +1,138 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
 
-{% block title %}About OneX-Fitness | Premium Gym Management Software by HELYONEX{% endblock %}
+{% block title %}About ONEX BOOST | Powering Smarter Fitness Businesses by HELYONEX{% endblock %}
 
 {% block seo %}
-<meta name="description" content="Learn about OneX-Fitness — India's premium gym management software engineered by HELYONEX for gyms, fitness studios, and independent trainers. Discover our mission and technology.">
-<meta name="keywords" content="about OneX-Fitness, HELYONEX, gym management company India, fitness software company, gym software developers India, fitness business software">
-<meta name="author" content="OneX-Fitness by HELYONEX">
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="description" content="Learn about ONEX BOOST — India's premier gym management operating system developed by HELYONEX. Discover our mission, engineering philosophy, and commitment to fitness entrepreneurs.">
+<meta name="keywords" content="about ONEX BOOST, OneX Boost, HELYONEX, gym management software company, fitness business operating system, fitness technology India">
 {% endblock %}
 
 {% block canonical %}
-<link rel="canonical" href="https://onex-fitness.com/about/">
-{% endblock %}
-
-{% block og_tags %}
-<meta property="og:site_name" content="OneX-Fitness">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://onex-fitness.com/about/">
-<meta property="og:title" content="About OneX-Fitness — Transforming Gym Management by HELYONEX">
-<meta property="og:description" content="OneX-Fitness by HELYONEX was built to solve the real pressure points slowing gyms down — billing follow-ups, fragmented workflows, and member retention.">
-<meta property="og:image" content="{% static 'images/ONEX-FITNESS-Logo.png' %}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:locale" content="en_IN">
-{% endblock %}
-
-{% block twitter_tags %}
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="About OneX-Fitness — Gym Management Software by HELYONEX">
-<meta name="twitter:description" content="Built for gyms that want cleaner operations, automated billing, and modern member experience.">
-<meta name="twitter:image" content="{% static 'images/ONEX-FITNESS-Logo.png' %}">
-{% endblock %}
-
-{% block schema_ld %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "OneX-Fitness by HELYONEX",
-  "url": "https://onex-fitness.com",
-  "logo": "https://onex-fitness.com/static/images/ONEX-FITNESS-Logo.png",
-  "description": "OneX-Fitness is a premium gym management software platform by HELYONEX serving fitness centers and studios across India.",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "HELYONEX HQ",
-    "addressLocality": "Lucknow",
-    "addressRegion": "Uttar Pradesh",
-    "postalCode": "226010",
-    "addressCountry": "IN"
-  },
-  "telephone": "+91-63923-48731",
-  "email": "support@helyonex.com",
-  "openingHours": "Mo-Sa 10:00-18:00"
-}
-</script>
+<link rel="canonical" href="https://ONEX BOOST.com/about/">
 {% endblock %}
 
 {% block content %}
-<section class="page-hero">
-    <img src="{% static 'images/hero_image_gym.png' %}" alt="About OneX-Fitness" class="page-hero-media">
-    <div class="brand-container page-hero-content">
-        <div class="max-w-4xl site-reveal">
-            <span class="brand-eyebrow brand-eyebrow-dark">
-                <i class="fa-solid fa-flag"></i>
-                About OneX-Fitness
-            </span>
-            <h1 class="brand-heading mt-6">We built OneX-Fitness around the pressure points that slow good gyms down.</h1>
-            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
-                Great fitness businesses often lose time to manual coordination, scattered systems, and inconsistent front-desk execution. OneX-Fitness was created to bring those moving parts into one sharper operating rhythm.
+<!-- ── HERO ────────────────────────────────────────────────────────────────── -->
+<section class="hero-section" style="padding: 9rem 0 4.5rem;">
+    <div class="hero-glow-orb hero-glow-1"></div>
+    <div class="brand-container">
+        <div class="hero-content">
+            <div class="ox-badge mb-3">
+                <i class="fa-solid fa-flag"></i> Our Mission & Heritage
+            </div>
+            <h1 class="hero-title">
+                We Built ONEX BOOST to Eliminate <br>
+                <span class="gradient-text">Operational Friction for Gym Owners</span>
+            </h1>
+            <p class="hero-subtitle">
+                Backed by HELYONEX, we are building the digital backbone for India's rapidly growing fitness industry — helping passionate trainers and gym entrepreneurs run world-class clubs.
             </p>
         </div>
     </div>
 </section>
 
-<section class="brand-section">
+<!-- ── STORY & FOUNDING ────────────────────────────────────────────────────── -->
+<section class="section-py">
     <div class="brand-container">
-        <div class="grid lg:grid-cols-[1fr_1fr] gap-10 items-start">
-            <div class="site-reveal">
-                <span class="brand-eyebrow">
-                    <i class="fa-solid fa-book-open"></i>
-                    Our story
-                </span>
-                <h2 class="brand-section-title mt-4">The idea started with one clear pattern.</h2>
-                <p class="brand-section-copy">
-                        Gym teams were working hard, but their energy was being drained by fragmented systems for billing, member tracking, and administrative tasks. We saw a clear pattern of operational drag holding back even the most passionate owners.
-                    </p>
-                    <p class="brand-section-copy">
-                        OneX-Fitness was built to eliminate that drag. It’s a single, unified platform that integrates core functions, empowering teams to focus on delivering exceptional member experiences instead of fighting with their software.
-                    </p>
-                    <p class="brand-section-copy">
-                        Our mission is to provide a stable, reliable platform that lets you focus on what matters most: your members.
-                    </p>
-            </div>
-            <div class="brand-card p-8 site-reveal">
-                <img src="{% static 'images/gymaboutimage.png' %}" alt="OneX-Fitness product story" class="rounded-[1.6rem]">
-            </div>
-        </div>
-
-        <div class="grid gap-5 mt-12">
-            <div class="brand-card p-8 site-reveal">
-                <p class="brand-mono text-xs uppercase tracking-[0.2em] text-slate-500">Phase 01</p>
-                <h3 class="text-2xl font-bold mt-3 mb-3">Study what actually breaks under daily pressure.</h3>
-                <p class="text-slate-800 leading-8">The problem was rarely motivation. It was system friction. Teams needed a setup that could support the realities of front-desk, trainer, payment, and member workflows together.</p>
-            </div>
-            <div class="brand-card p-8 site-reveal">
-                <p class="brand-mono text-xs uppercase tracking-[0.2em] text-slate-500">Phase 02</p>
-                <h3 class="text-2xl font-bold mt-3 mb-3">Design around business leverage, not feature clutter.</h3>
-                <p class="text-slate-800 leading-8">OneX-Fitness focuses on the operating loops that create leverage: onboarding, renewals, due recovery, trainer execution, member consistency, and better day-to-day control.</p>
-            </div>
-            <div class="brand-card p-8 site-reveal">
-                <p class="brand-mono text-xs uppercase tracking-[0.2em] text-slate-500">Phase 03</p>
-                <h3 class="text-2xl font-bold mt-3 mb-3">Keep the product grounded in how teams really work.</h3>
-                <p class="text-slate-800 leading-8">That means practical workflows, sensible controls, better clarity for owners, and a product surface that feels professional instead of improvised.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="brand-section brand-section-soft">
-    <div class="brand-container">
-        <div class="grid lg:grid-cols-[.95fr_1.05fr] gap-10 items-center">
-            <div class="site-reveal">
-                <span class="brand-eyebrow">
-                    <i class="fa-solid fa-compass"></i>
-                    What drives us
-                </span>
-                <h2 class="brand-section-title mt-4">We want independent gyms and growing brands to operate with more confidence.</h2>
-            </div>
-            <div class="grid gap-4">
-                <div class="brand-card p-6 site-reveal">
-                    <h3 class="text-xl font-bold mb-2">Less manual follow-up</h3>
-                    <p class="text-slate-800 leading-8">Teams should not have to rely on memory, scattered notes, or repetitive low-value admin work.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1.15fr; gap: 4rem; align-items: center;">
+            <div>
+                <div class="ox-badge mb-3">
+                    <i class="fa-solid fa-heart-pulse"></i> Why We Started
                 </div>
-                <div class="brand-card p-6 site-reveal">
-                    <h3 class="text-xl font-bold mb-2">More dependable systems</h3>
-                    <p class="text-slate-800 leading-8">Owners need numbers, workflows, and visibility they can trust when making daily decisions.</p>
+                <h2 style="font-size: 2.35rem; margin-bottom: 1.25rem; color: var(--ox-text-primary);">Born on the Gym Floor, Not an Abstract Boardroom</h2>
+                <p style="color: var(--ox-text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.25rem;">
+                    We spent months shadowing gym owners, reception managers, and trainers across Lucknow, Delhi NCR, and tier-1/tier-2 Indian cities. We witnessed passionate fitness coaches buried under WhatsApp chats, paper registers, broken fingerprint machines, and overdue membership disputes.
+                </p>
+                <p style="color: var(--ox-text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+                    Generic ERPs and overseas software were either clunky, exorbitantly expensive, or completely neglected Indian payment methods, GST compliance, and local WhatsApp workflows. That is why <strong>HELYONEX</strong> engineered ONEX BOOST: a bespoke, razor-sharp operating system built from the ground up for Indian fitness businesses.
+                </p>
+                <div style="display: inline-flex; align-items: center; gap: 0.85rem; padding: 0.75rem 1.25rem; border-radius: 14px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2);">
+                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="HELYONEX" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;">
+                    <span style="font-size: 0.92rem; color: var(--ox-text-primary);">Proudly Engineered in India by <strong>HELYONEX</strong></span>
                 </div>
-                <div class="brand-card p-6 site-reveal">
-                    <h3 class="text-xl font-bold mb-2">Stronger member relationships</h3>
-                    <p class="text-slate-800 leading-8">Better operations create the consistency and time needed for better member experience and retention.</p>
+            </div>
+            <div>
+                <div class="bento-card" style="padding: 1.5rem; background: #ffffff;">
+                    <img src="{% static 'images/gymaboutimage.png' %}" alt="ONEX BOOST Gym Floor Experience" style="border-radius: 14px; width: 100%; border: 1px solid var(--ox-border-color);">
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="brand-section">
+<!-- ── CORE VALUES BENTO ───────────────────────────────────────────────────── -->
+<section class="section-py" style="background: #ffffff; border-top: 1px solid var(--ox-border-color); border-bottom: 1px solid var(--ox-border-color);">
     <div class="brand-container">
-        <div class="text-center max-w-3xl mx-auto mb-12 site-reveal">
-            <span class="brand-eyebrow">
-                <i class="fa-solid fa-hand-holding-heart"></i>
-                Principles
-            </span>
-            <h2 class="brand-section-title mt-4">How we think about product and support.</h2>
+        <div class="section-header">
+            <div class="ox-badge section-eyebrow">
+                <i class="fa-solid fa-compass"></i> Guiding Principles
+            </div>
+            <h2 class="section-title">The Engineering Values Behind ONEX BOOST</h2>
+            <p class="section-description">
+                Every line of code and user interface decision is guided by four uncompromising standards.
+            </p>
         </div>
 
-        <div class="value-grid">
-            <div class="brand-card p-8 site-reveal">
-                <h3 class="text-2xl font-bold mb-3">Ship with accountability</h3>
-                <p class="text-slate-800 leading-8">Features should be usable, supportable, and steady enough to matter in production.</p>
+        <div class="bento-grid">
+            <div class="bento-card bento-col-6">
+                <div class="bento-icon">
+                    <i class="fa-solid fa-gauge-high"></i>
+                </div>
+                <h3 class="bento-title">Speed Over Clutter</h3>
+                <p class="bento-desc">
+                    Front desks get chaotic during morning and evening rush hours. Every check-in, search, and invoice creation in ONEX BOOST is designed to execute in under 3 clicks and less than 1.5 seconds.
+                </p>
             </div>
-            <div class="brand-card p-8 site-reveal">
-                <h3 class="text-2xl font-bold mb-3">Listen to operators</h3>
-                <p class="text-slate-800 leading-8">Gym owners, managers, and staff stay closest to the truth of what makes software helpful or frustrating.</p>
+
+            <div class="bento-card bento-col-6">
+                <div class="bento-icon bento-icon-emerald">
+                    <i class="fa-solid fa-shield-check"></i>
+                </div>
+                <h3 class="bento-title">Uncompromising Security & Reliability</h3>
+                <p class="bento-desc">
+                    Your member contact lists, financial revenue figures, and billing transactions are encrypted with bank-grade protocols and backed up automatically to secure cloud vaults.
+                </p>
             </div>
-            <div class="brand-card p-8 site-reveal">
-                <h3 class="text-2xl font-bold mb-3">Build for growth</h3>
-                <p class="text-slate-800 leading-8">A good system should stay coherent as a business grows in complexity, staff count, and operational load.</p>
+
+            <div class="bento-card bento-col-6">
+                <div class="bento-icon bento-icon-amber">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                </div>
+                <h3 class="bento-title">Honest, Predictable Pricing</h3>
+                <p class="bento-desc">
+                    No deceptive per-member gouging or unexpected invoice fees. We believe in transparent SaaS subscriptions that allow gym owners to grow without being penalized.
+                </p>
+            </div>
+
+            <div class="bento-card bento-col-6">
+                <div class="bento-icon bento-icon-purple">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <h3 class="bento-title">Fanatical Customer Support</h3>
+                <p class="bento-desc">
+                    When you call or WhatsApp our support line, you talk directly to technical specialists in India who know gym operations inside out — not automated overseas chatbots.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="brand-section brand-section-dark">
+<!-- ── CTA BANNER ──────────────────────────────────────────────────────────── -->
+<section class="section-py">
     <div class="brand-container">
-        <div class="brand-card brand-card-dark p-10 lg:p-12 site-reveal">
-            <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-center">
-                <div>
-                    <span class="brand-eyebrow brand-eyebrow-dark">
-                        <i class="fa-solid fa-calendar-check"></i>
-                        See it in action
-                    </span>
-                    <h2 class="brand-section-title mt-4">Want to see how OneX-Fitness supports a modern gym operation?</h2>
-                    <p class="text-white/70 leading-8 max-w-2xl">We can walk through the exact workflows that matter to your team and show where the system creates the most leverage.</p>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="{% url 'contact' %}" class="btn btn-primary">Talk to sales</a>
-                    <a href="{% url 'pricing' %}" class="btn btn-outline border-white/20 bg-white/8 text-white hover:bg-white/16 hover:text-white">View pricing</a>
-                </div>
+        <div class="cta-banner">
+            <h2 class="cta-banner-title">Join Hundreds of Thriving Gym Owners</h2>
+            <p class="cta-banner-desc">
+                Let us show you how ONEX BOOST can transform your daily facility management. Experience the difference of software built specifically for your business.
+            </p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
+                    <i class="fa-solid fa-calendar-check"></i> Schedule 15-Min Live Demo
+                </a>
+                <a href="{% url 'features' %}" class="btn-ox btn-ox-secondary btn-ox-lg">
+                    <i class="fa-solid fa-arrow-right"></i> Explore All Features
+                </a>
             </div>
         </div>
     </div>

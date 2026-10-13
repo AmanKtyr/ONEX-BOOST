@@ -256,12 +256,12 @@ class NotificationUserStatus(models.Model):
 
 class SystemSetting(models.Model):
     # Platform Identity
-    platform_name = models.CharField(max_length=150, default="OneX-Fitness")
+    platform_name = models.CharField(max_length=150, default="ONEX BOOST")
     tagline = models.CharField(max_length=255, default="Powering Smarter Fitness Businesses", blank=True)
-    company_name = models.CharField(max_length=200, default="OneX-Fitness (A HELYONEX Product)", blank=True)
+    company_name = models.CharField(max_length=200, default="ONEX BOOST (A HELYONEX Product)", blank=True)
     support_email = models.EmailField(default="support@helyonex.com", blank=True)
     support_phone = models.CharField(max_length=30, default="+91 88875 58415", blank=True)
-    website_url = models.URLField(default="https://OneX-Fitness.com", blank=True)
+    website_url = models.URLField(default="https://onex-boost.com", blank=True)
     currency_symbol = models.CharField(max_length=10, default="₹")
     currency_code = models.CharField(max_length=10, default="INR")
     timezone = models.CharField(max_length=50, default="Asia/Kolkata")

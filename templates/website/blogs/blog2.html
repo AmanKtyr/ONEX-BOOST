@@ -150,6 +150,33 @@
 </script>
 {% endblock %}
 
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#0284c7',
+                }
+            }
+        }
+    }
+</script>
+<style>
+    .btn.btn-primary, .btn-primary {
+        background-color: #0284c7 !important;
+        border-color: #0284c7 !important;
+        color: #ffffff !important;
+    }
+    .btn.btn-primary:hover, .btn-primary:hover {
+        background-color: #0369a1 !important;
+        border-color: #0369a1 !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="page-hero">
     <img src="{% static 'images/hero_image_gym.png' %}" alt="Gym management software in Lucknow" class="page-hero-media">

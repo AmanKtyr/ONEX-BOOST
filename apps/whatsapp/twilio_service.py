@@ -123,7 +123,7 @@ class TwilioWhatsAppService:
             logger.error(f"❌ Error sending WhatsApp message: {e}")
             return {'success': False, 'error': str(e)}
 
-    def send_enquiry_confirmation(self, to_number, name, gym_name="OneX-Fitness", gym_contact_number=None, logo_url=None):
+    def send_enquiry_confirmation(self, to_number, name, gym_name="ONEX BOOST", gym_contact_number=None, logo_url=None):
         """
         Convenience method for enquiry confirmation with optional logo.
         """
@@ -131,7 +131,7 @@ class TwilioWhatsAppService:
         # Mapping recovered from common patterns: 1:name, 2:gym_name, 3:contact
         vars_dict = {
             "1": str(name).strip(),
-            "2": str(gym_name or "OneX-Fitness").strip(),
+            "2": str(gym_name or "ONEX BOOST").strip(),
             "3": str(gym_contact_number).strip() if gym_contact_number else "N/A",
             "4": str(logo_url or "").strip()
         }

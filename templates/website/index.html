@@ -1,446 +1,988 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
 
-{% block title %}OneX-Fitness | Best Gym Management Software in India by HELYONEX{% endblock %}
+{% block title %}ONEX BOOST | Best Gym Management Software in India by HELYONEX{% endblock %}
 
 {% block seo %}
-<meta name="description" content="OneX-Fitness by HELYONEX is India's premier gym management software. Automate memberships, billing, attendance tracking, trainer workflows, follow-ups & more. Book a free demo today.">
-<meta name="keywords" content="best gym management software India, OneX-Fitness, HELYONEX, gym management software, gym software India, fitness studio management, gym billing software, gym membership software, gym CRM software">
-<meta name="author" content="OneX-Fitness by HELYONEX">
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-<meta name="google-site-verification" content="WXgpCm7smrPbuCEaiWjSUBw0P5-NHi7MG_IilJc86t4" />
-{% endblock %}
-
-{% block canonical %}
-<link rel="canonical" href="https://onex-fitness.com/">
-{% endblock %}
-
-{% block og_tags %}
-<meta property="og:site_name" content="OneX-Fitness">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://onex-fitness.com/">
-<meta property="og:title" content="OneX-Fitness — Best Gym Management Software in India by HELYONEX">
-<meta property="og:description" content="Run your gym with zero friction. OneX-Fitness handles memberships, billing, attendance, trainer workflows, follow-ups, and daily operations in one premium platform.">
-<meta property="og:image" content="{% static 'images/ONEX-FITNESS-Logo.png' %}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:locale" content="en_IN">
-{% endblock %}
-
-{% block twitter_tags %}
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@OneXFitness">
-<meta name="twitter:title" content="OneX-Fitness — Best Gym Management Software in India by HELYONEX">
-<meta name="twitter:description" content="Memberships, billing, attendance, trainer workflows — one premium gym OS built for serious fitness businesses.">
-<meta name="twitter:image" content="{% static 'images/ONEX-FITNESS-Logo.png' %}">
-{% endblock %}
-
-{% block schema_ld %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "OneX-Fitness",
-  "url": "https://onex-fitness.com",
-  "applicationCategory": "BusinessApplication",
-  "operatingSystem": "Web",
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "INR",
-    "availability": "https://schema.org/InStock"
-  },
-  "description": "OneX-Fitness by HELYONEX is India's leading gym management software. Manage memberships, billing, attendance, trainers, follow-ups, and gym operations from one powerful platform.",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "reviewCount": "87"
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "OneX-Fitness",
-  "url": "https://onex-fitness.com",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://onex-fitness.com/blogs/?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
-}
-</script>
+<meta name="description" content="ONEX BOOST by HELYONEX is India's leading gym management software. Automate memberships, biometric attendance, WhatsApp billing reminders, trainer workflows, and revenue analytics.">
+<meta name="keywords" content="ONEX BOOST, HELYONEX, gym management software India, gym billing software, gym CRM, fitness studio management, biometric gym attendance, gym software Lucknow">
 {% endblock %}
 
 {% block content %}
-{% comment %} hero section {% endcomment %}
-<section class="relative bg-cover bg-center h-auto py-20 md:h-[30rem] md:py-0" style="background-image: url('{% static 'images/home_hero_image_gym.png' %}');">
-    <div class="absolute inset-0 bg-black opacity-50 md:hidden"></div>
-    <div class="relative z-10 flex items-center h-full">
-        <div class="container mx-auto px-4 text-center md:text-left">
-            <div class="max-w-xl text-white">
-                <span class="brand-eyebrow brand-eyebrow-dark mb-6 inline-block">
-                    <i class="fa-solid fa-wave-square"></i>
-                    Built for gyms, studios, and fitness brands
-                </span>
-                <h1 class="text-4xl md:text-5xl font-bold leading-tight">Power Your Gym. <br> <span style="color: #38bdf8;">Grow</span> <span style="color: #ea580c; text-shadow: 0 0 20px rgba(153, 49, 23, 0.4);">Your Business.</span></h1>
-                <p class="mt-4 text-lg">OneX-Fitness is an all-in-one gym management solution by HELYONEX designed to simplify operations, boost member engagement, and accelerate growth.</p>
-                <div class="mt-10 flex flex-col md:flex-row items-center justify-center md:justify-start space-y-4 md:space-y-0 md:space-x-4">
-                    <a href="{% url 'contact' %}" class="btn text-white font-bold py-4 px-8 rounded-full text-lg w-full md:w-auto shadow-lg transition-transform hover:scale-105" style="background-color: #007bff; border: none;">Book a Free Demo</a>
-                    <a href="{% url 'features' %}" class="btn font-bold py-4 px-8 rounded-full text-lg w-full md:w-auto shadow-md transition-transform hover:scale-105" style="background-color: #ffffff; color: #993117; border: 2px solid #993117;">Explore features</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- ── HERO SECTION ────────────────────────────────────────────────────────── -->
+<section class="hero-section">
+    <div class="hero-glow-orb hero-glow-1"></div>
+    <div class="hero-glow-orb hero-glow-2"></div>
 
-<section class="brand-section">
     <div class="brand-container">
-        <div class="flex flex-col lg:items-center lg:justify-center gap-6 mb-5">
-            <div class="site-reveal text-center">
-                <span class="brand-eyebrow mx-auto">
-                    <i class="fa-solid fa-layer-group"></i>
-                    Product core
-                </span>
-                <h2 class="brand-section-title mt-4">A cleaner operating flow for modern gym teams.</h2>
-                <p class="brand-section-copy mx-auto">The standout fitness software brands lead with clear workflows, strong product proof, and a visual system that feels premium at every touchpoint. OneX-Fitness should do the same, and now it does.</p>
+        <div class="hero-content">
+            <div class="ox-badge mb-4">
+                <span class="ox-badge-pulse"></span>
+                <span>Powered by HELYONEX &bull; India's #1 Gym OS</span>
             </div>
-        </div>
 
-        <div class="grid lg:grid-cols-3 gap-8">
-            <article class="brand-card p-8 site-reveal text-center">
-                <span class="brand-icon mb-6 inline-block"><i class="fa-solid fa-users-gear"></i></span>
-                <h3 class="text-2xl font-bold mb-3">Member and lead management</h3>
-                <p class="text-slate-800 leading-8">Handle enquiries, onboarding, renewals, freezes, and member history from one structured workspace.</p>
-            </article>
-            <article class="brand-card p-8 site-reveal text-center">
-                <span class="brand-icon-secondary mb-6 inline-block"><i class="fa-solid fa-file-invoice-dollar"></i></span>
-                <h3 class="text-2xl font-bold mb-3">Billing with less chasing</h3>
-                <p class="text-slate-800 leading-8">Simplify invoices, due collections, PT payments, plan tracking, and payment visibility without manual friction.</p>
-            </article>
-            <article class="brand-card p-8 site-reveal text-center">
-                <span class="brand-icon-accent mb-6 inline-block"><i class="fa-solid fa-arrow-up-right-dots"></i></span>
-                <h3 class="text-2xl font-bold mb-3">Trainer and program workflows</h3>
-                <p class="text-slate-800 leading-8">Manage trainers, workout plans, diet plans, attendance, and structured delivery for a stronger member experience.</p>
-            </article>
-        </div>
-    </div>
-</section>
+            <h1 class="hero-title">
+                The Operating System for <br>
+                <span class="gradient-text">Modern Gyms & Fitness Clubs</span>
+            </h1>
 
-<section class="brand-section brand-section-soft">
-    <div class="brand-container">
-        <div class="grid lg:grid-cols-2 gap-10 items-center">
-            <div class="site-reveal">
-                <img src="{% static 'images/fitstack-about.png' %}" alt="OneX-Fitness Dashboard" class="feature-image rounded-lg shadow-xl">
-            </div>
-            <div class="site-reveal">
-                <h2 class="brand-section-title">Smarter Gym, Stronger Results</h2>
-                <p class="brand-section-copy mt-4">OneX-Fitness is the ultimate gym management software, designed to streamline your operations and elevate your members' experience. Our comprehensive platform provides everything you need to manage your facility, from member onboarding to progress tracking and payment processing. With OneX-Fitness, you can focus on what you do best: helping your members achieve their fitness goals.</p>
-                <div class="grid sm:grid-cols-2 gap-x-8 gap-y-4 mt-8">
-                    <div class="flex items-center gap-3">
-                        <span class="brand-check"><i class="fa-solid fa-check"></i></span>
-                        <p class="text-slate-700">Member Management</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="brand-check"><i class="fa-solid fa-check"></i></span>
-                        <p class="text-slate-700">Workout Planning</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="brand-check"><i class="fa-solid fa-check"></i></span>
-                        <p class="text-slate-700">Progress Tracking</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="brand-check"><i class="fa-solid fa-check"></i></span>
-                        <p class="text-slate-700">Payment Integration</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+            <p class="hero-subtitle">
+                Streamline member onboarding, automate WhatsApp billing reminders, track QR & biometric attendance, and empower trainers — all from one high-performance platform.
+            </p>
 
-<section class="brand-section">
-    <div class="brand-container">
-        <div class="text-center max-w-3xl mx-auto mb-5 site-reveal">
-            <span class="brand-eyebrow">
-                <i class="fa-solid fa-grid-2"></i>
-                Key modules
-            </span>
-            <h2 class="brand-section-title mt-4">Everything your fitness business needs in one stack.</h2>
-            <p class="brand-section-copy mx-auto">OneX-Fitness is structured like a real business platform, with clear modules your team can actually use daily.</p>
-        </div>
-
-        <div class="value-grid">
-            <article class="brand-card p-8 site-reveal">
-                <div class="flex items-center gap-4 mb-5">
-                    <span class="brand-icon"><i class="fa-solid fa-id-card"></i></span>
-                    <h3 class="text-xl font-bold">Members and renewals</h3>
-                </div>
-                <p class="text-slate-800 leading-8">Profiles, membership assignments, status updates, renewals, and complete lifecycle tracking.</p>
-            </article>
-            <article class="brand-card p-8 site-reveal">
-                <div class="flex items-center gap-4 mb-5">
-                    <span class="brand-icon-secondary"><i class="fa-solid fa-file-invoice-dollar"></i></span>
-                    <h3 class="text-xl font-bold">Billing and invoices</h3>
-                </div>
-                <p class="text-slate-800 leading-8">Invoices, due collection, payment logging, PT payments, and financial process visibility.</p>
-            </article>
-            <article class="brand-card p-8 site-reveal">
-                <div class="flex items-center gap-4 mb-5">
-                    <span class="brand-icon-accent"><i class="fa-solid fa-clipboard-list"></i></span>
-                    <h3 class="text-xl font-bold">Workout and diet plans</h3>
-                </div>
-                <p class="text-slate-800 leading-8">Assign structured plans so your trainers and members stay aligned on delivery and progress.</p>
-            </article>
-            <article class="brand-card p-8 site-reveal">
-                <div class="flex items-center gap-4 mb-5">
-                    <span class="brand-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
-                    <h3 class="text-xl font-bold">Inventory and operations</h3>
-                </div>
-                <p class="text-slate-800 leading-8">Track stock, suppliers, equipment, maintenance, and day-to-day operations from the same system.</p>
-            </article>
-            <article class="brand-card p-8 site-reveal">
-                <div class="flex items-center gap-4 mb-5">
-                    <span class="brand-icon-secondary"><i class="fa-solid fa-user-tie"></i></span>
-                    <h3 class="text-xl font-bold">Trainer workflows</h3>
-                </div>
-                <p class="text-slate-800 leading-8">Manage trainer data, PT assignment, attendance, and schedules with clearer internal control.</p>
-            </article>
-            <article class="brand-card p-8 site-reveal">
-                <div class="flex items-center gap-4 mb-5">
-                    <span class="brand-icon-accent"><i class="fa-solid fa-comments"></i></span>
-                    <h3 class="text-xl font-bold">Communication and follow-up</h3>
-                </div>
-                <p class="text-slate-800 leading-8">Support reminders, submissions, and engagement workflows that help teams stay proactive.</p>
-            </article>
-            <article class="brand-card p-8 site-reveal">
-                <div class="flex items-center gap-4 mb-5">
-                    <span class="brand-icon"><i class="fa-solid fa-calendar-check"></i></span>
-                    <h3 class="text-xl font-bold">Attendance</h3>
-                </div>
-                <p class="text-slate-800 leading-8">Track member attendance, monitor class capacity, and gain insights into facility usage.</p>
-            </article>
-            <article class="brand-card p-8 site-reveal">
-                <div class="flex items-center gap-4 mb-5">
-                    <span class="brand-icon-secondary"><i class="fa-solid fa-calendar"></i></span>
-                    <h3 class="text-xl font-bold">Event Management</h3>
-                </div>
-                <p class="text-slate-800 leading-8">Organize and manage gym events, workshops, and competitions with ease.</p>
-            </article>
-        </div>
-    </div>
-</section>
-
-
-<section class="brand-section">
-    <div class="brand-container">
-        <div class="grid lg:grid-cols-2 gap-10 items-center">
-            <div class="site-reveal">
-                <span class="brand-eyebrow">
-                    <i class="fa-brands fa-whatsapp"></i>
-                    WhatsApp Integration
-                </span>
-                <h2 class="brand-section-title mt-4">Engage members directly with automated WhatsApp messaging.</h2>
-                <div class="brand-list mt-8">
-                    <div class="brand-list-item">
-                        <span class="brand-check"><i class="fa-solid fa-check"></i></span>
-                        <div>
-                            <h3 class="font-bold text-lg">Automated reminders and alerts</h3>
-                            <p class="text-slate-800 leading-7">Send appointment reminders, class updates, membership expiry notifications, payment alerts, and promotional offers.</p>
-                        </div>
-                    </div>
-                    <div class="brand-list-item">
-                        <span class="brand-check"><i class="fa-solid fa-check"></i></span>
-                        <div>
-                            <h3 class="font-bold text-lg">Two-way communication</h3>
-                            <p class="text-slate-800 leading-7">Address member inquiries and provide personalized support with direct, two-way messaging.</p>
-                        </div>
-                    </div>
-                    <div class="brand-list-item">
-                        <span class="brand-check"><i class="fa-solid fa-check"></i></span>
-                        <div>
-                            <h3 class="font-bold text-lg">Personalized engagement</h3>
-                            <p class="text-slate-800 leading-7">Build stronger relationships by sending festival, birthday, and anniversary wishes automatically.</p>
-                        </div>
-                    </div>
-                </div>
-                <a href="{% url 'features' %}" class="btn btn-link mt-6">
-                    Find Out More
-                    <i class="fa-solid fa-arrow-right"></i>
+            <div class="hero-cta-group">
+                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
+                    <i class="fa-solid fa-bolt"></i> Book a Live Demo
+                </a>
+                <a href="{% url 'features' %}" class="btn-ox btn-ox-secondary btn-ox-lg">
+                    <i class="fa-solid fa-compass"></i> Explore Modules
                 </a>
             </div>
-            <div class="site-reveal">
-                <img src="{% static 'images/whatsapp-img.png' %}" alt="OneX-Fitness WhatsApp Integration" class="feature-image">
+
+            <!-- ── HERO METRICS STRIP ─────────────────────────────────────────────── -->
+            <div class="hero-metrics-strip">
+                <div class="hero-metric-tile">
+                    <div class="metric-tile-icon">
+                        <i class="fa-solid fa-dumbbell"></i>
+                    </div>
+                    <div class="metric-tile-number">500<span style="color: #0284c7;">+</span></div>
+                    <div class="metric-tile-label">Gyms &amp; Studios</div>
+                    <div class="metric-tile-sub">Operating across 45+ Indian cities</div>
+                </div>
+
+                <div class="hero-metric-tile">
+                    <div class="metric-tile-icon" style="background: #ecfdf5; color: #059669; border-color: #a7f3d0;">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div class="metric-tile-number">120K<span style="color: #10b981;">+</span></div>
+                    <div class="metric-tile-label">Active Gym Members</div>
+                    <div class="metric-tile-sub">Biometric &amp; QR check-ins tracked daily</div>
+                </div>
+
+                <div class="hero-metric-tile">
+                    <div class="metric-tile-icon" style="background: #fffbeb; color: #d97706; border-color: #fde68a;">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div class="metric-tile-number">&#8377;18Cr<span style="color: #f59e0b;">+</span></div>
+                    <div class="metric-tile-label">Fees Reconciled</div>
+                    <div class="metric-tile-sub">Automated WhatsApp UPI &amp; GST billing</div>
+                </div>
+
+                <div class="hero-metric-tile">
+                    <div class="metric-tile-icon" style="background: #fdf2f8; color: #db2777; border-color: #fbcfe8;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="metric-tile-number">99.98<span style="color: #ec4899;">%</span></div>
+                    <div class="metric-tile-label">Turnstile Uptime</div>
+                    <div class="metric-tile-sub">Hardware sync with offline backup</div>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
 
-<section class="brand-section">
-    <div class="brand-container">
-        <div class="text-center max-w-3xl mx-auto mb-5 site-reveal">
-            <span class="brand-eyebrow">
-                <i class="fa-solid fa-comments"></i>
-                What Our Clients Say
-            </span>
-            <h2 class="brand-section-title mt-4">Real stories from gym owners who trust OneX-Fitness.</h2>
-            <p class="brand-section-copy mx-auto">We're proud to partner with fitness businesses that are serious about growth, member experience, and operational excellence.</p>
-        </div>
+            <!-- ── INTERACTIVE STUDIO SHOWCASE ────────────────────────────────────── -->
+            <div class="studio-preview-section">
+                <!-- Interactive Mode Switcher -->
+                <div style="text-align: center;">
+                    <div class="studio-tab-switcher">
+                        <button type="button" class="studio-tab-btn is-active" onclick="switchStudioTab('panel-attendance', this)">
+                            <i class="fa-solid fa-fingerprint"></i> Biometric &amp; Gate Access
+                        </button>
+                        <button type="button" class="studio-tab-btn" onclick="switchStudioTab('panel-whatsapp', this)">
+                            <i class="fa-brands fa-whatsapp"></i> WhatsApp Billing Engine
+                        </button>
+                        <button type="button" class="studio-tab-btn" onclick="switchStudioTab('panel-analytics', this)">
+                            <i class="fa-solid fa-chart-line"></i> Revenue Intelligence &amp; POS
+                        </button>
+                    </div>
+                </div>
 
-        <div class="grid lg:grid-cols-3 gap-8">
-            <div class="brand-card p-8 site-reveal">
-                <p class="text-slate-800 leading-8 mb-6">"OneX-Fitness has been a game-changer for our gym. The billing system alone has saved us countless hours, and our members love the mobile app for booking classes."</p>
-                <div class="flex items-center">
-                    <img src=" {% static 'images/clients/aman-ktyr.jpg' %}" alt="User testimonial" class="w-12 h-12 rounded-full mr-4">
-                    <div>
-                        <h4 class="font-bold text-lg">Aman Ktyr</h4>
-                        <p class="text-slate-500">Owner, Aman fitness Gym</p>
+                <!-- Studio Window Frame -->
+                <div class="studio-window">
+                    <!-- Top Window Chrome Bar -->
+                    <div class="studio-topbar">
+                        <div class="studio-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="studio-url-bar">
+                            <i class="fa-solid fa-lock" style="color: #10b981; font-size: 0.72rem;"></i>
+                            <span>https://app.ONEX BOOST.com/titan-flagship/console</span>
+                        </div>
+                        <div class="studio-status-badge">
+                            <span class="studio-pulse-dot"></span>
+                            <span>Cloud Synced &bull; Terminal Online</span>
+                        </div>
+                    </div>
+
+                    <!-- Studio Window Shell -->
+                    <div class="studio-shell">
+                        <!-- Left Navigation Rail -->
+                        <div class="studio-nav-rail">
+                            <div class="rail-logo-mark">
+                                <i class="fa-solid fa-dumbbell"></i>
+                            </div>
+                            <div class="rail-nav-item is-current" title="Dashboard"><i class="fa-solid fa-gauge-high"></i></div>
+                            <div class="rail-nav-item" title="Members"><i class="fa-solid fa-users"></i></div>
+                            <div class="rail-nav-item" title="Gate Access"><i class="fa-solid fa-fingerprint"></i></div>
+                            <div class="rail-nav-item" title="Billing"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                            <div class="rail-nav-item" title="WhatsApp Hub"><i class="fa-brands fa-whatsapp"></i></div>
+                            <div class="rail-nav-item" title="Trainers"><i class="fa-solid fa-user-ninja"></i></div>
+                            <div class="rail-nav-item" style="margin-top: auto;" title="Settings"><i class="fa-solid fa-gear"></i></div>
+                        </div>
+
+                        <!-- Main Studio Console -->
+                        <div class="studio-console-body">
+                            <!-- Console Header Bar -->
+                            <div class="console-header-bar">
+                                <div class="branch-selector">
+                                    <div style="background: #f1f5f9; padding: 4px 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                        <img src="{% static 'images/ONEX-BOOST-Logo.png' %}" alt="ONEX BOOST" style="max-height: 20px; width: auto;">
+                                    </div>
+                                    <span class="branch-name">Titan Fitness &bull; Flagship Lucknow</span>
+                                    <span class="branch-badge"><i class="fa-solid fa-bolt"></i> Live Terminal</span>
+                                </div>
+                                <div class="search-fake-input">
+                                    <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8;"></i>
+                                    <span>Search 1,248 members by name, mobile, RFID...</span>
+                                </div>
+                                <div class="console-profile-wrap">
+                                    <button type="button" class="btn-ox btn-ox-primary" style="padding: 0.45rem 1rem; font-size: 0.8rem; border-radius: 8px;">
+                                        <i class="fa-solid fa-plus"></i> New Member
+                                    </button>
+                                    <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                                        <img src="/static/images/face16.png" alt="Director" style="width: 24px; height: 24px; border-radius: 50%;">
+                                        <span style="font-size: 0.78rem; font-weight: 700; color: #0f172a;">Aman (Admin)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── PANEL 1: BIOMETRIC & GATE ACCESS (DEFAULT ACTIVE) ────── -->
+                            <div id="panel-attendance" class="studio-tab-panel is-active">
+                                <div class="panel-kpi-grid">
+                                    <div class="panel-kpi-card">
+                                        <div class="panel-kpi-header">
+                                            <span class="panel-kpi-title">In-Gym Floor Occupancy</span>
+                                            <span class="ox-badge ox-badge-emerald" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;">57% Peak Hour</span>
+                                        </div>
+                                        <div class="panel-kpi-val">86 <span style="font-size: 0.95rem; color: #64748b; font-weight: 600;">/ 150 Cap</span></div>
+                                    </div>
+                                    <div class="panel-kpi-card">
+                                        <div class="panel-kpi-header">
+                                            <span class="panel-kpi-title">Today's Gate Check-ins</span>
+                                            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700;">+18% vs Yesterday</span>
+                                        </div>
+                                        <div class="panel-kpi-val">428 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;"><i class="fa-solid fa-arrow-trend-up"></i> Verified</span></div>
+                                    </div>
+                                    <div class="panel-kpi-card">
+                                        <div class="panel-kpi-header">
+                                            <span class="panel-kpi-title">Fee Defaulters Blocked</span>
+                                            <span style="font-size: 0.75rem; color: #dc2626; font-weight: 700;">Zero Free Walk-ins</span>
+                                        </div>
+                                        <div class="panel-kpi-val" style="color: #dc2626;">6 <span style="font-size: 0.95rem; color: #64748b; font-weight: 600;">Auto Alerted</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-split-layout">
+                                    <!-- Left: Real-time Live Gate Stream -->
+                                    <div class="panel-content-card">
+                                        <div class="card-inner-header">
+                                            <div class="card-inner-title">
+                                                <i class="fa-solid fa-rss" style="color: #0284c7; margin-right: 6px;"></i>
+                                                Live Biometric &amp; Turnstile Access Stream
+                                            </div>
+                                            <span style="font-size: 0.74rem; font-weight: 700; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 0.15rem 0.55rem; border-radius: 9999px;">
+                                                <i class="fa-solid fa-circle" style="font-size: 6px; vertical-align: middle;"></i> 0.3s Polling
+                                            </span>
+                                        </div>
+                                        <div class="live-entry-list">
+                                            <div class="live-entry-row">
+                                                <div class="live-entry-left">
+                                                    <div class="member-avatar-badge">RV</div>
+                                                    <div class="member-info-col">
+                                                        <strong>Rahul Verma &bull; #TITAN-1084</strong>
+                                                        <span>Annual Gold Member &bull; Turnstile Gate 01</span>
+                                                    </div>
+                                                </div>
+                                                <div class="live-entry-right">
+                                                    <span class="entry-time-stamp">07:44 PM</span>
+                                                    <span class="badge-access-pass"><i class="fa-solid fa-circle-check"></i> Pass: Verified</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="live-entry-row">
+                                                <div class="live-entry-left">
+                                                    <div class="member-avatar-badge" style="background: #fdf2f8; color: #db2777;">NS</div>
+                                                    <div class="member-info-col">
+                                                        <strong>Neha Saxena &bull; #TITAN-0941</strong>
+                                                        <span>Personal Training (Coach Vikram) &bull; Dynamic QR</span>
+                                                    </div>
+                                                </div>
+                                                <div class="live-entry-right">
+                                                    <span class="entry-time-stamp">07:42 PM</span>
+                                                    <span class="badge-access-pass"><i class="fa-solid fa-circle-check"></i> Pass: Verified</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="live-entry-row">
+                                                <div class="live-entry-left">
+                                                    <div class="member-avatar-badge" style="background: #f0fdf4; color: #16a34a;">VS</div>
+                                                    <div class="member-info-col">
+                                                        <strong>Vikram Singh &bull; #TITAN-1205</strong>
+                                                        <span>CrossFit Strength Pro &bull; Biometric Terminal 02</span>
+                                                    </div>
+                                                </div>
+                                                <div class="live-entry-right">
+                                                    <span class="entry-time-stamp">07:39 PM</span>
+                                                    <span class="badge-access-pass"><i class="fa-solid fa-circle-check"></i> Pass: Verified</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="live-entry-row" style="background: #fff5f5; border-color: #fecaca;">
+                                                <div class="live-entry-left">
+                                                    <div class="member-avatar-badge" style="background: #fee2e2; color: #dc2626;">AK</div>
+                                                    <div class="member-info-col">
+                                                        <strong style="color: #dc2626;">Amit Kumar &bull; #TITAN-0872</strong>
+                                                        <span style="color: #b91c1c;">Standard Plan &bull; Expired 2 Days Ago</span>
+                                                    </div>
+                                                </div>
+                                                <div class="live-entry-right">
+                                                    <span class="entry-time-stamp">07:36 PM</span>
+                                                    <span class="badge-access-blocked"><i class="fa-solid fa-circle-xmark"></i> Access Denied</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: Defaulter Intercept & Telemetry -->
+                                    <div class="panel-content-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                                        <div>
+                                            <div class="card-inner-header">
+                                                <div class="card-inner-title">
+                                                    <i class="fa-solid fa-bell-concierge" style="color: #f59e0b; margin-right: 6px;"></i>
+                                                    Front-Desk Fast Action
+                                                </div>
+                                                <span class="ox-badge ox-badge-amber" style="font-size: 0.7rem; padding: 0.15rem 0.5rem;">Active Intercept</span>
+                                            </div>
+
+                                            <!-- Intercept alert box -->
+                                            <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 0.85rem; margin-bottom: 1rem;">
+                                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                                                    <span style="font-size: 0.78rem; font-weight: 800; color: #92400e;">
+                                                        <i class="fa-solid fa-triangle-exclamation"></i> Defaulter at Barrier: Amit Kumar
+                                                    </span>
+                                                    <span style="font-size: 0.72rem; color: #b45309; font-weight: 700;">&#8377;2,499 Overdue</span>
+                                                </div>
+                                                <p style="font-size: 0.75rem; color: #78350f; margin-bottom: 0.65rem; line-height: 1.4;">
+                                                    Turnstile barrier remained locked. Auto-WhatsApp fee renewal alert generated with instant QR pay link.
+                                                </p>
+                                                <button type="button" class="btn-ox btn-ox-primary" style="width: 100%; justify-content: center; padding: 0.45rem; font-size: 0.78rem; border-radius: 6px;">
+                                                    <i class="fa-brands fa-whatsapp"></i> Re-send WhatsApp Payment Link
+                                                </button>
+                                            </div>
+
+                                            <!-- Hardware status checklist -->
+                                            <div style="font-size: 0.78rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Hardware Health Telemetry</div>
+                                            <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.76rem;">
+                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0.6rem; background: #f8fafc; border-radius: 6px;">
+                                                    <span><i class="fa-solid fa-fingerprint" style="color: #0284c7; margin-right: 6px;"></i> eSSL Biometric Scanner #01</span>
+                                                    <span style="color: #059669; font-weight: 700;"><i class="fa-solid fa-check"></i> Online (18ms)</span>
+                                                </div>
+                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0.6rem; background: #f8fafc; border-radius: 6px;">
+                                                    <span><i class="fa-solid fa-torii-gate" style="color: #10b981; margin-right: 6px;"></i> Magnetic Gate Turnstile</span>
+                                                    <span style="color: #059669; font-weight: 700;"><i class="fa-solid fa-check"></i> Armed &amp; Polling</span>
+                                                </div>
+                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0.6rem; background: #f8fafc; border-radius: 6px;">
+                                                    <span><i class="fa-solid fa-print" style="color: #6366f1; margin-right: 6px;"></i> Thermal POS (80mm)</span>
+                                                    <span style="color: #059669; font-weight: 700;"><i class="fa-solid fa-check"></i> Ready to Print</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── PANEL 2: WHATSAPP BILLING ENGINE ────────────────────── -->
+                            <div id="panel-whatsapp" class="studio-tab-panel">
+                                <div class="panel-kpi-grid">
+                                    <div class="panel-kpi-card">
+                                        <div class="panel-kpi-header">
+                                            <span class="panel-kpi-title">Invoices Dispatched Today</span>
+                                            <span class="ox-badge ox-badge-emerald" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;">100% Delivered</span>
+                                        </div>
+                                        <div class="panel-kpi-val">54 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;">Official Tax Invoices</span></div>
+                                    </div>
+                                    <div class="panel-kpi-card">
+                                        <div class="panel-kpi-header">
+                                            <span class="panel-kpi-title">Auto-Collected via WhatsApp</span>
+                                            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700;">Instant UPI Settlement</span>
+                                        </div>
+                                        <div class="panel-kpi-val">&#8377;92,400 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;">Today</span></div>
+                                    </div>
+                                    <div class="panel-kpi-card">
+                                        <div class="panel-kpi-header">
+                                            <span class="panel-kpi-title">Expiring In Next 3 Days</span>
+                                            <span style="font-size: 0.75rem; color: #f59e0b; font-weight: 700;">Renewal Queue</span>
+                                        </div>
+                                        <div class="panel-kpi-val" style="color: #d97706;">14 <span style="font-size: 0.95rem; color: #64748b; font-weight: 600;">Alerts Dispatched</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-split-layout">
+                                    <!-- Left: WhatsApp Chat Simulation -->
+                                    <div class="panel-content-card">
+                                        <div class="card-inner-header">
+                                            <div class="card-inner-title">
+                                                <i class="fa-brands fa-whatsapp" style="color: #25d366; margin-right: 6px;"></i>
+                                                Official Member WhatsApp Invoicing Dispatch
+                                            </div>
+                                            <span style="font-size: 0.74rem; font-weight: 700; color: #128c7e;">Verified Sender</span>
+                                        </div>
+
+                                        <div class="whatsapp-chat-frame">
+                                            <div class="wa-bubble-card">
+                                                <div class="wa-bubble-header">
+                                                    <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i>
+                                                    <span>Titan Fitness Club &bull; Official Account <i class="fa-solid fa-circle-check" style="color: #25d366;"></i></span>
+                                                </div>
+                                                <div class="wa-bubble-text">
+                                                    Hello <strong>Rahul Verma</strong>! 🎉<br>
+                                                    Thank you for renewing your <strong>Annual Gold Gym Membership</strong> at Titan Fitness Club Gomti Nagar. Your payment of <strong>&#8377;14,999</strong> has been successfully reconciled.
+                                                </div>
+                                                <div class="wa-invoice-box">
+                                                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                        <span>Invoice No: <strong>#OX-2026-9481</strong></span>
+                                                        <span style="color: #059669; font-weight: 700;">PAID (UPI)</span>
+                                                    </div>
+                                                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                        <span>Plan: Annual Gold + Steam Access</span>
+                                                        <span>Valid: 12 Oct 2026 – 11 Oct 2027</span>
+                                                    </div>
+                                                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: #0f172a;">
+                                                        <span>GST Tax Paid (18%): &#8377;2,288</span>
+                                                        <span>Net: &#8377;14,999</span>
+                                                    </div>
+                                                </div>
+                                                <div class="wa-bubble-actions">
+                                                    <a href="#" class="wa-action-btn wa-btn-pdf"><i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> Download GST Tax Invoice PDF</a>
+                                                    <a href="#" class="wa-action-btn wa-btn-upi"><i class="fa-solid fa-mobile-screen-button"></i> View Member ID Card</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: Thermal Receipt Preview -->
+                                    <div class="panel-content-card">
+                                        <div class="card-inner-header">
+                                            <div class="card-inner-title">
+                                                <i class="fa-solid fa-receipt" style="color: #0284c7; margin-right: 6px;"></i>
+                                                Thermal POS Receipt (1-Click Print)
+                                            </div>
+                                            <span style="font-size: 0.72rem; color: #64748b;">58mm / 80mm</span>
+                                        </div>
+
+                                        <div class="thermal-receipt-box">
+                                            <div style="text-align: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px;">
+                                                <strong>TITAN FITNESS CLUB</strong><br>
+                                                BHATT SQUARE, LUCKNOW - 226010<br>
+                                                GSTIN: 09AAACT9281M1Z5<br>
+                                                PH: +91 63923 48731
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <span>INV: #OX-9481</span>
+                                                <span>DATE: 12-OCT-2026</span>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                                <span>MEMBER: RAHUL VERMA</span>
+                                                <span>ID: #1084</span>
+                                            </div>
+                                            <div style="border-top: 1px dashed #cbd5e1; border-bottom: 1px dashed #cbd5e1; padding: 4px 0; margin-bottom: 6px;">
+                                                <div style="display: flex; justify-content: space-between;">
+                                                    <span>1. ANNUAL GOLD PASS</span>
+                                                    <span>12,711.00</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between;">
+                                                    <span>2. CGST (9%)</span>
+                                                    <span>1,144.00</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between;">
+                                                    <span>3. SGST (9%)</span>
+                                                    <span>1,144.00</span>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; font-weight: 900;">
+                                                <span>TOTAL PAID (INR):</span>
+                                                <span>14,999.00</span>
+                                            </div>
+                                            <div style="text-align: center; margin-top: 8px; font-size: 0.72rem; color: #64748b;">
+                                                POWERED BY ONEX BOOST &bull; HELYONEX
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── PANEL 3: REVENUE INTELLIGENCE & POS ──────────────────── -->
+                            <div id="panel-analytics" class="studio-tab-panel">
+                                <div class="panel-kpi-grid">
+                                    <div class="panel-kpi-card">
+                                        <div class="panel-kpi-header">
+                                            <span class="panel-kpi-title">October Gross Revenue</span>
+                                            <span class="ox-badge ox-badge-emerald" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;">+22.4% vs Sep</span>
+                                        </div>
+                                        <div class="panel-kpi-val">&#8377;5,84,500 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;"><i class="fa-solid fa-arrow-trend-up"></i> High Growth</span></div>
+                                    </div>
+                                    <div class="panel-kpi-card">
+                                        <div class="panel-kpi-header">
+                                            <span class="panel-kpi-title">Predictable Recurring MRR</span>
+                                            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700;">Auto-Renewing Plans</span>
+                                        </div>
+                                        <div class="panel-kpi-val">&#8377;4,12,000 <span style="font-size: 0.95rem; color: #64748b; font-weight: 600;">Base MRR</span></div>
+                                    </div>
+                                    <div class="panel-kpi-card">
+                                        <div class="panel-kpi-header">
+                                            <span class="panel-kpi-title">Supplement &amp; Shake Bar POS</span>
+                                            <span style="font-size: 0.75rem; color: #10b981; font-weight: 700;">+34% Retail Margin</span>
+                                        </div>
+                                        <div class="panel-kpi-val">&#8377;42,800 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;">This Month</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-split-layout">
+                                    <!-- Left: SVG Growth Chart -->
+                                    <div class="panel-content-card">
+                                        <div class="card-inner-header">
+                                            <div class="card-inner-title">
+                                                <i class="fa-solid fa-chart-area" style="color: #0284c7; margin-right: 6px;"></i>
+                                                Monthly Fee Collection &amp; Renewal Trajectory (2026)
+                                            </div>
+                                            <span style="font-size: 0.74rem; font-weight: 700; color: #0284c7;">Last 5 Months</span>
+                                        </div>
+
+                                        <div style="padding: 1rem 0;">
+                                            <svg viewBox="0 0 500 160" style="width: 100%; height: auto; overflow: visible;">
+                                                <defs>
+                                                    <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="0%" stop-color="#0284c7" stop-opacity="0.35"/>
+                                                        <stop offset="100%" stop-color="#0284c7" stop-opacity="0.02"/>
+                                                    </linearGradient>
+                                                </defs>
+                                                <!-- Grid Lines -->
+                                                <line x1="20" y1="30" x2="480" y2="30" stroke="#f1f5f9" stroke-width="1"/>
+                                                <line x1="20" y1="75" x2="480" y2="75" stroke="#f1f5f9" stroke-width="1"/>
+                                                <line x1="20" y1="120" x2="480" y2="120" stroke="#f1f5f9" stroke-width="1"/>
+                                                <!-- Gradient Fill Area -->
+                                                <polygon points="40,130 130,110 220,85 320,60 440,25 440,140 40,140" fill="url(#revGrad)"/>
+                                                <!-- Trend Line -->
+                                                <polyline points="40,130 130,110 220,85 320,60 440,25" fill="none" stroke="#0284c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <!-- Data Nodes -->
+                                                <circle cx="40" cy="130" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
+                                                <circle cx="130" cy="110" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
+                                                <circle cx="220" cy="85" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
+                                                <circle cx="320" cy="60" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
+                                                <circle cx="440" cy="25" r="6" fill="#0284c7" stroke="#ffffff" stroke-width="2"/>
+                                                <!-- Node Labels -->
+                                                <text x="40" y="155" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Jun (3.8L)</text>
+                                                <text x="130" y="155" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Jul (4.2L)</text>
+                                                <text x="220" y="155" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Aug (4.7L)</text>
+                                                <text x="320" y="155" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Sep (5.1L)</text>
+                                                <text x="440" y="155" text-anchor="middle" font-size="10" fill="#0284c7" font-weight="800">Oct (5.84L)</text>
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: Membership Composition -->
+                                    <div class="panel-content-card">
+                                        <div class="card-inner-header">
+                                            <div class="card-inner-title">
+                                                <i class="fa-solid fa-pie-chart" style="color: #10b981; margin-right: 6px;"></i>
+                                                Membership Plan Distribution
+                                            </div>
+                                            <span class="ox-badge ox-badge-emerald" style="font-size: 0.7rem; padding: 0.15rem 0.5rem;">96.2% Retention</span>
+                                        </div>
+
+                                        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                                            <div>
+                                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                                    <span>Annual Platinum / Gold (High LTV)</span>
+                                                    <span style="color: #0284c7;">48%</span>
+                                                </div>
+                                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                                    <div style="width: 48%; height: 100%; background: #0284c7; border-radius: 4px;"></div>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                                    <span>6-Month Muscle &amp; Fat-Loss Split</span>
+                                                    <span style="color: #10b981;">32%</span>
+                                                </div>
+                                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                                    <div style="width: 32%; height: 100%; background: #10b981; border-radius: 4px;"></div>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                                    <span>Monthly / Trial Passes</span>
+                                                    <span style="color: #f59e0b;">20%</span>
+                                                </div>
+                                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                                    <div style="width: 20%; height: 100%; background: #f59e0b; border-radius: 4px;"></div>
+                                                </div>
+                                            </div>
+
+                                            <div style="margin-top: 0.5rem; padding: 0.65rem 0.85rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; font-size: 0.76rem; color: #166534;">
+                                                <i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> <strong>Automated WhatsApp Renewal</strong> lifted 60-day member retention from 72% to 96.2%.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="brand-card p-8 site-reveal">
-                <p class="text-slate-800 leading-8 mb-6">"The follow-up and engagement tools are fantastic. We've seen a noticeable improvement in member retention since switching to OneX-Fitness."</p>
-                <div class="flex items-center">
-                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User testimonial" class="w-12 h-12 rounded-full mr-4">
+
+            <!-- ── TRUSTED GYMS TICKER ─────────────────────────────────────────────────── -->
+<section class="brand-ticker-section">
+    <div class="ticker-heading">Trusted by Premier Fitness Facilities & Chains Across India</div>
+    <div class="ticker-marquee">
+        <div class="ticker-track">
+            <div class="ticker-item"><i class="fa-solid fa-dumbbell"></i> TITAN FITNESS CLUB</div>
+            <div class="ticker-item"><i class="fa-solid fa-fire-flame-curved"></i> IRON VAULT GYM</div>
+            <div class="ticker-item"><i class="fa-solid fa-bolt-lightning"></i> APEX ATHLETICS</div>
+            <div class="ticker-item"><i class="fa-solid fa-heart-pulse"></i> CROSSFIT PULSE</div>
+            <div class="ticker-item"><i class="fa-solid fa-shield-cat"></i> ELEVATE STUDIO</div>
+            <div class="ticker-item"><i class="fa-solid fa-medal"></i> POWERHOUSE GYM</div>
+            <div class="ticker-item"><i class="fa-solid fa-trophy"></i> OLYMPIA FITNESS HUB</div>
+            <!-- Duplicated for seamless infinite ticker -->
+            <div class="ticker-item"><i class="fa-solid fa-dumbbell"></i> TITAN FITNESS CLUB</div>
+            <div class="ticker-item"><i class="fa-solid fa-fire-flame-curved"></i> IRON VAULT GYM</div>
+            <div class="ticker-item"><i class="fa-solid fa-bolt-lightning"></i> APEX ATHLETICS</div>
+            <div class="ticker-item"><i class="fa-solid fa-heart-pulse"></i> CROSSFIT PULSE</div>
+            <div class="ticker-item"><i class="fa-solid fa-shield-cat"></i> ELEVATE STUDIO</div>
+        </div>
+    </div>
+</section>
+
+<!-- ── CORE VALUE PILLARS (BENTO GRID) ────────────────────────────────────── -->
+<section class="section-py">
+    <div class="brand-container">
+        <div class="section-header">
+            <div class="ox-badge section-eyebrow">
+                <i class="fa-solid fa-layer-group"></i> Architecture
+            </div>
+            <h2 class="section-title">Engineered to Solve Every Friction Point in Gym Operations</h2>
+            <p class="section-description">
+                Say goodbye to fragmented registers, lost fee receipts, and manual calls. ONEX BOOST consolidates your business into one synchronized dashboard.
+            </p>
+        </div>
+
+        <div class="bento-grid">
+            <!-- Bento 1: QR & Biometric Attendance -->
+            <div class="bento-card bento-col-7">
+                <div>
+                    <div class="bento-icon">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </div>
+                    <h3 class="bento-title">Smart QR & Biometric Attendance</h3>
+                    <p class="bento-desc">
+                        Prevent unauthorized entries and proxy check-ins. Members tap a dynamic QR or scan their fingerprint to log visits instantly with real-time capacity monitoring.
+                    </p>
+                </div>
+                <ul class="bento-feature-list">
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Direct integration with popular biometric scanners</li>
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Dynamic member QR codes that regenerate to prevent sharing</li>
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Instant alerts for expired or overdue membership walk-ins</li>
+                </ul>
+            </div>
+
+            <!-- Bento 2: WhatsApp Automation -->
+            <div class="bento-card bento-col-5">
+                <div>
+                    <div class="bento-icon bento-icon-emerald">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <h3 class="bento-title">Automated WhatsApp Billing & Alerts</h3>
+                    <p class="bento-desc">
+                        Send official GST invoices, renewal reminders, payment links, and birthday greetings right to members' WhatsApp without touching your phone.
+                    </p>
+                </div>
+                <ul class="bento-feature-list">
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #34d399;"></i> 3-day and 1-day auto renewal reminders</li>
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #34d399;"></i> One-click digital PDF receipt dispatch</li>
+                </ul>
+            </div>
+
+            <!-- Bento 3: Billing & GST Invoicing -->
+            <div class="bento-card bento-col-4">
+                <div>
+                    <div class="bento-icon bento-icon-amber">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                    <h3 class="bento-title">GST Billing & Multi-Plan POS</h3>
+                    <p class="bento-desc">
+                        Manage flexible plans (Monthly, Quarterly, Annual, PT add-ons) with partial payment tracking, discounts, and thermal receipt printouts.
+                    </p>
+                </div>
+                <ul class="bento-feature-list">
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #fbbf24;"></i> Partial fees and balance due tracker</li>
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #fbbf24;"></i> 2-inch and 3-inch thermal printer support</li>
+                </ul>
+            </div>
+
+            <!-- Bento 4: Trainer & Diet Workflows -->
+            <div class="bento-card bento-col-4">
+                <div>
+                    <div class="bento-icon bento-icon-purple">
+                        <i class="fa-solid fa-dumbbell"></i>
+                    </div>
+                    <h3 class="bento-title">Trainer & Diet Workflows</h3>
+                    <p class="bento-desc">
+                        Assign personal trainers to members, log workout schedules, create customized diet charts, and track client transformation milestones.
+                    </p>
+                </div>
+                <ul class="bento-feature-list">
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #818cf8;"></i> Dedicated trainer login portal</li>
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #818cf8;"></i> PT session logs and commission tracking</li>
+                </ul>
+            </div>
+
+            <!-- Bento 5: Real-time Analytics -->
+            <div class="bento-card bento-col-4">
+                <div>
+                    <div class="bento-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3 class="bento-title">Executive Revenue Analytics</h3>
+                    <p class="bento-desc">
+                        Live dashboards for cash collections, UPI payments, overdue renewals, member retention rates, and multi-branch performance metrics.
+                    </p>
+                </div>
+                <ul class="bento-feature-list">
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Exportable Excel and PDF reports</li>
+                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Daily cashier day-end cash reconciliation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── TABBED PLATFORM SHOWCASE ────────────────────────────────────────────── -->
+<section class="section-py" style="background: #f1f5f9; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+    <div class="brand-container">
+        <div class="section-header">
+            <div class="ox-badge section-eyebrow">
+                <i class="fa-solid fa-laptop-code"></i> Unified Experience
+            </div>
+            <h2 class="section-title">Built for Everyone Who Touches Your Fitness Business</h2>
+            <p class="section-description">
+                Owners get control, staff get speed, trainers get clarity, and members get a modern digital experience.
+            </p>
+        </div>
+
+        <div class="showcase-tabs">
+            <button class="showcase-tab-btn is-active" onclick="switchShowcaseTab(0)">
+                <i class="fa-solid fa-shield-halved"></i> Gym Owner & Admin Hub
+            </button>
+            <button class="showcase-tab-btn" onclick="switchShowcaseTab(1)">
+                <i class="fa-solid fa-user-tie"></i> Trainer & Staff Workspace
+            </button>
+            <button class="showcase-tab-btn" onclick="switchShowcaseTab(2)">
+                <i class="fa-solid fa-mobile-screen"></i> Member Self-Service App
+            </button>
+        </div>
+
+        <!-- Panel 1: Owner Hub -->
+        <div class="showcase-content-panel is-active">
+            <div class="bento-card" style="padding: 2.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: center;">
                     <div>
-                        <h4 class="font-bold text-lg">Priya Mehta</h4>
-                        <p class="text-slate-500">Manager, Flex Fitness</p>
+                        <div class="ox-badge mb-3">Complete Transparency</div>
+                        <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">Complete High-Altitude Control Over Multi-Staff & Collections</h3>
+                        <p style="color: #475569; margin-bottom: 1.5rem; line-height: 1.6;">
+                            Never wonder how much money entered your register or which memberships are about to expire. The ONEX BOOST Owner Console gives you instant insights with role-based staff permissions.
+                        </p>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
+                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Role-based access for Front Desk, Accountants & Trainers
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
+                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Audit trail logs for invoice deletions and discounts
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
+                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> WhatsApp integration directly bound to your official brand
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/about_dashboard_features.png' %}" alt="Owner Dashboard" style="border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15,23,42,0.1);">
                     </div>
                 </div>
             </div>
-            <div class="brand-card p-8 site-reveal">
-                <p class="text-slate-800 leading-8 mb-6">"As a multi-location business, OneX-Fitness gives us the clarity and control we need. The reporting is detailed, and the support team is always responsive."</p>
-                <div class="flex items-center">
-                    <img src="https://randomuser.me/api/portraits/men/56.jpg" alt="User testimonial" class="w-12 h-12 rounded-full mr-4">
+        </div>
+
+        <!-- Panel 2: Trainer Workspace -->
+        <div class="showcase-content-panel">
+            <div class="bento-card" style="padding: 2.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: center;">
                     <div>
-                        <h4 class="font-bold text-lg">Arjun Reddy</h4>
-                        <p class="text-slate-500">Director, Iron Paradise</p>
+                        <div class="ox-badge ox-badge-emerald mb-3">Trainer Enablement</div>
+                        <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">Equip Personal Trainers to Deliver 5-Star Transformations</h3>
+                        <p style="color: #475569; margin-bottom: 1.5rem; line-height: 1.6;">
+                            Trainers log into their dedicated mobile-responsive portal, view their assigned PT clients, manage workout schedules, and log session completions without cluttering admin books.
+                        </p>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
+                                <i class="fa-solid fa-check-double" style="color: #059669;"></i> Dedicated Trainer Portal with private client rosters
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
+                                <i class="fa-solid fa-check-double" style="color: #059669;"></i> Client body measurement & transformation timeline
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
+                                <i class="fa-solid fa-check-double" style="color: #059669;"></i> Attendance punching for trainers with shift logs
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/ecosystem_modern.png' %}" alt="Trainer Workspace" style="border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15,23,42,0.1);">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 3: Member Portal -->
+        <div class="showcase-content-panel">
+            <div class="bento-card" style="padding: 2.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: center;">
+                    <div>
+                        <div class="ox-badge mb-3">Member Delight</div>
+                        <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">A Modern Member Portal That Elevates Your Brand Perception</h3>
+                        <p style="color: #475569; margin-bottom: 1.5rem; line-height: 1.6;">
+                            Members log in with their phone number to see their active plan, remaining days, digital entry QR card, past fee receipts, workout chart, and announcements.
+                        </p>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
+                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Digital ID card with instant QR attendance
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
+                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Downloadable GST fee receipts anytime
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
+                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Push announcements for gym timings and holidays
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="{% static 'images/about_dashboard_features.png' %}" alt="Member App" style="border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15,23,42,0.1);">
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-{% comment %} FAQ {% endcomment %}
-<section class="brand-section">
+
+<!-- ── TESTIMONIALS & SOCIAL PROOF ─────────────────────────────────────────── -->
+<section class="section-py">
     <div class="brand-container">
-        <div class="text-center max-w-3xl mx-auto mb-5 site-reveal">
-            <span class="brand-eyebrow">
-                <i class="fa-solid fa-circle-question"></i>
-                FAQs
-            </span>
-            <h2 class="brand-section-title mt-4">Frequently Asked Questions</h2>
-            <p class="brand-section-copy mx-auto">Find quick answers to common questions about OneX-Fitness and how it can help your fitness business thrive.</p>
+        <div class="section-header">
+            <div class="ox-badge section-eyebrow">
+                <i class="fa-solid fa-star"></i> Real Results
+            </div>
+            <h2 class="section-title">Loved by Fitness Business Owners Across India</h2>
+            <p class="section-description">
+                Hear how leading fitness centers automated their operations and scaled recurring member revenue with ONEX BOOST.
+            </p>
         </div>
 
-        <div class="max-w-4xl mx-auto">
-            <div class="flex flex-col gap-4 w-full">
-                <details class="group border border-gray-200 bg-white rounded-xl shadow-sm" open>
-                    <summary class="flex items-center justify-between p-6 text-lg font-semibold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                        What is OneX-Fitness?
-                        <span class="transition duration-300 group-open:-rotate-180 text-blue-600">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </summary>
-                    <div class="px-6 pb-6 text-slate-600 leading-relaxed">
-                        <p>OneX-Fitness is an all-in-one gym management software designed to streamline and automate the daily operations of gyms, fitness studios, and personal trainers. It handles everything from memberships and billing to attendance and trainer workflows.</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem;">
+            <!-- Review 1 -->
+            <div class="testimonial-card">
+                <div>
+                    <div class="testimonial-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                     </div>
-                </details>
-                
-                <details class="group border border-gray-200 bg-white rounded-xl shadow-sm">
-                    <summary class="flex items-center justify-between p-6 text-lg font-semibold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                        Is OneX-Fitness suitable for small gyms?
-                        <span class="transition duration-300 group-open:-rotate-180 text-blue-600">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </summary>
-                    <div class="px-6 pb-6 text-slate-600 leading-relaxed">
-                        <p>Absolutely. OneX-Fitness is built to scale, making it a perfect fit for both small, independent gyms and large, multi-location fitness centers. Our flexible plans are designed to meet the needs of any size business.</p>
+                    <p class="testimonial-quote">
+                        "Before ONEX BOOST, my desk staff was spending 3 hours daily just calling members for pending renewals. Now WhatsApp auto-reminders do it all, and our on-time renewals jumped by 42%!"
+                    </p>
+                </div>
+                <div class="testimonial-author">
+                    <img src="{% static 'images/clients/client1.jpeg' %}" alt="Rajesh Sharma" class="author-avatar" onerror="this.src='{% static 'images/member_dp.jpg' %}';">
+                    <div>
+                        <div class="author-name">Rajesh Sharma</div>
+                        <div class="author-gym">Founder, Titan Fitness (Lucknow)</div>
                     </div>
-                </details>
-                
-                <details class="group border border-gray-200 bg-white rounded-xl shadow-sm">
-                    <summary class="flex items-center justify-between p-6 text-lg font-semibold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                        How does the billing and payment system work?
-                        <span class="transition duration-300 group-open:-rotate-180 text-blue-600">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </summary>
-                    <div class="px-6 pb-6 text-slate-600 leading-relaxed">
-                        <p>Our software automates invoicing, tracks due payments, and provides clear financial visibility. It simplifies the entire collection process, reducing manual effort and ensuring you get paid on time.</p>
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="testimonial-card">
+                <div>
+                    <div class="testimonial-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                     </div>
-                </details>
-                
-                <details class="group border border-gray-200 bg-white rounded-xl shadow-sm">
-                    <summary class="flex items-center justify-between p-6 text-lg font-semibold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                        Can I manage trainers and their schedules?
-                        <span class="transition duration-300 group-open:-rotate-180 text-blue-600">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </summary>
-                    <div class="px-6 pb-6 text-slate-600 leading-relaxed">
-                        <p>Yes, OneX-Fitness includes powerful tools for managing trainer profiles, assigning personal training sessions, tracking attendance, and organizing schedules, giving you complete control over your team.</p>
+                    <p class="testimonial-quote">
+                        "The biometric sync and thermal billing are flawless. Even during the peak 7 PM rush, members punch in smoothly and new signups receive instant GST invoices on their phones."
+                    </p>
+                </div>
+                <div class="testimonial-author">
+                    <img src="{% static 'images/clients/client2.jpeg' %}" alt="Vikramaditya Rao" class="author-avatar" onerror="this.src='{% static 'images/trainer_dp.png' %}';">
+                    <div>
+                        <div class="author-name">Vikramaditya Rao</div>
+                        <div class="author-gym">Managing Director, Iron Vault Gym (Kanpur)</div>
                     </div>
-                </details>
-                
-                <details class="group border border-gray-200 bg-white rounded-xl shadow-sm">
-                    <summary class="flex items-center justify-between p-6 text-lg font-semibold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                        Do you offer a free trial?
-                        <span class="transition duration-300 group-open:-rotate-180 text-blue-600">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </summary>
-                    <div class="px-6 pb-6 text-slate-600 leading-relaxed">
-                        <p>We offer a free, personalized live demo to walk you through the software and show you how it can meet your specific needs. Contact us to book a session with one of our product experts.</p>
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="testimonial-card">
+                <div>
+                    <div class="testimonial-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                     </div>
-                </details>
-                
-                <details class="group border border-gray-200 bg-white rounded-xl shadow-sm">
-                    <summary class="flex items-center justify-between p-6 text-lg font-semibold text-slate-800 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                        Is my data secure with OneX-Fitness?
-                        <span class="transition duration-300 group-open:-rotate-180 text-blue-600">
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </span>
-                    </summary>
-                    <div class="px-6 pb-6 text-slate-600 leading-relaxed">
-                        <p>Data security is our top priority. We use industry-standard encryption and security protocols to ensure that your business and member data is always protected.</p>
+                    <p class="testimonial-quote">
+                        "The HELYONEX customer support team is phenomenal. They migrated all our 800+ members from Excel sheets within 2 hours. ONEX BOOST is easily the best software in India."
+                    </p>
+                </div>
+                <div class="testimonial-author">
+                    <img src="{% static 'images/clients/client3.jpeg' %}" alt="Sneha Verma" class="author-avatar" onerror="this.src='{% static 'images/face16.png' %}';">
+                    <div>
+                        <div class="author-name">Sneha Verma</div>
+                        <div class="author-gym">Owner, Elevate Pilates & Strength (Noida)</div>
                     </div>
-                </details>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="brand-section bg-white">
+<!-- ── FAQ ACCORDION ───────────────────────────────────────────────────────── -->
+<section class="section-py" style="background: #f8fafc; border-top: 1px solid #e2e8f0;">
     <div class="brand-container">
-        <div class="text-center max-w-3xl mx-auto mb-10  site-reveal">
-            <span class="brand-eyebrow ">
-                <i class="fa-solid fa-handshake" ></i>
-                Trusted by Growing Fitness Businesses
-            </span>
-            <h2 class="brand-section-title mt-4">The Visual Identity Now Matches the Seriousness of the Software.</h2>
-            <p class="brand-section-copy mx-auto">The best gym software websites feel credible before the demo even starts. This redesign gives OneX-Fitness that stronger first impression while keeping the product message clear and practical.</p>
+        <div class="section-header">
+            <div class="ox-badge section-eyebrow">
+                <i class="fa-solid fa-circle-question"></i> Answers
+            </div>
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-description">
+                Everything you need to know about setting up and operating ONEX BOOST in your facility.
+            </p>
         </div>
 
-       
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>How quickly can we migrate our existing members into ONEX BOOST?</span>
+                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        You can import all your existing members in minutes using our Excel/CSV import tool. If you need assistance, our dedicated HELYONEX onboarding team does the entire data migration for you free of charge during onboarding.
+                    </div>
+                </div>
+            </div>
 
-        <div class="logo-marquee-shell mt-12 site-reveal" aria-label="Trusted fitness business logos">
-            <div class="logo-marquee-track">
-                <img src="{% static 'images/clients/client1.jpg' %}" alt="Client logo 1" class="client-logo-img">
-                <img src="{% static 'images/clients/client2.png' %}" alt="Client logo 2" class="client-logo-img">
-                <img src="{% static 'images/clients/client3.jpeg' %}" alt="Client logo 3" class="client-logo-img">
-                <img src="{% static 'images/clients/client4.png' %}" alt="Client logo 4" class="client-logo-img">
-                <img src="{% static 'images/clients/client5.png' %}" alt="Client logo 5" class="client-logo-img">
-                <img src="{% static 'images/clients/client6.jpg' %}" alt="Client logo 6" class="client-logo-img">
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>Does ONEX BOOST work with biometric fingerprint machines and thermal printers?</span>
+                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Yes! ONEX BOOST integrates with leading biometric scanners (Realtime, eSSL, Mantra, ZKTeco) and standard 2-inch and 3-inch thermal POS printers for instant receipt printing at your reception desk.
+                    </div>
+                </div>
+            </div>
 
-                <img src="{% static 'images/clients/client1.jpg' %}" alt="" class="client-logo-img" aria-hidden="true">
-                <img src="{% static 'images/clients/client2.png' %}" alt="" class="client-logo-img" aria-hidden="true">
-                <img src="{% static 'images/clients/client3.jpeg' %}" alt="" class="client-logo-img" aria-hidden="true">
-                <img src="{% static 'images/clients/client4.png' %}" alt="" class="client-logo-img" aria-hidden="true">
-                <img src="{% static 'images/clients/client5.png' %}" alt="" class="client-logo-img" aria-hidden="true">
-                <img src="{% static 'images/clients/client6.jpg' %}" alt="" class="client-logo-img" aria-hidden="true">
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>How does the WhatsApp automated messaging feature work?</span>
+                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        ONEX BOOST connects via official WhatsApp Cloud APIs to trigger automatic renewal reminders, birthday wishes, and fee receipts with your gym branding. No manual typing or third-party phone tethering required.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>Can my trainers and members access their own portals?</span>
+                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Yes! ONEX BOOST includes dedicated, password-protected portals for trainers (to view assigned clients, sessions, and diet plans) and members (to view digital membership cards, workout schedules, and past invoices).
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>Can I manage multiple gym branches under one login?</span>
+                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Absolutely. Our Multi-Branch Architecture allows gym owners and franchise directors to switch between branch locations with one click, comparing revenue, active headcount, and staff performance side by side.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- ── CONVERSION CTA BANNER ──────────────────────────────────────────────── -->
+<section class="section-py">
+    <div class="brand-container">
+        <div class="cta-banner">
+            <div class="ox-badge mb-3" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #ffffff;">
+                <i class="fa-solid fa-rocket"></i> Scale Your Gym Today
+            </div>
+            <h2 class="cta-banner-title">
+                Ready to Experience India's Most Advanced Gym Management Software?
+            </h2>
+            <p class="cta-banner-desc">
+                Book a personalized 15-minute live demo with our gym automation specialists. We will show you how ONEX BOOST can save your team 15+ hours every week.
+            </p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
+                    <i class="fa-solid fa-calendar-check"></i> Book My Free 15-Min Demo
+                </a>
+                <a href="tel:+916392348731" class="btn-ox btn-ox-secondary btn-ox-lg">
+                    <i class="fa-solid fa-phone"></i> Call Sales: +91 63923 48731
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab switching for platform showcase
+    function switchShowcaseTab(index) {
+        const tabs = document.querySelectorAll('.showcase-tab-btn');
+        const panels = document.querySelectorAll('.showcase-content-panel');
+        
+        tabs.forEach((tab, i) => {
+            tab.classList.toggle('is-active', i === index);
+        });
+        panels.forEach((panel, i) => {
+            panel.classList.toggle('is-active', i === index);
+        });
+    }
+
+    // FAQ Accordion toggle
+    function toggleFaq(button) {
+        const item = button.closest('.faq-item');
+        const isOpen = item.classList.contains('is-open');
+        
+        // Close others
+        document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('is-open'));
+        
+        if (!isOpen) {
+            item.classList.add('is-open');
+        }
+    }
+</script>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static humanize %}
 
-{% block title %}My SaaS Subscription & Quotas - {{ system_setting.platform_name|default:"OneX-Fitness" }}{% endblock %}
+{% block title %}My SaaS Subscription & Quotas - {{ system_setting.platform_name|default:"ONEX BOOST" }}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -211,7 +211,7 @@
           <button type="button" class="btn-hero-upgrade" data-toggle="modal" data-target="#upgradeRequestModal">
             <i class="fas fa-arrow-alt-circle-up"></i> Request Plan Upgrade
           </button>
-          <a href="https://wa.me/{{ quota.support_phone|cut:' '|cut:'+' }}?text=Hello%20OneX-Fitness%20Team%2C%20I%20want%20to%20upgrade%20the%20SaaS%20plan%20for%20our%20gym%20*{{ gym.name|urlencode }}*%20(ID%3A%20{{ gym.gym_id }})." 
+          <a href="https://wa.me/{{ quota.support_phone|cut:' '|cut:'+' }}?text=Hello%20ONEX BOOST%20Team%2C%20I%20want%20to%20upgrade%20the%20SaaS%20plan%20for%20our%20gym%20*{{ gym.name|urlencode }}*%20(ID%3A%20{{ gym.gym_id }})." 
              target="_blank" 
              class="btn-hero-whatsapp">
             <i class="fab fa-whatsapp" style="color: #25d366; font-size: 1.15rem;"></i> Chat with SuperAdmin
@@ -237,7 +237,7 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
       <h5 class="font-weight-bold mb-0 text-dark">Platform Capacity Quotas</h5>
-      <p class="text-muted small mb-0">Real-time resource allocation and limits under your active OneX-Fitness subscription.</p>
+      <p class="text-muted small mb-0">Real-time resource allocation and limits under your active ONEX BOOST subscription.</p>
     </div>
   </div>
 

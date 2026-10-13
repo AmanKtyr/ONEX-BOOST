@@ -1,207 +1,194 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
 
-{% block title %}OneX-Fitness Pricing | Gym Management Software Plans by HELYONEX{% endblock %}
+{% block title %}ONEX BOOST Pricing | Transparent Gym Management Software Plans by HELYONEX{% endblock %}
 
 {% block seo %}
-<meta name="description" content="Choose the right OneX-Fitness plan for your gym by HELYONEX. Transparent pricing for gym management software — Starter, Professional, and Enterprise. Book a demo today.">
-<meta name="keywords" content="gym management software pricing India, OneX-Fitness pricing, HELYONEX, gym software cost, gym management app pricing, gym billing software price">
-<meta name="author" content="OneX-Fitness by HELYONEX">
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="description" content="Affordable and transparent gym management software pricing in India by HELYONEX. Choose between Starter, Growth, and Multi-Branch Enterprise plans. 14-day free trial.">
+<meta name="keywords" content="gym management software pricing India, ONEX BOOST pricing, OneX Boost, HELYONEX, gym software cost, fitness club software pricing, affordable gym CRM">
 {% endblock %}
 
 {% block canonical %}
-<link rel="canonical" href="https://onex-fitness.com/pricing/">
-{% endblock %}
-
-{% block og_tags %}
-<meta property="og:site_name" content="OneX-Fitness">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://onex-fitness.com/pricing/">
-<meta property="og:title" content="OneX-Fitness Pricing — Gym Management Software Plans by HELYONEX">
-<meta property="og:description" content="Starter, Professional, and Enterprise plans designed for every stage of your gym's growth. Engineered by HELYONEX.">
-<meta property="og:image" content="{% static 'images/ONEX-FITNESS-Logo.png' %}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:locale" content="en_IN">
-{% endblock %}
-
-{% block twitter_tags %}
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="OneX-Fitness Pricing — Gym Management Software Plans">
-<meta name="twitter:description" content="Starter to Enterprise — clear gym software plans for every stage of growth. Book a free demo.">
-<meta name="twitter:image" content="{% static 'images/bmi-og.png' %}">
-{% endblock %}
-
-{% block schema_ld %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Can we start with a small plan and expand later?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. OneX-Fitness's pricing structure supports businesses that want clarity today without blocking future growth. You can start with Starter and move to Professional or Enterprise as you scale."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Does OneX-Fitness help with onboarding?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. Setup walkthroughs and role-based guidance are part of every plan. Enterprise customers get dedicated onboarding support."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can OneX-Fitness handle billing, trainers, and attendance together?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. OneX-Fitness covers memberships, billing, QR attendance, trainer assignments, workout & diet plans, and follow-up — all from one platform."
-      }
-    }
-  ]
-}
-</script>
+<link rel="canonical" href="https://ONEX BOOST.com/pricing/">
 {% endblock %}
 
 {% block content %}
-<section class="page-hero">
-    <img src="{% static 'images/hero_image_gym.png' %}" alt="OneX-Fitness pricing" class="page-hero-media">
-    <div class="brand-container page-hero-content">
-        <div class="max-w-4xl site-reveal">
-            <span class="brand-eyebrow brand-eyebrow-dark">
-                <i class="fa-solid fa-badge-dollar"></i>
-                Pricing built for growth
-            </span>
-            <h1 class="brand-heading mt-6">Choose the OneX-Fitness setup that matches your current stage and your next move.</h1>
-            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
-                Clear tiers, premium support, and the same visual confidence across the whole buying journey. Pick a plan that fits your scale today and still feels right as you grow.
+<!-- ── HERO ────────────────────────────────────────────────────────────────── -->
+<section class="hero-section" style="padding: 9rem 0 4.5rem;">
+    <div class="hero-glow-orb hero-glow-1"></div>
+    <div class="brand-container">
+        <div class="hero-content">
+            <div class="ox-badge mb-3">
+                <i class="fa-solid fa-tags"></i> Transparent Value
+            </div>
+            <h1 class="hero-title">
+                Predictable, Transparent Pricing <br>
+                <span class="gradient-text">Built to Scale With Your Gym</span>
+            </h1>
+            <p class="hero-subtitle">
+                No hidden setup fees, no per-member penalties. Choose the plan that fits your gym's current scale and upgrade anytime.
             </p>
+
+            <!-- Monthly / Annual Switcher -->
+            <div class="pricing-switch-wrap">
+                <span class="pricing-switch-label is-active" id="monthlyLabel" onclick="setBilling('monthly')">Monthly Billing</span>
+                <div class="pricing-toggle" id="pricingToggle" onclick="toggleBillingPeriod()">
+                    <div class="pricing-toggle-thumb"></div>
+                </div>
+                <span class="pricing-switch-label" id="annualLabel" onclick="setBilling('annual')">
+                    Annual Billing
+                    <span class="ox-badge ox-badge-emerald" style="padding: 0.2rem 0.6rem; font-size: 0.72rem; margin-left: 6px;">
+                        Save 20%
+                    </span>
+                </span>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="brand-section">
+<!-- ── PRICING CARDS ───────────────────────────────────────────────────────── -->
+<section class="section-py" style="padding-top: 0;">
     <div class="brand-container">
-        <div class="price-grid">
-            <article class="brand-card p-8 site-reveal">
-                <span class="brand-eyebrow mb-5">
-                    <i class="fa-solid fa-seedling"></i>
-                    Starter
-                </span>
-                <h2 class="text-3xl font-bold mb-2">For focused teams</h2>
-                <p class="text-slate-800 leading-8 mb-8">A clean setup for smaller gyms and studios that want member, billing, and daily operating control in one place.</p>
-                <div class="brand-list">
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Member records and membership plans</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Invoice and due tracking</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Attendance basics</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Core reporting and admin workflows</div></div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: stretch;">
+            <!-- Tier 1: Starter -->
+            <div class="pricing-card">
+                <div class="pricing-name">Starter Studio</div>
+                <div class="pricing-desc">
+                    Ideal for boutique fitness studios, yoga centers, and emerging single gyms.
                 </div>
-                <a href="{% url 'contact' %}" class="btn btn-outline w-full mt-8">Talk to sales</a>
-            </article>
+                <div class="pricing-price-wrap">
+                    <span class="pricing-currency">&#8377;</span>
+                    <span class="pricing-amount plan-price" data-monthly="999" data-annual="799">999</span>
+                    <span class="pricing-period">/ month</span>
+                </div>
+                <ul class="pricing-features">
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Up to 250 Active Members</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Dynamic QR Code Attendance</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> GST Invoicing & Thermal Printing</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Basic WhatsApp Renewal Alerts</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> 2 Staff Admin Accounts</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Email & Chat Support</li>
+                </ul>
+                <a href="{% url 'contact' %}" class="btn-ox btn-ox-secondary" style="width: 100%;">
+                    Start 14-Day Free Trial
+                </a>
+            </div>
 
-            <article class="brand-card brand-panel p-8 site-reveal" style="border-color: rgba(93, 173, 216, 0.3); box-shadow: 0 28px 56px rgba(93, 173, 216, 0.18);">
-                <span class="brand-eyebrow mb-5">
-                    <i class="fa-solid fa-bolt"></i>
-                    Most popular
-                </span>
-                <h2 class="text-3xl font-bold mb-2">Professional</h2>
-                <p class="text-slate-800 leading-8 mb-8">For growth-stage fitness businesses that need stronger billing discipline, trainer workflows, follow-up systems, and richer day-to-day visibility.</p>
-                <div class="brand-list">
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Everything in Starter</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Lead and enquiry handling</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Trainer and PT workflows</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Workout and diet plan assignment</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Better retention touchpoints</div></div>
+            <!-- Tier 2: Growth (Popular) -->
+            <div class="pricing-card is-popular">
+                <div class="popular-badge">Most Popular Choice</div>
+                <div class="pricing-name" style="color: #38bdf8;">Growth Gym</div>
+                <div class="pricing-desc">
+                    For ambitious, established fitness clubs ready for complete automation.
                 </div>
-                <a href="{% url 'contact' %}" class="btn btn-primary w-full mt-8">Book a walkthrough</a>
-            </article>
+                <div class="pricing-price-wrap">
+                    <span class="pricing-currency">&#8377;</span>
+                    <span class="pricing-amount plan-price" data-monthly="1,999" data-annual="1,599">1,999</span>
+                    <span class="pricing-period">/ month</span>
+                </div>
+                <ul class="pricing-features">
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> <strong>Unlimited Active Members</strong></li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Biometric Fingerprint Hardware Sync</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Official WhatsApp Cloud API Automations</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Dedicated Trainer Portal & PT Tracker</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Member Digital ID Card Portal</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Diet & Workout Plan Builder</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> 10 Staff & Trainer Logins</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Free Excel Data Migration</li>
+                </ul>
+                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary" style="width: 100%;">
+                    <i class="fa-solid fa-bolt"></i> Get Growth Plan
+                </a>
+            </div>
 
-            <article class="brand-card p-8 site-reveal">
-                <span class="brand-eyebrow mb-5">
-                    <i class="fa-solid fa-building"></i>
-                    Enterprise
-                </span>
-                <h2 class="text-3xl font-bold mb-2">For larger operations</h2>
-                <p class="text-slate-800 leading-8 mb-8">A more tailored setup for advanced teams that want broader control, more support, and a rollout aligned to scale.</p>
-                <div class="brand-list">
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Advanced operating workflows</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Inventory and deeper admin control</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Structured onboarding support</div></div>
-                    <div class="brand-list-item"><span class="brand-check"><i class="fa-solid fa-check"></i></span><div>Custom rollout guidance</div></div>
+            <!-- Tier 3: Enterprise -->
+            <div class="pricing-card">
+                <div class="pricing-name">Multi-Branch Chain</div>
+                <div class="pricing-desc">
+                    For multi-location gym chains, franchises, and luxury athletic clubs.
                 </div>
-                <a href="{% url 'contact' %}" class="btn btn-outline w-full mt-8">Contact our team</a>
-            </article>
+                <div class="pricing-price-wrap">
+                    <span class="pricing-currency">&#8377;</span>
+                    <span class="pricing-amount plan-price" data-monthly="3,999" data-annual="3,199">3,999</span>
+                    <span class="pricing-period">/ month</span>
+                </div>
+                <ul class="pricing-features">
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Everything in Growth Plan</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Multi-Location Centralized Dashboard</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Unlimited Staff & Trainer Logins</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Custom Branded WhatsApp Sender ID</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Advanced Inventory & Shake Bar POS</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Dedicated HELYONEX Account Manager</li>
+                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> 24/7 Priority Phone & Field Support</li>
+                </ul>
+                <a href="{% url 'contact' %}" class="btn-ox btn-ox-secondary" style="width: 100%;">
+                    Talk to Enterprise Team
+                </a>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="brand-section brand-section-soft">
+<!-- ── FEATURE COMPARISON MATRIX ───────────────────────────────────────────── -->
+<section class="section-py" style="background: #ffffff; border-top: 1px solid var(--ox-border-color); border-bottom: 1px solid var(--ox-border-color);">
     <div class="brand-container">
-        <div class="text-center max-w-3xl mx-auto mb-12 site-reveal">
-            <span class="brand-eyebrow">
-                <i class="fa-solid fa-table-columns"></i>
-                Compare plans
-            </span>
-            <h2 class="brand-section-title mt-4">See how the tiers map to real business needs.</h2>
+        <div class="section-header">
+            <h2 class="section-title">Detailed Feature Matrix</h2>
+            <p class="section-description">Compare feature capabilities across each ONEX BOOST plan.</p>
         </div>
 
-        <div class="comparison-shell site-reveal">
-            <table>
+        <div class="bento-card" style="overflow-x: auto; padding: 1.5rem; background: #ffffff;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
                 <thead>
-                    <tr>
-                        <th>Capability</th>
-                        <th>Starter</th>
-                        <th>Professional</th>
-                        <th>Enterprise</th>
+                    <tr style="border-bottom: 2px solid var(--ox-border-color); background: #f8fafc;">
+                        <th style="padding: 1.15rem 1.25rem; color: var(--ox-text-primary); width: 40%; font-weight: 700;">Core Capabilities</th>
+                        <th style="padding: 1.15rem 1rem; color: var(--ox-text-secondary); text-align: center; font-weight: 700;">Starter</th>
+                        <th style="padding: 1.15rem 1rem; color: var(--ox-primary-dark); text-align: center; font-weight: 700; background: rgba(2, 132, 199, 0.05);">Growth (Popular)</th>
+                        <th style="padding: 1.15rem 1rem; color: var(--ox-text-primary); text-align: center; font-weight: 700;">Multi-Branch</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="font-bold">Member management</td>
-                        <td><span class="comparison-pill primary">Included</span></td>
-                        <td><span class="comparison-pill primary">Included</span></td>
-                        <td><span class="comparison-pill primary">Advanced</span></td>
+                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
+                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Active Member Capacity</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--ox-text-secondary);">Up to 250</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--ox-primary-dark); font-weight: 700; background: rgba(2, 132, 199, 0.03);">Unlimited</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--ox-text-primary); font-weight: 700;">Unlimited</td>
                     </tr>
-                    <tr>
-                        <td class="font-bold">Billing and dues</td>
-                        <td><span class="comparison-pill primary">Included</span></td>
-                        <td><span class="comparison-pill primary">Included</span></td>
-                        <td><span class="comparison-pill primary">Advanced</span></td>
+                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
+                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">QR Code Member Attendance</td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i></td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
                     </tr>
-                    <tr>
-                        <td class="font-bold">Lead management</td>
-                        <td><span class="comparison-pill secondary">Limited</span></td>
-                        <td><span class="comparison-pill primary">Included</span></td>
-                        <td><span class="comparison-pill primary">Included</span></td>
+                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
+                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Biometric Machine Driver Sync</td>
+                        <td style="padding: 1rem; text-align: center; color: #94a3b8;"><i class="fa-solid fa-minus"></i></td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i></td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
                     </tr>
-                    <tr>
-                        <td class="font-bold">Trainer and PT workflows</td>
-                        <td><span class="comparison-pill secondary">Optional</span></td>
-                        <td><span class="comparison-pill primary">Included</span></td>
-                        <td><span class="comparison-pill primary">Included</span></td>
+                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
+                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Automated WhatsApp Invoicing & Renewals</td>
+                        <td style="padding: 1rem; text-align: center; color: var(--ox-text-secondary);">Basic</td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i> Cloud API</td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i> Custom Sender</td>
                     </tr>
-                    <tr>
-                        <td class="font-bold">Workout and diet plans</td>
-                        <td><span class="comparison-pill secondary">Optional</span></td>
-                        <td><span class="comparison-pill primary">Included</span></td>
-                        <td><span class="comparison-pill primary">Included</span></td>
+                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
+                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Trainer Management & PT Commissions</td>
+                        <td style="padding: 1rem; text-align: center; color: #94a3b8;"><i class="fa-solid fa-minus"></i></td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i></td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
                     </tr>
-                    <tr>
-                        <td class="font-bold">Inventory and operations</td>
-                        <td><span class="comparison-pill secondary">Basic</span></td>
-                        <td><span class="comparison-pill secondary">Expanded</span></td>
-                        <td><span class="comparison-pill accent">Tailored</span></td>
+                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
+                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Multi-Location Cross-Branch Access</td>
+                        <td style="padding: 1rem; text-align: center; color: #94a3b8;"><i class="fa-solid fa-minus"></i></td>
+                        <td style="padding: 1rem; text-align: center; color: #94a3b8; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-minus"></i></td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
                     </tr>
-                    <tr>
-                        <td class="font-bold">Onboarding support</td>
-                        <td><span class="comparison-pill secondary">Standard</span></td>
-                        <td><span class="comparison-pill primary">Priority</span></td>
-                        <td><span class="comparison-pill accent">Dedicated</span></td>
+                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
+                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Dedicated Onboarding Architect</td>
+                        <td style="padding: 1rem; text-align: center; color: #94a3b8;"><i class="fa-solid fa-minus"></i></td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i> Free Excel Import</td>
+                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i> Dedicated Rep</td>
                     </tr>
                 </tbody>
             </table>
@@ -209,41 +196,48 @@
     </div>
 </section>
 
-<section class="brand-section">
+<!-- ── CTA ─────────────────────────────────────────────────────────────────── -->
+<section class="section-py">
     <div class="brand-container">
-        <div class="grid lg:grid-cols-[1fr_.9fr] gap-10 items-start">
-            <div class="site-reveal">
-                <span class="brand-eyebrow">
-                    <i class="fa-solid fa-circle-question"></i>
-                    Buying guidance
-                </span>
-                <h2 class="brand-section-title mt-4">Questions teams usually ask before they switch.</h2>
-                <div class="grid gap-4 mt-8">
-                    <div class="brand-card p-6">
-                        <h3 class="text-xl font-bold mb-2">Can we start small and expand later?</h3>
-                        <p class="text-slate-800 leading-8">Yes. The structure of the pricing is meant to support businesses that want clarity today without blocking future growth.</p>
-                    </div>
-                    <div class="brand-card p-6">
-                        <h3 class="text-xl font-bold mb-2">Do you help with onboarding?</h3>
-                        <p class="text-slate-800 leading-8">Yes. Setup, walkthroughs, and role-based guidance are part of making the platform usable in real team environments.</p>
-                    </div>
-                    <div class="brand-card p-6">
-                        <h3 class="text-xl font-bold mb-2">Can OneX-Fitness support operational depth?</h3>
-                        <p class="text-slate-800 leading-8">That is one of the main differentiators. The product covers much more than a simple membership database or invoice tool.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="brand-card brand-card-dark p-8 site-reveal">
-                <p class="brand-mono text-xs uppercase tracking-[0.2em] text-white/50">Need a custom rollout?</p>
-                <h3 class="text-3xl font-bold mt-4 mb-4">Let’s map the right plan to your team structure.</h3>
-                <p class="text-white/70 leading-8">We can walk through your current tools, pain points, and the modules that matter most so the platform recommendation fits the way you actually operate.</p>
-                <div class="grid gap-4 mt-8">
-                    <a href="{% url 'contact' %}" class="btn btn-primary">Book your demo</a>
-                    <a href="https://wa.me/916392348731?text=Hello%20OneX-Fitness%2C%20I%20want%20to%20discuss%20pricing." class="btn btn-outline border-white/20 bg-white/8 text-white hover:bg-white/16 hover:text-white">Chat about pricing</a>
-                </div>
+        <div class="cta-banner">
+            <h2 class="cta-banner-title">Need a Custom Plan for Your Fitness Chain?</h2>
+            <p class="cta-banner-desc">
+                We work directly with gym chains and franchises across India. Contact our solutions architects for tailored multi-gym pricing and custom hardware setups.
+            </p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
+                    <i class="fa-solid fa-comments"></i> Request Custom Quote
+                </a>
+                <a href="https://wa.me/916392348731" target="_blank" rel="noopener noreferrer" class="btn-ox btn-ox-secondary btn-ox-lg">
+                    <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+                </a>
             </div>
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let isAnnual = false;
+    const toggle = document.getElementById('pricingToggle');
+    const monthlyLabel = document.getElementById('monthlyLabel');
+    const annualLabel = document.getElementById('annualLabel');
+    const priceElements = document.querySelectorAll('.plan-price');
+
+    function toggleBillingPeriod() {
+        setBilling(!isAnnual ? 'annual' : 'monthly');
+    }
+
+    function setBilling(period) {
+        isAnnual = (period === 'annual');
+        toggle.classList.toggle('is-annual', isAnnual);
+        monthlyLabel.classList.toggle('is-active', !isAnnual);
+        annualLabel.classList.toggle('is-active', isAnnual);
+
+        priceElements.forEach(el => {
+            el.textContent = isAnnual ? el.dataset.annual : el.dataset.monthly;
+        });
+    }
+</script>
 {% endblock %}

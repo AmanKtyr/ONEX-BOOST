@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Invoice #{{ history.id }} - {{ system_setting.platform_name|default:"OneX-Fitness" }} GYM{% endblock title %}
+{% block title %}Invoice #{{ history.id }} - {{ system_setting.platform_name|default:"ONEX BOOST" }} GYM{% endblock title %}
 
 {% block extra_css %}
 <style>
@@ -314,7 +314,7 @@
                     {% if history.comment %}
                         <div class="small text-muted"><strong>Notes:</strong> {{ history.comment }}</div>
                     {% endif %}
-                    <div class="small text-muted mt-2">Computer generated tax receipt issued by {{ system_setting.platform_name|default:"OneX-Fitness" }} GYM Management Software.</div>
+                    <div class="small text-muted mt-2">Computer generated tax receipt issued by {{ system_setting.platform_name|default:"ONEX BOOST" }} GYM Management Software.</div>
                 </div>
 
                 <div class="col-md-5 text-md-right mt-3 mt-md-0">

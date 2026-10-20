@@ -3,6 +3,135 @@
 
 {% block title %}ONEX BOOST | Best Gym Management Software in India by HELYONEX{% endblock %}
 
+{% block extra_css %}
+<style>
+/* ── Guaranteed Inline Workflow Styles ── */
+.how-it-works-section {
+    padding: 5.5rem 0 6rem;
+    background: radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.05) 0%, #f8fafc 70%);
+    border-bottom: 1px solid #e2e8f0;
+}
+.workflow-steps-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 2rem !important;
+}
+@media (max-width: 992px) {
+    .workflow-steps-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+}
+.workflow-step-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 20px !important;
+    padding: 2.25rem 2rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+.workflow-step-card:hover {
+    transform: translateY(-6px) !important;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.12) !important;
+}
+.step-card-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 1.5rem !important;
+}
+.step-number-badge {
+    font-size: 1.35rem !important;
+    font-weight: 900 !important;
+    color: #0284c7 !important;
+    letter-spacing: -0.03em !important;
+    background: #f0f9ff !important;
+    border: 1px solid #bae6fd !important;
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.step-icon-wrap {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 14px !important;
+    border: 1px solid !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.25rem !important;
+}
+.step-card-body {
+    flex-grow: 1 !important;
+}
+.step-phase-label {
+    font-size: 0.74rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    color: #0284c7 !important;
+    margin-bottom: 0.5rem !important;
+}
+.step-card-title {
+    font-size: 1.35rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0.85rem !important;
+}
+.step-card-text {
+    font-size: 0.94rem !important;
+    color: #475569 !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.5rem !important;
+}
+.step-points-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 0 1.75rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.65rem !important;
+}
+.step-points-list li {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 0.65rem !important;
+    font-size: 0.88rem !important;
+    color: #334155 !important;
+    font-weight: 600 !important;
+    line-height: 1.45 !important;
+}
+.step-points-list li i {
+    font-size: 0.95rem !important;
+    margin-top: 2px !important;
+    flex-shrink: 0 !important;
+}
+.step-card-bottom {
+    padding-top: 1.25rem !important;
+    border-top: 1px solid #f1f5f9 !important;
+}
+.step-stat-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.35rem 0.85rem !important;
+    border-radius: 9999px !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+}
+</style>
+{% endblock %}
 {% block seo %}
 <meta name="description" content="ONEX BOOST by HELYONEX is India's leading gym management software. Automate memberships, biometric attendance, WhatsApp billing reminders, trainer workflows, and revenue analytics.">
 <meta name="keywords" content="ONEX BOOST, HELYONEX, gym management software India, gym billing software, gym CRM, fitness studio management, biometric gym attendance, gym software Lucknow">
@@ -23,11 +152,11 @@
 
             <h1 class="hero-title">
                 The Operating System for <br>
-                <span class="gradient-text">Modern Gyms & Fitness Clubs</span>
+                <span class="gradient-text">Modern Gyms &amp; Fitness Clubs</span>
             </h1>
 
             <p class="hero-subtitle">
-                Streamline member onboarding, automate WhatsApp billing reminders, track QR & biometric attendance, and empower trainers — all from one high-performance platform.
+                Streamline member onboarding, automate WhatsApp billing reminders, track QR &amp; biometric attendance, and empower trainers &mdash; all from one high-performance platform.
             </p>
 
             <div class="hero-cta-group">
@@ -77,473 +206,13 @@
                     <div class="metric-tile-sub">Hardware sync with offline backup</div>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
 
-            <!-- ── INTERACTIVE STUDIO SHOWCASE ────────────────────────────────────── -->
-            <div class="studio-preview-section">
-                <!-- Interactive Mode Switcher -->
-                <div style="text-align: center;">
-                    <div class="studio-tab-switcher">
-                        <button type="button" class="studio-tab-btn is-active" onclick="switchStudioTab('panel-attendance', this)">
-                            <i class="fa-solid fa-fingerprint"></i> Biometric &amp; Gate Access
-                        </button>
-                        <button type="button" class="studio-tab-btn" onclick="switchStudioTab('panel-whatsapp', this)">
-                            <i class="fa-brands fa-whatsapp"></i> WhatsApp Billing Engine
-                        </button>
-                        <button type="button" class="studio-tab-btn" onclick="switchStudioTab('panel-analytics', this)">
-                            <i class="fa-solid fa-chart-line"></i> Revenue Intelligence &amp; POS
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Studio Window Frame -->
-                <div class="studio-window">
-                    <!-- Top Window Chrome Bar -->
-                    <div class="studio-topbar">
-                        <div class="studio-dots">
-                            <span></span><span></span><span></span>
-                        </div>
-                        <div class="studio-url-bar">
-                            <i class="fa-solid fa-lock" style="color: #10b981; font-size: 0.72rem;"></i>
-                            <span>https://app.ONEX BOOST.com/titan-flagship/console</span>
-                        </div>
-                        <div class="studio-status-badge">
-                            <span class="studio-pulse-dot"></span>
-                            <span>Cloud Synced &bull; Terminal Online</span>
-                        </div>
-                    </div>
-
-                    <!-- Studio Window Shell -->
-                    <div class="studio-shell">
-                        <!-- Left Navigation Rail -->
-                        <div class="studio-nav-rail">
-                            <div class="rail-logo-mark">
-                                <i class="fa-solid fa-dumbbell"></i>
-                            </div>
-                            <div class="rail-nav-item is-current" title="Dashboard"><i class="fa-solid fa-gauge-high"></i></div>
-                            <div class="rail-nav-item" title="Members"><i class="fa-solid fa-users"></i></div>
-                            <div class="rail-nav-item" title="Gate Access"><i class="fa-solid fa-fingerprint"></i></div>
-                            <div class="rail-nav-item" title="Billing"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                            <div class="rail-nav-item" title="WhatsApp Hub"><i class="fa-brands fa-whatsapp"></i></div>
-                            <div class="rail-nav-item" title="Trainers"><i class="fa-solid fa-user-ninja"></i></div>
-                            <div class="rail-nav-item" style="margin-top: auto;" title="Settings"><i class="fa-solid fa-gear"></i></div>
-                        </div>
-
-                        <!-- Main Studio Console -->
-                        <div class="studio-console-body">
-                            <!-- Console Header Bar -->
-                            <div class="console-header-bar">
-                                <div class="branch-selector">
-                                    <div style="background: #f1f5f9; padding: 4px 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                        <img src="{% static 'images/ONEX-BOOST-Logo.png' %}" alt="ONEX BOOST" style="max-height: 20px; width: auto;">
-                                    </div>
-                                    <span class="branch-name">Titan Fitness &bull; Flagship Lucknow</span>
-                                    <span class="branch-badge"><i class="fa-solid fa-bolt"></i> Live Terminal</span>
-                                </div>
-                                <div class="search-fake-input">
-                                    <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8;"></i>
-                                    <span>Search 1,248 members by name, mobile, RFID...</span>
-                                </div>
-                                <div class="console-profile-wrap">
-                                    <button type="button" class="btn-ox btn-ox-primary" style="padding: 0.45rem 1rem; font-size: 0.8rem; border-radius: 8px;">
-                                        <i class="fa-solid fa-plus"></i> New Member
-                                    </button>
-                                    <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-                                        <img src="/static/images/face16.png" alt="Director" style="width: 24px; height: 24px; border-radius: 50%;">
-                                        <span style="font-size: 0.78rem; font-weight: 700; color: #0f172a;">Aman (Admin)</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- ── PANEL 1: BIOMETRIC & GATE ACCESS (DEFAULT ACTIVE) ────── -->
-                            <div id="panel-attendance" class="studio-tab-panel is-active">
-                                <div class="panel-kpi-grid">
-                                    <div class="panel-kpi-card">
-                                        <div class="panel-kpi-header">
-                                            <span class="panel-kpi-title">In-Gym Floor Occupancy</span>
-                                            <span class="ox-badge ox-badge-emerald" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;">57% Peak Hour</span>
-                                        </div>
-                                        <div class="panel-kpi-val">86 <span style="font-size: 0.95rem; color: #64748b; font-weight: 600;">/ 150 Cap</span></div>
-                                    </div>
-                                    <div class="panel-kpi-card">
-                                        <div class="panel-kpi-header">
-                                            <span class="panel-kpi-title">Today's Gate Check-ins</span>
-                                            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700;">+18% vs Yesterday</span>
-                                        </div>
-                                        <div class="panel-kpi-val">428 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;"><i class="fa-solid fa-arrow-trend-up"></i> Verified</span></div>
-                                    </div>
-                                    <div class="panel-kpi-card">
-                                        <div class="panel-kpi-header">
-                                            <span class="panel-kpi-title">Fee Defaulters Blocked</span>
-                                            <span style="font-size: 0.75rem; color: #dc2626; font-weight: 700;">Zero Free Walk-ins</span>
-                                        </div>
-                                        <div class="panel-kpi-val" style="color: #dc2626;">6 <span style="font-size: 0.95rem; color: #64748b; font-weight: 600;">Auto Alerted</span></div>
-                                    </div>
-                                </div>
-
-                                <div class="panel-split-layout">
-                                    <!-- Left: Real-time Live Gate Stream -->
-                                    <div class="panel-content-card">
-                                        <div class="card-inner-header">
-                                            <div class="card-inner-title">
-                                                <i class="fa-solid fa-rss" style="color: #0284c7; margin-right: 6px;"></i>
-                                                Live Biometric &amp; Turnstile Access Stream
-                                            </div>
-                                            <span style="font-size: 0.74rem; font-weight: 700; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 0.15rem 0.55rem; border-radius: 9999px;">
-                                                <i class="fa-solid fa-circle" style="font-size: 6px; vertical-align: middle;"></i> 0.3s Polling
-                                            </span>
-                                        </div>
-                                        <div class="live-entry-list">
-                                            <div class="live-entry-row">
-                                                <div class="live-entry-left">
-                                                    <div class="member-avatar-badge">RV</div>
-                                                    <div class="member-info-col">
-                                                        <strong>Rahul Verma &bull; #TITAN-1084</strong>
-                                                        <span>Annual Gold Member &bull; Turnstile Gate 01</span>
-                                                    </div>
-                                                </div>
-                                                <div class="live-entry-right">
-                                                    <span class="entry-time-stamp">07:44 PM</span>
-                                                    <span class="badge-access-pass"><i class="fa-solid fa-circle-check"></i> Pass: Verified</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="live-entry-row">
-                                                <div class="live-entry-left">
-                                                    <div class="member-avatar-badge" style="background: #fdf2f8; color: #db2777;">NS</div>
-                                                    <div class="member-info-col">
-                                                        <strong>Neha Saxena &bull; #TITAN-0941</strong>
-                                                        <span>Personal Training (Coach Vikram) &bull; Dynamic QR</span>
-                                                    </div>
-                                                </div>
-                                                <div class="live-entry-right">
-                                                    <span class="entry-time-stamp">07:42 PM</span>
-                                                    <span class="badge-access-pass"><i class="fa-solid fa-circle-check"></i> Pass: Verified</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="live-entry-row">
-                                                <div class="live-entry-left">
-                                                    <div class="member-avatar-badge" style="background: #f0fdf4; color: #16a34a;">VS</div>
-                                                    <div class="member-info-col">
-                                                        <strong>Vikram Singh &bull; #TITAN-1205</strong>
-                                                        <span>CrossFit Strength Pro &bull; Biometric Terminal 02</span>
-                                                    </div>
-                                                </div>
-                                                <div class="live-entry-right">
-                                                    <span class="entry-time-stamp">07:39 PM</span>
-                                                    <span class="badge-access-pass"><i class="fa-solid fa-circle-check"></i> Pass: Verified</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="live-entry-row" style="background: #fff5f5; border-color: #fecaca;">
-                                                <div class="live-entry-left">
-                                                    <div class="member-avatar-badge" style="background: #fee2e2; color: #dc2626;">AK</div>
-                                                    <div class="member-info-col">
-                                                        <strong style="color: #dc2626;">Amit Kumar &bull; #TITAN-0872</strong>
-                                                        <span style="color: #b91c1c;">Standard Plan &bull; Expired 2 Days Ago</span>
-                                                    </div>
-                                                </div>
-                                                <div class="live-entry-right">
-                                                    <span class="entry-time-stamp">07:36 PM</span>
-                                                    <span class="badge-access-blocked"><i class="fa-solid fa-circle-xmark"></i> Access Denied</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Right: Defaulter Intercept & Telemetry -->
-                                    <div class="panel-content-card" style="display: flex; flex-direction: column; justify-content: space-between;">
-                                        <div>
-                                            <div class="card-inner-header">
-                                                <div class="card-inner-title">
-                                                    <i class="fa-solid fa-bell-concierge" style="color: #f59e0b; margin-right: 6px;"></i>
-                                                    Front-Desk Fast Action
-                                                </div>
-                                                <span class="ox-badge ox-badge-amber" style="font-size: 0.7rem; padding: 0.15rem 0.5rem;">Active Intercept</span>
-                                            </div>
-
-                                            <!-- Intercept alert box -->
-                                            <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 0.85rem; margin-bottom: 1rem;">
-                                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
-                                                    <span style="font-size: 0.78rem; font-weight: 800; color: #92400e;">
-                                                        <i class="fa-solid fa-triangle-exclamation"></i> Defaulter at Barrier: Amit Kumar
-                                                    </span>
-                                                    <span style="font-size: 0.72rem; color: #b45309; font-weight: 700;">&#8377;2,499 Overdue</span>
-                                                </div>
-                                                <p style="font-size: 0.75rem; color: #78350f; margin-bottom: 0.65rem; line-height: 1.4;">
-                                                    Turnstile barrier remained locked. Auto-WhatsApp fee renewal alert generated with instant QR pay link.
-                                                </p>
-                                                <button type="button" class="btn-ox btn-ox-primary" style="width: 100%; justify-content: center; padding: 0.45rem; font-size: 0.78rem; border-radius: 6px;">
-                                                    <i class="fa-brands fa-whatsapp"></i> Re-send WhatsApp Payment Link
-                                                </button>
-                                            </div>
-
-                                            <!-- Hardware status checklist -->
-                                            <div style="font-size: 0.78rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Hardware Health Telemetry</div>
-                                            <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.76rem;">
-                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0.6rem; background: #f8fafc; border-radius: 6px;">
-                                                    <span><i class="fa-solid fa-fingerprint" style="color: #0284c7; margin-right: 6px;"></i> eSSL Biometric Scanner #01</span>
-                                                    <span style="color: #059669; font-weight: 700;"><i class="fa-solid fa-check"></i> Online (18ms)</span>
-                                                </div>
-                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0.6rem; background: #f8fafc; border-radius: 6px;">
-                                                    <span><i class="fa-solid fa-torii-gate" style="color: #10b981; margin-right: 6px;"></i> Magnetic Gate Turnstile</span>
-                                                    <span style="color: #059669; font-weight: 700;"><i class="fa-solid fa-check"></i> Armed &amp; Polling</span>
-                                                </div>
-                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0.6rem; background: #f8fafc; border-radius: 6px;">
-                                                    <span><i class="fa-solid fa-print" style="color: #6366f1; margin-right: 6px;"></i> Thermal POS (80mm)</span>
-                                                    <span style="color: #059669; font-weight: 700;"><i class="fa-solid fa-check"></i> Ready to Print</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- ── PANEL 2: WHATSAPP BILLING ENGINE ────────────────────── -->
-                            <div id="panel-whatsapp" class="studio-tab-panel">
-                                <div class="panel-kpi-grid">
-                                    <div class="panel-kpi-card">
-                                        <div class="panel-kpi-header">
-                                            <span class="panel-kpi-title">Invoices Dispatched Today</span>
-                                            <span class="ox-badge ox-badge-emerald" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;">100% Delivered</span>
-                                        </div>
-                                        <div class="panel-kpi-val">54 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;">Official Tax Invoices</span></div>
-                                    </div>
-                                    <div class="panel-kpi-card">
-                                        <div class="panel-kpi-header">
-                                            <span class="panel-kpi-title">Auto-Collected via WhatsApp</span>
-                                            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700;">Instant UPI Settlement</span>
-                                        </div>
-                                        <div class="panel-kpi-val">&#8377;92,400 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;">Today</span></div>
-                                    </div>
-                                    <div class="panel-kpi-card">
-                                        <div class="panel-kpi-header">
-                                            <span class="panel-kpi-title">Expiring In Next 3 Days</span>
-                                            <span style="font-size: 0.75rem; color: #f59e0b; font-weight: 700;">Renewal Queue</span>
-                                        </div>
-                                        <div class="panel-kpi-val" style="color: #d97706;">14 <span style="font-size: 0.95rem; color: #64748b; font-weight: 600;">Alerts Dispatched</span></div>
-                                    </div>
-                                </div>
-
-                                <div class="panel-split-layout">
-                                    <!-- Left: WhatsApp Chat Simulation -->
-                                    <div class="panel-content-card">
-                                        <div class="card-inner-header">
-                                            <div class="card-inner-title">
-                                                <i class="fa-brands fa-whatsapp" style="color: #25d366; margin-right: 6px;"></i>
-                                                Official Member WhatsApp Invoicing Dispatch
-                                            </div>
-                                            <span style="font-size: 0.74rem; font-weight: 700; color: #128c7e;">Verified Sender</span>
-                                        </div>
-
-                                        <div class="whatsapp-chat-frame">
-                                            <div class="wa-bubble-card">
-                                                <div class="wa-bubble-header">
-                                                    <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i>
-                                                    <span>Titan Fitness Club &bull; Official Account <i class="fa-solid fa-circle-check" style="color: #25d366;"></i></span>
-                                                </div>
-                                                <div class="wa-bubble-text">
-                                                    Hello <strong>Rahul Verma</strong>! 🎉<br>
-                                                    Thank you for renewing your <strong>Annual Gold Gym Membership</strong> at Titan Fitness Club Gomti Nagar. Your payment of <strong>&#8377;14,999</strong> has been successfully reconciled.
-                                                </div>
-                                                <div class="wa-invoice-box">
-                                                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
-                                                        <span>Invoice No: <strong>#OX-2026-9481</strong></span>
-                                                        <span style="color: #059669; font-weight: 700;">PAID (UPI)</span>
-                                                    </div>
-                                                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
-                                                        <span>Plan: Annual Gold + Steam Access</span>
-                                                        <span>Valid: 12 Oct 2026 – 11 Oct 2027</span>
-                                                    </div>
-                                                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: #0f172a;">
-                                                        <span>GST Tax Paid (18%): &#8377;2,288</span>
-                                                        <span>Net: &#8377;14,999</span>
-                                                    </div>
-                                                </div>
-                                                <div class="wa-bubble-actions">
-                                                    <a href="#" class="wa-action-btn wa-btn-pdf"><i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> Download GST Tax Invoice PDF</a>
-                                                    <a href="#" class="wa-action-btn wa-btn-upi"><i class="fa-solid fa-mobile-screen-button"></i> View Member ID Card</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Right: Thermal Receipt Preview -->
-                                    <div class="panel-content-card">
-                                        <div class="card-inner-header">
-                                            <div class="card-inner-title">
-                                                <i class="fa-solid fa-receipt" style="color: #0284c7; margin-right: 6px;"></i>
-                                                Thermal POS Receipt (1-Click Print)
-                                            </div>
-                                            <span style="font-size: 0.72rem; color: #64748b;">58mm / 80mm</span>
-                                        </div>
-
-                                        <div class="thermal-receipt-box">
-                                            <div style="text-align: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px;">
-                                                <strong>TITAN FITNESS CLUB</strong><br>
-                                                BHATT SQUARE, LUCKNOW - 226010<br>
-                                                GSTIN: 09AAACT9281M1Z5<br>
-                                                PH: +91 63923 48731
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <span>INV: #OX-9481</span>
-                                                <span>DATE: 12-OCT-2026</span>
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                                                <span>MEMBER: RAHUL VERMA</span>
-                                                <span>ID: #1084</span>
-                                            </div>
-                                            <div style="border-top: 1px dashed #cbd5e1; border-bottom: 1px dashed #cbd5e1; padding: 4px 0; margin-bottom: 6px;">
-                                                <div style="display: flex; justify-content: space-between;">
-                                                    <span>1. ANNUAL GOLD PASS</span>
-                                                    <span>12,711.00</span>
-                                                </div>
-                                                <div style="display: flex; justify-content: space-between;">
-                                                    <span>2. CGST (9%)</span>
-                                                    <span>1,144.00</span>
-                                                </div>
-                                                <div style="display: flex; justify-content: space-between;">
-                                                    <span>3. SGST (9%)</span>
-                                                    <span>1,144.00</span>
-                                                </div>
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between; font-weight: 900;">
-                                                <span>TOTAL PAID (INR):</span>
-                                                <span>14,999.00</span>
-                                            </div>
-                                            <div style="text-align: center; margin-top: 8px; font-size: 0.72rem; color: #64748b;">
-                                                POWERED BY ONEX BOOST &bull; HELYONEX
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- ── PANEL 3: REVENUE INTELLIGENCE & POS ──────────────────── -->
-                            <div id="panel-analytics" class="studio-tab-panel">
-                                <div class="panel-kpi-grid">
-                                    <div class="panel-kpi-card">
-                                        <div class="panel-kpi-header">
-                                            <span class="panel-kpi-title">October Gross Revenue</span>
-                                            <span class="ox-badge ox-badge-emerald" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;">+22.4% vs Sep</span>
-                                        </div>
-                                        <div class="panel-kpi-val">&#8377;5,84,500 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;"><i class="fa-solid fa-arrow-trend-up"></i> High Growth</span></div>
-                                    </div>
-                                    <div class="panel-kpi-card">
-                                        <div class="panel-kpi-header">
-                                            <span class="panel-kpi-title">Predictable Recurring MRR</span>
-                                            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 700;">Auto-Renewing Plans</span>
-                                        </div>
-                                        <div class="panel-kpi-val">&#8377;4,12,000 <span style="font-size: 0.95rem; color: #64748b; font-weight: 600;">Base MRR</span></div>
-                                    </div>
-                                    <div class="panel-kpi-card">
-                                        <div class="panel-kpi-header">
-                                            <span class="panel-kpi-title">Supplement &amp; Shake Bar POS</span>
-                                            <span style="font-size: 0.75rem; color: #10b981; font-weight: 700;">+34% Retail Margin</span>
-                                        </div>
-                                        <div class="panel-kpi-val">&#8377;42,800 <span style="font-size: 0.95rem; color: #10b981; font-weight: 600;">This Month</span></div>
-                                    </div>
-                                </div>
-
-                                <div class="panel-split-layout">
-                                    <!-- Left: SVG Growth Chart -->
-                                    <div class="panel-content-card">
-                                        <div class="card-inner-header">
-                                            <div class="card-inner-title">
-                                                <i class="fa-solid fa-chart-area" style="color: #0284c7; margin-right: 6px;"></i>
-                                                Monthly Fee Collection &amp; Renewal Trajectory (2026)
-                                            </div>
-                                            <span style="font-size: 0.74rem; font-weight: 700; color: #0284c7;">Last 5 Months</span>
-                                        </div>
-
-                                        <div style="padding: 1rem 0;">
-                                            <svg viewBox="0 0 500 160" style="width: 100%; height: auto; overflow: visible;">
-                                                <defs>
-                                                    <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                                                        <stop offset="0%" stop-color="#0284c7" stop-opacity="0.35"/>
-                                                        <stop offset="100%" stop-color="#0284c7" stop-opacity="0.02"/>
-                                                    </linearGradient>
-                                                </defs>
-                                                <!-- Grid Lines -->
-                                                <line x1="20" y1="30" x2="480" y2="30" stroke="#f1f5f9" stroke-width="1"/>
-                                                <line x1="20" y1="75" x2="480" y2="75" stroke="#f1f5f9" stroke-width="1"/>
-                                                <line x1="20" y1="120" x2="480" y2="120" stroke="#f1f5f9" stroke-width="1"/>
-                                                <!-- Gradient Fill Area -->
-                                                <polygon points="40,130 130,110 220,85 320,60 440,25 440,140 40,140" fill="url(#revGrad)"/>
-                                                <!-- Trend Line -->
-                                                <polyline points="40,130 130,110 220,85 320,60 440,25" fill="none" stroke="#0284c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <!-- Data Nodes -->
-                                                <circle cx="40" cy="130" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
-                                                <circle cx="130" cy="110" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
-                                                <circle cx="220" cy="85" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
-                                                <circle cx="320" cy="60" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
-                                                <circle cx="440" cy="25" r="6" fill="#0284c7" stroke="#ffffff" stroke-width="2"/>
-                                                <!-- Node Labels -->
-                                                <text x="40" y="155" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Jun (3.8L)</text>
-                                                <text x="130" y="155" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Jul (4.2L)</text>
-                                                <text x="220" y="155" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Aug (4.7L)</text>
-                                                <text x="320" y="155" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">Sep (5.1L)</text>
-                                                <text x="440" y="155" text-anchor="middle" font-size="10" fill="#0284c7" font-weight="800">Oct (5.84L)</text>
-                                            </svg>
-                                        </div>
-                                    </div>
-
-                                    <!-- Right: Membership Composition -->
-                                    <div class="panel-content-card">
-                                        <div class="card-inner-header">
-                                            <div class="card-inner-title">
-                                                <i class="fa-solid fa-pie-chart" style="color: #10b981; margin-right: 6px;"></i>
-                                                Membership Plan Distribution
-                                            </div>
-                                            <span class="ox-badge ox-badge-emerald" style="font-size: 0.7rem; padding: 0.15rem 0.5rem;">96.2% Retention</span>
-                                        </div>
-
-                                        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
-                                            <div>
-                                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
-                                                    <span>Annual Platinum / Gold (High LTV)</span>
-                                                    <span style="color: #0284c7;">48%</span>
-                                                </div>
-                                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                    <div style="width: 48%; height: 100%; background: #0284c7; border-radius: 4px;"></div>
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
-                                                    <span>6-Month Muscle &amp; Fat-Loss Split</span>
-                                                    <span style="color: #10b981;">32%</span>
-                                                </div>
-                                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                    <div style="width: 32%; height: 100%; background: #10b981; border-radius: 4px;"></div>
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
-                                                    <span>Monthly / Trial Passes</span>
-                                                    <span style="color: #f59e0b;">20%</span>
-                                                </div>
-                                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                                                    <div style="width: 20%; height: 100%; background: #f59e0b; border-radius: 4px;"></div>
-                                                </div>
-                                            </div>
-
-                                            <div style="margin-top: 0.5rem; padding: 0.65rem 0.85rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; font-size: 0.76rem; color: #166534;">
-                                                <i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> <strong>Automated WhatsApp Renewal</strong> lifted 60-day member retention from 72% to 96.2%.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ── TRUSTED GYMS TICKER ─────────────────────────────────────────────────── -->
+<!-- ── TRUSTED GYMS TICKER ─────────────────────────────────────────────────── -->
 <section class="brand-ticker-section">
-    <div class="ticker-heading">Trusted by Premier Fitness Facilities & Chains Across India</div>
+    <div class="ticker-heading">Trusted by Premier Fitness Facilities &amp; Chains Across India</div>
     <div class="ticker-marquee">
         <div class="ticker-track">
             <div class="ticker-item"><i class="fa-solid fa-dumbbell"></i> TITAN FITNESS CLUB</div>
@@ -559,6 +228,157 @@
             <div class="ticker-item"><i class="fa-solid fa-bolt-lightning"></i> APEX ATHLETICS</div>
             <div class="ticker-item"><i class="fa-solid fa-heart-pulse"></i> CROSSFIT PULSE</div>
             <div class="ticker-item"><i class="fa-solid fa-shield-cat"></i> ELEVATE STUDIO</div>
+        </div>
+    </div>
+</section>
+
+<!-- ── HOW ONEX BOOST WORKS (3-STEP PROFESSIONAL WORKFLOW) ───────────────── -->
+<section class="how-it-works-section" id="how-it-works" style="padding: 5.5rem 0 6rem; background: radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.05) 0%, #f8fafc 70%); border-bottom: 1px solid #e2e8f0;">
+    <div class="brand-container">
+        <div class="section-header" style="text-align: center; max-width: 720px; margin: 0 auto 3.75rem;">
+            <div class="ox-badge section-eyebrow" style="margin-bottom: 0.85rem;">
+                <i class="fa-solid fa-route"></i> Simple 3-Step Workflow
+            </div>
+            <h2 class="section-title" style="font-size: clamp(2rem, 3.8vw, 2.85rem); font-weight: 800; line-height: 1.18; letter-spacing: -0.03em; color: #0f172a; margin-bottom: 1rem;">
+                How ONEX BOOST Transforms Your Gym in Days
+            </h2>
+            <p class="section-description" style="font-size: 1.05rem; color: #475569; line-height: 1.6;">
+                No complex training, zero hardware downtime, and no manual spreadsheets. Here is how leading gyms in India switch to autopilot.
+            </p>
+        </div>
+
+        <div class="workflow-steps-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <!-- Step 1 -->
+            <div class="workflow-step-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #0284c7; border-radius: 20px; padding: 2.25rem 2rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);">
+                <div>
+                    <div class="step-card-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <div class="step-number-badge" style="font-size: 1.3rem; font-weight: 900; color: #0284c7; background: #f0f9ff; border: 1px solid #bae6fd; width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">01</div>
+                        <div class="step-icon-wrap" style="width: 46px; height: 46px; border-radius: 12px; border: 1px solid #bae6fd; background: #f0f9ff; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                    </div>
+                    <div class="step-card-body">
+                        <div class="step-phase-label" style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #0284c7; margin-bottom: 0.5rem;">
+                            Step 01 &bull; Instant Setup
+                        </div>
+                        <h3 class="step-card-title" style="font-size: 1.35rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; line-height: 1.3; margin-bottom: 0.85rem;">
+                            15-Minute Onboarding &amp; Hardware Sync
+                        </h3>
+                        <p class="step-card-text" style="font-size: 0.94rem; color: #475569; line-height: 1.6; margin-bottom: 1.5rem;">
+                            Our dedicated HELYONEX support team migrates all your existing members from Excel sheets with 100% data accuracy. Plug in your biometric machines, thermal printers, and activate official WhatsApp messaging.
+                        </p>
+                        <ul class="step-points-list" style="list-style: none; padding: 0; margin: 0 0 1.75rem; display: flex; flex-direction: column; gap: 0.65rem;">
+                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
+                                <i class="fa-solid fa-circle-check" style="color: #0284c7; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>Free data import &amp; onboarding assistance</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
+                                <i class="fa-solid fa-circle-check" style="color: #0284c7; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>Plug-and-play eSSL, Mantra, &amp; ZKTeco sync</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
+                                <i class="fa-solid fa-circle-check" style="color: #0284c7; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>1-click official Meta WhatsApp API setup</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card-bottom" style="padding-top: 1.25rem; border-top: 1px solid #f1f5f9;">
+                    <span class="step-stat-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 9999px; background: #f0f9ff; border: 1px solid #bae6fd; color: #0369a1; font-size: 0.78rem; font-weight: 700;">
+                        <i class="fa-solid fa-bolt" style="color: #0284c7;"></i> Setup in 15 Minutes
+                    </span>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="workflow-step-card is-featured" style="background: #ffffff; border: 1px solid #a7f3d0; border-top: 4px solid #10b981; border-radius: 20px; padding: 2.25rem 2rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.08);">
+                <div>
+                    <div class="step-card-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <div class="step-number-badge is-featured" style="font-size: 1.3rem; font-weight: 900; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">02</div>
+                        <div class="step-icon-wrap" style="width: 46px; height: 46px; border-radius: 12px; border: 1px solid #a7f3d0; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                    </div>
+                    <div class="step-card-body">
+                        <div class="step-phase-label" style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #059669; margin-bottom: 0.5rem;">
+                            Step 02 &bull; Autopilot Operations
+                        </div>
+                        <h3 class="step-card-title" style="font-size: 1.35rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; line-height: 1.3; margin-bottom: 0.85rem;">
+                            Automate Attendance, Billing &amp; WhatsApp
+                        </h3>
+                        <p class="step-card-text" style="font-size: 0.94rem; color: #475569; line-height: 1.6; margin-bottom: 1.5rem;">
+                            Members tap dynamic QR codes or punch fingerprints for instant turnstile entry. Expired memberships lock automatically, while WhatsApp auto-sends GST fee receipts and renewal UPI payment links.
+                        </p>
+                        <ul class="step-points-list" style="list-style: none; padding: 0; margin: 0 0 1.75rem; display: flex; flex-direction: column; gap: 0.65rem;">
+                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
+                                <i class="fa-solid fa-circle-check" style="color: #059669; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>Sub-0.3s gate polling stops proxy walk-ins</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #059669; font-weight: 600; line-height: 1.45;">
+                                <i class="fa-solid fa-circle-check" style="color: #059669; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>Automated 3-day renewal alerts with UPI QR</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #059669; font-weight: 600; line-height: 1.45;">
+                                <i class="fa-solid fa-circle-check" style="color: #059669; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>1-click thermal receipt printing (58/80mm)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card-bottom" style="padding-top: 1.25rem; border-top: 1px solid #f1f5f9;">
+                    <span class="step-stat-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 9999px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-size: 0.78rem; font-weight: 700;">
+                        <i class="fa-solid fa-circle-check" style="color: #059669;"></i> Zero Defaulter Free Walk-ins
+                    </span>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="workflow-step-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #f59e0b; border-radius: 20px; padding: 2.25rem 2rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);">
+                <div>
+                    <div class="step-card-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <div class="step-number-badge" style="font-size: 1.3rem; font-weight: 900; color: #d97706; background: #fffbeb; border: 1px solid #fde68a; width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">03</div>
+                        <div class="step-icon-wrap" style="width: 46px; height: 46px; border-radius: 12px; border: 1px solid #fde68a; background: #fffbeb; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                        </div>
+                    </div>
+                    <div class="step-card-body">
+                        <div class="step-phase-label" style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #d97706; margin-bottom: 0.5rem;">
+                            Step 03 &bull; Predictable Growth
+                        </div>
+                        <h3 class="step-card-title" style="font-size: 1.35rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; line-height: 1.3; margin-bottom: 0.85rem;">
+                            Scale Retention &amp; Multi-Branch MRR
+                        </h3>
+                        <p class="step-card-text" style="font-size: 0.94rem; color: #475569; line-height: 1.6; margin-bottom: 1.5rem;">
+                            Track monthly recurring cash collections, monitor personal trainer commissions, and eliminate counter cash discrepancies with automated day-end reconciliation from one unified executive dashboard.
+                        </p>
+                        <ul class="step-points-list" style="list-style: none; padding: 0; margin: 0 0 1.75rem; display: flex; flex-direction: column; gap: 0.65rem;">
+                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
+                                <i class="fa-solid fa-circle-check" style="color: #d97706; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>42% lift in on-time membership renewals</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
+                                <i class="fa-solid fa-circle-check" style="color: #d97706; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>96.2% 60-day active member retention</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
+                                <i class="fa-solid fa-circle-check" style="color: #d97706; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
+                                <span>Multi-branch comparison console for owners</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="step-card-bottom" style="padding-top: 1.25rem; border-top: 1px solid #f1f5f9;">
+                    <span class="step-stat-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 9999px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 0.78rem; font-weight: 700;">
+                        <i class="fa-solid fa-chart-line" style="color: #d97706;"></i> +42% Renewal Rate
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 3.5rem;">
+            <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
+                <i class="fa-solid fa-calendar-check"></i> Book a 15-Minute Live Setup Demo
+            </a>
         </div>
     </div>
 </section>
@@ -583,7 +403,7 @@
                     <div class="bento-icon">
                         <i class="fa-solid fa-qrcode"></i>
                     </div>
-                    <h3 class="bento-title">Smart QR & Biometric Attendance</h3>
+                    <h3 class="bento-title">Smart QR &amp; Biometric Attendance</h3>
                     <p class="bento-desc">
                         Prevent unauthorized entries and proxy check-ins. Members tap a dynamic QR or scan their fingerprint to log visits instantly with real-time capacity monitoring.
                     </p>
@@ -601,7 +421,7 @@
                     <div class="bento-icon bento-icon-emerald">
                         <i class="fa-brands fa-whatsapp"></i>
                     </div>
-                    <h3 class="bento-title">Automated WhatsApp Billing & Alerts</h3>
+                    <h3 class="bento-title">Automated WhatsApp Billing &amp; Alerts</h3>
                     <p class="bento-desc">
                         Send official GST invoices, renewal reminders, payment links, and birthday greetings right to members' WhatsApp without touching your phone.
                     </p>
@@ -618,7 +438,7 @@
                     <div class="bento-icon bento-icon-amber">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                     </div>
-                    <h3 class="bento-title">GST Billing & Multi-Plan POS</h3>
+                    <h3 class="bento-title">GST Billing &amp; Multi-Plan POS</h3>
                     <p class="bento-desc">
                         Manage flexible plans (Monthly, Quarterly, Annual, PT add-ons) with partial payment tracking, discounts, and thermal receipt printouts.
                     </p>
@@ -635,7 +455,7 @@
                     <div class="bento-icon bento-icon-purple">
                         <i class="fa-solid fa-dumbbell"></i>
                     </div>
-                    <h3 class="bento-title">Trainer & Diet Workflows</h3>
+                    <h3 class="bento-title">Trainer &amp; Diet Workflows</h3>
                     <p class="bento-desc">
                         Assign personal trainers to members, log workout schedules, create customized diet charts, and track client transformation milestones.
                     </p>
@@ -681,10 +501,10 @@
 
         <div class="showcase-tabs">
             <button class="showcase-tab-btn is-active" onclick="switchShowcaseTab(0)">
-                <i class="fa-solid fa-shield-halved"></i> Gym Owner & Admin Hub
+                <i class="fa-solid fa-shield-halved"></i> Gym Owner &amp; Admin Hub
             </button>
             <button class="showcase-tab-btn" onclick="switchShowcaseTab(1)">
-                <i class="fa-solid fa-user-tie"></i> Trainer & Staff Workspace
+                <i class="fa-solid fa-user-tie"></i> Trainer &amp; Staff Workspace
             </button>
             <button class="showcase-tab-btn" onclick="switchShowcaseTab(2)">
                 <i class="fa-solid fa-mobile-screen"></i> Member Self-Service App
@@ -694,16 +514,16 @@
         <!-- Panel 1: Owner Hub -->
         <div class="showcase-content-panel is-active">
             <div class="bento-card" style="padding: 2.5rem;">
-                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: center;">
+                <div class="showcase-layout-grid">
                     <div>
                         <div class="ox-badge mb-3">Complete Transparency</div>
-                        <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">Complete High-Altitude Control Over Multi-Staff & Collections</h3>
+                        <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">Complete High-Altitude Control Over Multi-Staff &amp; Collections</h3>
                         <p style="color: #475569; margin-bottom: 1.5rem; line-height: 1.6;">
                             Never wonder how much money entered your register or which memberships are about to expire. The ONEX BOOST Owner Console gives you instant insights with role-based staff permissions.
                         </p>
                         <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                             <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Role-based access for Front Desk, Accountants & Trainers
+                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Role-based access for Front Desk, Accountants &amp; Trainers
                             </div>
                             <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
                                 <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Audit trail logs for invoice deletions and discounts
@@ -714,7 +534,43 @@
                         </div>
                     </div>
                     <div>
-                        <img src="{% static 'images/about_dashboard_features.png' %}" alt="Owner Dashboard" style="border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15,23,42,0.1);">
+                        <!-- Custom ONEX BOOST Owner Console Preview Card -->
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; box-shadow: 0 20px 40px rgba(15,23,42,0.08); overflow: hidden;">
+                            <div style="background: #0f172a; padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></div>
+                                    <span style="color: #ffffff; font-weight: 800; font-size: 0.82rem;">ONEX BOOST &bull; Owner Executive Terminal</span>
+                                </div>
+                                <span style="font-size: 0.72rem; color: #38bdf8; background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); padding: 0.15rem 0.5rem; border-radius: 6px;">Live Sync</span>
+                            </div>
+                            <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem;">
+                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Today's Inflow</div>
+                                        <div style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">&#8377;92,400 <span style="font-size: 0.75rem; color: #10b981;">+18%</span></div>
+                                    </div>
+                                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem;">
+                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Active Headcount</div>
+                                        <div style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">1,248 <span style="font-size: 0.75rem; color: #0284c7;">Members</span></div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.78rem; font-weight: 700; color: #0f172a;">Recent Audit Log &bull; Front-Desk Activity</div>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.76rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                        <span><i class="fa-solid fa-receipt" style="color: #0284c7; margin-right: 6px;"></i> Invoice #OX-9481 generated (&#8377;14,999 UPI)</span>
+                                        <span style="color: #059669; font-weight: 700;">Reconciled</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                        <span><i class="fa-solid fa-user-plus" style="color: #10b981; margin-right: 6px;"></i> Receptionist added 2 new member plans</span>
+                                        <span style="color: #0284c7; font-weight: 700;">Logged</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                        <span><i class="fa-solid fa-shield-halved" style="color: #d97706; margin-right: 6px;"></i> Expired defaulter blocked at barrier #01</span>
+                                        <span style="color: #d97706; font-weight: 700;">Auto Alert</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -723,7 +579,7 @@
         <!-- Panel 2: Trainer Workspace -->
         <div class="showcase-content-panel">
             <div class="bento-card" style="padding: 2.5rem;">
-                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: center;">
+                <div class="showcase-layout-grid">
                     <div>
                         <div class="ox-badge ox-badge-emerald mb-3">Trainer Enablement</div>
                         <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">Equip Personal Trainers to Deliver 5-Star Transformations</h3>
@@ -735,7 +591,7 @@
                                 <i class="fa-solid fa-check-double" style="color: #059669;"></i> Dedicated Trainer Portal with private client rosters
                             </div>
                             <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #059669;"></i> Client body measurement & transformation timeline
+                                <i class="fa-solid fa-check-double" style="color: #059669;"></i> Client body measurement &amp; transformation timeline
                             </div>
                             <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
                                 <i class="fa-solid fa-check-double" style="color: #059669;"></i> Attendance punching for trainers with shift logs
@@ -743,7 +599,41 @@
                         </div>
                     </div>
                     <div>
-                        <img src="{% static 'images/ecosystem_modern.png' %}" alt="Trainer Workspace" style="border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15,23,42,0.1);">
+                        <!-- Custom Trainer Portal UI Card -->
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; box-shadow: 0 20px 40px rgba(15,23,42,0.08); overflow: hidden;">
+                            <div style="background: #064e3b; padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #34d399;"></div>
+                                    <span style="color: #ffffff; font-weight: 800; font-size: 0.82rem;">Trainer Console &bull; Coach Vikram Singh</span>
+                                </div>
+                                <span style="font-size: 0.72rem; color: #a7f3d0; background: rgba(167,243,208,0.2); padding: 0.15rem 0.5rem; border-radius: 6px;">4 Active Clients</span>
+                            </div>
+                            <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <div style="font-weight: 700; font-size: 0.84rem; color: #0f172a;">Neha Saxena &bull; CrossFit Strength Pro</div>
+                                        <span style="font-size: 0.74rem; font-weight: 700; color: #059669;">18 / 24 Sessions</span>
+                                    </div>
+                                    <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;">
+                                        <div style="width: 75%; height: 100%; background: #059669; border-radius: 4px;"></div>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.74rem; color: #64748b;">
+                                        <span>75% Completed</span>
+                                        <span style="color: #0284c7; font-weight: 600;">Workout: Upper Push Day 3</span>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                    <div style="padding: 0.75rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;">
+                                        <div style="font-size: 0.72rem; color: #166534; font-weight: 700;">PT Commission</div>
+                                        <div style="font-size: 1.15rem; font-weight: 800; color: #15803d;">&#8377;7,200</div>
+                                    </div>
+                                    <div style="padding: 0.75rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
+                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700;">Trainer Punch-In</div>
+                                        <div style="font-size: 0.82rem; font-weight: 800; color: #0f172a; margin-top: 4px;">06:45 AM (Verified)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -752,7 +642,7 @@
         <!-- Panel 3: Member Portal -->
         <div class="showcase-content-panel">
             <div class="bento-card" style="padding: 2.5rem;">
-                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: center;">
+                <div class="showcase-layout-grid">
                     <div>
                         <div class="ox-badge mb-3">Member Delight</div>
                         <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">A Modern Member Portal That Elevates Your Brand Perception</h3>
@@ -772,7 +662,29 @@
                         </div>
                     </div>
                     <div>
-                        <img src="{% static 'images/about_dashboard_features.png' %}" alt="Member App" style="border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15,23,42,0.1);">
+                        <!-- Custom Member App UI Card -->
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; box-shadow: 0 20px 40px rgba(15,23,42,0.08); overflow: hidden;">
+                            <div style="background: linear-gradient(135deg, #0284c7, #2563eb); padding: 1.25rem; color: #ffffff;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+                                    <span style="font-size: 0.74rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;">ONEX BOOST &bull; Member Pass</span>
+                                    <span style="font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 0.15rem 0.5rem; border-radius: 9999px;">ACTIVE</span>
+                                </div>
+                                <div style="font-size: 1.25rem; font-weight: 800;">Rahul Verma</div>
+                                <div style="font-size: 0.78rem; opacity: 0.9;">Member ID: #TITAN-1084 &bull; Annual Gold</div>
+                            </div>
+                            <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; text-align: center;">
+                                <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 1rem; width: 100%;">
+                                    <div style="font-size: 2.2rem; color: #0284c7; margin-bottom: 0.25rem;">
+                                        <i class="fa-solid fa-qrcode"></i>
+                                    </div>
+                                    <div style="font-size: 0.74rem; color: #64748b;">Dynamic Entry QR (Auto-refreshes in 24s)</div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; width: 100%; font-size: 0.78rem; padding: 0.5rem 0.85rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;">
+                                    <span style="color: #166534; font-weight: 700;">Valid Until: 11 Oct 2027</span>
+                                    <span style="color: #15803d; font-weight: 700;">312 Days Left</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -793,7 +705,7 @@
             </p>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem;">
+        <div class="testimonials-grid">
             <!-- Review 1 -->
             <div class="testimonial-card">
                 <div>
@@ -846,7 +758,7 @@
                     <img src="{% static 'images/clients/client3.jpeg' %}" alt="Sneha Verma" class="author-avatar" onerror="this.src='{% static 'images/face16.png' %}';">
                     <div>
                         <div class="author-name">Sneha Verma</div>
-                        <div class="author-gym">Owner, Elevate Pilates & Strength (Noida)</div>
+                        <div class="author-gym">Owner, Elevate Pilates &amp; Strength (Noida)</div>
                     </div>
                 </div>
             </div>
@@ -949,7 +861,7 @@
                     <i class="fa-solid fa-calendar-check"></i> Book My Free 15-Min Demo
                 </a>
                 <a href="tel:+916392348731" class="btn-ox btn-ox-secondary btn-ox-lg">
-                    <i class="fa-solid fa-phone"></i> Call Sales: +91 63923 48731
+                    <i class="fa-solid fa-phone"></i> Call Sales: +91 9454487893
                 </a>
             </div>
         </div>

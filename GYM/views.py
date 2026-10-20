@@ -14,7 +14,7 @@ def help_view(request):
     
     from apps.superadmin.models import SystemSetting
     sys_setting = SystemSetting.get_settings()
-    superadmin_phone = sys_setting.support_phone or "+91 63923 48731"
+    superadmin_phone = sys_setting.support_phone or "+91 9454487893"
     superadmin_email = sys_setting.support_email or "support@helyonex.com"
     
     context = {

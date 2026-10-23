@@ -131,24 +131,27 @@
               if (typeof gsap === 'undefined') return;
               gsap.killTweensOf(img.DOM.el);
 
-              const randomRotation = gsap.utils.random(-15, 15);
-              const xStart = (this.cacheMousePos.x / window.innerWidth) * 100;
-              const xEnd = (this.mousePos.x / window.innerWidth) * 100;
-              const yStart = this.cacheMousePos.y - img.rect.height / 2;
-              const yEnd = this.mousePos.y - img.rect.height / 2;
+              const imgW = img.DOM.el.offsetWidth || 120;
+              const imgH = img.DOM.el.offsetHeight || 160;
+
+              const randomRotation = gsap.utils.random(-12, 12);
+              const xStart = this.cacheMousePos.x - imgW / 2;
+              const xEnd = this.mousePos.x - imgW / 2;
+              const yStart = this.cacheMousePos.y - imgH / 2;
+              const yEnd = this.mousePos.y - imgH / 2;
 
               gsap.timeline()
                 .set(img.DOM.el, {
                   opacity: this.opacityFrom,
                   scale: this.scaleFrom,
-                  zIndex: this.zIndexVal,
-                  x: `${xStart}vw`,
+                  zIndex: 1,
+                  x: xStart,
                   y: yStart,
                   rotationZ: randomRotation
                 })
                 .to(img.DOM.el, {
                   ease: this.mainEase,
-                  x: `${xEnd}vw`,
+                  x: xEnd,
                   y: yEnd,
                   opacity: this.opacityTo,
                   scale: this.scaleTo,
@@ -237,8 +240,8 @@
       </div>
 
       <!-- Mouse Trail Images Container -->
-      <div trail-image-fade-out-duration="0.5" trail-image="component" trail-image-threshold="300"
-        trail-image-reset-index="true" trail-image-main-duration="1" trail-image-fade-out-delay="0.5"
+      <div trail-image-fade-out-duration="0.6" trail-image="component" trail-image-threshold="140"
+        trail-image-reset-index="true" trail-image-main-duration="0.9" trail-image-fade-out-delay="0.7"
         class="trail-images-component">
         <div trail-image="list" class="trail-images">
           <img src="{% static 'images/hero_image_gym.png' %}" loading="lazy" alt="" class="trail-item image" />

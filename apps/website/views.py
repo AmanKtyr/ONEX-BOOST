@@ -99,6 +99,16 @@ def pricing(request):
     return render_public_page(request, 'website/pricing.html')
 
 
+@require_GET
+def modules(request):
+    return render_public_page(request, 'website/modules.html')
+
+
+@require_GET
+def menu(request):
+    return render_public_page(request, 'website/modules.html')
+
+
 @require_POST
 def contact_submission(request):
     form = WebsiteContactSubmissionForm(request.POST)
@@ -140,4 +150,4 @@ def contact_submission(request):
             'success': True,
             'message': 'Message sent successfully!',
         }
-    )
+    )

@@ -1,900 +1,678 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
 
-{% block title %}ONEX BOOST | Best Gym Management Software in India by HELYONEX{% endblock %}
-
-{% block extra_css %}
-<style>
-/* ── Guaranteed Inline Workflow Styles ── */
-.how-it-works-section {
-    padding: 5.5rem 0 6rem;
-    background: radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.05) 0%, #f8fafc 70%);
-    border-bottom: 1px solid #e2e8f0;
-}
-.workflow-steps-grid {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 2rem !important;
-}
-@media (max-width: 992px) {
-    .workflow-steps-grid {
-        grid-template-columns: 1fr !important;
-        gap: 1.5rem !important;
-    }
-}
-.workflow-step-card {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 20px !important;
-    padding: 2.25rem 2rem !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04) !important;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
-.workflow-step-card:hover {
-    transform: translateY(-6px) !important;
-    border-color: #38bdf8 !important;
-    box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.12) !important;
-}
-.step-card-top {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    margin-bottom: 1.5rem !important;
-}
-.step-number-badge {
-    font-size: 1.35rem !important;
-    font-weight: 900 !important;
-    color: #0284c7 !important;
-    letter-spacing: -0.03em !important;
-    background: #f0f9ff !important;
-    border: 1px solid #bae6fd !important;
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-.step-icon-wrap {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 14px !important;
-    border: 1px solid !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 1.25rem !important;
-}
-.step-card-body {
-    flex-grow: 1 !important;
-}
-.step-phase-label {
-    font-size: 0.74rem !important;
-    font-weight: 800 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
-    color: #0284c7 !important;
-    margin-bottom: 0.5rem !important;
-}
-.step-card-title {
-    font-size: 1.35rem !important;
-    font-weight: 800 !important;
-    color: #0f172a !important;
-    letter-spacing: -0.02em !important;
-    line-height: 1.3 !important;
-    margin-bottom: 0.85rem !important;
-}
-.step-card-text {
-    font-size: 0.94rem !important;
-    color: #475569 !important;
-    line-height: 1.6 !important;
-    margin-bottom: 1.5rem !important;
-}
-.step-points-list {
-    list-style: none !important;
-    padding: 0 !important;
-    margin: 0 0 1.75rem !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0.65rem !important;
-}
-.step-points-list li {
-    display: flex !important;
-    align-items: flex-start !important;
-    gap: 0.65rem !important;
-    font-size: 0.88rem !important;
-    color: #334155 !important;
-    font-weight: 600 !important;
-    line-height: 1.45 !important;
-}
-.step-points-list li i {
-    font-size: 0.95rem !important;
-    margin-top: 2px !important;
-    flex-shrink: 0 !important;
-}
-.step-card-bottom {
-    padding-top: 1.25rem !important;
-    border-top: 1px solid #f1f5f9 !important;
-}
-.step-stat-badge {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    padding: 0.35rem 0.85rem !important;
-    border-radius: 9999px !important;
-    font-size: 0.78rem !important;
-    font-weight: 700 !important;
-}
-</style>
-{% endblock %}
-{% block seo %}
-<meta name="description" content="ONEX BOOST by HELYONEX is India's leading gym management software. Automate memberships, biometric attendance, WhatsApp billing reminders, trainer workflows, and revenue analytics.">
-<meta name="keywords" content="ONEX BOOST, HELYONEX, gym management software India, gym billing software, gym CRM, fitness studio management, biometric gym attendance, gym software Lucknow">
-{% endblock %}
+{% block title %}ONEX BOOST ✸ Operating System for Modern Gyms &amp; Fitness Clubs by HELYONEX{% endblock %}
 
 {% block content %}
-<!-- ── HERO SECTION ────────────────────────────────────────────────────────── -->
-<section class="hero-section">
-    <div class="hero-glow-orb hero-glow-1"></div>
-    <div class="hero-glow-orb hero-glow-2"></div>
+<!-- ── SECTION 1: HOME HERO WITH GSAP TRAIL EFFECT ───────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content home-hero">
+      <div class="gsap-code w-embed w-script">
+        <!-- GSAP Trail Image Effect -->
+        <style>
+          [trail-image=list] img {
+            opacity: 0;
+            position: absolute;
+            will-change: transform;
+            pointer-events: none;
+            max-width: none;
+          }
+        </style>
 
-    <div class="brand-container">
-        <div class="hero-content">
-            <div class="ox-badge mb-4">
-                <span class="ox-badge-pulse"></span>
-                <span>Powered by HELYONEX &bull; India's #1 Gym OS</span>
-            </div>
+        <script>
+          const MathUtils = {
+            lerp: (a, b, n) => (1 - n) * a + n * b,
+            distance: (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1)
+          };
 
-            <h1 class="hero-title">
-                The Operating System for <br>
-                <span class="gradient-text">Modern Gyms &amp; Fitness Clubs</span>
-            </h1>
+          const getMousePos = (e, container) => {
+            const rect = container.getBoundingClientRect();
+            return {
+              x: e.clientX - rect.left,
+              y: e.clientY - rect.top
+            };
+          };
 
-            <p class="hero-subtitle">
-                Streamline member onboarding, automate WhatsApp billing reminders, track QR &amp; biometric attendance, and empower trainers &mdash; all from one high-performance platform.
-            </p>
+          class Image {
+            constructor(el) {
+              this.DOM = { el: el };
+              this.defaultStyle = {
+                scale: 1,
+                x: 0,
+                y: 0,
+                opacity: 0
+              };
+              this.getRect();
+              this.initEvents();
+            }
 
-            <div class="hero-cta-group">
-                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
-                    <i class="fa-solid fa-bolt"></i> Book a Live Demo
-                </a>
-                <a href="{% url 'features' %}" class="btn-ox btn-ox-secondary btn-ox-lg">
-                    <i class="fa-solid fa-compass"></i> Explore Modules
-                </a>
-            </div>
+            initEvents() {
+              window.addEventListener('resize', () => this.resize());
+            }
 
-            <!-- ── HERO METRICS STRIP ─────────────────────────────────────────────── -->
-            <div class="hero-metrics-strip">
-                <div class="hero-metric-tile">
-                    <div class="metric-tile-icon">
-                        <i class="fa-solid fa-dumbbell"></i>
-                    </div>
-                    <div class="metric-tile-number">500<span style="color: #0284c7;">+</span></div>
-                    <div class="metric-tile-label">Gyms &amp; Studios</div>
-                    <div class="metric-tile-sub">Operating across 45+ Indian cities</div>
-                </div>
+            resize() {
+              if (typeof gsap !== 'undefined') gsap.set(this.DOM.el, this.defaultStyle);
+              this.getRect();
+            }
 
-                <div class="hero-metric-tile">
-                    <div class="metric-tile-icon" style="background: #ecfdf5; color: #059669; border-color: #a7f3d0;">
-                        <i class="fa-solid fa-users-gear"></i>
-                    </div>
-                    <div class="metric-tile-number">120K<span style="color: #10b981;">+</span></div>
-                    <div class="metric-tile-label">Active Gym Members</div>
-                    <div class="metric-tile-sub">Biometric &amp; QR check-ins tracked daily</div>
-                </div>
+            getRect() {
+              this.rect = this.DOM.el.getBoundingClientRect();
+            }
 
-                <div class="hero-metric-tile">
-                    <div class="metric-tile-icon" style="background: #fffbeb; color: #d97706; border-color: #fde68a;">
-                        <i class="fa-solid fa-receipt"></i>
-                    </div>
-                    <div class="metric-tile-number">&#8377;18Cr<span style="color: #f59e0b;">+</span></div>
-                    <div class="metric-tile-label">Fees Reconciled</div>
-                    <div class="metric-tile-sub">Automated WhatsApp UPI &amp; GST billing</div>
-                </div>
+            isActive() {
+              return (typeof gsap !== 'undefined' && gsap.isTweening(this.DOM.el)) || this.DOM.el.style.opacity != 0;
+            }
+          }
 
-                <div class="hero-metric-tile">
-                    <div class="metric-tile-icon" style="background: #fdf2f8; color: #db2777; border-color: #fbcfe8;">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <div class="metric-tile-number">99.98<span style="color: #ec4899;">%</span></div>
-                    <div class="metric-tile-label">Turnstile Uptime</div>
-                    <div class="metric-tile-sub">Hardware sync with offline backup</div>
-                </div>
-            </div>
+          class ImageTrail {
+            constructor(list, mouseThreshold, opacityFrom, scaleFrom, opacityTo, scaleTo, mainDuration, mainEase, fadeOutDuration, fadeOutDelay, fadeOutEase, resetIndex, resetIndexDelay) {
+              this.DOM = { content: list };
+              this.images = [];
+              [...this.DOM.content.querySelectorAll('img')].forEach(img => this.images.push(new Image(img)));
+              this.imagesTotal = this.images.length;
+              this.imgPosition = 0;
+              this.zIndexVal = 1;
+              this.threshold = isNaN(mouseThreshold) ? 100 : mouseThreshold;
+              this.frameCount = 0;
+              this.resetIndex = resetIndex === null ? "false" : resetIndex;
+              this.resetIndexDelay = isNaN(resetIndexDelay) ? 200 : resetIndexDelay;
+              this.opacityFrom = isNaN(opacityFrom) ? 0.6 : opacityFrom;
+              this.scaleFrom = isNaN(scaleFrom) ? 0.8 : scaleFrom;
+              this.opacityTo = isNaN(opacityTo) ? 1 : opacityTo;
+              this.scaleTo = isNaN(scaleTo) ? 1 : scaleTo;
+              this.mainDuration = isNaN(mainDuration) ? 0.7 : mainDuration;
+              this.mainEase = mainEase === null ? 'power3' : mainEase;
+              this.fadeOutDuration = isNaN(fadeOutDuration) ? 1 : fadeOutDuration;
+              this.fadeOutDelay = isNaN(fadeOutDelay) ? 0.3 : fadeOutDelay;
+              this.fadeOutEase = fadeOutEase === null ? 'power3' : fadeOutEase;
+              this.mousePos = { x: 0, y: 0 };
+              this.lastMousePos = { x: 0, y: 0 };
+              this.cacheMousePos = { x: 0, y: 0 };
+              this.stopAnimationFrame = false;
+            }
+
+            render() {
+              const distance = MathUtils.distance(this.mousePos.x, this.mousePos.y, this.lastMousePos.x, this.lastMousePos.y);
+              this.cacheMousePos.x = MathUtils.lerp(this.cacheMousePos.x || this.mousePos.x, this.mousePos.x, 0.1);
+              this.cacheMousePos.y = MathUtils.lerp(this.cacheMousePos.y || this.mousePos.y, this.mousePos.y, 0.1);
+
+              if (distance > this.threshold) {
+                this.showNextImage();
+                ++this.zIndexVal;
+                this.imgPosition = this.imgPosition < this.imagesTotal - 1 ? this.imgPosition + 1 : 0;
+                this.lastMousePos = this.mousePos;
+              }
+
+              let isIdle = true;
+              for (let img of this.images) {
+                if (img.isActive()) {
+                  isIdle = false;
+                  break;
+                }
+              }
+
+              if (isIdle) {
+                this.frameCount++;
+                if (this.resetIndex === "true" && this.frameCount >= this.resetIndexDelay) {
+                  this.frameCount = 0;
+                  this.imgPosition = 0;
+                }
+                if (this.zIndexVal !== 1) {
+                  this.zIndexVal = 1;
+                }
+              }
+
+              if (!this.stopAnimationFrame) requestAnimationFrame(() => this.render());
+            }
+
+            showNextImage() {
+              const img = this.images[this.imgPosition];
+              if (typeof gsap === 'undefined') return;
+              gsap.killTweensOf(img.DOM.el);
+
+              const imgW = img.DOM.el.offsetWidth || 120;
+              const imgH = img.DOM.el.offsetHeight || 160;
+
+              const randomRotation = gsap.utils.random(-12, 12);
+              const xStart = this.cacheMousePos.x - imgW / 2;
+              const xEnd = this.mousePos.x - imgW / 2;
+              const yStart = this.cacheMousePos.y - imgH / 2;
+              const yEnd = this.mousePos.y - imgH / 2;
+
+              gsap.timeline()
+                .set(img.DOM.el, {
+                  opacity: this.opacityFrom,
+                  scale: this.scaleFrom,
+                  zIndex: 1,
+                  x: xStart,
+                  y: yStart,
+                  rotationZ: randomRotation
+                })
+                .to(img.DOM.el, {
+                  ease: this.mainEase,
+                  x: xEnd,
+                  y: yEnd,
+                  opacity: this.opacityTo,
+                  scale: this.scaleTo,
+                  rotationZ: randomRotation,
+                  duration: this.mainDuration
+                })
+                .to(img.DOM.el, {
+                  ease: this.fadeOutEase,
+                  opacity: 0,
+                  scale: this.scaleFrom,
+                  duration: this.fadeOutDuration,
+                  delay: this.fadeOutDelay,
+                  onComplete: () => {
+                    gsap.set(img.DOM.el, {
+                      x: 0,
+                      y: 0,
+                      scale: 1,
+                      opacity: 0,
+                      zIndex: 1,
+                      rotationZ: 0
+                    });
+                  }
+                });
+            }
+          }
+
+          document.addEventListener("DOMContentLoaded", () => {
+            requestAnimationFrame(() => {
+              const components = document.querySelectorAll('[trail-image=component]');
+              let imageTrails = [];
+
+              for (let i = 0; i < components.length; i++) {
+                const list = components[i].querySelector('[trail-image=list]');
+                const mouseThreshold = parseInt(components[i].getAttribute('trail-image-threshold'));
+                const opacityFrom = parseFloat(components[i].getAttribute('trail-image-opacity-from'));
+                const scaleFrom = parseFloat(components[i].getAttribute('trail-image-scale-from'));
+                const opacityTo = parseFloat(components[i].getAttribute('trail-image-opacity-to'));
+                const scaleTo = parseFloat(components[i].getAttribute('trail-image-scale-to'));
+                const mainDuration = parseFloat(components[i].getAttribute('trail-image-main-duration'));
+                const mainEase = components[i].getAttribute('trail-image-main-ease');
+                const fadeOutDuration = parseFloat(components[i].getAttribute('trail-image-fade-out-duration'));
+                const fadeOutDelay = parseFloat(components[i].getAttribute('trail-image-fade-out-delay'));
+                const fadeOutEase = components[i].getAttribute('trail-image-fade-out-ease');
+                const resetIndex = components[i].getAttribute('trail-image-reset-index');
+                const resetIndexDelay = parseInt(components[i].getAttribute('trail-image-reset-index-delay'));
+
+                components[i].addEventListener('mousemove', function (ev) {
+                  if (imageTrails[i].resetIndex === "true" && imageTrails[i].frameCount > 0)
+                    imageTrails[i].frameCount = 0;
+                  imageTrails[i].mousePos = getMousePos(ev, components[i]);
+                });
+
+                components[i].addEventListener("mouseenter", function () {
+                  imageTrails[i].stopAnimationFrame = false;
+                  requestAnimationFrame(() => imageTrails[i].render());
+
+                  if (imageTrails[i].resetIndex === "true") {
+                    imageTrails[i].imgPosition = 0;
+                    imageTrails[i].frameCount = 0;
+                  }
+                });
+
+                components[i].addEventListener("mouseleave", function () {
+                  imageTrails[i].stopAnimationFrame = true;
+                });
+
+                imageTrails.push(new ImageTrail(
+                  list,
+                  mouseThreshold,
+                  opacityFrom,
+                  scaleFrom,
+                  opacityTo,
+                  scaleTo,
+                  mainDuration,
+                  mainEase,
+                  fadeOutDuration,
+                  fadeOutDelay,
+                  fadeOutEase,
+                  resetIndex,
+                  resetIndexDelay
+                ));
+              }
+            });
+          });
+        </script>
+      </div>
+
+      <!-- Mouse Trail Images Container -->
+      <div trail-image-fade-out-duration="0.6" trail-image="component" trail-image-threshold="140"
+        trail-image-reset-index="true" trail-image-main-duration="0.9" trail-image-fade-out-delay="0.7"
+        class="trail-images-component">
+        <div trail-image="list" class="trail-images">
+          <img src="{% static 'images/hero_image_gym.png' %}" loading="lazy" alt="" class="trail-item image" />
+          <img src="{% static 'images/about_dashboard_features.png' %}" loading="lazy" alt="" class="trail-item image" />
+          <img src="{% static 'images/ecosystem_modern.png' %}" loading="lazy" alt="" class="trail-item image" />
+          <img src="{% static 'images/gymaboutimage.png' %}" loading="lazy" alt="" class="trail-item image" />
+          <img src="{% static 'images/gym-guy.jpg' %}" loading="lazy" alt="" class="trail-item image" />
+          <img src="{% static 'images/whatsapp-img.png' %}" loading="lazy" alt="" class="trail-item image" />
         </div>
+      </div>
+
+      <!-- Hero Main Title -->
+      <div class="h1-center">
+        <h1 stagger-page="letter" class="display-1">ONEX BOOST</h1>
+      </div>
+
+      <!-- Hero Subtitle & Address -->
+      <div class="hero-info-container">
+        <div class="hero-text-container">
+          <div stagger-page="word" class="paragraph center-mobile">
+            The operating system for modern gyms &amp; fitness clubs. Automated biometrics, WhatsApp GST billing &amp; member retention.
+          </div>
+        </div>
+        <a href="https://maps.google.com" target="_blank" class="nav-link right w-nav-brand">
+          <div stagger-page="word" class="paragraph center-mobile bold-mobile">
+            Tedhi Puliya, Jankipuram,<br />Lucknow, India
+          </div>
+        </a>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── TRUSTED GYMS TICKER ─────────────────────────────────────────────────── -->
-<section class="brand-ticker-section">
-    <div class="ticker-heading">Trusted by Premier Fitness Facilities &amp; Chains Across India</div>
-    <div class="ticker-marquee">
-        <div class="ticker-track">
-            <div class="ticker-item"><i class="fa-solid fa-dumbbell"></i> TITAN FITNESS CLUB</div>
-            <div class="ticker-item"><i class="fa-solid fa-fire-flame-curved"></i> IRON VAULT GYM</div>
-            <div class="ticker-item"><i class="fa-solid fa-bolt-lightning"></i> APEX ATHLETICS</div>
-            <div class="ticker-item"><i class="fa-solid fa-heart-pulse"></i> CROSSFIT PULSE</div>
-            <div class="ticker-item"><i class="fa-solid fa-shield-cat"></i> ELEVATE STUDIO</div>
-            <div class="ticker-item"><i class="fa-solid fa-medal"></i> POWERHOUSE GYM</div>
-            <div class="ticker-item"><i class="fa-solid fa-trophy"></i> OLYMPIA FITNESS HUB</div>
-            <!-- Duplicated for seamless infinite ticker -->
-            <div class="ticker-item"><i class="fa-solid fa-dumbbell"></i> TITAN FITNESS CLUB</div>
-            <div class="ticker-item"><i class="fa-solid fa-fire-flame-curved"></i> IRON VAULT GYM</div>
-            <div class="ticker-item"><i class="fa-solid fa-bolt-lightning"></i> APEX ATHLETICS</div>
-            <div class="ticker-item"><i class="fa-solid fa-heart-pulse"></i> CROSSFIT PULSE</div>
-            <div class="ticker-item"><i class="fa-solid fa-shield-cat"></i> ELEVATE STUDIO</div>
+<!-- ── SECTION 2: SYSTEM RELIABILITY & OPERATIONS BOARD ───────────────────── -->
+<section class="section about-home">
+  <div class="w-layout-blockcontainer page_container height-100 w-container">
+    <div class="content height-100">
+      <div class="image-wrapper">
+        <div class="loading-overlay">
+          <div class="color-overlay"></div>
         </div>
+        <div class="dark-gradient"></div>
+        <div class="image" style="background-image: url({% static 'images/gymaboutimage.png' %});"></div>
+        
+        <!-- Desktop Floating Tags -->
+        <div class="list-hours desktop">
+          <div class="tag-hour-1 desktop">
+            <div class="w-dyn-list">
+              <div role="list" class="list-opening w-dyn-items">
+                <div stagger-scroll="letter" role="listitem" class="item-opening w-dyn-item">
+                  <div class="tag"><div class="bold">CLOUD SLA</div><div>99.98% UPTIME</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tag-hour-2 desktop">
+            <div class="w-dyn-list">
+              <div role="list" class="list-opening w-dyn-items">
+                <div stagger-scroll="letter" role="listitem" class="item-opening w-dyn-item">
+                  <div class="tag"><div class="bold">TURNSTILES</div><div>0.2s SYNC</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tag-hour-3 desktop">
+            <div class="w-dyn-list">
+              <div role="list" class="list-opening w-dyn-items">
+                <div stagger-scroll="letter" role="listitem" class="item-opening w-dyn-item">
+                  <div class="tag"><div class="bold">WHATSAPP</div><div>INSTANT API</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tag-hour-4 desktop">
+            <div class="w-dyn-list">
+              <div role="list" class="list-opening w-dyn-items">
+                <div stagger-scroll="letter" role="listitem" class="item-opening w-dyn-item">
+                  <div class="tag"><div class="bold">SUPPORT</div><div>MON-SAT 8-21</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tag-hour-5 desktop">
+            <div class="w-dyn-list">
+              <div role="list" class="list-opening w-dyn-items">
+                <div stagger-scroll="letter" role="listitem" class="item-opening w-dyn-item">
+                  <div class="tag"><div class="bold">BACKUPS</div><div>03:00 AM DAILY</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tag-hour-6 desktop">
+            <div class="w-dyn-list">
+              <div role="list" class="list-opening w-dyn-items">
+                <div stagger-scroll="letter" role="listitem" class="item-opening w-dyn-item">
+                  <div class="tag"><div class="bold">PORTAL</div><div>24/7 LIVE</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tag-hour-7 desktop">
+            <div class="w-dyn-list">
+              <div role="list" class="list-opening w-dyn-items">
+                <div stagger-scroll="letter" role="listitem" class="item-opening w-dyn-item">
+                  <div class="tag"><div class="bold">GYMS</div><div>500+ ACTIVE</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="image-content">
+          <h2 stagger-scroll="letter" class="display-2 white center">SYSTEM &amp;<br />OPERATIONS</h2>
+        </div>
+
+        <!-- Mobile Floating Tags -->
+        <div class="list-hours mobile">
+          <div tag-slide="up" class="tag-hour-1 mobile">
+            <div class="tag"><div class="bold">CLOUD SLA</div><div>99.98% UPTIME</div></div>
+          </div>
+          <div tag-slide="up" class="tag-hour-2 mobile">
+            <div class="tag"><div class="bold">TURNSTILES</div><div>0.2s SYNC</div></div>
+          </div>
+          <div tag-slide="up" class="tag-hour-3 mobile">
+            <div class="tag"><div class="bold">WHATSAPP</div><div>INSTANT API</div></div>
+          </div>
+          <div tag-slide="up" class="tag-hour-4 mobile">
+            <div class="tag"><div class="bold">SUPPORT</div><div>MON-SAT 8-21</div></div>
+          </div>
+          <div tag-slide="up" class="tag-hour-5 mobile">
+            <div class="tag"><div class="bold">GYMS</div><div>500+ ACTIVE</div></div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── HOW ONEX BOOST WORKS (3-STEP PROFESSIONAL WORKFLOW) ───────────────── -->
-<section class="how-it-works-section" id="how-it-works" style="padding: 5.5rem 0 6rem; background: radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.05) 0%, #f8fafc 70%); border-bottom: 1px solid #e2e8f0;">
-    <div class="brand-container">
-        <div class="section-header" style="text-align: center; max-width: 720px; margin: 0 auto 3.75rem;">
-            <div class="ox-badge section-eyebrow" style="margin-bottom: 0.85rem;">
-                <i class="fa-solid fa-route"></i> Simple 3-Step Workflow
-            </div>
-            <h2 class="section-title" style="font-size: clamp(2rem, 3.8vw, 2.85rem); font-weight: 800; line-height: 1.18; letter-spacing: -0.03em; color: #0f172a; margin-bottom: 1rem;">
-                How ONEX BOOST Transforms Your Gym in Days
-            </h2>
-            <p class="section-description" style="font-size: 1.05rem; color: #475569; line-height: 1.6;">
-                No complex training, zero hardware downtime, and no manual spreadsheets. Here is how leading gyms in India switch to autopilot.
-            </p>
-        </div>
-
-        <div class="workflow-steps-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-            <!-- Step 1 -->
-            <div class="workflow-step-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #0284c7; border-radius: 20px; padding: 2.25rem 2rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);">
-                <div>
-                    <div class="step-card-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-                        <div class="step-number-badge" style="font-size: 1.3rem; font-weight: 900; color: #0284c7; background: #f0f9ff; border: 1px solid #bae6fd; width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">01</div>
-                        <div class="step-icon-wrap" style="width: 46px; height: 46px; border-radius: 12px; border: 1px solid #bae6fd; background: #f0f9ff; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                        </div>
-                    </div>
-                    <div class="step-card-body">
-                        <div class="step-phase-label" style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #0284c7; margin-bottom: 0.5rem;">
-                            Step 01 &bull; Instant Setup
-                        </div>
-                        <h3 class="step-card-title" style="font-size: 1.35rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; line-height: 1.3; margin-bottom: 0.85rem;">
-                            15-Minute Onboarding &amp; Hardware Sync
-                        </h3>
-                        <p class="step-card-text" style="font-size: 0.94rem; color: #475569; line-height: 1.6; margin-bottom: 1.5rem;">
-                            Our dedicated HELYONEX support team migrates all your existing members from Excel sheets with 100% data accuracy. Plug in your biometric machines, thermal printers, and activate official WhatsApp messaging.
-                        </p>
-                        <ul class="step-points-list" style="list-style: none; padding: 0; margin: 0 0 1.75rem; display: flex; flex-direction: column; gap: 0.65rem;">
-                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
-                                <i class="fa-solid fa-circle-check" style="color: #0284c7; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>Free data import &amp; onboarding assistance</span>
-                            </li>
-                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
-                                <i class="fa-solid fa-circle-check" style="color: #0284c7; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>Plug-and-play eSSL, Mantra, &amp; ZKTeco sync</span>
-                            </li>
-                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
-                                <i class="fa-solid fa-circle-check" style="color: #0284c7; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>1-click official Meta WhatsApp API setup</span>
-                            </li>
-                        </ul>
-                    </div>
+<!-- ── SECTION 3: ABOUT US & STORY ───────────────────────────────────────── -->
+<section class="section box-padding-top">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content about-home">
+      <div class="about-home-info">
+        <h2 stagger-scroll="letter" class="display-2">About us</h2>
+        <div class="flex-vertical-left">
+          <div class="button-wrapper">
+            <a id="w-node-_7d95712f-9708-f7bd-9d1f-6d76b9197794-b9197794" data-wf--button--variant="dark-green" href="{% url 'about' %}" class="b1 w-inline-block">
+              <div class="button-text">
+                <div class="text-track">
+                  <div>Learn more</div>
+                  <div>Learn more</div>
                 </div>
-                <div class="step-card-bottom" style="padding-top: 1.25rem; border-top: 1px solid #f1f5f9;">
-                    <span class="step-stat-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 9999px; background: #f0f9ff; border: 1px solid #bae6fd; color: #0369a1; font-size: 0.78rem; font-weight: 700;">
-                        <i class="fa-solid fa-bolt" style="color: #0284c7;"></i> Setup in 15 Minutes
-                    </span>
-                </div>
-            </div>
-
-            <!-- Step 2 -->
-            <div class="workflow-step-card is-featured" style="background: #ffffff; border: 1px solid #a7f3d0; border-top: 4px solid #10b981; border-radius: 20px; padding: 2.25rem 2rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.08);">
-                <div>
-                    <div class="step-card-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-                        <div class="step-number-badge is-featured" style="font-size: 1.3rem; font-weight: 900; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">02</div>
-                        <div class="step-icon-wrap" style="width: 46px; height: 46px; border-radius: 12px; border: 1px solid #a7f3d0; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
-                            <i class="fa-solid fa-sliders"></i>
-                        </div>
+              </div>
+              <div class="arrow-circle">
+                <div class="arrow-container">
+                  <div class="arrow-track">
+                    <div class="arrow _1 w-embed">
+                      <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15">
+                        <path fill="currentColor" fill-rule="evenodd" d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H5.75a.75.75 0 0 1 0-1.5h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V6.56l-5.22 5.22a.75.75 0 0 1-1.06 0" clip-rule="evenodd" />
+                      </svg>
                     </div>
-                    <div class="step-card-body">
-                        <div class="step-phase-label" style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #059669; margin-bottom: 0.5rem;">
-                            Step 02 &bull; Autopilot Operations
-                        </div>
-                        <h3 class="step-card-title" style="font-size: 1.35rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; line-height: 1.3; margin-bottom: 0.85rem;">
-                            Automate Attendance, Billing &amp; WhatsApp
-                        </h3>
-                        <p class="step-card-text" style="font-size: 0.94rem; color: #475569; line-height: 1.6; margin-bottom: 1.5rem;">
-                            Members tap dynamic QR codes or punch fingerprints for instant turnstile entry. Expired memberships lock automatically, while WhatsApp auto-sends GST fee receipts and renewal UPI payment links.
-                        </p>
-                        <ul class="step-points-list" style="list-style: none; padding: 0; margin: 0 0 1.75rem; display: flex; flex-direction: column; gap: 0.65rem;">
-                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
-                                <i class="fa-solid fa-circle-check" style="color: #059669; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>Sub-0.3s gate polling stops proxy walk-ins</span>
-                            </li>
-                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #059669; font-weight: 600; line-height: 1.45;">
-                                <i class="fa-solid fa-circle-check" style="color: #059669; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>Automated 3-day renewal alerts with UPI QR</span>
-                            </li>
-                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #059669; font-weight: 600; line-height: 1.45;">
-                                <i class="fa-solid fa-circle-check" style="color: #059669; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>1-click thermal receipt printing (58/80mm)</span>
-                            </li>
-                        </ul>
-                    </div>
+                  </div>
                 </div>
-                <div class="step-card-bottom" style="padding-top: 1.25rem; border-top: 1px solid #f1f5f9;">
-                    <span class="step-stat-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 9999px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-size: 0.78rem; font-weight: 700;">
-                        <i class="fa-solid fa-circle-check" style="color: #059669;"></i> Zero Defaulter Free Walk-ins
-                    </span>
-                </div>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="workflow-step-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #f59e0b; border-radius: 20px; padding: 2.25rem 2rem; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);">
-                <div>
-                    <div class="step-card-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-                        <div class="step-number-badge" style="font-size: 1.3rem; font-weight: 900; color: #d97706; background: #fffbeb; border: 1px solid #fde68a; width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">03</div>
-                        <div class="step-icon-wrap" style="width: 46px; height: 46px; border-radius: 12px; border: 1px solid #fde68a; background: #fffbeb; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
-                            <i class="fa-solid fa-arrow-trend-up"></i>
-                        </div>
-                    </div>
-                    <div class="step-card-body">
-                        <div class="step-phase-label" style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #d97706; margin-bottom: 0.5rem;">
-                            Step 03 &bull; Predictable Growth
-                        </div>
-                        <h3 class="step-card-title" style="font-size: 1.35rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em; line-height: 1.3; margin-bottom: 0.85rem;">
-                            Scale Retention &amp; Multi-Branch MRR
-                        </h3>
-                        <p class="step-card-text" style="font-size: 0.94rem; color: #475569; line-height: 1.6; margin-bottom: 1.5rem;">
-                            Track monthly recurring cash collections, monitor personal trainer commissions, and eliminate counter cash discrepancies with automated day-end reconciliation from one unified executive dashboard.
-                        </p>
-                        <ul class="step-points-list" style="list-style: none; padding: 0; margin: 0 0 1.75rem; display: flex; flex-direction: column; gap: 0.65rem;">
-                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
-                                <i class="fa-solid fa-circle-check" style="color: #d97706; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>42% lift in on-time membership renewals</span>
-                            </li>
-                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
-                                <i class="fa-solid fa-circle-check" style="color: #d97706; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>96.2% 60-day active member retention</span>
-                            </li>
-                            <li style="display: flex; align-items: flex-start; gap: 0.65rem; font-size: 0.88rem; color: #334155; font-weight: 600; line-height: 1.45;">
-                                <i class="fa-solid fa-circle-check" style="color: #d97706; font-size: 0.95rem; margin-top: 2px; flex-shrink: 0;"></i>
-                                <span>Multi-branch comparison console for owners</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="step-card-bottom" style="padding-top: 1.25rem; border-top: 1px solid #f1f5f9;">
-                    <span class="step-stat-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 9999px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 0.78rem; font-weight: 700;">
-                        <i class="fa-solid fa-chart-line" style="color: #d97706;"></i> +42% Renewal Rate
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 3.5rem;">
-            <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
-                <i class="fa-solid fa-calendar-check"></i> Book a 15-Minute Live Setup Demo
+              </div>
             </a>
+          </div>
+          <p stagger-scroll="line" class="p2">
+            We started with a simple idea: build software that feels like second nature and eliminates operational chaos on the gym floor. Engineered in Lucknow by HELYONEX, ONEX BOOST powers 500+ fitness facilities across India with automated registrations, turnstile locks, and automated fee collections.
+          </p>
         </div>
+      </div>
+
+      <div class="images-wrapper-about-home">
+        <div class="loading-overlay">
+          <div class="color-overlay"></div>
+        </div>
+        <div class="image-about-1" style="background-image: url({% static 'images/hero_image_gym.png' %});"></div>
+        <div class="image-about-2" style="background-image: url({% static 'images/about_dashboard_features.png' %});"></div>
+        <div class="image-about-3" style="background-image: url({% static 'images/ecosystem_modern.png' %});"></div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── CORE VALUE PILLARS (BENTO GRID) ────────────────────────────────────── -->
-<section class="section-py">
-    <div class="brand-container">
-        <div class="section-header">
-            <div class="ox-badge section-eyebrow">
-                <i class="fa-solid fa-layer-group"></i> Architecture
-            </div>
-            <h2 class="section-title">Engineered to Solve Every Friction Point in Gym Operations</h2>
-            <p class="section-description">
-                Say goodbye to fragmented registers, lost fee receipts, and manual calls. ONEX BOOST consolidates your business into one synchronized dashboard.
-            </p>
+<!-- ── SECTION 4: DOUBLE RUNNING MARQUEE ─────────────────────────────────── -->
+<section class="section box-padding-top">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content home-menu">
+      <a href="{% url 'pricing' %}" class="menu-home-link w-inline-block" aria-label="View Pricing Plans"></a>
+      <div class="marquee-wrapper">
+        <div class="marquee-component-1">
+          <h2 class="display-1 yellow">VIEW</h2>
+          <h2 class="display-1 yellow">✸</h2>
+          <h2 class="display-1 yellow">VIEW</h2>
+          <h2 class="display-1 yellow">✸</h2>
+          <h2 class="display-1 yellow">VIEW</h2>
         </div>
-
-        <div class="bento-grid">
-            <!-- Bento 1: QR & Biometric Attendance -->
-            <div class="bento-card bento-col-7">
-                <div>
-                    <div class="bento-icon">
-                        <i class="fa-solid fa-qrcode"></i>
-                    </div>
-                    <h3 class="bento-title">Smart QR &amp; Biometric Attendance</h3>
-                    <p class="bento-desc">
-                        Prevent unauthorized entries and proxy check-ins. Members tap a dynamic QR or scan their fingerprint to log visits instantly with real-time capacity monitoring.
-                    </p>
-                </div>
-                <ul class="bento-feature-list">
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Direct integration with popular biometric scanners</li>
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Dynamic member QR codes that regenerate to prevent sharing</li>
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Instant alerts for expired or overdue membership walk-ins</li>
-                </ul>
-            </div>
-
-            <!-- Bento 2: WhatsApp Automation -->
-            <div class="bento-card bento-col-5">
-                <div>
-                    <div class="bento-icon bento-icon-emerald">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </div>
-                    <h3 class="bento-title">Automated WhatsApp Billing &amp; Alerts</h3>
-                    <p class="bento-desc">
-                        Send official GST invoices, renewal reminders, payment links, and birthday greetings right to members' WhatsApp without touching your phone.
-                    </p>
-                </div>
-                <ul class="bento-feature-list">
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #34d399;"></i> 3-day and 1-day auto renewal reminders</li>
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #34d399;"></i> One-click digital PDF receipt dispatch</li>
-                </ul>
-            </div>
-
-            <!-- Bento 3: Billing & GST Invoicing -->
-            <div class="bento-card bento-col-4">
-                <div>
-                    <div class="bento-icon bento-icon-amber">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                    </div>
-                    <h3 class="bento-title">GST Billing &amp; Multi-Plan POS</h3>
-                    <p class="bento-desc">
-                        Manage flexible plans (Monthly, Quarterly, Annual, PT add-ons) with partial payment tracking, discounts, and thermal receipt printouts.
-                    </p>
-                </div>
-                <ul class="bento-feature-list">
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #fbbf24;"></i> Partial fees and balance due tracker</li>
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #fbbf24;"></i> 2-inch and 3-inch thermal printer support</li>
-                </ul>
-            </div>
-
-            <!-- Bento 4: Trainer & Diet Workflows -->
-            <div class="bento-card bento-col-4">
-                <div>
-                    <div class="bento-icon bento-icon-purple">
-                        <i class="fa-solid fa-dumbbell"></i>
-                    </div>
-                    <h3 class="bento-title">Trainer &amp; Diet Workflows</h3>
-                    <p class="bento-desc">
-                        Assign personal trainers to members, log workout schedules, create customized diet charts, and track client transformation milestones.
-                    </p>
-                </div>
-                <ul class="bento-feature-list">
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #818cf8;"></i> Dedicated trainer login portal</li>
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check" style="color: #818cf8;"></i> PT session logs and commission tracking</li>
-                </ul>
-            </div>
-
-            <!-- Bento 5: Real-time Analytics -->
-            <div class="bento-card bento-col-4">
-                <div>
-                    <div class="bento-icon">
-                        <i class="fa-solid fa-chart-line"></i>
-                    </div>
-                    <h3 class="bento-title">Executive Revenue Analytics</h3>
-                    <p class="bento-desc">
-                        Live dashboards for cash collections, UPI payments, overdue renewals, member retention rates, and multi-branch performance metrics.
-                    </p>
-                </div>
-                <ul class="bento-feature-list">
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Exportable Excel and PDF reports</li>
-                    <li class="bento-feature-item"><i class="fa-solid fa-circle-check"></i> Daily cashier day-end cash reconciliation</li>
-                </ul>
-            </div>
+        <div class="marquee-component-2">
+          <h2 class="display-1 yellow">✸</h2>
+          <h2 class="display-1 yellow">PLANS</h2>
+          <h2 class="display-1 yellow">✸</h2>
+          <h2 class="display-1 yellow">PLANS</h2>
+          <h2 class="display-1 yellow">✸</h2>
+          <h2 class="display-1 yellow">PLANS</h2>
         </div>
+      </div>
+      <div class="marquee-wrapper overlay">
+        <div class="marquee-component-1">
+          <h2 class="display-1">VIEW</h2>
+          <h2 class="display-1">✸</h2>
+          <h2 class="display-1">VIEW</h2>
+          <h2 class="display-1">✸</h2>
+          <h2 class="display-1">VIEW</h2>
+        </div>
+        <div class="marquee-component-2">
+          <h2 class="display-1">✸</h2>
+          <h2 class="display-1">PLANS</h2>
+          <h2 class="display-1">✸</h2>
+          <h2 class="display-1">PLANS</h2>
+          <h2 class="display-1">✸</h2>
+          <h2 class="display-1">PLANS</h2>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── TABBED PLATFORM SHOWCASE ────────────────────────────────────────────── -->
-<section class="section-py" style="background: #f1f5f9; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
-    <div class="brand-container">
-        <div class="section-header">
-            <div class="ox-badge section-eyebrow">
-                <i class="fa-solid fa-laptop-code"></i> Unified Experience
+<!-- ── SECTION 5: DISCOVER OUR MODULES (4-COLUMN PRODUCT GRID) ──────────── -->
+<section class="section box-padding-top">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content products-home">
+      <div class="grid-2c">
+        <h2 stagger-scroll="letter" class="display-2">Discover <br />our modules</h2>
+        <div class="button-wrapper">
+          <a data-wf--button--variant="dark-green" href="{% url 'features' %}" class="b1 w-inline-block">
+            <div class="button-text">
+              <div class="text-track">
+                <div>View all</div>
+                <div>View all</div>
+              </div>
             </div>
-            <h2 class="section-title">Built for Everyone Who Touches Your Fitness Business</h2>
-            <p class="section-description">
-                Owners get control, staff get speed, trainers get clarity, and members get a modern digital experience.
-            </p>
-        </div>
-
-        <div class="showcase-tabs">
-            <button class="showcase-tab-btn is-active" onclick="switchShowcaseTab(0)">
-                <i class="fa-solid fa-shield-halved"></i> Gym Owner &amp; Admin Hub
-            </button>
-            <button class="showcase-tab-btn" onclick="switchShowcaseTab(1)">
-                <i class="fa-solid fa-user-tie"></i> Trainer &amp; Staff Workspace
-            </button>
-            <button class="showcase-tab-btn" onclick="switchShowcaseTab(2)">
-                <i class="fa-solid fa-mobile-screen"></i> Member Self-Service App
-            </button>
-        </div>
-
-        <!-- Panel 1: Owner Hub -->
-        <div class="showcase-content-panel is-active">
-            <div class="bento-card" style="padding: 2.5rem;">
-                <div class="showcase-layout-grid">
-                    <div>
-                        <div class="ox-badge mb-3">Complete Transparency</div>
-                        <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">Complete High-Altitude Control Over Multi-Staff &amp; Collections</h3>
-                        <p style="color: #475569; margin-bottom: 1.5rem; line-height: 1.6;">
-                            Never wonder how much money entered your register or which memberships are about to expire. The ONEX BOOST Owner Console gives you instant insights with role-based staff permissions.
-                        </p>
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Role-based access for Front Desk, Accountants &amp; Trainers
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Audit trail logs for invoice deletions and discounts
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> WhatsApp integration directly bound to your official brand
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <!-- Custom ONEX BOOST Owner Console Preview Card -->
-                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; box-shadow: 0 20px 40px rgba(15,23,42,0.08); overflow: hidden;">
-                            <div style="background: #0f172a; padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></div>
-                                    <span style="color: #ffffff; font-weight: 800; font-size: 0.82rem;">ONEX BOOST &bull; Owner Executive Terminal</span>
-                                </div>
-                                <span style="font-size: 0.72rem; color: #38bdf8; background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); padding: 0.15rem 0.5rem; border-radius: 6px;">Live Sync</span>
-                            </div>
-                            <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem;">
-                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Today's Inflow</div>
-                                        <div style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">&#8377;92,400 <span style="font-size: 0.75rem; color: #10b981;">+18%</span></div>
-                                    </div>
-                                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem;">
-                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Active Headcount</div>
-                                        <div style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">1,248 <span style="font-size: 0.75rem; color: #0284c7;">Members</span></div>
-                                    </div>
-                                </div>
-                                <div style="font-size: 0.78rem; font-weight: 700; color: #0f172a;">Recent Audit Log &bull; Front-Desk Activity</div>
-                                <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.76rem;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                        <span><i class="fa-solid fa-receipt" style="color: #0284c7; margin-right: 6px;"></i> Invoice #OX-9481 generated (&#8377;14,999 UPI)</span>
-                                        <span style="color: #059669; font-weight: 700;">Reconciled</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                        <span><i class="fa-solid fa-user-plus" style="color: #10b981; margin-right: 6px;"></i> Receptionist added 2 new member plans</span>
-                                        <span style="color: #0284c7; font-weight: 700;">Logged</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                        <span><i class="fa-solid fa-shield-halved" style="color: #d97706; margin-right: 6px;"></i> Expired defaulter blocked at barrier #01</span>
-                                        <span style="color: #d97706; font-weight: 700;">Auto Alert</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="arrow-circle">
+              <div class="arrow-container">
+                <div class="arrow-track">
+                  <div class="arrow _1 w-embed">
+                    <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15">
+                      <path fill="currentColor" fill-rule="evenodd" d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H5.75a.75.75 0 0 1 0-1.5h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V6.56l-5.22 5.22a.75.75 0 0 1-1.06 0" clip-rule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
+              </div>
             </div>
+          </a>
         </div>
+      </div>
 
-        <!-- Panel 2: Trainer Workspace -->
-        <div class="showcase-content-panel">
-            <div class="bento-card" style="padding: 2.5rem;">
-                <div class="showcase-layout-grid">
-                    <div>
-                        <div class="ox-badge ox-badge-emerald mb-3">Trainer Enablement</div>
-                        <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">Equip Personal Trainers to Deliver 5-Star Transformations</h3>
-                        <p style="color: #475569; margin-bottom: 1.5rem; line-height: 1.6;">
-                            Trainers log into their dedicated mobile-responsive portal, view their assigned PT clients, manage workout schedules, and log session completions without cluttering admin books.
-                        </p>
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #059669;"></i> Dedicated Trainer Portal with private client rosters
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #059669;"></i> Client body measurement &amp; transformation timeline
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #059669;"></i> Attendance punching for trainers with shift logs
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <!-- Custom Trainer Portal UI Card -->
-                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; box-shadow: 0 20px 40px rgba(15,23,42,0.08); overflow: hidden;">
-                            <div style="background: #064e3b; padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #34d399;"></div>
-                                    <span style="color: #ffffff; font-weight: 800; font-size: 0.82rem;">Trainer Console &bull; Coach Vikram Singh</span>
-                                </div>
-                                <span style="font-size: 0.72rem; color: #a7f3d0; background: rgba(167,243,208,0.2); padding: 0.15rem 0.5rem; border-radius: 6px;">4 Active Clients</span>
-                            </div>
-                            <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
-                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                        <div style="font-weight: 700; font-size: 0.84rem; color: #0f172a;">Neha Saxena &bull; CrossFit Strength Pro</div>
-                                        <span style="font-size: 0.74rem; font-weight: 700; color: #059669;">18 / 24 Sessions</span>
-                                    </div>
-                                    <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;">
-                                        <div style="width: 75%; height: 100%; background: #059669; border-radius: 4px;"></div>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; font-size: 0.74rem; color: #64748b;">
-                                        <span>75% Completed</span>
-                                        <span style="color: #0284c7; font-weight: 600;">Workout: Upper Push Day 3</span>
-                                    </div>
-                                </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                                    <div style="padding: 0.75rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;">
-                                        <div style="font-size: 0.72rem; color: #166534; font-weight: 700;">PT Commission</div>
-                                        <div style="font-size: 1.15rem; font-weight: 800; color: #15803d;">&#8377;7,200</div>
-                                    </div>
-                                    <div style="padding: 0.75rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
-                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700;">Trainer Punch-In</div>
-                                        <div style="font-size: 0.82rem; font-weight: 800; color: #0f172a; margin-top: 4px;">06:45 AM (Verified)</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+      <div>
+        <div class="w-dyn-list">
+          <div role="list" class="list-products-home w-dyn-items">
+            <!-- Card 1: Biometrics & Turnstiles -->
+            <div role="listitem" class="item-product w-dyn-item">
+              <a href="{% url 'features' %}#biometrics" class="product-container w-inline-block">
+                <div class="loading-overlay">
+                  <div class="color-overlay"></div>
                 </div>
+                <img loading="lazy" src="{% static 'images/hero_image_gym.png' %}" alt="Biometrics Turnstiles" class="product-image" />
+                <div class="product-info">
+                  <div stagger-scroll="word" class="product-title">
+                    <h3 class="p1">Biometrics</h3>
+                    <div class="paragraph">Turnstile &amp; QR</div>
+                  </div>
+                  <div stagger-scroll="letter" class="price">
+                    <div>₹999 / mo</div>
+                  </div>
+                </div>
+              </a>
             </div>
-        </div>
 
-        <!-- Panel 3: Member Portal -->
-        <div class="showcase-content-panel">
-            <div class="bento-card" style="padding: 2.5rem;">
-                <div class="showcase-layout-grid">
-                    <div>
-                        <div class="ox-badge mb-3">Member Delight</div>
-                        <h3 style="font-size: 1.85rem; margin-bottom: 1rem; color: #0f172a;">A Modern Member Portal That Elevates Your Brand Perception</h3>
-                        <p style="color: #475569; margin-bottom: 1.5rem; line-height: 1.6;">
-                            Members log in with their phone number to see their active plan, remaining days, digital entry QR card, past fee receipts, workout chart, and announcements.
-                        </p>
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Digital ID card with instant QR attendance
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Downloadable GST fee receipts anytime
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 0.75rem; color: #334155; font-weight: 500;">
-                                <i class="fa-solid fa-check-double" style="color: #0284c7;"></i> Push announcements for gym timings and holidays
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <!-- Custom Member App UI Card -->
-                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; box-shadow: 0 20px 40px rgba(15,23,42,0.08); overflow: hidden;">
-                            <div style="background: linear-gradient(135deg, #0284c7, #2563eb); padding: 1.25rem; color: #ffffff;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
-                                    <span style="font-size: 0.74rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;">ONEX BOOST &bull; Member Pass</span>
-                                    <span style="font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 0.15rem 0.5rem; border-radius: 9999px;">ACTIVE</span>
-                                </div>
-                                <div style="font-size: 1.25rem; font-weight: 800;">Rahul Verma</div>
-                                <div style="font-size: 0.78rem; opacity: 0.9;">Member ID: #TITAN-1084 &bull; Annual Gold</div>
-                            </div>
-                            <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; text-align: center;">
-                                <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 1rem; width: 100%;">
-                                    <div style="font-size: 2.2rem; color: #0284c7; margin-bottom: 0.25rem;">
-                                        <i class="fa-solid fa-qrcode"></i>
-                                    </div>
-                                    <div style="font-size: 0.74rem; color: #64748b;">Dynamic Entry QR (Auto-refreshes in 24s)</div>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; width: 100%; font-size: 0.78rem; padding: 0.5rem 0.85rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;">
-                                    <span style="color: #166534; font-weight: 700;">Valid Until: 11 Oct 2027</span>
-                                    <span style="color: #15803d; font-weight: 700;">312 Days Left</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Card 2: WhatsApp Gateway -->
+            <div role="listitem" class="item-product w-dyn-item">
+              <a href="{% url 'features' %}#whatsapp" class="product-container w-inline-block">
+                <div class="loading-overlay">
+                  <div class="color-overlay"></div>
                 </div>
+                <img loading="lazy" src="{% static 'images/whatsapp-img.png' %}" alt="WhatsApp Billing" class="product-image" />
+                <div class="product-info">
+                  <div stagger-scroll="word" class="product-title">
+                    <h3 class="p1">WhatsApp API</h3>
+                    <div class="paragraph">Auto GST Invoicing</div>
+                  </div>
+                  <div stagger-scroll="letter" class="price">
+                    <div>₹799 / mo</div>
+                  </div>
+                </div>
+              </a>
             </div>
+
+            <!-- Card 3: Member Portal -->
+            <div role="listitem" class="item-product w-dyn-item">
+              <a href="{% url 'features' %}#portal" class="product-container w-inline-block">
+                <div class="loading-overlay">
+                  <div class="color-overlay"></div>
+                </div>
+                <img loading="lazy" src="{% static 'images/about_dashboard_features.png' %}" alt="Member App" class="product-image" />
+                <div class="product-info">
+                  <div stagger-scroll="word" class="product-title">
+                    <h3 class="p1">Member Portal</h3>
+                    <div class="paragraph">iOS &amp; Android Hub</div>
+                  </div>
+                  <div stagger-scroll="letter" class="price">
+                    <div>Included</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <!-- Card 4: Trainer Workflows -->
+            <div role="listitem" class="item-product w-dyn-item">
+              <a href="{% url 'features' %}#trainers" class="product-container w-inline-block">
+                <div class="loading-overlay">
+                  <div class="color-overlay"></div>
+                </div>
+                <img loading="lazy" src="{% static 'images/gym-guy.jpg' %}" alt="Trainer CRM" class="product-image" />
+                <div class="product-info">
+                  <div stagger-scroll="word" class="product-title">
+                    <h3 class="p1">Trainer CRM</h3>
+                    <div class="paragraph">PT Shifts &amp; Payouts</div>
+                  </div>
+                  <div stagger-scroll="letter" class="price">
+                    <div>Included</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── TESTIMONIALS & SOCIAL PROOF ─────────────────────────────────────────── -->
-<section class="section-py">
-    <div class="brand-container">
-        <div class="section-header">
-            <div class="ox-badge section-eyebrow">
-                <i class="fa-solid fa-star"></i> Real Results
-            </div>
-            <h2 class="section-title">Loved by Fitness Business Owners Across India</h2>
-            <p class="section-description">
-                Hear how leading fitness centers automated their operations and scaled recurring member revenue with ONEX BOOST.
-            </p>
+<!-- ── SECTION 6: SCHEDULE DEMO FORM (BRUN HAUS CONTACT FORM STYLE) ──────── -->
+<section class="section box-padding-top" style="padding-bottom: 6rem;">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content contact-section">
+      <div class="about-home-info">
+        <h2 stagger-scroll="letter" class="display-2">Book a <br />live demo</h2>
+        <div class="flex-vertical-left">
+          <p stagger-scroll="line" class="p2">
+            Schedule a 15-minute live screen walkthrough with our fitness technology architects. See how ONEX BOOST replaces paper registers, eliminates payment leakage, and syncs your turnstiles.
+          </p>
         </div>
+      </div>
 
-        <div class="testimonials-grid">
-            <!-- Review 1 -->
-            <div class="testimonial-card">
-                <div>
-                    <div class="testimonial-stars">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="testimonial-quote">
-                        "Before ONEX BOOST, my desk staff was spending 3 hours daily just calling members for pending renewals. Now WhatsApp auto-reminders do it all, and our on-time renewals jumped by 42%!"
-                    </p>
-                </div>
-                <div class="testimonial-author">
-                    <img src="{% static 'images/clients/client1.jpeg' %}" alt="Rajesh Sharma" class="author-avatar" onerror="this.src='{% static 'images/member_dp.jpg' %}';">
-                    <div>
-                        <div class="author-name">Rajesh Sharma</div>
-                        <div class="author-gym">Founder, Titan Fitness (Lucknow)</div>
-                    </div>
-                </div>
-            </div>
+      <div class="form-container">
+        <div class="form-block w-form">
+          <form id="heroContactForm" class="contact-form">
+            {% csrf_token %}
+            
+            <div class="paragraph bottom-margin">Your Name *</div>
+            <input class="text-field-contact w-input" name="first_name" placeholder="John Doe" type="text" id="name" required />
+            <input type="hidden" name="last_name" value="-" />
 
-            <!-- Review 2 -->
-            <div class="testimonial-card">
-                <div>
-                    <div class="testimonial-stars">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="testimonial-quote">
-                        "The biometric sync and thermal billing are flawless. Even during the peak 7 PM rush, members punch in smoothly and new signups receive instant GST invoices on their phones."
-                    </p>
-                </div>
-                <div class="testimonial-author">
-                    <img src="{% static 'images/clients/client2.jpeg' %}" alt="Vikramaditya Rao" class="author-avatar" onerror="this.src='{% static 'images/trainer_dp.png' %}';">
-                    <div>
-                        <div class="author-name">Vikramaditya Rao</div>
-                        <div class="author-gym">Managing Director, Iron Vault Gym (Kanpur)</div>
-                    </div>
-                </div>
-            </div>
+            <div class="paragraph bottom-margin">Email Address *</div>
+            <input class="text-field-contact w-input" name="email" placeholder="john@gymname.com" type="email" id="Email" required />
 
-            <!-- Review 3 -->
-            <div class="testimonial-card">
-                <div>
-                    <div class="testimonial-stars">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="testimonial-quote">
-                        "The HELYONEX customer support team is phenomenal. They migrated all our 800+ members from Excel sheets within 2 hours. ONEX BOOST is easily the best software in India."
-                    </p>
-                </div>
-                <div class="testimonial-author">
-                    <img src="{% static 'images/clients/client3.jpeg' %}" alt="Sneha Verma" class="author-avatar" onerror="this.src='{% static 'images/face16.png' %}';">
-                    <div>
-                        <div class="author-name">Sneha Verma</div>
-                        <div class="author-gym">Owner, Elevate Pilates &amp; Strength (Noida)</div>
-                    </div>
-                </div>
-            </div>
+            <div class="paragraph bottom-margin">Phone / WhatsApp Number *</div>
+            <input class="text-field-contact w-input" name="phone" placeholder="+91 94544 87893" type="tel" id="Phone" required />
+
+            <div class="paragraph bottom-margin">Gym / Club Name *</div>
+            <input class="text-field-contact w-input" name="business_name" placeholder="Titan Fitness Club" type="text" id="Gym" required />
+
+            <div class="paragraph bottom-margin">Message / Requirements</div>
+            <textarea id="field" name="message" placeholder="Number of members, biometric machines, or multi-branch requirements..." class="text-field-contact message w-input"></textarea>
+
+            <input type="hidden" name="inquiry_type" value="software_demo" />
+            <input type="hidden" name="referral_source" value="brunhaus_theme_homepage" />
+
+            <input type="submit" id="submitDemoBtn" class="contact-button w-button" value="Schedule Live Demo" />
+          </form>
+
+          <div id="contactFormStatus" style="display: none; padding: 1rem; border-radius: 1rem; margin-top: 1rem; font-weight: 600; background: var(--colors--soft-green); color: var(--colors--dark-green);"></div>
         </div>
+      </div>
     </div>
-</section>
-
-<!-- ── FAQ ACCORDION ───────────────────────────────────────────────────────── -->
-<section class="section-py" style="background: #f8fafc; border-top: 1px solid #e2e8f0;">
-    <div class="brand-container">
-        <div class="section-header">
-            <div class="ox-badge section-eyebrow">
-                <i class="fa-solid fa-circle-question"></i> Answers
-            </div>
-            <h2 class="section-title">Frequently Asked Questions</h2>
-            <p class="section-description">
-                Everything you need to know about setting up and operating ONEX BOOST in your facility.
-            </p>
-        </div>
-
-        <div class="faq-list">
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span>How quickly can we migrate our existing members into ONEX BOOST?</span>
-                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        You can import all your existing members in minutes using our Excel/CSV import tool. If you need assistance, our dedicated HELYONEX onboarding team does the entire data migration for you free of charge during onboarding.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span>Does ONEX BOOST work with biometric fingerprint machines and thermal printers?</span>
-                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Yes! ONEX BOOST integrates with leading biometric scanners (Realtime, eSSL, Mantra, ZKTeco) and standard 2-inch and 3-inch thermal POS printers for instant receipt printing at your reception desk.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span>How does the WhatsApp automated messaging feature work?</span>
-                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        ONEX BOOST connects via official WhatsApp Cloud APIs to trigger automatic renewal reminders, birthday wishes, and fee receipts with your gym branding. No manual typing or third-party phone tethering required.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span>Can my trainers and members access their own portals?</span>
-                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Yes! ONEX BOOST includes dedicated, password-protected portals for trainers (to view assigned clients, sessions, and diet plans) and members (to view digital membership cards, workout schedules, and past invoices).
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span>Can I manage multiple gym branches under one login?</span>
-                    <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Absolutely. Our Multi-Branch Architecture allows gym owners and franchise directors to switch between branch locations with one click, comparing revenue, active headcount, and staff performance side by side.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ── CONVERSION CTA BANNER ──────────────────────────────────────────────── -->
-<section class="section-py">
-    <div class="brand-container">
-        <div class="cta-banner">
-            <div class="ox-badge mb-3" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #ffffff;">
-                <i class="fa-solid fa-rocket"></i> Scale Your Gym Today
-            </div>
-            <h2 class="cta-banner-title">
-                Ready to Experience India's Most Advanced Gym Management Software?
-            </h2>
-            <p class="cta-banner-desc">
-                Book a personalized 15-minute live demo with our gym automation specialists. We will show you how ONEX BOOST can save your team 15+ hours every week.
-            </p>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
-                    <i class="fa-solid fa-calendar-check"></i> Book My Free 15-Min Demo
-                </a>
-                <a href="tel:+916392348731" class="btn-ox btn-ox-secondary btn-ox-lg">
-                    <i class="fa-solid fa-phone"></i> Call Sales: +91 9454487893
-                </a>
-            </div>
-        </div>
-    </div>
+  </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Tab switching for platform showcase
-    function switchShowcaseTab(index) {
-        const tabs = document.querySelectorAll('.showcase-tab-btn');
-        const panels = document.querySelectorAll('.showcase-content-panel');
-        
-        tabs.forEach((tab, i) => {
-            tab.classList.toggle('is-active', i === index);
-        });
-        panels.forEach((panel, i) => {
-            panel.classList.toggle('is-active', i === index);
-        });
-    }
+  // AJAX Form Submission Handler
+  const contactForm = document.getElementById('heroContactForm');
+  const submitBtn = document.getElementById('submitDemoBtn');
+  const statusDiv = document.getElementById('contactFormStatus');
 
-    // FAQ Accordion toggle
-    function toggleFaq(button) {
-        const item = button.closest('.faq-item');
-        const isOpen = item.classList.contains('is-open');
-        
-        // Close others
-        document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('is-open'));
-        
-        if (!isOpen) {
-            item.classList.add('is-open');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      submitBtn.value = 'Please wait...';
+      submitBtn.disabled = true;
+      statusDiv.style.display = 'block';
+      statusDiv.innerText = 'Submitting demo request...';
+
+      const formData = new FormData(contactForm);
+
+      try {
+        const response = await fetch("{% url 'contact_submission' %}", {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+          },
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          statusDiv.innerText = 'Thank you! Your demo request has been received. Our team will contact you within 15 minutes.';
+          contactForm.reset();
+        } else {
+          statusDiv.innerText = data.message || 'Please check your inputs and try again.';
         }
-    }
+      } catch (err) {
+        statusDiv.innerText = 'Connection error. Please call +91 94544 87893 directly.';
+      } finally {
+        submitBtn.value = 'Schedule Live Demo';
+        submitBtn.disabled = false;
+      }
+    });
+  }
 </script>
 {% endblock %}

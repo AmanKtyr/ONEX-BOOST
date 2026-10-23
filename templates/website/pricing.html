@@ -1,243 +1,153 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
 
-{% block title %}ONEX BOOST Pricing | Transparent Gym Management Software Plans by HELYONEX{% endblock %}
+{% block title %}Pricing Plans ✸ ONEX BOOST by HELYONEX{% endblock %}
 
 {% block seo %}
-<meta name="description" content="Affordable and transparent gym management software pricing in India by HELYONEX. Choose between Starter, Growth, and Multi-Branch Enterprise plans. 14-day free trial.">
-<meta name="keywords" content="gym management software pricing India, ONEX BOOST pricing, OneX Boost, HELYONEX, gym software cost, fitness club software pricing, affordable gym CRM">
+<meta name="description" content="Transparent pricing for gym management software in India. Choose Starter, Pro Facility, or Enterprise plans with biometric turnstiles and WhatsApp automation.">
+<meta name="keywords" content="gym software pricing, gym management software price India, biometric attendance gym cost, ONEX BOOST pricing">
 {% endblock %}
 
 {% block canonical %}
-<link rel="canonical" href="https://ONEX BOOST.com/pricing/">
+<link rel="canonical" href="https://onexboost.com/pricing/">
 {% endblock %}
 
 {% block content %}
-<!-- ── HERO ────────────────────────────────────────────────────────────────── -->
-<section class="hero-section" style="padding: 9rem 0 4.5rem;">
-    <div class="hero-glow-orb hero-glow-1"></div>
-    <div class="brand-container">
-        <div class="hero-content">
-            <div class="ox-badge mb-3">
-                <i class="fa-solid fa-tags"></i> Transparent Value
-            </div>
-            <h1 class="hero-title">
-                Predictable, Transparent Pricing <br>
-                <span class="gradient-text">Built to Scale With Your Gym</span>
-            </h1>
-            <p class="hero-subtitle">
-                No hidden setup fees, no per-member penalties. Choose the plan that fits your gym's current scale and upgrade anytime.
-            </p>
-
-            <!-- Monthly / Annual Switcher -->
-            <div class="pricing-switch-wrap">
-                <span class="pricing-switch-label is-active" id="monthlyLabel" onclick="setBilling('monthly')">Monthly Billing</span>
-                <div class="pricing-toggle" id="pricingToggle" onclick="toggleBillingPeriod()">
-                    <div class="pricing-toggle-thumb"></div>
-                </div>
-                <span class="pricing-switch-label" id="annualLabel" onclick="setBilling('annual')">
-                    Annual Billing
-                    <span class="ox-badge ox-badge-emerald" style="padding: 0.2rem 0.6rem; font-size: 0.72rem; margin-left: 6px;">
-                        Save 20%
-                    </span>
-                </span>
-            </div>
+<!-- ── HERO: PRICING ───────────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content home-hero" style="min-height: 48vh; padding-top: 7.5rem; padding-bottom: 2rem;">
+      <div class="h1-center">
+        <h1 stagger-page="letter" class="display-1">PRICING</h1>
+      </div>
+      <div class="hero-info-container">
+        <div class="hero-text-container">
+          <div stagger-page="word" class="paragraph center-mobile">
+            Simple, honest pricing for boutique studios, heavy iron gyms, and multi-location fitness chains.
+          </div>
         </div>
+        <div class="hero-text-container right">
+          <div stagger-page="word" class="paragraph center-mobile bold-mobile">
+            No hidden setup fees.<br />Cancel anytime.
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── PRICING CARDS ───────────────────────────────────────────────────────── -->
-<section class="section-py" style="padding-top: 0;">
-    <div class="brand-container">
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: stretch;">
-            <!-- Tier 1: Starter -->
-            <div class="pricing-card">
-                <div class="pricing-name">Starter Studio</div>
-                <div class="pricing-desc">
-                    Ideal for boutique fitness studios, yoga centers, and emerging single gyms.
-                </div>
-                <div class="pricing-price-wrap">
-                    <span class="pricing-currency">&#8377;</span>
-                    <span class="pricing-amount plan-price" data-monthly="999" data-annual="799">999</span>
-                    <span class="pricing-period">/ month</span>
-                </div>
-                <ul class="pricing-features">
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Up to 250 Active Members</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Dynamic QR Code Attendance</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> GST Invoicing & Thermal Printing</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Basic WhatsApp Renewal Alerts</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> 2 Staff Admin Accounts</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Email & Chat Support</li>
-                </ul>
-                <a href="{% url 'contact' %}" class="btn-ox btn-ox-secondary" style="width: 100%;">
-                    Start 14-Day Free Trial
-                </a>
+<!-- ── PRICING CARDS GRID ─────────────────────────────────────────────────── -->
+<section class="section box-padding-top">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content">
+      <div class="pricing-grid">
+        <!-- PLAN 1: STARTER -->
+        <div class="pricing-card">
+          <div>
+            <h3 class="display-2" style="font-size: 2.2rem; margin: 0 0 0.5rem; color: var(--colors--white, #fef8dd) !important;">STARTER</h3>
+            <div class="paragraph" style="color: var(--colors--white, #fef8dd) !important; opacity: 0.85;">For emerging gyms and boutique fitness studios.</div>
+            <div style="margin: 2rem 0 1rem; font-family: var(--font--main-font); font-size: 3rem; line-height: 1; color: var(--colors--white, #fef8dd) !important;">
+              ₹1,499 <span style="font-size: 1rem; font-family: var(--font--second-font); opacity: 0.75; color: var(--colors--white, #fef8dd) !important;">/ month</span>
             </div>
 
-            <!-- Tier 2: Growth (Popular) -->
-            <div class="pricing-card is-popular">
-                <div class="popular-badge">Most Popular Choice</div>
-                <div class="pricing-name" style="color: #38bdf8;">Growth Gym</div>
-                <div class="pricing-desc">
-                    For ambitious, established fitness clubs ready for complete automation.
-                </div>
-                <div class="pricing-price-wrap">
-                    <span class="pricing-currency">&#8377;</span>
-                    <span class="pricing-amount plan-price" data-monthly="1,999" data-annual="1,599">1,999</span>
-                    <span class="pricing-period">/ month</span>
-                </div>
-                <ul class="pricing-features">
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> <strong>Unlimited Active Members</strong></li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Biometric Fingerprint Hardware Sync</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Official WhatsApp Cloud API Automations</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Dedicated Trainer Portal & PT Tracker</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Member Digital ID Card Portal</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Diet & Workout Plan Builder</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> 10 Staff & Trainer Logins</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Free Excel Data Migration</li>
-                </ul>
-                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary" style="width: 100%;">
-                    <i class="fa-solid fa-bolt"></i> Get Growth Plan
-                </a>
-            </div>
+            <ul class="pricing-features-list" style="color: var(--colors--white, #fef8dd) !important;">
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> Up to 250 active members</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> 2 Staff / Reception logins</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> QR code attendance scanner</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> WhatsApp fee receipts &amp; GST bills</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> Cash &amp; UPI daily settlement</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> Cloud backups every 24 hours</li>
+            </ul>
+          </div>
 
-            <!-- Tier 3: Enterprise -->
-            <div class="pricing-card">
-                <div class="pricing-name">Multi-Branch Chain</div>
-                <div class="pricing-desc">
-                    For multi-location gym chains, franchises, and luxury athletic clubs.
-                </div>
-                <div class="pricing-price-wrap">
-                    <span class="pricing-currency">&#8377;</span>
-                    <span class="pricing-amount plan-price" data-monthly="3,999" data-annual="3,199">3,999</span>
-                    <span class="pricing-period">/ month</span>
-                </div>
-                <ul class="pricing-features">
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Everything in Growth Plan</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Multi-Location Centralized Dashboard</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Unlimited Staff & Trainer Logins</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Custom Branded WhatsApp Sender ID</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Advanced Inventory & Shake Bar POS</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> Dedicated HELYONEX Account Manager</li>
-                    <li class="pricing-feature"><i class="fa-solid fa-circle-check"></i> 24/7 Priority Phone & Field Support</li>
-                </ul>
-                <a href="{% url 'contact' %}" class="btn-ox btn-ox-secondary" style="width: 100%;">
-                    Talk to Enterprise Team
-                </a>
-            </div>
+          <a href="{% url 'contact' %}?plan=starter" class="contact-button" style="background: var(--colors--soft-green); color: var(--colors--dark-green); text-align: center;">
+            Choose Starter ✸
+          </a>
         </div>
+
+        <!-- PLAN 2: PRO FACILITY (FEATURED) -->
+        <div class="pricing-card featured">
+          <div class="pricing-card-badge" style="color: var(--colors--soft-yellow, #eddea6) !important; background: var(--colors--dark-green, #034220) !important;">MOST POPULAR</div>
+          <div>
+            <h3 class="display-2" style="font-size: 2.2rem; margin: 0 0 0.5rem; color: var(--colors--dark-green);">PRO CLUB</h3>
+            <div class="paragraph" style="color: var(--colors--dark-green); opacity: 0.85;">For high-volume gyms seeking total automation.</div>
+            <div style="margin: 2rem 0 1rem; font-family: var(--font--main-font); font-size: 3rem; line-height: 1; color: var(--colors--dark-green);">
+              ₹2,999 <span style="font-size: 1rem; font-family: var(--font--second-font); opacity: 0.75;">/ month</span>
+            </div>
+
+            <ul class="pricing-features-list" style="color: var(--colors--dark-green);">
+              <li><i class="fa-solid fa-check"></i> <strong>Unlimited</strong> active members</li>
+              <li><i class="fa-solid fa-check"></i> Unlimited staff &amp; trainer accounts</li>
+              <li><i class="fa-solid fa-check"></i> <strong>Biometric turnstile sync</strong> (&lt;0.2s)</li>
+              <li><i class="fa-solid fa-check"></i> Automated WhatsApp renewal reminders</li>
+              <li><i class="fa-solid fa-check"></i> Personal trainer commission CRM</li>
+              <li><i class="fa-solid fa-check"></i> Member mobile portal app</li>
+              <li><i class="fa-solid fa-check"></i> Supplement &amp; cafe POS billing</li>
+            </ul>
+          </div>
+
+          <a href="{% url 'contact' %}?plan=pro" class="contact-button" style="background: var(--colors--dark-green); color: var(--colors--white); text-align: center;">
+            Choose Pro Club ✸
+          </a>
+        </div>
+
+        <!-- PLAN 3: ENTERPRISE MULTI-CLUB -->
+        <div class="pricing-card">
+          <div>
+            <h3 class="display-2" style="font-size: 2.2rem; margin: 0 0 0.5rem; color: var(--colors--white, #fef8dd) !important;">CHAIN HQ</h3>
+            <div class="paragraph" style="color: var(--colors--white, #fef8dd) !important; opacity: 0.85;">For multi-city gym franchises &amp; health clubs.</div>
+            <div style="margin: 2rem 0 1rem; font-family: var(--font--main-font); font-size: 3rem; line-height: 1; color: var(--colors--white, #fef8dd) !important;">
+              ₹5,999 <span style="font-size: 1rem; font-family: var(--font--second-font); opacity: 0.75; color: var(--colors--white, #fef8dd) !important;">/ month</span>
+            </div>
+
+            <ul class="pricing-features-list" style="color: var(--colors--white, #fef8dd) !important;">
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> Multi-branch central command dashboard</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> Cross-branch member roaming access</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> Custom domain &amp; white-label portal</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> Custom API webhooks &amp; ERP export</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> Dedicated HELYONEX account engineer</li>
+              <li><i class="fa-solid fa-check" style="color: var(--colors--soft-yellow, #eddea6) !important;"></i> Priority 24/7 phone &amp; on-site support</li>
+            </ul>
+          </div>
+
+          <a href="{% url 'contact' %}?plan=enterprise" class="contact-button" style="background: var(--colors--soft-green); color: var(--colors--dark-green); text-align: center;">
+            Contact Enterprise ✸
+          </a>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── FEATURE COMPARISON MATRIX ───────────────────────────────────────────── -->
-<section class="section-py" style="background: #ffffff; border-top: 1px solid var(--ox-border-color); border-bottom: 1px solid var(--ox-border-color);">
-    <div class="brand-container">
-        <div class="section-header">
-            <h2 class="section-title">Detailed Feature Matrix</h2>
-            <p class="section-description">Compare feature capabilities across each ONEX BOOST plan.</p>
+<!-- ── HARDWARE ADD-ONS (BRUN HAUS STYLE) ──────────────────────────────────── -->
+<section class="section box-padding-top" style="padding-bottom: 6rem;">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content">
+      <div style="margin-bottom: 2rem;">
+        <h2 class="display-2" style="margin-bottom: 0.5rem;">HARDWARE &amp; ADD-ONS</h2>
+        <p class="p2" style="color: var(--colors--dark-green);">Directly shipped, pre-configured and plug-and-play compatible with your ONEX BOOST account.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div style="background: var(--colors--soft-yellow); padding: 1.75rem; border-radius: var(--padding-radius--borders-radius); border: 2px solid var(--colors--dark-green);">
+          <div style="font-family: var(--font--main-font); font-size: 1.5rem; margin-bottom: 0.25rem;">AI Face Recognition Terminal</div>
+          <p style="font-size: 0.95rem; margin-bottom: 1rem;">Dual-camera live detection, anti-spoofing, 10,000 face capacity.</p>
+          <div style="font-family: var(--font--main-font); font-size: 1.6rem; color: var(--colors--dark-green);">₹18,500 <span style="font-size: 0.85rem; font-family: var(--font--second-font); font-weight: normal;">(one-time)</span></div>
         </div>
 
-        <div class="bento-card" style="overflow-x: auto; padding: 1.5rem; background: #ffffff;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
-                <thead>
-                    <tr style="border-bottom: 2px solid var(--ox-border-color); background: #f8fafc;">
-                        <th style="padding: 1.15rem 1.25rem; color: var(--ox-text-primary); width: 40%; font-weight: 700;">Core Capabilities</th>
-                        <th style="padding: 1.15rem 1rem; color: var(--ox-text-secondary); text-align: center; font-weight: 700;">Starter</th>
-                        <th style="padding: 1.15rem 1rem; color: var(--ox-primary-dark); text-align: center; font-weight: 700; background: rgba(2, 132, 199, 0.05);">Growth (Popular)</th>
-                        <th style="padding: 1.15rem 1rem; color: var(--ox-text-primary); text-align: center; font-weight: 700;">Multi-Branch</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
-                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Active Member Capacity</td>
-                        <td style="padding: 1rem; text-align: center; color: var(--ox-text-secondary);">Up to 250</td>
-                        <td style="padding: 1rem; text-align: center; color: var(--ox-primary-dark); font-weight: 700; background: rgba(2, 132, 199, 0.03);">Unlimited</td>
-                        <td style="padding: 1rem; text-align: center; color: var(--ox-text-primary); font-weight: 700;">Unlimited</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
-                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">QR Code Member Attendance</td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i></td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
-                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Biometric Machine Driver Sync</td>
-                        <td style="padding: 1rem; text-align: center; color: #94a3b8;"><i class="fa-solid fa-minus"></i></td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i></td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
-                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Automated WhatsApp Invoicing & Renewals</td>
-                        <td style="padding: 1rem; text-align: center; color: var(--ox-text-secondary);">Basic</td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i> Cloud API</td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i> Custom Sender</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
-                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Trainer Management & PT Commissions</td>
-                        <td style="padding: 1rem; text-align: center; color: #94a3b8;"><i class="fa-solid fa-minus"></i></td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i></td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
-                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Multi-Location Cross-Branch Access</td>
-                        <td style="padding: 1rem; text-align: center; color: #94a3b8;"><i class="fa-solid fa-minus"></i></td>
-                        <td style="padding: 1rem; text-align: center; color: #94a3b8; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-minus"></i></td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i></td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid var(--ox-border-color);">
-                        <td style="padding: 1rem 1.25rem; color: var(--ox-text-primary); font-weight: 600;">Dedicated Onboarding Architect</td>
-                        <td style="padding: 1rem; text-align: center; color: #94a3b8;"><i class="fa-solid fa-minus"></i></td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981; background: rgba(2, 132, 199, 0.03);"><i class="fa-solid fa-check"></i> Free Excel Import</td>
-                        <td style="padding: 1rem; text-align: center; color: #10b981;"><i class="fa-solid fa-check"></i> Dedicated Rep</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div style="background: var(--colors--soft-yellow); padding: 1.75rem; border-radius: var(--padding-radius--borders-radius); border: 2px solid var(--colors--dark-green);">
+          <div style="font-family: var(--font--main-font); font-size: 1.5rem; margin-bottom: 0.25rem;">Stainless Steel Turnstile Gate</div>
+          <p style="font-size: 0.95rem; margin-bottom: 1rem;">Heavy-duty 304 tripod turnstile with built-in biometric controller &amp; auto-drop arms.</p>
+          <div style="font-family: var(--font--main-font); font-size: 1.6rem; color: var(--colors--dark-green);">₹42,000 <span style="font-size: 0.85rem; font-family: var(--font--second-font); font-weight: normal;">(one-time)</span></div>
         </div>
+
+        <div style="background: var(--colors--soft-yellow); padding: 1.75rem; border-radius: var(--padding-radius--borders-radius); border: 2px solid var(--colors--dark-green);">
+          <div style="font-family: var(--font--main-font); font-size: 1.5rem; margin-bottom: 0.25rem;">Meta Verified WhatsApp Badge</div>
+          <p style="font-size: 0.95rem; margin-bottom: 1rem;">Official Green Tick application filing and documentation setup by HELYONEX.</p>
+          <div style="font-family: var(--font--main-font); font-size: 1.6rem; color: var(--colors--dark-green);">₹4,999 <span style="font-size: 0.85rem; font-family: var(--font--second-font); font-weight: normal;">(one-time)</span></div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
-
-<!-- ── CTA ─────────────────────────────────────────────────────────────────── -->
-<section class="section-py">
-    <div class="brand-container">
-        <div class="cta-banner">
-            <h2 class="cta-banner-title">Need a Custom Plan for Your Fitness Chain?</h2>
-            <p class="cta-banner-desc">
-                We work directly with gym chains and franchises across India. Contact our solutions architects for tailored multi-gym pricing and custom hardware setups.
-            </p>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
-                    <i class="fa-solid fa-comments"></i> Request Custom Quote
-                </a>
-                <a href="https://wa.me/916392348731" target="_blank" rel="noopener noreferrer" class="btn-ox btn-ox-secondary btn-ox-lg">
-                    <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    let isAnnual = false;
-    const toggle = document.getElementById('pricingToggle');
-    const monthlyLabel = document.getElementById('monthlyLabel');
-    const annualLabel = document.getElementById('annualLabel');
-    const priceElements = document.querySelectorAll('.plan-price');
-
-    function toggleBillingPeriod() {
-        setBilling(!isAnnual ? 'annual' : 'monthly');
-    }
-
-    function setBilling(period) {
-        isAnnual = (period === 'annual');
-        toggle.classList.toggle('is-annual', isAnnual);
-        monthlyLabel.classList.toggle('is-active', !isAnnual);
-        annualLabel.classList.toggle('is-active', isAnnual);
-
-        priceElements.forEach(el => {
-            el.textContent = isAnnual ? el.dataset.annual : el.dataset.monthly;
-        });
-    }
-</script>
 {% endblock %}

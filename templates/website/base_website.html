@@ -2,321 +2,261 @@
 {% load static %}
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ONEX BOOST | Powering Smarter Fitness Businesses by HELYONEX{% endblock %}</title>
+  <meta charset="utf-8" />
+  <title>{% block title %}ONEX BOOST ✸ Powering Smarter Fitness Businesses by HELYONEX{% endblock %}</title>
 
-    {# ── Core SEO ── #}
-    {% block seo %}
-    <meta name="description" content="ONEX BOOST by HELYONEX is India's premier gym management software. Streamline memberships, automated billing, QR & biometric attendance, trainer workflows, and follow-ups.">
-    <meta name="keywords" content="ONEX BOOST, OneX Boost, HELYONEX, gym management software India, gym billing software, gym CRM, member management system, gym attendance tracking, fitness club software">
-    <meta name="author" content="ONEX BOOST by HELYONEX">
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="language" content="English">
-    <meta name="geo.region" content="IN-UP">
-    <meta name="geo.placename" content="Lucknow, Uttar Pradesh, India">
-    {% endblock %}
+  {# ── Core SEO ── #}
+  {% block seo %}
+  <meta name="description" content="ONEX BOOST by HELYONEX is India's premier gym management software. Streamline memberships, automated billing, QR & biometric attendance, trainer workflows, and follow-ups.">
+  <meta name="keywords" content="ONEX BOOST, OneX Boost, HELYONEX, gym management software India, gym billing software, gym CRM, member management system, gym attendance tracking, fitness club software">
+  <meta name="author" content="ONEX BOOST by HELYONEX">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="language" content="English">
+  <meta name="geo.region" content="IN-UP">
+  <meta name="geo.placename" content="Lucknow, Uttar Pradesh, India">
+  {% endblock %}
 
-    {# ── Canonical ── #}
-    {% block canonical %}
-    <link rel="canonical" href="https://ONEX BOOST.com/">
-    {% endblock %}
+  {# ── Canonical ── #}
+  {% block canonical %}
+  <link rel="canonical" href="https://onexboost.com/">
+  {% endblock %}
 
-    {# ── Open Graph ── #}
-    {% block og_tags %}
-    <meta property="og:site_name" content="ONEX BOOST">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://ONEX BOOST.com/">
-    <meta property="og:title" content="ONEX BOOST | Powering Smarter Fitness Businesses">
-    <meta property="og:description" content="Run your gym smarter. ONEX BOOST by HELYONEX automates memberships, GST billing, attendance, trainers, and retention from one unified platform.">
-    <meta property="og:image" content="{% static 'images/ONEX-BOOST-Logo.png' %}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:locale" content="en_IN">
-    {% endblock %}
+  {# ── Open Graph ── #}
+  {% block og_tags %}
+  <meta property="og:site_name" content="ONEX BOOST">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://onexboost.com/">
+  <meta property="og:title" content="ONEX BOOST ✸ Powering Smarter Fitness Businesses">
+  <meta property="og:description" content="Run your gym smarter. ONEX BOOST by HELYONEX automates memberships, GST billing, attendance, trainers, and retention from one unified platform.">
+  <meta property="og:image" content="{% static 'images/ONEX-BOOST-Logo.png' %}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_IN">
+  {% endblock %}
 
-    {# ── Twitter Card ── #}
-    {% block twitter_tags %}
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@ONEXBOOST">
-    <meta name="twitter:title" content="ONEX BOOST | Gym Management Software">
-    <meta name="twitter:description" content="India's leading gym management OS by HELYONEX — memberships, billing, attendance, trainer workflows & more.">
-    <meta name="twitter:image" content="{% static 'images/ONEX-BOOST-Logo.png' %}">
-    {% endblock %}
+  {# ── Twitter Card ── #}
+  {% block twitter_tags %}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ONEXBOOST">
+  <meta name="twitter:title" content="ONEX BOOST ✸ Gym Management Operating System">
+  <meta name="twitter:description" content="India's leading gym management OS by HELYONEX — memberships, billing, attendance, trainer workflows & more.">
+  <meta name="twitter:image" content="{% static 'images/ONEX-BOOST-Logo.png' %}">
+  {% endblock %}
 
-    {# ── Schema.org — Organisation ── #}
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "ONEX BOOST",
-      "url": "https://ONEX BOOST.com",
-      "logo": "https://ONEX BOOST.com/static/images/ONEX-BOOST-Logo.png",
-      "description": "ONEX BOOST is India's premium gym management software platform by HELYONEX.",
-      "parentOrganization": {
-        "@type": "Organization",
-        "name": "HELYONEX"
-      },
-      "foundingLocation": "Lucknow, Uttar Pradesh, India",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+91-63923-48731",
-        "contactType": "customer support",
-        "availableLanguage": ["English", "Hindi"]
-      }
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  
+  <!-- Webflow Theme Stylesheet -->
+  <link href="https://cdn.prod.website-files.com/687e58049a40e9feda5d1d64/css/kreme-template.webflow.shared.fcd42b28c.min.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="{% static 'css/brunhaus-theme.css' %}?v=3.3">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <style>
+    /* Instant eradication of Webflow badges */
+    .w-webflow-badge,
+    a.w-webflow-badge,
+    a[href*="webflow.com"],
+    a[href*="utm_campaign=brandjs"] {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      position: absolute !important;
+      left: -9999px !important;
+      top: -9999px !important;
+      width: 0 !important;
+      height: 0 !important;
     }
-    </script>
+  </style>
 
-    {% block schema_ld %}{% endblock %}
-    {% block meta_tags %}{% endblock %}
+  <script type="text/javascript">!function (o, c) { var n = c.documentElement, t = " w-mod-"; n.className += t + "js", ("ontouchstart" in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch") }(window, document);</script>
+  
+  <!-- Favicons -->
+  <link rel="shortcut icon" href="{% static 'images/favicon.png' %}?v=2" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}?v=2" />
 
-    <!-- Favicon & Touch Icons -->
-    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}?v=2">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon.png' %}?v=2">
-    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/favicon.png' %}?v=2">
-    <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}?v=2">
-
-    <!-- Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-    <!-- Design System Stylesheet -->
-    <link rel="stylesheet" href="{% static 'css/website.css' %}?v=4.0">
-    {% block extra_css %}{% endblock %}
-    {% block head_extra %}{% endblock %}
+  {% block extra_css %}{% endblock %}
+  {% block head_extra %}{% endblock %}
 </head>
-<body class="site-body">
-    <!-- ── Floating Glass Navbar ────────────────────────────────────────────── -->
-    <header class="site-header" id="siteHeader">
-        <div class="brand-container site-header-inner">
-            <a href="{% url 'index' %}" class="site-logo">
-                <div class="site-logo-wrap">
-                    <img src="{% static 'images/ONEX-BOOST-Logo.png' %}" alt="ONEX BOOST">
-                </div>
-            </a>
 
-            <nav class="nav-links">
-                <a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}is-active{% endif %}">Home</a>
-                <a href="{% url 'features' %}" class="nav-link {% if request.resolver_match.url_name == 'features' %}is-active{% endif %}">Features</a>
-                <a href="{% url 'pricing' %}" class="nav-link {% if request.resolver_match.url_name == 'pricing' %}is-active{% endif %}">Pricing</a>
-                <a href="{% url 'bmi_calculator' %}" class="nav-link {% if request.resolver_match.url_name == 'bmi_calculator' %}is-active{% endif %}">BMI Calculator</a>
-                <a href="{% url 'blogs' %}" class="nav-link {% if request.resolver_match.url_name == 'blogs' or 'blog' in request.resolver_match.url_name %}is-active{% endif %}">Blog</a>
-                <a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}is-active{% endif %}">About</a>
-                <a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}is-active{% endif %}">Contact</a>
-            </nav>
-
-            <div class="header-actions">
-                <a href="{% url 'login' %}" class="btn-ox btn-ox-ghost btn-ox-sm">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Login
-                </a>
-                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-sm">
-                    <i class="fa-solid fa-calendar-check"></i> Book Free Demo
-                </a>
-                <button class="mobile-hamburger-btn" id="mobileMenuOpen" aria-label="Open mobile navigation">
-                    <i class="fa-solid fa-bars-staggered"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- ── Mobile Drawer Navigation ─────────────────────────────────────────── -->
-    <div class="mobile-drawer-backdrop" id="drawerBackdrop"></div>
-    <div class="mobile-nav-drawer" id="mobileDrawer">
-        <div>
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
-                <div class="site-logo-wrap">
-                    <img src="{% static 'images/ONEX-BOOST-Logo.png' %}" alt="ONEX BOOST" style="max-height: 32px;">
-                </div>
-                <button id="mobileMenuClose" style="background: transparent; border: none; color: #94a3b8; font-size: 1.35rem; cursor: pointer;">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}is-active{% endif %}" style="font-size: 1.05rem;">Home</a>
-                <a href="{% url 'features' %}" class="nav-link {% if request.resolver_match.url_name == 'features' %}is-active{% endif %}" style="font-size: 1.05rem;">Features</a>
-                <a href="{% url 'pricing' %}" class="nav-link {% if request.resolver_match.url_name == 'pricing' %}is-active{% endif %}" style="font-size: 1.05rem;">Pricing</a>
-                <a href="{% url 'bmi_calculator' %}" class="nav-link {% if request.resolver_match.url_name == 'bmi_calculator' %}is-active{% endif %}" style="font-size: 1.05rem;">BMI Calculator</a>
-                <a href="{% url 'blogs' %}" class="nav-link {% if request.resolver_match.url_name == 'blogs' %}is-active{% endif %}" style="font-size: 1.05rem;">Blog</a>
-                <a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}is-active{% endif %}" style="font-size: 1.05rem;">About</a>
-                <a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}is-active{% endif %}" style="font-size: 1.05rem;">Contact</a>
-            </div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 0.85rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-            <a href="{% url 'login' %}" class="btn-ox btn-ox-secondary" style="width: 100%;">Client Login</a>
-            <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary" style="width: 100%;">Book Free Demo</a>
-            <div style="text-align: center; margin-top: 0.5rem;">
-                <span class="parent-company-chip">
-                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="HELYONEX">
-                    <span>A <strong>HELYONEX</strong> Product</span>
-                </span>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── Main Content Area ───────────────────────────────────────────────── -->
-    <main>
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- ── Mega Footer ─────────────────────────────────────────────────────── -->
-    <footer class="site-footer">
-        <div class="brand-container">
-            <div class="footer-grid">
-                <!-- Brand Info -->
-                <div>
-                    <a href="{% url 'index' %}" class="site-logo">
-                        <div class="site-logo-wrap">
-                            <img src="{% static 'images/ONEX-BOOST-Logo.png' %}" alt="ONEX BOOST" style="max-height: 38px;">
-                        </div>
-                    </a>
-                    <p class="footer-tagline">
-                        India's next-generation gym management operating system. Automate memberships, biometric attendance, billing, and member engagement without manual hassles.
-                    </p>
-                    <div style="margin-bottom: 1.25rem;">
-                        <span class="parent-company-chip">
-                            <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="HELYONEX">
-                            <span>A Product of <strong>HELYONEX</strong></span>
-                        </span>
-                    </div>
-                    <div class="footer-social-links">
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-                    </div>
-                </div>
-
-                <!-- Product Modules -->
-                <div>
-                    <h4 class="footer-col-title">Modules</h4>
-                    <ul class="footer-links">
-                        <li><a href="{% url 'features' %}#memberships" class="footer-link">Member Management</a></li>
-                        <li><a href="{% url 'features' %}#attendance" class="footer-link">QR & Biometrics</a></li>
-                        <li><a href="{% url 'features' %}#billing" class="footer-link">GST Invoicing & Dues</a></li>
-                        <li><a href="{% url 'features' %}#whatsapp" class="footer-link">WhatsApp Automation</a></li>
-                        <li><a href="{% url 'features' %}#portals" class="footer-link">Trainer & Member Portals</a></li>
-                        <li><a href="{% url 'features' %}#analytics" class="footer-link">Revenue Analytics</a></li>
-                    </ul>
-                </div>
-
-                <!-- Solutions -->
-                <div>
-                    <h4 class="footer-col-title">Solutions</h4>
-                    <ul class="footer-links">
-                        <li><a href="{% url 'features' %}" class="footer-link">Single Gyms & Studios</a></li>
-                        <li><a href="{% url 'features' %}" class="footer-link">CrossFit Boxes</a></li>
-                        <li><a href="{% url 'features' %}" class="footer-link">Multi-Branch Chains</a></li>
-                        <li><a href="{% url 'pricing' %}" class="footer-link">Affordable Pricing</a></li>
-                        <li><a href="{% url 'bmi_calculator' %}" class="footer-link">Free BMI Calculator</a></li>
-                    </ul>
-                </div>
-
-                <!-- Company -->
-                <div>
-                    <h4 class="footer-col-title">Company</h4>
-                    <ul class="footer-links">
-                        <li><a href="{% url 'about' %}" class="footer-link">About ONEX BOOST</a></li>
-                        <li><a href="{% url 'blogs' %}" class="footer-link">Gym Growth Blog</a></li>
-                        <li><a href="{% url 'contact' %}" class="footer-link">Schedule a Demo</a></li>
-                        <li><a href="{% url 'login' %}" class="footer-link">Owner & Staff Login</a></li>
-                        <li><a href="{% url 'contact' %}" class="footer-link">Help & Support</a></li>
-                    </ul>
-                </div>
-
-                <!-- Contact & Office -->
-                <div>
-                    <h4 class="footer-col-title">Headquarters</h4>
-                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.6; margin-bottom: 0.75rem;">
-                        <i class="fa-solid fa-location-dot" style="color: #38bdf8; margin-right: 6px;"></i>
-                        HELYONEX Hub, Lucknow, Uttar Pradesh, India
-                    </p>
-                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.6; margin-bottom: 0.75rem;">
-                        <i class="fa-solid fa-phone" style="color: #38bdf8; margin-right: 6px;"></i>
-                        <a href="tel:+916392348731" style="color: #cbd5e1;">+91 9454487893</a>
-                    </p>
-                    <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.25rem;">
-                        <i class="fa-solid fa-envelope" style="color: #38bdf8; margin-right: 6px;"></i>
-                        <a href="mailto:support@onex-boost.com" style="color: #cbd5e1;">support@onex-boost.com</a>
-                    </p>
-                    <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-sm" style="width: 100%;">
-                        Request Callback
-                    </a>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <div>
-                    &copy; {% now "Y" %} <strong>ONEX BOOST</strong>. All rights reserved. Powered by <strong>HELYONEX</strong>.
-                </div>
-                <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
-                    <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
-                    <a href="{% url 'terms_of_service' %}">Terms of Service</a>
-                    <a href="{% url 'refund_policy' %}">Refund Policy</a>
-                    <a href="{% url 'sitemap' %}">Sitemap</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- ── Floating Quick Action Widgets ───────────────────────────────────── -->
-    <div class="floating-widgets">
-        <a href="https://wa.me/916392348731?text=Hello%20ONEX%20BOOST%2C%20I%20want%20to%20know%20more%20about%20your%20Gym%20Management%20Software" 
-           target="_blank" rel="noopener noreferrer" 
-           class="floating-whatsapp" 
-           aria-label="Chat with ONEX BOOST on WhatsApp">
-            <i class="fa-brands fa-whatsapp"></i>
+<body class="body">
+  <!-- ── BRUN HAUS TOP NAVBAR ─────────────────────────────────────────────── -->
+  <div data-w-id="98febe1b-824d-1562-da97-664fcff804f3" data-animation="default" data-collapse="medium" data-duration="0"
+    data-easing="ease" data-easing2="ease" role="banner" class="navbar w-nav">
+    <div class="nav_container w-container">
+      <div class="content nav">
+        <a id="w-node-_98febe1b-824d-1562-da97-664fcff804f6-cff804f3" href="{% url 'index' %}" class="brand w-nav-brand">
+          <img src="{% static 'images/ONEX-BOOST-Logo.png' %}" alt="ONEX BOOST" class="nav-brand-logo">
         </a>
-        <button class="floating-back-to-top" id="backToTopBtn" aria-label="Back to top">
-            <i class="fa-solid fa-arrow-up"></i>
-        </button>
+        
+        <nav role="navigation" id="w-node-_98febe1b-824d-1562-da97-664fcff804f9-cff804f3" class="nav-menu w-nav-menu">
+          <a href="{% url 'index' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'index' %}w--current{% endif %}">Home</a>
+          <a href="{% url 'about' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'about' %}w--current{% endif %}">About</a>
+          <a href="{% url 'modules' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'modules' %}w--current{% endif %}">Modules</a>
+          <a href="{% url 'features' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'features' %}w--current{% endif %}">Features</a>
+          <a href="{% url 'pricing' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'pricing' %}w--current{% endif %}">Pricing</a>
+          <a href="{% url 'contact' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'contact' %}w--current{% endif %}">Contact</a>
+          <a href="{% url 'login' %}" class="nav-link w-nav-link nav-link-mobile-login">Sign In / Login ↗</a>
+        </nav>
+        
+        <div id="w-node-_98febe1b-824d-1562-da97-664fcff80504-cff804f3" class="nav-right">
+          <div class="menu-button-container w-nav-button">
+            <div class="menu-button">
+              <div>Menu</div>
+              <div class="menu-circle">
+                <div class="menu-line _1 light-6"></div>
+                <div class="menu-line _2 light-7"></div>
+              </div>
+            </div>
+          </div>
+          
+          <a href="{% url 'login' %}" class="nav-link w-nav-brand">
+            <div class="paragraph">Login</div>
+          </a>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- ── Interactive Scripts ─────────────────────────────────────────────── -->
-    <script>
-        // Header scroll behavior
-        const siteHeader = document.getElementById('siteHeader');
-        const backToTopBtn = document.getElementById('backToTopBtn');
+  <!-- ── MAIN PAGE CONTENT ────────────────────────────────────────────────── -->
+  <div class="page_wrapper">
+    {% block content %}{% endblock %}
 
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 40) {
-                siteHeader.classList.add('is-scrolled');
-                backToTopBtn.classList.add('is-visible');
-            } else {
-                siteHeader.classList.remove('is-scrolled');
-                backToTopBtn.classList.remove('is-visible');
-            }
-        });
+    <!-- ── BRUN HAUS FOOTER ─────────────────────────────────────────────────── -->
+    <section class="footer box-padding-t-b">
+      <div class="w-layout-blockcontainer page_container w-container">
+        <div class="content footer">
+          <div class="footer-info-container">
+            <div class="footer-nav-block">
+              <div stagger-scroll="word" class="p1 footer-title">Informations</div>
+              <a href="tel:+919454487893" class="footer-link w-nav-brand">
+                <div stagger-scroll="letter">+91 94544 87893</div>
+              </a>
+              <a href="mailto:support@onex-boost.com" class="footer-link w-nav-brand">
+                <div stagger-scroll="letter">support@onex-boost.com</div>
+              </a>
+              <a href="https://maps.google.com" target="_blank" class="footer-link w-nav-brand">
+                <div stagger-scroll="word">Tedhi Puliya, Jankipuram, <br />Lucknow, India</div>
+              </a>
+            </div>
+            
+            <div class="footer-nav-block info">
+              <p stagger-scroll="word" class="p2">India's leading gym management OS by HELYONEX &mdash; memberships, biometric turnstiles, automated GST billing &amp; trainer workflows.</p>
+              <div class="buttons-footer">
+                <div class="button-wrapper">
+                  <a href="https://facebook.com" target="_blank" class="social-button w-inline-block">
+                    <div class="social-icon w-embed">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669c1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
+                    </div>
+                  </a>
+                </div>
+                <div class="button-wrapper">
+                  <a href="https://instagram.com" target="_blank" class="social-button w-inline-block">
+                    <div class="social-icon w-embed">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20">
+                        <path fill="currentColor" d="M8 5.67C6.71 5.67 5.67 6.72 5.67 8S6.72 10.33 8 10.33S10.33 9.28 10.33 8S9.28 5.67 8 5.67ZM15 8c0-.97 0-1.92-.05-2.89c-.05-1.12-.31-2.12-1.13-2.93c-.82-.82-1.81-1.08-2.93-1.13C9.92 1 8.97 1 8 1s-1.92 0-2.89.05c-1.12.05-2.12.31-2.93 1.13C1.36 3 1.1 3.99 1.05 5.11C1 6.08 1 7.03 1 8s0 1.92.05 2.89c.05 1.12.31 2.12 1.13 2.93c.82.82 1.81 1.08 2.93 1.13C6.08 15 7.03 15 8 15s1.92 0 2.89-.05c1.12-.05 2.12-.31 2.93-1.13c.82-.82 1.08-1.81 1.13-2.93c.06-.96.05-1.92.05-2.89Zm-7 3.59c-1.99 0-3.59-1.6-3.59-3.59S6.01 4.41 8 4.41s3.59 1.6 3.59 3.59s-1.6 3.59-3.59 3.59Zm3.74-6.49c-.46 0-.84-.37-.84-.84s.37-.84.84-.84s.84.37.84.84a.8.8 0 0 1-.24.59a.8.8 0 0 1-.59.24Z" />
+                      </svg>
+                    </div>
+                  </a>
+                </div>
+                <div class="button-wrapper">
+                  <a id="w-node-_7d95712f-9708-f7bd-9d1f-6d76b9197794-b9197794" data-wf--button--variant="dark-green" href="{% url 'contact' %}" class="b1 w-inline-block">
+                    <div class="button-text">
+                      <div class="text-track">
+                        <div>Schedule Demo</div>
+                        <div>Schedule Demo</div>
+                      </div>
+                    </div>
+                    <div class="arrow-circle">
+                      <div class="arrow-container">
+                        <div class="arrow-track">
+                          <div class="arrow _1 w-embed">
+                            <svg class="icon-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15">
+                              <path fill="currentColor" fill-rule="evenodd" d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H5.75a.75.75 0 0 1 0-1.5h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V6.56l-5.22 5.22a.75.75 0 0 1-1.06 0" clip-rule="evenodd" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="footer-nav-block">
+              <div stagger-scroll="word" class="p1 footer-title">Navigation</div>
+              <a href="{% url 'index' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Home</div></a>
+              <a href="{% url 'about' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">About</div></a>
+              <a href="{% url 'modules' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Modules</div></a>
+              <a href="{% url 'features' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Features</div></a>
+              <a href="{% url 'pricing' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Pricing</div></a>
+              <a href="{% url 'contact' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Contact</div></a>
+            </div>
+           
+            <div class="footer-nav-block">
+              <div stagger-scroll="word" class="p1 footer-title">Credits</div>
+              <a href="https://helyonex.com" target="_blank" class="footer-link w-nav-brand">
+                <div stagger-scroll="letter">Made by HELYONEX</div>
+              </a>
+              <a href="{% url 'privacy_policy' %}" class="footer-link w-nav-brand">
+                <div stagger-scroll="letter">Privacy Policy</div>
+              </a>
+              <a href="{% url 'terms_of_service' %}" class="footer-link w-nav-brand">
+                <div stagger-scroll="letter">Terms of Service</div>
+              </a>
+            </div>
+          </div>
+          
+          <div class="footer-bottom">
+            <div class="marquee-wrapper-footer">
+              <div stagger-scroll="word" class="marquee-component-1">
+                <h2 class="display-1">ONEX</h2>
+                <h2 class="display-1">✸</h2>
+                <h2 class="display-1">BOOST</h2>
+                <h2 class="display-1">✸</h2>
+                <h2 class="display-1">HELYONEX</h2>
+                <h2 class="display-1">✸</h2>
+                <h2 class="display-1">ONEX</h2>
+                <h2 class="display-1">✸</h2>
+                <h2 class="display-1">BOOST</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
-        // Back to top click
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+  <!-- Webflow & GSAP Scripts -->
+  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=687e58049a40e9feda5d1d64" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <script src="https://cdn.prod.website-files.com/687e58049a40e9feda5d1d64/js/webflow.schunk.74913c4b4b4ccfa6.js" type="text/javascript"></script>
+  <script src="https://cdn.prod.website-files.com/687e58049a40e9feda5d1d64/js/webflow.schunk.f7e00477fc7bbf01.js" type="text/javascript"></script>
+  <script src="https://cdn.prod.website-files.com/687e58049a40e9feda5d1d64/js/webflow.5907b2f1.1ae9f5f5d4ad4dcd.js" type="text/javascript"></script>
+  <script src="https://cdn.prod.website-files.com/gsap/3.13.0/gsap.min.js" type="text/javascript"></script>
+  <script src="https://cdn.prod.website-files.com/gsap/3.13.0/InertiaPlugin.min.js" type="text/javascript"></script>
+  <script src="https://cdn.prod.website-files.com/gsap/3.13.0/ScrollTrigger.min.js" type="text/javascript"></script>
+  <script src="https://cdn.prod.website-files.com/gsap/3.13.0/SplitText.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    if (typeof gsap !== 'undefined') {
+      gsap.registerPlugin(InertiaPlugin, ScrollTrigger, SplitText);
+    }
 
-        // Mobile drawer toggles
-        const mobileMenuOpen = document.getElementById('mobileMenuOpen');
-        const mobileMenuClose = document.getElementById('mobileMenuClose');
-        const mobileDrawer = document.getElementById('mobileDrawer');
-        const drawerBackdrop = document.getElementById('drawerBackdrop');
-
-        function openDrawer() {
-            mobileDrawer.classList.add('is-open');
-            drawerBackdrop.classList.add('is-open');
-            document.body.style.overflow = 'hidden';
+    // Permanently remove any injected Webflow badges
+    (function() {
+      function removeWebflowBadge() {
+        var badges = document.querySelectorAll('.w-webflow-badge, a[href*="webflow.com?utm_campaign=brandjs"]');
+        for (var i = 0; i < badges.length; i++) {
+          badges[i].remove();
         }
+      }
+      removeWebflowBadge();
+      window.addEventListener('DOMContentLoaded', removeWebflowBadge);
+      window.addEventListener('load', removeWebflowBadge);
+      setInterval(removeWebflowBadge, 250);
+    })();
+  </script>
 
-        function closeDrawer() {
-            mobileDrawer.classList.remove('is-open');
-            drawerBackdrop.classList.remove('is-open');
-            document.body.style.overflow = '';
-        }
-
-        if (mobileMenuOpen) mobileMenuOpen.addEventListener('click', openDrawer);
-        if (mobileMenuClose) mobileMenuClose.addEventListener('click', closeDrawer);
-        if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
-    </script>
-    {% block extra_js %}{% endblock %}
+  {% block extra_js %}{% endblock %}
 </body>
 </html>

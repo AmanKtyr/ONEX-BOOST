@@ -1,0 +1,780 @@
+/* ═════════════════════════════════════════════════════════════════════════
+   BRUN HAUS THEME ENHANCEMENTS FOR ONEX BOOST
+   Exact recreation of the warm cream, forest green & sage editorial aesthetic
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* ── Webflow Badge Eradication ─────────────────────────────────────────── */
+.w-webflow-badge,
+a.w-webflow-badge,
+[class*="w-webflow-badge"],
+a[href*="webflow.com?utm_campaign=brandjs"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  z-index: -9999 !important;
+}
+
+/* ── Top Navbar & Brand ─────────────────────────────────────────────────── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font--main-font, Impact, Haettenschweiler, sans-serif);
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--colors--dark-green, #034220);
+  text-decoration: none;
+}
+
+.brand:hover {
+  opacity: 0.9;
+}
+
+.nav-brand-logo {
+  height: 42px;
+  max-width: 190px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.brand:hover .nav-brand-logo {
+  transform: scale(1.02);
+}
+
+.nav-link-mobile-login {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .nav-brand-logo {
+    height: 32px;
+    max-width: 140px;
+  }
+}
+
+/* ── Top Navbar Positioning ────────────────────────────────────────────── */
+.navbar {
+  position: sticky !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
+  padding: 0.85rem 0 !important;
+  background-color: var(--colors--white, #fef8dd) !important;
+  border-bottom: 1.5px solid rgba(3, 66, 32, 0.12) !important;
+  transition: all 0.25s ease !important;
+}
+
+/* ── Top Navbar Flex Alignment ─────────────────────────────────────────── */
+.content.nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+.nav_container {
+  max-width: 1320px !important;
+  width: 100% !important;
+  padding: 0 1.5rem !important;
+}
+
+.nav-menu {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+}
+
+.nav-right {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 1.25rem !important;
+}
+
+/* ── Mobile Responsive Navbar & Menu ───────────────────────────────────── */
+@media (max-width: 991px) {
+  .navbar {
+    padding: 0.45rem 0 !important;
+  }
+
+  .nav-right {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    gap: 0.75rem !important;
+  }
+
+  .nav-link-mobile-login {
+    display: block !important;
+    background: var(--colors--dark-green) !important;
+    color: var(--colors--white) !important;
+    border-radius: 999px !important;
+    margin-top: 0.5rem !important;
+    padding: 0.75rem 1.25rem !important;
+    text-align: center !important;
+  }
+
+  .nav-menu {
+    background: var(--colors--white) !important;
+    border: 2px solid var(--colors--dark-green) !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 6px 6px 0px var(--colors--dark-green) !important;
+    padding: 1.5rem 1.25rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.4rem !important;
+    margin-top: 0.75rem !important;
+  }
+
+  .nav-menu .nav-link {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    padding: 0.65rem 1rem !important;
+    text-align: center !important;
+    border-radius: 0.75rem !important;
+  }
+
+  .nav-menu .nav-link.w--current {
+    background: var(--colors--dark-green) !important;
+    color: var(--colors--white) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .nav_container {
+    padding: 0 1rem !important;
+  }
+
+  /* On small mobile, keep navbar clean: logo on left, menu button on right */
+  .nav-right .nav-link.w-nav-brand {
+    display: none !important;
+  }
+}
+
+/* ── Hero Spacing & Typography ─────────────────────────────────────────── */
+.content.home-hero,
+.content.menu-hero,
+.content.hero,
+.content.about-hero {
+  padding-top: 2.5rem !important;
+  padding-bottom: 2.5rem !important;
+  min-height: 70vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+  margin-top: 1rem !important;
+}
+
+.h1-center {
+  margin: auto 0;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.h1-center .display-1 {
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  margin: 0;
+  word-break: break-word;
+}
+
+.hero-info-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+/* ── Mobile Responsive Hero Framing ───────────────────────────────────── */
+@media (max-width: 991px) {
+  .content.home-hero,
+  .content.menu-hero,
+  .content.hero,
+  .content.about-hero {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.5rem !important;
+    min-height: auto !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .h1-center {
+    margin: 1rem 0 !important;
+  }
+
+  .h1-center .display-1 {
+    font-size: clamp(2.8rem, 13vw, 5rem) !important;
+    line-height: 0.95 !important;
+  }
+
+  .hero-info-container {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+    margin-top: 1rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .content.home-hero,
+  .content.menu-hero,
+  .content.hero,
+  .content.about-hero {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .h1-center .display-1 {
+    font-size: clamp(2.6rem, 13vw, 4.2rem) !important;
+  }
+}
+
+/* ── System & Operations (Opening Hours Board) ─────────────────────────── */
+.section.about-home {
+  position: relative;
+}
+
+.section.about-home .image-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 480px;
+  border-radius: var(--padding-radius--borders-radius, 1rem);
+  overflow: hidden;
+  background-color: var(--colors--dark-green, #034220);
+  background-image: radial-gradient(circle at center, rgba(3, 66, 32, 0.4) 0%, rgba(1, 26, 12, 0.85) 100%), url('/static/images/hero_image_gym.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section.about-home .image-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+}
+
+.section.about-home .image-content .display-2 {
+  font-size: clamp(2.8rem, 6vw, 5.5rem);
+  line-height: 0.92;
+  color: var(--colors--white, #fef8dd);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.list-hours.desktop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.tag-hour-1.desktop { position: absolute; top: 12%; left: 6%; }
+.tag-hour-2.desktop { position: absolute; top: 48%; left: 4%; }
+.tag-hour-3.desktop { position: absolute; bottom: 12%; left: 6%; }
+.tag-hour-4.desktop { position: absolute; top: 12%; right: 6%; }
+.tag-hour-5.desktop { position: absolute; top: 48%; right: 4%; }
+.tag-hour-6.desktop { position: absolute; bottom: 12%; right: 6%; }
+.tag-hour-7.desktop { position: absolute; bottom: 6%; left: 50%; transform: translateX(-50%); }
+
+.tag {
+  background: var(--colors--soft-green, #bdd0a0);
+  color: var(--colors--dark-green, #034220);
+  padding: 0.55rem 1rem;
+  border-radius: var(--padding-radius--borders-radius, 1rem);
+  font-family: var(--font--second-font, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.tag .bold {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+}
+
+@media (max-width: 991px) {
+  .list-hours.desktop {
+    display: none;
+  }
+  .list-hours.mobile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 1rem;
+    position: relative;
+    z-index: 10;
+  }
+}
+
+/* ── Running Marquee Tickers ────────────────────────────────────────────── */
+.marquee-track-horizontal {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marqueeScroll 24s linear infinite;
+}
+
+.marquee-track-horizontal.reverse {
+  animation: marqueeScrollRev 24s linear infinite;
+}
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marqueeScrollRev {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+/* ── Product & Module Cards ────────────────────────────────────────────── */
+.product-image {
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  width: 100%;
+  height: 240px;
+  border-radius: calc(var(--padding-radius--borders-radius, 1rem) - 4px);
+}
+
+.product-container:hover .product-image {
+  transform: scale(1.05);
+}
+
+/* ── Form Inputs ────────────────────────────────────────────────────────── */
+.text-field-contact {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid var(--colors--dark-green, #034220);
+  border-radius: 0;
+  color: var(--colors--dark-green, #034220);
+  font-family: var(--font--second-font, sans-serif);
+  font-size: 1.1rem;
+  padding: 0.75rem 0;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  outline: none;
+  transition: border-color 0.25s ease;
+  box-sizing: border-box;
+}
+
+.text-field-contact:focus {
+  border-bottom-color: #000;
+}
+
+.contact-button {
+  border-radius: var(--padding-radius--borders-radius, 1rem);
+  background-color: var(--colors--dark-green, #034220);
+  color: var(--colors--white, #fef8dd);
+  padding: 0.9rem 2rem;
+  font-family: var(--font--second-font, sans-serif);
+  font-weight: 700;
+  font-size: 1.05rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.contact-button:hover {
+  background-color: #012411;
+  transform: translateY(-2px);
+}
+
+/* ── Mobile Nav ─────────────────────────────────────────────────────────── */
+@media screen and (max-width: 991px) {
+  .nav-menu {
+    border-radius: var(--padding-radius--borders-radius, 1rem);
+    background: var(--colors--white, #fef8dd);
+    padding: 1.5rem;
+  }
+}
+
+/* ── Pricing Page Components ────────────────────────────────────────────── */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 991px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pricing-card {
+  background: var(--colors--dark-green, #034220) !important;
+  color: var(--colors--white, #fef8dd) !important;
+  border-radius: var(--padding-radius--borders-radius, 1rem);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 480px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Plan 1 (Starter) & Plan 3 (Chain HQ) - dark green card background */
+.pricing-card:not(.featured) {
+  background: var(--colors--dark-green, #034220) !important;
+  color: var(--colors--white, #fef8dd) !important;
+}
+
+.pricing-card:not(.featured) h3,
+.pricing-card:not(.featured) .display-2,
+.pricing-card:not(.featured) .paragraph,
+.pricing-card:not(.featured) div,
+.pricing-card:not(.featured) span,
+.pricing-card:not(.featured) .pricing-features-list,
+.pricing-card:not(.featured) .pricing-features-list li,
+.pricing-card:not(.featured) .pricing-features-list li strong {
+  color: var(--colors--white, #fef8dd) !important;
+}
+
+.pricing-card:not(.featured) .paragraph {
+  opacity: 0.9 !important;
+}
+
+.pricing-card:not(.featured) .pricing-features-list li i {
+  color: var(--colors--soft-yellow, #eddea6) !important;
+}
+
+.pricing-card:not(.featured) .contact-button {
+  background: var(--colors--soft-green, #bed8ab) !important;
+  color: var(--colors--dark-green, #034220) !important;
+  font-weight: 700 !important;
+}
+
+/* Plan 2 (Pro Club) - yellow card background */
+.pricing-card.featured {
+  background: var(--colors--soft-yellow, #eddea6) !important;
+  color: var(--colors--dark-green, #034220) !important;
+  box-shadow: 0 12px 36px rgba(3, 66, 32, 0.15);
+}
+
+.pricing-card.featured h3,
+.pricing-card.featured .display-2,
+.pricing-card.featured .paragraph,
+.pricing-card.featured div:not(.pricing-card-badge),
+.pricing-card.featured span:not(.pricing-card-badge),
+.pricing-card.featured .pricing-features-list,
+.pricing-card.featured .pricing-features-list li,
+.pricing-card.featured .pricing-features-list li strong,
+.pricing-card.featured .pricing-features-list li i {
+  color: var(--colors--dark-green, #034220) !important;
+}
+
+.pricing-card.featured .contact-button {
+  background: var(--colors--dark-green, #034220) !important;
+  color: var(--colors--white, #fef8dd) !important;
+  font-weight: 700 !important;
+}
+
+.pricing-card-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: var(--colors--dark-green, #034220);
+  color: var(--colors--white, #fef8dd);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+}
+
+.pricing-card.featured .pricing-card-badge {
+  background: var(--colors--dark-green, #034220) !important;
+  color: var(--colors--soft-yellow, #eddea6) !important;
+}
+
+.pricing-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.pricing-features-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.pricing-features-list li i {
+  flex-shrink: 0;
+}
+
+/* ── Menu & Modules Layout & Image Showcases ────────────────────────────── */
+.content.menu-1,
+.content.menu-2,
+.content.menu-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: stretch;
+}
+
+@media (max-width: 991px) {
+  .content.menu-1,
+  .content.menu-2,
+  .content.menu-3 {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.menu-image-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  display: flex;
+}
+
+.image-wrapper-menu {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  border-radius: var(--padding-radius--borders-radius, 1rem);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(3, 66, 32, 0.14);
+  background: var(--colors--dark-green, #034220);
+}
+
+.image-wrapper-menu .showcase-image {
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.image-wrapper-menu:hover .showcase-image {
+  transform: scale(1.04);
+}
+
+.image-wrapper-menu .image-badge-overlay {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  background: rgba(3, 66, 32, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--colors--white, #fef8dd);
+  padding: 1.35rem 1.6rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(254, 248, 221, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  z-index: 5;
+}
+
+.image-badge-overlay .badge-title {
+  font-family: var(--font--main-font, Impact, Haettenschweiler, sans-serif);
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--colors--soft-yellow, #eddea6);
+}
+
+.image-badge-overlay .badge-desc {
+  font-family: var(--font--second-font, sans-serif);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--colors--white, #fef8dd);
+  opacity: 0.95;
+}
+
+/* ── Footer Contrast & Aesthetics ───────────────────────────────────────── */
+.content.footer {
+  background-color: var(--colors--dark-green, #034220) !important;
+  color: var(--colors--white, #fef8dd) !important;
+  border-radius: var(--padding-radius--borders-radius, 1rem) !important;
+  padding: 3.5rem 3rem 2rem !important;
+}
+
+.content.footer .footer-title,
+.content.footer .footer-link,
+.content.footer .p1,
+.content.footer .p2,
+.content.footer .paragraph,
+.content.footer div,
+.content.footer span,
+.content.footer a {
+  color: var(--colors--white, #fef8dd) !important;
+}
+
+.content.footer .footer-link:hover,
+.content.footer .footer-link:hover div,
+.content.footer .footer-link:hover span {
+  color: var(--colors--soft-yellow, #eddea6) !important;
+}
+
+.content.footer .marquee-component-1 .display-1 {
+  color: var(--colors--soft-yellow, #eddea6) !important;
+}
+
+/* ── Global Contrast Utilities ─────────────────────────────────────────── */
+.white,
+.display-1.white,
+.display-2.white,
+.paragraph.white,
+.p1.white,
+.p2.white {
+  color: var(--colors--white, #fef8dd) !important;
+}
+
+/* ── Webflow Badge Eradication ─────────────────────────────────────────── */
+.w-webflow-badge,
+a.w-webflow-badge,
+a[href*="webflow.com"],
+a[href*="utm_campaign=brandjs"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* ── Home Hero & Image Trail Layering (Brun Haus Signature Effect) ───────── */
+.content.home-hero {
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: stretch !important;
+  min-height: 85vh !important;
+  background-color: var(--colors--soft-yellow-40, #f6f0cb) !important;
+  border-radius: var(--padding-radius--borders-radius, 1rem) !important;
+  padding: 2rem 3rem !important;
+}
+
+/* Mouse trail container MUST sit at z-index 1 (BEHIND the text) */
+.trail-images-component {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
+}
+
+.trail-images {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+/* Trail items: rounded photo cards with shadow */
+[trail-image=list] img,
+.trail-item.image {
+  position: absolute !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  border-radius: 1.25rem !important;
+  object-fit: cover !important;
+  height: clamp(120px, 12vw, 185px) !important;
+  width: clamp(90px, 9vw, 145px) !important;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* Hero big title sits ABOVE the images at z-index 5 */
+.home-hero .h1-center {
+  position: relative !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+  width: 100% !important;
+  text-align: center !important;
+  margin: auto 0 !important;
+}
+
+/* Display-1 on a single horizontal line, exactly like BURN-HAUS in reference */
+.home-hero .display-1 {
+  position: relative !important;
+  z-index: 5 !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+  color: var(--colors--dark-green, #034220) !important;
+  font-size: clamp(2.8rem, 13.2vw, 14.5vw) !important;
+  line-height: 0.95 !important;
+  letter-spacing: -0.035em !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+}
+
+/* Subtitle and footer links inside hero */
+.home-hero .hero-info-container {
+  position: relative !important;
+  z-index: 6 !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  padding-top: 1rem !important;
+}
+
+@media (max-width: 767px) {
+  .home-hero .display-1 {
+    font-size: clamp(2.2rem, 16vw, 4.5rem) !important;
+    white-space: normal !important;
+    line-height: 1 !important;
+  }
+  .content.home-hero {
+    padding: 1.5rem !important;
+    min-height: 70vh !important;
+  }
+}
+

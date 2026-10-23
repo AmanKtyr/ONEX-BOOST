@@ -16,8 +16,15 @@
 <!-- ── HERO: FEATURES ──────────────────────────────────────────────────────── -->
 <section class="section">
   <div class="w-layout-blockcontainer page_container w-container">
-    <div class="content home-hero" style="min-height: 50vh; padding-top: 7.5rem; padding-bottom: 2rem;">
+    <div class="content home-hero features-hero">
       <div class="h1-center">
+        <!-- Eyebrow Pill Badge -->
+        <div class="hero-eyebrow-badge">
+          <span class="hero-badge-dot"></span>
+          <span class="hero-badge-brand">A Product of HELYONEX</span>
+          <span class="hero-badge-separator">✦</span>
+          <span class="hero-badge-desc">Core Hardware &amp; Software Tech</span>
+        </div>
         <h1 stagger-page="letter" class="display-1">FEATURES</h1>
       </div>
       <div class="hero-info-container">
@@ -39,7 +46,7 @@
 <!-- ── FEATURE 1: BIOMETRICS & ACCESS ──────────────────────────────────────── -->
 <section class="section box-padding-top" id="biometrics">
   <div class="w-layout-blockcontainer page_container w-container">
-    <div class="content" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3.5rem; align-items: center; background: var(--colors--soft-yellow); padding: 3rem; border-radius: var(--padding-radius--borders-radius); border: 2px solid var(--colors--dark-green);">
+    <div class="content feature-card-section feature-biometrics">
       <div>
         <div class="tag" style="background: var(--colors--dark-green); color: var(--colors--white); margin-bottom: 1rem;">FEATURE 01</div>
         <h2 class="display-2" style="font-size: 2.5rem; line-height: 1; margin-bottom: 1rem; color: var(--colors--dark-green);">
@@ -58,8 +65,8 @@
         </a>
       </div>
 
-      <div style="border-radius: var(--padding-radius--borders-radius); overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.1);">
-        <img src="{% static 'images/hero_image_gym.png' %}" alt="Biometrics & Turnstiles" style="width: 100%; height: auto; display: block; object-fit: cover;" />
+      <div class="feature-img-wrap">
+        <img src="{% static 'images/hero_image_gym.png' %}" alt="Biometrics & Turnstiles" />
       </div>
     </div>
   </div>
@@ -68,9 +75,9 @@
 <!-- ── FEATURE 2: WHATSAPP GST BILLING ─────────────────────────────────────── -->
 <section class="section box-padding-top" id="whatsapp">
   <div class="w-layout-blockcontainer page_container w-container">
-    <div class="content" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 3.5rem; align-items: center; background: var(--colors--dark-green); color: var(--colors--white); padding: 3rem; border-radius: var(--padding-radius--borders-radius);">
-      <div style="border-radius: var(--padding-radius--borders-radius); overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.3);">
-        <img src="{% static 'images/whatsapp-img.png' %}" alt="WhatsApp Billing" style="width: 100%; height: auto; display: block; object-fit: cover;" />
+    <div class="content feature-card-section feature-whatsapp">
+      <div class="feature-img-wrap">
+        <img src="{% static 'images/whatsapp-img.png' %}" alt="WhatsApp Billing" />
       </div>
 
       <div>
@@ -97,7 +104,7 @@
 <!-- ── FEATURE 3: TRAINER & MEMBER PORTAL ──────────────────────────────────── -->
 <section class="section box-padding-top" id="portal">
   <div class="w-layout-blockcontainer page_container w-container">
-    <div class="content" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3.5rem; align-items: center; background: var(--colors--soft-green); color: var(--colors--dark-green); padding: 3rem; border-radius: var(--padding-radius--borders-radius);">
+    <div class="content feature-card-section feature-portal">
       <div>
         <div class="tag" style="background: var(--colors--dark-green); color: var(--colors--white); margin-bottom: 1rem;">FEATURE 03</div>
         <h2 class="display-2" style="font-size: 2.5rem; line-height: 1; margin-bottom: 1rem; color: var(--colors--dark-green);">
@@ -116,8 +123,8 @@
         </a>
       </div>
 
-      <div style="border-radius: var(--padding-radius--borders-radius); overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.1);">
-        <img src="{% static 'images/about_dashboard_features.png' %}" alt="Member Portal" style="width: 100%; height: auto; display: block; object-fit: cover;" />
+      <div class="feature-img-wrap">
+        <img src="{% static 'images/about_dashboard_features.png' %}" alt="Member Portal" />
       </div>
     </div>
   </div>

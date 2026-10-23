@@ -1,227 +1,502 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
 
-{% block title %}ONEX BOOST Insights | Gym Management Blog by HELYONEX{% endblock %}
+{% block title %}Blogs &amp; Insights ✸ ONEX BOOST by HELYONEX{% endblock %}
 
 {% block seo %}
-<meta name="description" content="ONEX BOOST gym management blog by HELYONEX — expert guides on gym management software in Lucknow & India, member retention, automated WhatsApp billing, and fitness growth.">
-<meta name="keywords" content="ONEX BOOST, OneX Boost, HELYONEX, gym management software in lucknow, best gym software lucknow, gym billing software lucknow, gym attendance software lucknow, gym management blog">
+<meta name="description" content="Explore ONEX BOOST insights by HELYONEX: expert guides on gym management software in Lucknow & India, low-budget gym setup costs, biometric turnstiles, and WhatsApp billing.">
+<meta name="keywords" content="gym management blog, how to start a gym in india, gym management software lucknow, gym software guide, ONEX BOOST insights, HELYONEX">
 <meta name="author" content="ONEX BOOST by HELYONEX">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 {% endblock %}
 
 {% block canonical %}
-<link rel="canonical" href="https://ONEX BOOST.com/blogs/">
+<link rel="canonical" href="https://onexboost.com/blogs/">
 {% endblock %}
 
 {% block og_tags %}
 <meta property="og:site_name" content="ONEX BOOST">
 <meta property="og:type" content="blog">
-<meta property="og:url" content="https://ONEX BOOST.com/blogs/">
-<meta property="og:title" content="ONEX BOOST Insights — Gym Management & Growth Guides by HELYONEX">
-<meta property="og:description" content="Expert articles on gym operations, local software guides, member retention, billing discipline, and scaling fitness businesses.">
+<meta property="og:url" content="https://onexboost.com/blogs/">
+<meta property="og:title" content="ONEX BOOST Insights — Gym Management &amp; Growth Guides by HELYONEX">
+<meta property="og:description" content="Expert playbooks on gym operations, low-budget setup costs in India, local software comparisons, and member retention.">
 <meta property="og:image" content="{% static 'images/ONEX-BOOST-Logo.png' %}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_IN">
 {% endblock %}
 
-{% block twitter_tags %}
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ONEX BOOST Insights — Gym Management Blog">
-<meta name="twitter:description" content="Practical gym operations, retention strategies, and local gym management guides from ONEX BOOST by HELYONEX.">
-<meta name="twitter:image" content="{% static 'images/ONEX-BOOST-Logo.png' %}">
-{% endblock %}
-
-{% block schema_ld %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Blog",
-  "name": "ONEX BOOST Insights",
-  "url": "https://ONEX BOOST.com/blogs/",
-  "description": "Expert gym management articles on member retention, billing, attendance, and fitness business growth by HELYONEX.",
-  "publisher": {
-    "@type": "Organization",
-    "name": "ONEX BOOST by HELYONEX",
-    "logo": "https://ONEX BOOST.com/static/images/ONEX-BOOST-Logo.png"
-  },
-  "blogPost": [
-    {
-      "@type": "BlogPosting",
-      "headline": "How to Start a Gym in India (2026): Step-by-Step Business Plan, Costs & Licenses",
-      "url": "https://ONEX BOOST.com/how-to-start-a-gym-in-india/",
-      "datePublished": "2026-09-24",
-      "description": "Comprehensive step-by-step roadmap for starting a gym in India covering real budget breakdowns, equipment costs, GST licenses, and ONEX BOOST software automation."
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "Best Gym Management Software in Lucknow (2026): The Ultimate Buyer's Guide",
-      "url": "https://ONEX BOOST.com/gym-management-software-in-lucknow/",
-      "datePublished": "2026-09-24",
-      "description": "Complete guide for gym and fitness studio owners in Lucknow looking for the best gym management software with WhatsApp reminders and attendance."
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "How Gyms Can Increase Membership Retention Using Automation",
-      "url": "https://ONEX BOOST.com/blogs/1/",
-      "datePublished": "2026-04-27",
-      "description": "A practical guide to reminders, billing systems, attendance signals, and the operating habits that help members stay longer."
-    }
-  ]
-}
-</script>
-{% endblock %}
-
 {% block extra_css %}
-<!-- Framework: DaisyUI & Tailwind CDN for Blogs -->
-<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    primary: '#0284c7',
-                }
-            }
-        }
-    }
-</script>
 <style>
-    .btn.btn-primary, .btn-primary {
-        background-color: #0284c7 !important;
-        border-color: #0284c7 !important;
-        color: #ffffff !important;
+  /* ── Blogs Hero ───────────────────────────────────────────────────────── */
+  .content.blogs-hero {
+    min-height: 48vh;
+    padding: 3.5rem 3rem 2.5rem;
+    box-sizing: border-box;
+  }
+
+  /* ── 3-Pillar Industry Banner (Neo-Brutalist Architecture) ─────────────── */
+  .industry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0 3rem 0;
+  }
+
+  .industry-card {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    box-shadow: 6px 6px 0px rgba(3, 66, 32, 0.15);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .industry-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 8px 8px 0px rgba(3, 66, 32, 0.25);
+  }
+
+  .industry-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 0.75rem;
+    background: rgba(254, 248, 221, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--colors--soft-yellow, #eddea6);
+    margin-bottom: 0.25rem;
+  }
+
+  .industry-card-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--colors--white, #fef8dd);
+    margin: 0;
+  }
+
+  .industry-card-desc {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: rgba(254, 248, 221, 0.85);
+    margin: 0;
+  }
+
+  /* ── Featured Single Blog Layout ────────────────────────────────────────── */
+  .featured-single-wrapper {
+    max-width: 1060px;
+    margin: 1rem auto 4.5rem auto;
+    width: 100%;
+  }
+
+  .featured-single-card {
+    background: var(--colors--white, #fef8dd);
+    border: 2px solid var(--colors--dark-green, #034220);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 8px 8px 0px var(--colors--dark-green, #034220);
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .featured-single-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 12px 12px 0px var(--colors--dark-green, #034220);
+  }
+
+  .featured-single-media {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    overflow: hidden;
+    background: var(--colors--dark-green, #034220);
+  }
+
+  .featured-single-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .featured-single-card:hover .featured-single-media img {
+    transform: scale(1.05);
+  }
+
+  .featured-single-body {
+    padding: 2.75rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .featured-single-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: clamp(1.85rem, 3.2vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    color: var(--colors--dark-green, #034220);
+    margin: 0.85rem 0 1rem 0;
+  }
+
+  .featured-single-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .featured-single-title a:hover {
+    opacity: 0.85;
+  }
+
+  .featured-single-excerpt {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--colors--dark-green, #034220);
+    opacity: 0.9;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .featured-bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .featured-bullet-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--colors--dark-green, #034220);
+  }
+
+  .featured-bullet-list li i {
+    color: var(--colors--dark-green, #034220);
+    font-size: 1rem;
+  }
+
+  .blog-card-media {
+    position: relative;
+    width: 100%;
+    height: 230px;
+    overflow: hidden;
+    background: var(--colors--dark-green, #034220);
+  }
+
+  .blog-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .blog-card:hover .blog-card-media img {
+    transform: scale(1.06);
+  }
+
+  .blog-card-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--soft-yellow, #eddea6);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  .blog-card-body {
+    padding: 2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .blog-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--colors--dark-green, #034220);
+    opacity: 0.75;
+    margin-bottom: 0.85rem;
+  }
+
+  .blog-meta-dot {
+    opacity: 0.4;
+  }
+
+  .blog-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.55rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--colors--dark-green, #034220);
+    margin: 0 0 1rem 0;
+  }
+
+  .blog-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .blog-title a:hover {
+    opacity: 0.85;
+  }
+
+  .blog-excerpt {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--colors--dark-green, #034220);
+    opacity: 0.9;
+    margin: 0 0 1.75rem 0;
+    flex-grow: 1;
+  }
+
+  .blog-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+  }
+
+  .blog-cta-btn:hover {
+    background: #012411;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(3, 66, 32, 0.25);
+  }
+
+  /* ── Advisory Banner Box ─────────────────────────────────────────────── */
+  .advisory-box {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    border-radius: 1.5rem;
+    padding: 3.5rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 16px 40px rgba(3, 66, 32, 0.2);
+    margin-bottom: 5rem;
+  }
+
+  .advisory-box h2 {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    text-transform: uppercase;
+    color: var(--colors--soft-yellow, #eddea6);
+    margin: 0 0 1rem 0;
+    line-height: 1.05;
+  }
+
+  .advisory-box p {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: rgba(254, 248, 221, 0.9);
+    max-width: 680px;
+    margin: 0 auto 2rem auto;
+  }
+
+  .advisory-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* ── Responsive Breakpoints ───────────────────────────────────────────── */
+  @media (max-width: 991px) {
+    .industry-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
     }
-    .btn.btn-primary:hover, .btn-primary:hover {
-        background-color: #0369a1 !important;
-        border-color: #0369a1 !important;
+    .featured-single-card {
+      grid-template-columns: 1fr;
     }
+    .featured-single-media {
+      min-height: 260px;
+    }
+    .featured-single-body {
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .content.blogs-hero {
+      padding: 2rem 1.25rem 1.75rem !important;
+      min-height: auto !important;
+    }
+    .featured-single-body {
+      padding: 1.5rem 1.25rem;
+    }
+    .featured-single-title {
+      font-size: 1.65rem;
+    }
+    .advisory-box {
+      padding: 2.5rem 1.25rem;
+    }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="page-hero">
-    <img src="{% static 'images/hero_image_gym.png' %}" alt="ONEX BOOST insights" class="page-hero-media">
-    <div class="brand-container page-hero-content">
-        <div class="max-w-4xl site-reveal">
-            <span class="brand-eyebrow brand-eyebrow-dark">
-                <i class="fa-solid fa-newspaper"></i>
-                ONEX BOOST insights
-            </span>
-            <h1 class="brand-heading mt-6">Ideas for gym owners who care about clean operations and stronger retention.</h1>
-            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
-                The same product mindset behind the platform shows up here too: practical thinking, structured systems, and smarter decisions for real fitness businesses.
-            </p>
+<!-- ── HERO: BLOGS & INSIGHTS ──────────────────────────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content home-hero blogs-hero">
+      <div class="h1-center">
+        <!-- Eyebrow Pill Badge -->
+        <div class="hero-eyebrow-badge">
+          <span class="hero-badge-dot"></span>
+          <span class="hero-badge-brand">A Product of HELYONEX</span>
+          <span class="hero-badge-separator">✦</span>
+          <span class="hero-badge-desc">Gym Management Playbooks &amp; Blueprints</span>
         </div>
+        <h1 stagger-page="letter" class="display-1">BLOGS &amp; INSIGHTS</h1>
+      </div>
+      <div class="hero-info-container">
+        <div class="hero-text-container">
+          <div stagger-page="word" class="paragraph center-mobile">
+            Battle-tested operational playbooks, ground-reality setup budgets in India, hardware turnstile guides, and membership retention strategies.
+          </div>
+        </div>
+        <div class="hero-text-container right">
+          <div stagger-page="word" class="paragraph center-mobile bold-mobile">
+            Battle-tested playbooks.<br />Zero generic fluff.
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<section class="brand-section">
-    <div class="brand-container">
-                <div class="article-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Blog 1: How to Start a Gym in India -->
-            <article class="brand-card article-card site-reveal flex flex-col h-full">
-                <div class="article-media h-[220px] overflow-hidden shrink-0">
-                    <img src="{% static 'images/hero_image_gym.png' %}" alt="How to start a gym in India" class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105">
-                </div>
-                <div class="article-body p-8 flex flex-col flex-1">
-                    <div class="article-tag-wrap flex items-center gap-2 mb-3 min-h-[28px]">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            <i class="fa-solid fa-fire text-[10px]"></i> Startup Guide
-                        </span>
-                        <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500">Business</p>
-                    </div>
-                    <h2 class="article-title text-xl font-bold font-serif text-slate-900 mt-1 mb-3 min-h-[4.2rem] leading-snug">How to Start a Gym in India: Low-Budget Setup Guide (2026)</h2>
-                    <p class="article-excerpt text-slate-700 text-sm leading-relaxed mb-6 ">Practical ground-level guide: ₹6L–₹15L budget options, Meerut &amp; Jalandhar machinery sourcing, simple licenses, and fees automation with ONEX BOOST.</p>
-                    <div class="article-footer mt-auto pt-4 w-full">
-                        <a href="{% url 'how_to_start_gym' %}" class="btn btn-primary w-full text-center flex items-center justify-center font-semibold">Read full guide</a>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Blog 2: Best Gym Management Software in Lucknow -->
-            <article class="brand-card article-card site-reveal flex flex-col h-full">
-                <div class="article-media h-[220px] overflow-hidden shrink-0">
-                    <img src="{% static 'images/about_dashboard_features.png' %}" alt="Gym management software in Lucknow" class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105">
-                </div>
-                <div class="article-body p-8 flex flex-col flex-1">
-                    <div class="article-tag-wrap flex items-center gap-2 mb-3 min-h-[28px]">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                            <i class="fa-solid fa-map-pin text-[10px]"></i> Lucknow &amp; UP
-                        </span>
-                        <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500">Local Guide</p>
-                    </div>
-                    <h2 class="article-title text-xl font-bold font-serif text-slate-900 mt-1 mb-3 min-h-[4.2rem] leading-snug">Best Gym Management Software in Lucknow (2026)</h2>
-                    <p class="article-excerpt text-slate-700 text-sm leading-relaxed mb-6 ">Everything gym owners in Gomti Nagar, Hazratganj, Aliganj, and Indira Nagar need to know about automated fees, syncing, and member retention.</p>
-                    <div class="article-footer mt-auto pt-4 w-full">
-                        <a href="{% url 'gym_software_lucknow' %}" class="btn btn-primary w-full text-center flex items-center justify-center font-semibold">Read full guide</a>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Blog 3: Membership Retention Systems -->
-            <article class="brand-card article-card site-reveal flex flex-col h-full">
-                <div class="article-media h-[220px] overflow-hidden shrink-0">
-                    <img src="{% static 'images/home_hero_image_gym.png' %}" alt="Membership retention systems" class="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105">
-                </div>
-                <div class="article-body p-8 flex flex-col flex-1">
-                    <div class="article-tag-wrap flex items-center gap-2 mb-3 min-h-[28px]">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">
-                            <i class="fa-solid fa-chart-line text-[10px]"></i> Retention Guide
-                        </span>
-                        <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500">Member Growth</p>
-                    </div>
-                    <h2 class="article-title text-xl font-bold font-serif text-slate-900 mt-1 mb-3 min-h-[4.2rem] leading-snug">Membership retention systems that actually hold up in daily use</h2>
-                    <p class="article-excerpt text-slate-700 text-sm leading-relaxed mb-6 ">Use automation, follow-up discipline, and clearer member signals to improve consistency without making the experience feel robotic.</p>
-                    <div class="article-footer mt-auto pt-4 w-full">
-                        <a href="{% url 'blog_detail' 1 %}" class="btn btn-primary w-full text-center flex items-center justify-center font-semibold">Read full guide</a>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Blog 4: Billing Discipline & Operations -->
-            <article class="brand-card article-card site-reveal flex flex-col h-full">
-                <div class="article-media h-[220px] overflow-hidden shrink-0">
-                    <img src="{% static 'images/hero_img.jpg' %}" alt="Billing operations article" class="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105">
-                </div>
-                <div class="article-body p-8 flex flex-col flex-1">
-                    <div class="article-tag-wrap flex items-center gap-2 mb-3 min-h-[28px]">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                            <i class="fa-solid fa-receipt text-[10px]"></i> Smart Billing
-                        </span>
-                        <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500">Operations</p>
-                    </div>
-                    <h2 class="article-title text-xl font-bold font-serif text-slate-900 mt-1 mb-3 min-h-[4.2rem] leading-snug">Why billing discipline shapes the whole member experience</h2>
-                    <p class="article-excerpt text-slate-700 text-sm leading-relaxed mb-6 ">Good billing systems reduce stress for teams, improve visibility for owners, and remove awkward fee collection conversations.</p>
-                    <div class="article-footer mt-auto pt-4 w-full">
-                        <span class="comparison-pill secondary w-full text-center block py-2.5">More insights coming</span>
-                    </div>
-                </div>
-            </article>
+<!-- ── 3-PILLAR INDUSTRY BENCHMARK BANNER ─────────────────────────────────── -->
+<section class="section box-padding-top">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="industry-grid">
+      <div class="industry-card">
+        <div class="industry-card-icon">
+          <i class="fa-solid fa-calculator"></i>
         </div>
+        <h3 class="industry-card-title">Low-Budget Gym Setup</h3>
+        <p class="industry-card-desc">
+          Real floor calculations for ₹6 Lakhs to ₹22 Lakhs setups. Indian machinery sourcing in Meerut &amp; Jalandhar, electric loads, and mandatory licenses.
+        </p>
+      </div>
+
+      <div class="industry-card">
+        <div class="industry-card-icon">
+          <i class="fa-solid fa-map-location-dot"></i>
+        </div>
+        <h3 class="industry-card-title">Lucknow &amp; UP Benchmarks</h3>
+        <p class="industry-card-desc">
+          Local gym economics across Gomti Nagar, Hazratganj, Aliganj, and Indira Nagar. Navigating power cuts, offline turnstiles, and WhatsApp fee follow-ups.
+        </p>
+      </div>
+
+      <div class="industry-card">
+        <div class="industry-card-icon">
+          <i class="fa-solid fa-bolt-lightning"></i>
+        </div>
+        <h3 class="industry-card-title">Automated Retention OS</h3>
+        <p class="industry-card-desc">
+          How automated expiry alerts (7d, 3d, 1d) on WhatsApp combined with sub-200ms biometric gates stop fee leakages without awkward confrontations.
+        </p>
+      </div>
     </div>
+  </div>
 </section>
 
-<section class="brand-section brand-section-soft">
-    <div class="brand-container">
-        <div class="brand-card p-8 lg:p-10 site-reveal">
-            <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-center">
-                <div>
-                    <span class="brand-eyebrow">
-                        <i class="fa-solid fa-envelope-open-text"></i>
-                        Stay updated
-                    </span>
-                    <h2 class="brand-section-title mt-4">Want product thinking and fitness business insights in your inbox?</h2>
-                    <p class="brand-section-copy">Join the list for updates on operations, retention, member experience, and what we’re building next around the ONEX BOOST platform.</p>
-                </div>
-                <form class="grid sm:grid-cols-[280px_auto] gap-4">
-                    <input type="email" class="input" placeholder="Your email address">
-                    <button type="button" class="btn btn-primary">Join updates</button>
-                </form>
-            </div>
+<!-- ── SINGLE FEATURED BLOG ARTICLE ─────────────────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="featured-single-wrapper">
+      
+      <article class="featured-single-card">
+        <div class="featured-single-media">
+          <span class="blog-card-badge">Local Guide</span>
+          <img src="{% static 'images/about_dashboard_features.png' %}" alt="Gym management software in Lucknow" loading="lazy">
         </div>
+        <div class="featured-single-body">
+          <div class="blog-meta-row">
+            <span>Lucknow &amp; UP</span>
+            <span class="blog-meta-dot">•</span>
+            <span>10 Min Read</span>
+            <span class="blog-meta-dot">•</span>
+            <span>2026 Edition</span>
+          </div>
+          <h2 class="featured-single-title">
+            <a href="{% url 'gym_software_lucknow' %}">Best Gym Management Software in Lucknow (2026): The Complete Buyer's Guide</a>
+          </h2>
+          <p class="featured-single-excerpt">
+            Everything gym and fitness studio owners in Gomti Nagar, Hazratganj, Aliganj, and Indira Nagar need to know about eliminating paper registers, automating WhatsApp fee collections, and syncing biometric turnstiles.
+          </p>
+
+          <ul class="featured-bullet-list">
+            <li><i class="fa-solid fa-circle-check"></i> <span>Local Lucknow presence &amp; on-ground staff training</span></li>
+            <li><i class="fa-solid fa-circle-check"></i> <span>Automated Meta WhatsApp fee receipts &amp; reminders</span></li>
+            <li><i class="fa-solid fa-circle-check"></i> <span>Biometric turnstiles with offline edge-sync buffer</span></li>
+          </ul>
+
+          <div>
+            <a href="{% url 'gym_software_lucknow' %}" class="blog-cta-btn" style="max-width: 260px;">
+              <span>Read Full Guide</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </article>
+
     </div>
+  </div>
+</section>
+
+<!-- ── SYSTEMS ARCHITECTURE ADVISORY CTA ──────────────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="advisory-box">
+      <h2>Transform Your Gym Operations with ONEX BOOST</h2>
+      <p>
+        Engineered by <strong>HELYONEX</strong> in Lucknow. Schedule a 15-minute live screen walkthrough with our systems engineering team to see your member workflow, WhatsApp GST receipts, and turnstile hardware running live.
+      </p>
+      <div class="advisory-buttons">
+        <a href="{% url 'contact' %}" class="contact-button" style="background: var(--colors--soft-yellow); color: var(--colors--dark-green);">
+          Book Free Live Demo ✸
+        </a>
+        <a href="tel:+919454487893" class="contact-button" style="background: transparent; border: 2px solid var(--colors--soft-yellow); color: var(--colors--soft-yellow);">
+          Call +91 94544 87893
+        </a>
+      </div>
+    </div>
+  </div>
 </section>
 {% endblock %}

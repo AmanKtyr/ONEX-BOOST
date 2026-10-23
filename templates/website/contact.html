@@ -16,19 +16,26 @@
 <!-- ── HERO: CONTACT ───────────────────────────────────────────────────────── -->
 <section class="section">
   <div class="w-layout-blockcontainer page_container w-container">
-    <div class="content home-hero" style="min-height: 48vh; padding-top: 7.5rem; padding-bottom: 2rem;">
+    <div class="content home-hero contact-hero">
       <div class="h1-center">
+        <!-- Eyebrow Pill Badge -->
+        <div class="hero-eyebrow-badge">
+          <span class="hero-badge-dot"></span>
+          <span class="hero-badge-brand">A Product of HELYONEX</span>
+          <span class="hero-badge-separator">✦</span>
+          <span class="hero-badge-desc">Direct Sales &amp; Technical Inquiries</span>
+        </div>
         <h1 stagger-page="letter" class="display-1">CONTACT</h1>
       </div>
       <div class="hero-info-container">
         <div class="hero-text-container">
           <div stagger-page="word" class="paragraph center-mobile">
-            Schedule a 15-minute live screen walkthrough or visit our engineering lab in Lucknow.
+            Schedule a 15-minute live screen walkthrough or visit our core engineering lab in Lucknow.
           </div>
         </div>
         <div class="hero-text-container right">
           <div stagger-page="word" class="paragraph center-mobile bold-mobile">
-            Tedhi Puliya, Jankipuram,<br />Lucknow, Uttar Pradesh, India
+            15-Min Response Time.<br />Direct Engineering Support.
           </div>
         </div>
       </div>
@@ -37,39 +44,39 @@
 </section>
 
 <!-- ── CONTACT DETAILS & FORM ─────────────────────────────────────────────── -->
-<section class="section box-padding-top" style="padding-bottom: 6rem;">
+<section class="section box-padding-top contact-page-section">
   <div class="w-layout-blockcontainer page_container w-container">
-    <div class="content contact-section" style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 4rem; align-items: flex-start;">
+    <div class="content contact-section">
       <!-- LEFT COLUMN: DIRECT INFO -->
-      <div class="about-home-info">
-        <h2 stagger-scroll="letter" class="display-2" style="margin-bottom: 1.5rem;">GET IN<br />TOUCH</h2>
+      <div class="about-home-info contact-info-col">
+        <h2 stagger-scroll="letter" class="display-2 contact-heading">GET IN<br />TOUCH</h2>
         
-        <div style="display: flex; flex-direction: column; gap: 2rem; margin-top: 2rem;">
-          <div>
-            <div class="bold" style="font-size: 0.85rem; color: var(--colors--dark-green); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.35rem;">PHONE / WHATSAPP</div>
-            <a href="tel:+919454487893" style="font-size: 1.35rem; font-family: var(--font--main-font); color: var(--colors--dark-green); text-decoration: none;">
+        <div class="contact-methods-list">
+          <div class="contact-method-card">
+            <div class="bold contact-method-label">PHONE / WHATSAPP</div>
+            <a href="tel:+919454487893" class="contact-method-val">
               +91 94544 87893
             </a>
           </div>
 
-          <div>
-            <div class="bold" style="font-size: 0.85rem; color: var(--colors--dark-green); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.35rem;">EMAIL INQUIRIES</div>
-            <a href="mailto:support@onex-boost.com" style="font-size: 1.25rem; font-family: var(--font--main-font); color: var(--colors--dark-green); text-decoration: none;">
+          <div class="contact-method-card">
+            <div class="bold contact-method-label">EMAIL INQUIRIES</div>
+            <a href="mailto:support@onex-boost.com" class="contact-method-val email-val">
               support@onex-boost.com
             </a>
           </div>
 
-          <div>
-            <div class="bold" style="font-size: 0.85rem; color: var(--colors--dark-green); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.35rem;">HEADQUARTERS</div>
-            <div class="paragraph" style="font-size: 1.05rem; color: var(--colors--dark-green);">
+          <div class="contact-method-card">
+            <div class="bold contact-method-label">HEADQUARTERS</div>
+            <div class="paragraph contact-method-desc">
               HELYONEX Hub, Tedhi Puliya,<br />
               Jankipuram, Lucknow, UP &mdash; 226021, India
             </div>
           </div>
 
-          <div>
-            <div class="bold" style="font-size: 0.85rem; color: var(--colors--dark-green); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.35rem;">OPERATING HOURS</div>
-            <div class="paragraph" style="font-size: 1.05rem; color: var(--colors--dark-green);">
+          <div class="contact-method-card">
+            <div class="bold contact-method-label">OPERATING HOURS</div>
+            <div class="paragraph contact-method-desc">
               Monday &ndash; Saturday: 08:00 AM &ndash; 09:00 PM IST<br />
               Sunday: Emergency Cloud Standby
             </div>
@@ -78,45 +85,45 @@
       </div>
 
       <!-- RIGHT COLUMN: INTERACTIVE FORM -->
-      <div class="form-container" style="background: var(--colors--soft-yellow); padding: 3rem; border-radius: var(--padding-radius--borders-radius); border: 2px solid var(--colors--dark-green);">
+      <div class="form-container contact-form-col">
         <div class="form-block w-form">
-          <h3 style="font-family: var(--font--main-font); font-size: 2rem; color: var(--colors--dark-green); margin: 0 0 1.5rem;">
+          <h3 class="contact-form-title">
             SCHEDULE A LIVE DEMO
           </h3>
 
           <form id="mainContactForm" class="contact-form">
             {% csrf_token %}
             
-            <div class="paragraph bottom-margin">Your Full Name *</div>
+            <div class="paragraph bottom-margin form-label">Your Full Name *</div>
             <input class="text-field-contact w-input" name="first_name" placeholder="Vikram Singh" type="text" id="contact_name" required />
             <input type="hidden" name="last_name" value="-" />
 
-            <div class="paragraph bottom-margin">Email Address *</div>
+            <div class="paragraph bottom-margin form-label">Email Address *</div>
             <input class="text-field-contact w-input" name="email" placeholder="vikram@titanfitness.com" type="email" id="contact_email" required />
 
-            <div class="paragraph bottom-margin">Phone / WhatsApp Number *</div>
+            <div class="paragraph bottom-margin form-label">Phone / WhatsApp Number *</div>
             <input class="text-field-contact w-input" name="phone" placeholder="+91 94544 87893" type="tel" id="contact_phone" required />
 
-            <div class="paragraph bottom-margin">Gym / Club Name *</div>
+            <div class="paragraph bottom-margin form-label">Gym / Club Name *</div>
             <input class="text-field-contact w-input" name="business_name" placeholder="Iron Vault Fitness" type="text" id="contact_gym" required />
 
-            <div class="paragraph bottom-margin">Inquiry Type</div>
-            <select name="inquiry_type" class="text-field-contact" style="background: transparent;">
+            <div class="paragraph bottom-margin form-label">Inquiry Type</div>
+            <select name="inquiry_type" class="text-field-contact select-field">
               <option value="software_demo">15-Minute Software Demo</option>
               <option value="hardware_pricing">Biometric Machine &amp; Turnstile Quote</option>
               <option value="multi_branch">Multi-Branch Chain Migration</option>
               <option value="general_question">General Inquiry</option>
             </select>
 
-            <div class="paragraph bottom-margin">Message / Facility Requirements</div>
+            <div class="paragraph bottom-margin form-label">Message / Facility Requirements</div>
             <textarea id="contact_msg" name="message" placeholder="Current member count, number of turnstile gates, or key pain points..." class="text-field-contact message w-input" rows="3"></textarea>
 
             <input type="hidden" name="referral_source" value="brunhaus_contact_page" />
 
-            <input type="submit" id="mainContactBtn" class="contact-button w-button" value="Submit Demo Request ✸" style="width: 100%;" />
+            <input type="submit" id="mainContactBtn" class="contact-button w-button submit-btn" value="Submit Demo Request ✸" />
           </form>
 
-          <div id="mainFormStatus" style="display: none; padding: 1.25rem; border-radius: 1rem; margin-top: 1.5rem; font-weight: 600; background: var(--colors--soft-green); color: var(--colors--dark-green);"></div>
+          <div id="mainFormStatus" class="form-status-alert"></div>
         </div>
       </div>
     </div>

@@ -39,6 +39,8 @@ PUBLIC_URL_NAMES = frozenset(
         'public_diet_plan',
         'public_workout_plan',
         'help',
+        'legacy_gym_software_lucknow',
+        'legacy_how_to_start_gym',
     }
 )
 PUBLIC_ROUTE_NAMES = frozenset(
@@ -62,6 +64,7 @@ class TenantMiddleware:
             '/whatsapp/webhook/',
             '/attendance/scan-attendance/',
             '/brunhaus/',
+            '/blogs/',
             settings.STATIC_URL,
             settings.MEDIA_URL,
         )

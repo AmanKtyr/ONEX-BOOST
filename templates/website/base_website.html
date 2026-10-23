@@ -47,7 +47,7 @@
   
   <!-- Webflow Theme Stylesheet -->
   <link href="https://cdn.prod.website-files.com/687e58049a40e9feda5d1d64/css/kreme-template.webflow.shared.fcd42b28c.min.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="{% static 'css/brunhaus-theme.css' %}?v=5.0">
+  <link rel="stylesheet" href="{% static 'css/brunhaus-theme.css' %}?v=5.4">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   
   <style id="onex-footer-fixes">
@@ -87,14 +87,18 @@
       max-width: 480px !important;
     }
 
-    .content.footer .footer-title {
-      font-family: var(--font--main-font, sans-serif) !important;
-      font-size: 1.25rem !important;
+    .content.footer .footer-title,
+    .content.footer .p1.footer-title,
+    .content.footer .footer-title div,
+    .content.footer .footer-title span {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      font-size: 1.05rem !important;
       font-weight: 700 !important;
-      letter-spacing: -0.01em !important;
-      color: var(--colors--white, #fef8dd) !important;
-      margin-bottom: 0.75rem !important;
-      text-transform: capitalize !important;
+      letter-spacing: 0.06em !important;
+      color: #fef8dd !important;
+      margin-bottom: 0.85rem !important;
+      text-transform: uppercase !important;
+      line-height: 1.3 !important;
     }
 
     .content.footer .footer-nav-block.info .p2 {
@@ -884,6 +888,13 @@
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </a>
+          <a href="{% url 'blogs' %}" class="nav-link w-nav-link {% if 'blog' in request.resolver_match.url_name or 'gym' in request.resolver_match.url_name %}w--current{% endif %}">
+            <span>Blogs</span>
+            <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
           <a href="{% url 'contact' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'contact' %}w--current{% endif %}">
             <span>Contact</span>
             <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -960,7 +971,7 @@
         <div class="content footer">
           <div class="footer-info-container">
             <div class="footer-nav-block">
-              <div stagger-scroll="word" class="p1 footer-title">Informations</div>
+              <div class="footer-title">Information</div>
               <a href="tel:+919454487893" class="footer-link">
                 <div stagger-scroll="letter">+91 94544 87893</div>
               </a>
@@ -973,7 +984,7 @@
             </div>
             
             <div class="footer-nav-block info">
-              <p stagger-scroll="word" class="p2">India's leading gym management OS by HELYONEX &mdash; memberships, biometric turnstiles, automated GST billing &amp; trainer workflows.</p>
+              <p stagger-scroll="word" class="p2">India's leading gym management OS &mdash; <strong>A Product of HELYONEX</strong>. Automating memberships, biometric turnstiles, GST billing &amp; trainer workflows.</p>
               <div class="buttons-footer">
                 <div class="button-wrapper">
                   <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-button w-inline-block">
@@ -1018,19 +1029,20 @@
             </div>
             
             <div class="footer-nav-block">
-              <div stagger-scroll="word" class="p1 footer-title">Navigation</div>
+              <div class="footer-title">Navigation</div>
               <a href="{% url 'index' %}" class="footer-link"><div stagger-scroll="letter">Home</div></a>
               <a href="{% url 'about' %}" class="footer-link"><div stagger-scroll="letter">About</div></a>
               <a href="{% url 'modules' %}" class="footer-link"><div stagger-scroll="letter">Modules</div></a>
               <a href="{% url 'features' %}" class="footer-link"><div stagger-scroll="letter">Features</div></a>
               <a href="{% url 'pricing' %}" class="footer-link"><div stagger-scroll="letter">Pricing</div></a>
+              <a href="{% url 'blogs' %}" class="footer-link"><div stagger-scroll="letter">Blogs &amp; Insights</div></a>
               <a href="{% url 'contact' %}" class="footer-link"><div stagger-scroll="letter">Contact</div></a>
             </div>
            
             <div class="footer-nav-block">
-              <div stagger-scroll="word" class="p1 footer-title">Credits</div>
+              <div class="footer-title">Credits</div>
               <a href="https://helyonex.com" target="_blank" rel="noopener noreferrer" class="footer-link">
-                <div stagger-scroll="letter">Made by HELYONEX</div>
+                <div stagger-scroll="letter">A Product of HELYONEX ↗</div>
               </a>
               <a href="{% url 'privacy_policy' %}" class="footer-link">
                 <div stagger-scroll="letter">Privacy Policy</div>

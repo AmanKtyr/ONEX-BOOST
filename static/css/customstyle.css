@@ -1634,6 +1634,14 @@ a.btn-primary {
   color: #034220 !important;
 }
 
+.text-secondary {
+  color: #475569 !important;
+}
+
+.text-muted {
+  color: #64748b !important;
+}
+
 .page-item.active .page-link {
   background-color: #034220 !important;
   border-color: #034220 !important;

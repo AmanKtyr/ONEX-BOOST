@@ -15,7 +15,7 @@
     }
     .invoice-top-band {
         height: 6px;
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%);
     }
     /* Official Paid Stamp */
     .paid-stamp {
@@ -120,7 +120,7 @@
         }
         .invoice-top-band {
             height: 6px !important;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+            background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%) !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
@@ -171,16 +171,16 @@
                         <img src="{{ gym.logo.url }}" alt="{{ gym.name }}" class="img-fluid rounded-circle mb-2" style="width: 65px; height: 65px; object-fit: cover; border: 2px solid #e2e8f0;">
                     {% endif %}
                     <h3 class="font-weight-bold text-dark mb-0">{{ gym.name }}</h3>
-                    <p class="text-muted small mb-0">{{ gym.slogan|default:"Smart Gym & Fitness Management" }}</p>
+                    <p class="small mb-0" style="color: #475569; font-weight: 500;">{{ gym.slogan|default:"Smart Gym & Fitness Management" }}</p>
                     {% if gym.gst_number %}
-                        <div class="badge rounded-pill bg-light text-secondary border mt-1">GSTIN: {{ gym.gst_number }}</div>
+                        <div class="badge rounded-pill font-weight-bold mt-1 px-2.5 py-1" style="background: #eaf5ee; color: #034220; border: 1px solid #b8e2c8; font-size: 0.78rem;">GSTIN: {{ gym.gst_number }}</div>
                     {% endif %}
                 </div>
 
                 <div class="text-sm-right text-start">
-                    <div class="text-uppercase text-secondary font-weight-bold small letter-spacing-1">Tax Invoice / Receipt</div>
+                    <div class="text-uppercase font-weight-bold small letter-spacing-1" style="color: #034220; font-size: 0.76rem; letter-spacing: 0.08em;">Tax Invoice / Receipt</div>
                     <h2 class="font-weight-bold text-primary mb-1">#INV-{{ history.id }}</h2>
-                    <div class="text-muted small"><strong>Date:</strong> {{ history.created_at|date:"d M, Y" }}</div>
+                    <div class="small" style="color: #475569;"><strong style="color: #0f172a;">Date:</strong> {{ history.created_at|date:"d M, Y" }}</div>
                     
                     <div class="mt-2">
                         {% if history.due_amount <= 0 %}
@@ -195,23 +195,23 @@
             <!-- Party Details -->
             <div class="row g-4 mb-4">
                 <div class="col-sm-6">
-                    <div class="text-uppercase text-muted font-weight-bold small mb-2">Issued By:</div>
-                    <div class="font-weight-bold text-dark">{{ gym.name }}</div>
-                    <div class="text-secondary small">{{ gym.address }}</div>
-                    <div class="text-secondary small">{{ gym.city }}{% if gym.state %}, {{ gym.state }}{% endif %} - {{ gym.pincode }}</div>
-                    <div class="text-secondary small mt-1"><i class="mdi mdi-phone mr-1"></i> {{ gym.phone|default:"-" }}</div>
-                    <div class="text-secondary small"><i class="mdi mdi-email-outline mr-1"></i> {{ gym.email|default:"-" }}</div>
+                    <div class="text-uppercase font-weight-bold small mb-2" style="color: #034220; font-size: 0.74rem; letter-spacing: 0.05em;">Issued By:</div>
+                    <div class="font-weight-bold text-dark font-size-16">{{ gym.name }}</div>
+                    <div class="small" style="color: #334155; line-height: 1.5;">{{ gym.address }}</div>
+                    <div class="small" style="color: #334155; line-height: 1.5;">{{ gym.city }}{% if gym.state %}, {{ gym.state }}{% endif %} - {{ gym.pincode }}</div>
+                    <div class="small mt-1" style="color: #1e293b; font-weight: 500;"><i class="mdi mdi-phone mr-1" style="color: #034220;"></i> {{ gym.phone|default:"-" }}</div>
+                    <div class="small" style="color: #1e293b; font-weight: 500;"><i class="mdi mdi-email-outline mr-1" style="color: #034220;"></i> {{ gym.email|default:"-" }}</div>
                 </div>
 
                 <div class="col-sm-6 text-sm-right">
-                    <div class="text-uppercase text-muted font-weight-bold small mb-2">Billed To (Member):</div>
+                    <div class="text-uppercase font-weight-bold small mb-2" style="color: #034220; font-size: 0.74rem; letter-spacing: 0.05em;">Billed To (Member):</div>
                     <div class="font-weight-bold text-dark font-size-16">{{ member.first_name }} {{ member.last_name }}</div>
-                    <div class="badge rounded-pill bg-primary-subtle text-primary border font-weight-bold mb-1" style="background: #eff6ff; color: #1e40af; border-color: #bfdbfe;">ID: #{{ member.id }}</div>
-                    <div class="text-secondary small">{{ member.address|default:"-" }}</div>
-                    <div class="text-secondary small">{{ member.city|default:"" }}{% if member.state %}, {{ member.state }}{% endif %}</div>
-                    <div class="text-secondary small mt-1"><i class="mdi mdi-cellphone mr-1"></i> +91 {{ member.mobile_number }}</div>
+                    <div class="badge rounded-pill font-weight-bold mb-1" style="background: #eaf5ee; color: #034220; border: 1px solid #b8e2c8;">ID: #{{ member.id }}</div>
+                    <div class="small" style="color: #334155; line-height: 1.5;">{{ member.address|default:"-" }}</div>
+                    <div class="small" style="color: #334155; line-height: 1.5;">{{ member.city|default:"" }}{% if member.state %}, {{ member.state }}{% endif %}</div>
+                    <div class="small mt-1" style="color: #1e293b; font-weight: 500;"><i class="mdi mdi-cellphone mr-1" style="color: #034220;"></i> +91 {{ member.mobile_number }}</div>
                     {% if member.email %}
-                        <div class="text-secondary small"><i class="mdi mdi-email-outline mr-1"></i> {{ member.email }}</div>
+                        <div class="small" style="color: #1e293b; font-weight: 500;"><i class="mdi mdi-email-outline mr-1" style="color: #034220;"></i> {{ member.email }}</div>
                     {% endif %}
                 </div>
             </div>
@@ -246,7 +246,7 @@
                                 <span class="badge rounded-pill bg-light text-dark border">{{ history.plan.get_duration_display }}</span>
                             </td>
                             <td class="text-right font-weight-medium">₹{{ history.plan.amount }}</td>
-                            <td class="text-right text-success">-₹{{ history.plan.discount }}</td>
+                            <td class="text-right font-weight-semibold" style="color: #059669;">-₹{{ history.plan.discount }}</td>
                             <td class="text-right font-weight-bold text-dark">₹{{ history.plan.offer_price }}</td>
                         </tr>
                     </tbody>
@@ -260,38 +260,38 @@
                         <table class="table table-borderless table-sm mb-0">
                             <tbody>
                                 <tr>
-                                    <td class="text-secondary">Subtotal Plan Price:</td>
+                                    <td style="color: #334155; font-weight: 600;">Subtotal Plan Price:</td>
                                     <td class="text-right font-weight-semibold">₹{{ history.plan.offer_price }}</td>
                                 </tr>
                                 {% if history.registration_fee and history.registration_fee > 0 %}
                                 <tr>
-                                    <td class="text-secondary">Registration Fee:</td>
+                                    <td style="color: #334155; font-weight: 600;">Registration Fee:</td>
                                     <td class="text-right font-weight-semibold">+₹{{ history.registration_fee }}</td>
                                 </tr>
                                 {% endif %}
                                 {% if history.discount and history.discount > 0 %}
                                 <tr>
-                                    <td class="text-secondary">Special Discount:</td>
-                                    <td class="text-right text-success font-weight-semibold">-₹{{ history.discount }}</td>
+                                    <td style="color: #334155; font-weight: 600;">Special Discount:</td>
+                                    <td class="text-right font-weight-semibold" style="color: #059669;">-₹{{ history.discount }}</td>
                                 </tr>
                                 {% endif %}
                                 {% if sgst > 0 and cgst > 0 %}
                                 <tr>
-                                    <td class="text-secondary">SGST ({{ sgst_rate|floatformat:2 }}%):</td>
+                                    <td style="color: #334155; font-weight: 600;">SGST ({{ sgst_rate|floatformat:2 }}%):</td>
                                     <td class="text-right font-weight-semibold">₹{{ sgst|floatformat:2 }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-secondary">CGST ({{ cgst_rate|floatformat:2 }}%):</td>
+                                    <td style="color: #334155; font-weight: 600;">CGST ({{ cgst_rate|floatformat:2 }}%):</td>
                                     <td class="text-right font-weight-semibold">₹{{ cgst|floatformat:2 }}</td>
                                 </tr>
                                 {% endif %}
                                 <tr class="border-top pt-2">
                                     <td class="font-weight-bold text-dark">Total Bill Amount:</td>
-                                    <td class="text-right font-weight-bold text-primary font-size-16">₹{{ history.total_amount }}</td>
+                                    <td class="text-right font-weight-bold text-primary font-size-16" style="color: #034220 !important;">₹{{ history.total_amount }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-success font-weight-semibold">Amount Paid:</td>
-                                    <td class="text-right text-success font-weight-bold">₹{{ history.paid_amount }}</td>
+                                    <td class="font-weight-semibold" style="color: #059669;">Amount Paid:</td>
+                                    <td class="text-right font-weight-bold" style="color: #059669;">₹{{ history.paid_amount }}</td>
                                 </tr>
                                 <tr class="border-top">
                                     <td class="font-weight-bold {% if history.due_amount > 0 %}text-danger{% else %}text-muted{% endif %}">Balance Due:</td>

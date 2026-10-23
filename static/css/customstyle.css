@@ -2,8 +2,10 @@
 
 /* Import SCSS variables colors */
 :root {
-  --primary-color: #1e40af;
-  --primary-hover: #1d4ed8;
+  --primary-color: #034220;
+  --primary-hover: #022b15;
+  --primary-light: #eaf5ee;
+  --primary-border: #b8e2c8;
   --secondary-color: #d8d8d8;
   --success-color: #00cccd;
   --info-color: #198ae3;
@@ -19,8 +21,8 @@
   --border-color: #ebedf2;
   --content-bg: #f2f2f2;
   --card-shadow: 0 2px 10px 0 rgba(197, 191, 191, 0.5);
-  --gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-  --sidebar-gradient: linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+  --gradient-primary: linear-gradient(135deg, #034220 0%, #065f2c 100%);
+  --sidebar-gradient: linear-gradient(180deg, #012411 0%, #034220 50%, #065f2c 100%);
   --gradient-success: #10b981;
   --gradient-info: #0284c7;
   --gradient-warning: #f59e0b;
@@ -49,7 +51,7 @@
 }
 
 .custom-breadcrumb .breadcrumb-item a {
-  color: #007bff;
+  color: #034220;
   text-decoration: none;
   transition: all 0.3s ease;
   padding: 0.2rem 0.4rem;
@@ -58,8 +60,8 @@
 }
 
 .custom-breadcrumb .breadcrumb-item a:hover {
-  background: rgba(0, 123, 255, 0.1);
-  color: #0056b3;
+  background: rgba(3, 66, 32, 0.08);
+  color: #022b15;
 }
 
 .custom-breadcrumb .breadcrumb-item.active {
@@ -685,7 +687,7 @@ td[data-label="Actions"] .btn:hover {
 }
 
 .badge-primary {
-  background-color: #2563eb !important;
+  background-color: #034220 !important;
   color: #ffffff !important;
   background-image: none !important;
 }
@@ -937,7 +939,7 @@ legend {
 .quick-action-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    color: #007bff;
+    color: #034220;
 }
 
 .quick-action-card .icon-wrapper {
@@ -1080,9 +1082,9 @@ legend {
   border: 1px solid #cbd5e1 !important;
 }
 .attendance-live-badge.status-completed {
-  background: #eff6ff !important;
-  color: #1d4ed8 !important;
-  border: 1px solid #bfdbfe !important;
+  background: #eaf5ee !important;
+  color: #034220 !important;
+  border: 1px solid #b8e2c8 !important;
 }
 .attendance-radar-dot {
   width: 10px !important;
@@ -1256,8 +1258,8 @@ legend {
 }
 
 .filter-control:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+  border-color: #034220;
+  box-shadow: 0 0 0 0.2rem rgba(3, 66, 32, 0.18);
   outline: none;
 }
 
@@ -1300,7 +1302,7 @@ input[type="date"].filter-control {
   width: 15px;
   height: 15px;
   border: 2px solid #e2e8f0;
-  border-top-color: #2563eb;
+  border-top-color: #034220;
   border-radius: 50%;
   animation: filterSpin 0.6s linear infinite;
   z-index: 5;
@@ -1353,9 +1355,9 @@ legend.w-auto,
 legend.h5 {
   font-size: 0.92rem !important;
   font-weight: 700 !important;
-  color: #1e40af !important;
-  background: #eff6ff !important;
-  border: 1px solid #bfdbfe !important;
+  color: #034220 !important;
+  background: #eaf5ee !important;
+  border: 1px solid #b8e2c8 !important;
   border-radius: 30px !important;
   padding: 0.35rem 1rem !important;
   width: auto !important;
@@ -1388,8 +1390,8 @@ legend.h5 {
 .card-body form input:focus,
 .card-body form select:focus,
 .card-body form textarea:focus {
-  border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+  border-color: #034220 !important;
+  box-shadow: 0 0 0 3px rgba(3, 66, 32, 0.18) !important;
   outline: none;
 }
 
@@ -1435,7 +1437,7 @@ legend.h5 {
 
 /* Modern Card Headers for Form Pages */
 .card > .card-header.bg-primary {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+  background: linear-gradient(135deg, #034220 0%, #065f2c 100%) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.15rem 1.5rem;
   border-top-left-radius: 12px;
@@ -1571,11 +1573,11 @@ legend.h5 {
   font-size: 0.92rem !important;
 }
 .swal2-confirm {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+  background: linear-gradient(135deg, #034220 0%, #065f2c 100%) !important;
   border-radius: 30px !important;
   font-weight: 600 !important;
   padding: 0.6rem 1.6rem !important;
-  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25) !important;
+  box-shadow: 0 4px 12px rgba(3, 66, 32, 0.25) !important;
 }
 .swal2-cancel {
   border-radius: 30px !important;
@@ -1586,6 +1588,113 @@ legend.h5 {
   border: 1px solid #cbd5e1 !important;
 }
 
+/* ==========================================================================
+   Universal Dashboard Theme Overrides (Brunhaus Dark Green Theme)
+   ========================================================================== */
+.btn-primary,
+button.btn-primary,
+a.btn-primary {
+  background: linear-gradient(135deg, #034220 0%, #065f2c 100%) !important;
+  border-color: #034220 !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(3, 66, 32, 0.25);
+  transition: all 0.2s ease;
+}
 
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active {
+  background: linear-gradient(135deg, #022b15 0%, #034220 100%) !important;
+  border-color: #022b15 !important;
+  color: #ffffff !important;
+  box-shadow: 0 5px 14px rgba(3, 66, 32, 0.35) !important;
+  transform: translateY(-1px);
+}
 
+.btn-outline-primary {
+  color: #034220 !important;
+  border-color: #034220 !important;
+}
 
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  background: #034220 !important;
+  border-color: #034220 !important;
+  color: #ffffff !important;
+}
+
+.bg-primary {
+  background: linear-gradient(135deg, #034220 0%, #065f2c 100%) !important;
+  color: #ffffff !important;
+}
+
+.text-primary {
+  color: #034220 !important;
+}
+
+.page-item.active .page-link {
+  background-color: #034220 !important;
+  border-color: #034220 !important;
+  color: #ffffff !important;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  background: linear-gradient(135deg, #034220 0%, #065f2c 100%) !important;
+  color: #ffffff !important;
+}
+
+.form-check-input:checked {
+  background-color: #034220 !important;
+  border-color: #034220 !important;
+}
+
+/* Executive Modern Nav Tabs */
+.nav-tabs {
+  border-bottom: 2px solid #e2e8f0;
+  gap: 4px;
+}
+
+.nav-tabs .nav-item {
+  margin-bottom: -2px;
+}
+
+.nav-tabs .nav-link {
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  color: #64748b !important;
+  font-weight: 600 !important;
+  font-size: 0.88rem !important;
+  padding: 0.65rem 1rem !important;
+  border-radius: 8px 8px 0 0 !important;
+  background: transparent !important;
+  transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #034220 !important;
+  border-bottom-color: #b8e2c8 !important;
+  background: rgba(3, 66, 32, 0.04) !important;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: #034220 !important;
+  font-weight: 700 !important;
+  background-color: #ffffff !important;
+  border: none !important;
+  border-bottom: 3px solid #034220 !important;
+  box-shadow: none !important;
+}
+
+.card-header.bg-primary,
+.card > .card-header.bg-primary,
+.card-header[class*="bg-primary"],
+div.card-header.bg-primary {
+  background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%) !important;
+  background-color: #034220 !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}

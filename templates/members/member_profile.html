@@ -52,53 +52,61 @@
 {% endif %}
 <div class="row">
     <div class="col-12">
-        <div class="card">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">Member Profile</h2>
-                <div class="d-none d-md-flex">
+        <div class="card shadow-sm border-0" style="border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0 !important;">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%) !important; color: #ffffff !important; padding: 1.15rem 1.6rem; border-top-left-radius: 16px; border-top-right-radius: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.12);">
+                <div class="d-flex align-items-center" style="gap: 14px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; color: #ffffff; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                        <i class="mdi mdi-account-circle-outline" style="font-size: 26px;"></i>
+                    </div>
+                    <div>
+                        <h2 class="mb-0 text-white font-weight-bold" style="letter-spacing: -0.01em; font-size: 1.35rem; line-height: 1.2;">Member Profile</h2>
+                        <span class="text-white-50 small" style="font-size: 0.78rem; letter-spacing: 0.02em;">{{ member.name }} &bull; {{ member.member_id }}</span>
+                    </div>
+                </div>
+                <div class="d-none d-md-flex align-items-center" style="gap: 8px;">
                     {% if request.user|has_permission:'change_member' %}
-                    <a href="{% url 'edit_member' member.id %}" class="btn btn-sm btn-secondary mr-2" data-toggle="tooltip" title="Edit Member">
-                        <i class="mdi mdi-pencil"></i>
+                    <a href="{% url 'edit_member' member.id %}" class="btn btn-sm btn-light font-weight-bold shadow-sm px-3" style="border-radius: 10px; color: #034220;" data-toggle="tooltip" title="Edit Member">
+                        <i class="mdi mdi-pencil mr-1"></i> Edit
                     </a>
                     {% if not membership_history %}
-                    <a href="{% url 'assign_membership_plan' member.id %}" class="btn btn-sm btn-success mr-2" data-toggle="tooltip" title="Assign Membership Plan">
+                    <a href="{% url 'assign_membership_plan' member.id %}" class="btn btn-sm text-white font-weight-bold shadow-sm" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;" data-toggle="tooltip" title="Assign Membership Plan">
                         <i class="mdi mdi-file-document-box-plus-outline"></i>
                     </a>
                     {% elif is_plan_active %}
-                    <a href="{% url 'update_membership_plan' member.id membership_history.id %}" class="btn btn-sm btn-secondary mr-2" data-toggle="tooltip" title="Upgrade Membership Plan">
+                    <a href="{% url 'update_membership_plan' member.id membership_history.id %}" class="btn btn-sm text-white font-weight-bold shadow-sm" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;" data-toggle="tooltip" title="Upgrade Membership Plan">
                         <i class="mdi mdi-arrow-up-bold-circle-outline"></i>
                     </a>
                     {% else %}
-                    <a href="{% url 'assign_membership_plan' member.id %}" class="btn btn-sm btn-success mr-2" data-toggle="tooltip" title="Renew Membership Plan">
+                    <a href="{% url 'assign_membership_plan' member.id %}" class="btn btn-sm text-white font-weight-bold shadow-sm" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;" data-toggle="tooltip" title="Renew Membership Plan">
                         <i class="mdi mdi-autorenew"></i>
                     </a>
                     {% endif %}
-                    <a href="{% url 'assign_pt_trainer' member.id %}" class="btn btn-sm btn-danger mr-2" data-toggle="tooltip" title="Assign Personal Trainer">
+                    <a href="{% url 'assign_pt_trainer' member.id %}" class="btn btn-sm text-white font-weight-bold shadow-sm" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;" data-toggle="tooltip" title="Assign Personal Trainer">
                         <i class="mdi mdi-account-plus"></i>
                     </a>
                     {% endif %}
                     {% if request.user|has_permission:'change_member' or request.user|has_permission:'change_dietplan' %}
-                    <a href="{% url 'assign_diet_plan' member.id %}" class="btn btn-sm btn-info mr-2" data-toggle="tooltip" title="Assign Diet Plan">
+                    <a href="{% url 'assign_diet_plan' member.id %}" class="btn btn-sm text-white font-weight-bold shadow-sm" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;" data-toggle="tooltip" title="Assign Diet Plan">
                         <i class="mdi mdi-food"></i>
                     </a>
                     {% endif %}
                     {% if request.user|has_permission:'change_member' or request.user|has_permission:'change_workoutplan' %}
-                    <a href="{% url 'assign_workout_plan' member.id %}" class="btn btn-sm btn-warning mr-2" data-toggle="tooltip" title="Assign Workout Plan">
+                    <a href="{% url 'assign_workout_plan' member.id %}" class="btn btn-sm text-white font-weight-bold shadow-sm" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;" data-toggle="tooltip" title="Assign Workout Plan">
                         <i class="mdi mdi-dumbbell"></i>
                     </a>
                     {% endif %}
                     {% if request.user|has_permission:'add_payment' %}
-                    <a href="{% url 'billing:pay_due_payment' member.id %}" class="btn btn-sm btn-info mr-2" data-toggle="tooltip" title="Submit Due Payment">
-                        <i class="mdi mdi-currency-usd"></i> 
+                    <a href="{% url 'billing:pay_due_payment' member.id %}" class="btn btn-sm text-white font-weight-bold shadow-sm" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;" data-toggle="tooltip" title="Submit Due Payment">
+                        <i class="mdi mdi-currency-inr"></i>
                     </a>
                     {% endif %}
                     {% if request.user|has_permission:'change_member' or request.user.is_superuser or request.user.gymadmin %}
-                    <button type="button" onclick="openResetMemberPasswordModal('{{ member.id }}', '{{ member.name|escapejs }}', '{{ member.mobile_number }}', '{{ member.member_id }}')" class="btn btn-sm btn-dark mr-2" data-toggle="tooltip" title="Reset Member Password">
+                    <button type="button" onclick="openResetMemberPasswordModal('{{ member.id }}', '{{ member.name|escapejs }}', '{{ member.mobile_number }}', '{{ member.member_id }}')" class="btn btn-sm text-white font-weight-bold shadow-sm" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;" data-toggle="tooltip" title="Reset Member Password">
                         <i class="mdi mdi-key-variant"></i>
                     </button>
                     {% endif %}
                     {% if request.user|has_permission:'delete_member' %}
-                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ member.id }}', '{{ member.first_name }} {{ member.last_name }}', '{% url 'delete_member' member.id %}', '{% url 'member_list' %}')" data-toggle="tooltip" title="Delete">
+                    <button type="button" class="btn btn-sm btn-danger font-weight-bold shadow-sm" style="border-radius: 10px; background-color: #dc2626; border-color: #dc2626;" onclick="confirmDelete('{{ member.id }}', '{{ member.first_name }} {{ member.last_name }}', '{% url 'delete_member' member.id %}', '{% url 'member_list' %}')" data-toggle="tooltip" title="Delete Member">
                         <i class="mdi mdi-delete-outline"></i>
                     </button>
                     {% endif %}
@@ -1049,7 +1057,7 @@ function openResetMemberPasswordModal(memberId, memberName, mobileNumber, member
         <div class="form-group mb-3">
           <label style="font-weight: 600; color: #334155; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
             <span>New Password</span>
-            <a href="#" onclick="document.getElementById('swal-new-pwd-input').value = '${defaultSuggestion}'; return false;" style="font-size: 0.8rem; color: #2563eb; text-decoration: none;">Suggest Default</a>
+            <a href="#" onclick="document.getElementById('swal-new-pwd-input').value = '${defaultSuggestion}'; return false;" style="font-size: 0.8rem; color: #034220; text-decoration: none;">Suggest Default</a>
           </label>
           <input type="text" id="swal-new-pwd-input" class="form-control" value="${defaultSuggestion}" placeholder="Enter new password" style="border-radius: 8px; font-family: monospace; font-size: 0.95rem; font-weight: 600;">
           <small class="text-muted mt-1 d-block">Leave as suggested or enter a custom password.</small>
@@ -1108,7 +1116,7 @@ function openResetMemberPasswordModal(memberId, memberName, mobileNumber, member
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                   <span style="color: #64748b;">Username / ID:</span>
-                  <span style="font-family: monospace; font-weight: 700; color: #2563eb;">${data.username}</span>
+                  <span style="font-family: monospace; font-weight: 700; color: #034220;">${data.username}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                   <span style="color: #64748b;">Mobile:</span>
@@ -1120,7 +1128,7 @@ function openResetMemberPasswordModal(memberId, memberName, mobileNumber, member
                 </div>
               </div>
               <div style="display: flex; gap: 10px; margin-top: 16px;">
-                <button type="button" id="copy-reset-pwd-btn" onclick="copyResetText('${data.share_text.replace(/'/g, "\\'")}')" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #2563eb; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
+                <button type="button" id="copy-reset-pwd-btn" onclick="copyResetText('${data.share_text.replace(/'/g, "\\'")}')" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #034220; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
                   <i class="mdi mdi-content-copy"></i>
                   <span id="copy-reset-pwd-text">Copy Credentials</span>
                 </button>

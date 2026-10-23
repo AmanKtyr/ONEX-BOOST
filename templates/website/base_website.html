@@ -47,7 +47,7 @@
   
   <!-- Webflow Theme Stylesheet -->
   <link href="https://cdn.prod.website-files.com/687e58049a40e9feda5d1d64/css/kreme-template.webflow.shared.fcd42b28c.min.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="{% static 'css/brunhaus-theme.css' %}?v=5.1">
+  <link rel="stylesheet" href="{% static 'css/brunhaus-theme.css' %}?v=5.3">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   
   <style id="onex-footer-fixes">
@@ -888,6 +888,13 @@
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </a>
+          <a href="{% url 'blogs' %}" class="nav-link w-nav-link {% if 'blog' in request.resolver_match.url_name or 'gym' in request.resolver_match.url_name %}w--current{% endif %}">
+            <span>Blogs</span>
+            <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
           <a href="{% url 'contact' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'contact' %}w--current{% endif %}">
             <span>Contact</span>
             <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1028,6 +1035,7 @@
               <a href="{% url 'modules' %}" class="footer-link"><div stagger-scroll="letter">Modules</div></a>
               <a href="{% url 'features' %}" class="footer-link"><div stagger-scroll="letter">Features</div></a>
               <a href="{% url 'pricing' %}" class="footer-link"><div stagger-scroll="letter">Pricing</div></a>
+              <a href="{% url 'blogs' %}" class="footer-link"><div stagger-scroll="letter">Blogs &amp; Insights</div></a>
               <a href="{% url 'contact' %}" class="footer-link"><div stagger-scroll="letter">Contact</div></a>
             </div>
            

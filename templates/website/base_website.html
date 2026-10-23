@@ -47,8 +47,327 @@
   
   <!-- Webflow Theme Stylesheet -->
   <link href="https://cdn.prod.website-files.com/687e58049a40e9feda5d1d64/css/kreme-template.webflow.shared.fcd42b28c.min.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="{% static 'css/brunhaus-theme.css' %}?v=4.0">
+  <link rel="stylesheet" href="{% static 'css/brunhaus-theme.css' %}?v=5.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <style id="onex-footer-fixes">
+    /* ── Footer Contrast & Premium Aesthetics ── */
+    .footer.box-padding-t-b {
+      padding: 2.5rem 0 3.5rem !important;
+    }
+
+    .content.footer {
+      background-color: var(--colors--dark-green, #034220) !important;
+      color: var(--colors--white, #fef8dd) !important;
+      border-radius: var(--padding-radius--borders-radius, 1rem) !important;
+      padding: 3.5rem 3rem 2rem !important;
+      position: relative !important;
+      overflow: hidden !important;
+      box-shadow: 0 16px 40px rgba(3, 66, 32, 0.22) !important;
+    }
+
+    /* 4-Column Grid on Desktop */
+    .content.footer .footer-info-container {
+      display: grid !important;
+      grid-template-columns: 1.15fr 1.6fr 0.85fr 0.95fr !important;
+      gap: 3rem 2.2rem !important;
+      align-items: start !important;
+      margin-bottom: 2.5rem !important;
+    }
+
+    .content.footer .footer-nav-block {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 0.65rem !important;
+    }
+
+    .content.footer .footer-nav-block.info {
+      order: initial !important;
+      max-width: 480px !important;
+    }
+
+    .content.footer .footer-title {
+      font-family: var(--font--main-font, sans-serif) !important;
+      font-size: 1.25rem !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.01em !important;
+      color: var(--colors--white, #fef8dd) !important;
+      margin-bottom: 0.75rem !important;
+      text-transform: capitalize !important;
+    }
+
+    .content.footer .footer-nav-block.info .p2 {
+      font-size: 1rem !important;
+      line-height: 1.6 !important;
+      color: rgba(254, 248, 221, 0.9) !important;
+      margin: 0 !important;
+      font-weight: 400 !important;
+    }
+
+    /* Links: Default clean state */
+    .content.footer .footer-link {
+      display: inline-flex !important;
+      align-items: center !important;
+      width: fit-content !important;
+      padding: 0.35rem 0.75rem !important;
+      margin-left: -0.75rem !important;
+      border-radius: 999px !important;
+      font-size: 0.95rem !important;
+      font-weight: 500 !important;
+      color: rgba(254, 248, 221, 0.85) !important;
+      text-decoration: none !important;
+      line-height: 1.4 !important;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      transform: none !important;
+      background-color: transparent !important;
+    }
+
+    .content.footer .footer-link div,
+    .content.footer .footer-link span {
+      color: inherit !important;
+      transition: color 0.2s ease !important;
+    }
+
+    /* Links: High-Contrast Interactive Hover State */
+    .content.footer .footer-link:hover {
+      background-color: var(--colors--soft-yellow, #eddea6) !important;
+      color: var(--colors--dark-green, #034220) !important;
+      transform: translateX(4px) scale(1) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16) !important;
+    }
+
+    .content.footer .footer-link:hover div,
+    .content.footer .footer-link:hover span {
+      color: var(--colors--dark-green, #034220) !important;
+    }
+
+    /* Buttons Container */
+    .content.footer .buttons-footer {
+      display: flex !important;
+      align-items: center !important;
+      flex-wrap: wrap !important;
+      gap: 0.85rem !important;
+      margin-top: 1.5rem !important;
+    }
+
+    .content.footer .button-wrapper {
+      overflow: visible !important;
+      border-radius: 999px !important;
+    }
+
+    /* Social Buttons */
+    .content.footer .social-button {
+      width: 44px !important;
+      height: 44px !important;
+      min-width: 44px !important;
+      min-height: 44px !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 999px !important;
+      background: rgba(254, 248, 221, 0.1) !important;
+      border: 1.5px solid rgba(254, 248, 221, 0.25) !important;
+      color: #fef8dd !important;
+      text-decoration: none !important;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .content.footer .social-button .social-icon {
+      width: 20px !important;
+      height: 20px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: inherit !important;
+    }
+
+    .content.footer .social-button .social-icon svg {
+      width: 18px !important;
+      height: 18px !important;
+      fill: currentColor !important;
+      color: inherit !important;
+    }
+
+    .content.footer .social-button:hover {
+      background: var(--colors--soft-yellow, #eddea6) !important;
+      border-color: var(--colors--soft-yellow, #eddea6) !important;
+      color: var(--colors--dark-green, #034220) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28) !important;
+    }
+
+    .content.footer .social-button:hover .social-icon svg {
+      color: var(--colors--dark-green, #034220) !important;
+      fill: var(--colors--dark-green, #034220) !important;
+    }
+
+    /* "Schedule Demo" CTA Button */
+    .content.footer .b1,
+    .content.footer .footer-cta-b1 {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.85rem !important;
+      background-color: var(--colors--soft-yellow, #eddea6) !important;
+      border: 1.5px solid var(--colors--soft-yellow, #eddea6) !important;
+      border-radius: 999px !important;
+      padding: 0.42rem 0.5rem 0.42rem 1.35rem !important;
+      color: var(--colors--dark-green, #034220) !important;
+      text-decoration: none !important;
+      font-weight: 700 !important;
+      font-size: 0.95rem !important;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+    }
+
+    .content.footer .b1 .button-text,
+    .content.footer .footer-cta-b1 .button-text {
+      height: 1.5rem !important;
+      line-height: 1.5rem !important;
+      overflow: hidden !important;
+      display: flex !important;
+      align-items: flex-start !important;
+      white-space: nowrap !important;
+    }
+
+    .content.footer .b1 .text-track,
+    .content.footer .footer-cta-b1 .text-track {
+      display: flex !important;
+      flex-direction: column !important;
+      white-space: nowrap !important;
+    }
+
+    .content.footer .b1 .text-track div,
+    .content.footer .footer-cta-b1 .text-track div {
+      color: var(--colors--dark-green, #034220) !important;
+      font-weight: 700 !important;
+      font-size: 0.95rem !important;
+      white-space: nowrap !important;
+      line-height: 1.5rem !important;
+      height: 1.5rem !important;
+    }
+
+    .content.footer .b1 .arrow-circle,
+    .content.footer .footer-cta-b1 .arrow-circle {
+      width: 2.1rem !important;
+      height: 2.1rem !important;
+      min-width: 2.1rem !important;
+      min-height: 2.1rem !important;
+      border-radius: 999px !important;
+      background-color: var(--colors--dark-green, #034220) !important;
+      color: #fef8dd !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: transform 0.25s ease !important;
+    }
+
+    .content.footer .b1 .arrow-container,
+    .content.footer .b1 .arrow-track,
+    .content.footer .b1 .arrow,
+    .content.footer .footer-cta-b1 .arrow-container,
+    .content.footer .footer-cta-b1 .arrow-track,
+    .content.footer .footer-cta-b1 .arrow {
+      width: 1.1rem !important;
+      height: 1.1rem !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: visible !important;
+    }
+
+    .content.footer .b1 .icon-arrow,
+    .content.footer .footer-cta-b1 .icon-arrow {
+      width: 13px !important;
+      height: 13px !important;
+      color: #fef8dd !important;
+    }
+
+    .content.footer .b1 .icon-arrow path,
+    .content.footer .footer-cta-b1 .icon-arrow path {
+      fill: #fef8dd !important;
+      color: #fef8dd !important;
+    }
+
+    .content.footer .b1:hover,
+    .content.footer .footer-cta-b1:hover {
+      background-color: #fef8dd !important;
+      border-color: #fef8dd !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .content.footer .b1:hover .arrow-circle,
+    .content.footer .footer-cta-b1:hover .arrow-circle {
+      transform: rotate(45deg) !important;
+      background-color: var(--colors--dark-green, #034220) !important;
+    }
+
+    /* Footer Bottom Marquee */
+    .content.footer .footer-bottom {
+      margin-top: 1.5rem !important;
+      padding-top: 1.5rem !important;
+      border-top: 1px solid rgba(254, 248, 221, 0.12) !important;
+    }
+
+    .content.footer .marquee-wrapper-footer {
+      overflow: hidden !important;
+      width: 100% !important;
+      border-radius: 0.5rem !important;
+    }
+
+    .content.footer .marquee-component-1 {
+      display: flex !important;
+      align-items: center !important;
+      gap: 2rem !important;
+      white-space: nowrap !important;
+    }
+
+    .content.footer .marquee-component-1 .display-1 {
+      font-family: var(--font--main-font, Impact, sans-serif) !important;
+      color: var(--colors--soft-yellow, #eddea6) !important;
+      font-size: clamp(3rem, 7.5vw, 7.5rem) !important;
+      line-height: 0.9 !important;
+      text-transform: uppercase !important;
+      margin: 0 !important;
+      opacity: 0.9 !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+      .content.footer {
+        padding: 3rem 2rem 2rem !important;
+      }
+      .content.footer .footer-info-container {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 2.5rem 2rem !important;
+      }
+      .content.footer .footer-nav-block.info {
+        grid-column: 1 / -1 !important;
+        max-width: 100% !important;
+        order: -1 !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .content.footer {
+        padding: 2.25rem 1.25rem 1.75rem !important;
+        border-radius: 1.25rem !important;
+      }
+      .content.footer .footer-info-container {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+      }
+      .content.footer .buttons-footer {
+        gap: 0.75rem !important;
+      }
+      .content.footer .footer-link {
+        font-size: 0.92rem !important;
+        padding: 0.3rem 0.65rem !important;
+      }
+    }
+  </style>
   
   <style id="onex-responsive-navbar-styles">
     /* Instant eradication of Webflow badges */
@@ -642,13 +961,13 @@
           <div class="footer-info-container">
             <div class="footer-nav-block">
               <div stagger-scroll="word" class="p1 footer-title">Informations</div>
-              <a href="tel:+919454487893" class="footer-link w-nav-brand">
+              <a href="tel:+919454487893" class="footer-link">
                 <div stagger-scroll="letter">+91 94544 87893</div>
               </a>
-              <a href="mailto:support@onex-boost.com" class="footer-link w-nav-brand">
+              <a href="mailto:support@onex-boost.com" class="footer-link">
                 <div stagger-scroll="letter">support@onex-boost.com</div>
               </a>
-              <a href="https://maps.google.com" target="_blank" class="footer-link w-nav-brand">
+              <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="footer-link">
                 <div stagger-scroll="word">Tedhi Puliya, Jankipuram, <br />Lucknow, India</div>
               </a>
             </div>
@@ -657,7 +976,7 @@
               <p stagger-scroll="word" class="p2">India's leading gym management OS by HELYONEX &mdash; memberships, biometric turnstiles, automated GST billing &amp; trainer workflows.</p>
               <div class="buttons-footer">
                 <div class="button-wrapper">
-                  <a href="https://facebook.com" target="_blank" class="social-button w-inline-block">
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-button w-inline-block">
                     <div class="social-icon w-embed">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
                         <path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669c1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -666,7 +985,7 @@
                   </a>
                 </div>
                 <div class="button-wrapper">
-                  <a href="https://instagram.com" target="_blank" class="social-button w-inline-block">
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-button w-inline-block">
                     <div class="social-icon w-embed">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20">
                         <path fill="currentColor" d="M8 5.67C6.71 5.67 5.67 6.72 5.67 8S6.72 10.33 8 10.33S10.33 9.28 10.33 8S9.28 5.67 8 5.67ZM15 8c0-.97 0-1.92-.05-2.89c-.05-1.12-.31-2.12-1.13-2.93c-.82-.82-1.81-1.08-2.93-1.13C9.92 1 8.97 1 8 1s-1.92 0-2.89.05c-1.12.05-2.12.31-2.93 1.13C1.36 3 1.1 3.99 1.05 5.11C1 6.08 1 7.03 1 8s0 1.92.05 2.89c.05 1.12.31 2.12 1.13 2.93c.82.82 1.81 1.08 2.93 1.13C6.08 15 7.03 15 8 15s1.92 0 2.89-.05c1.12-.05 2.12-.31 2.93-1.13c.82-.82 1.08-1.81 1.13-2.93c.06-.96.05-1.92.05-2.89Zm-7 3.59c-1.99 0-3.59-1.6-3.59-3.59S6.01 4.41 8 4.41s3.59 1.6 3.59 3.59s-1.6 3.59-3.59 3.59Zm3.74-6.49c-.46 0-.84-.37-.84-.84s.37-.84.84-.84s.84.37.84.84a.8.8 0 0 1-.24.59a.8.8 0 0 1-.59.24Z" />
@@ -675,7 +994,7 @@
                   </a>
                 </div>
                 <div class="button-wrapper">
-                  <a id="w-node-_7d95712f-9708-f7bd-9d1f-6d76b9197794-b9197794" data-wf--button--variant="dark-green" href="{% url 'contact' %}" class="b1 w-inline-block">
+                  <a id="w-node-_7d95712f-9708-f7bd-9d1f-6d76b9197794-b9197794" data-wf--button--variant="dark-green" href="{% url 'contact' %}" class="b1 footer-cta-b1 w-inline-block">
                     <div class="button-text">
                       <div class="text-track">
                         <div>Schedule Demo</div>
@@ -700,26 +1019,26 @@
             
             <div class="footer-nav-block">
               <div stagger-scroll="word" class="p1 footer-title">Navigation</div>
-              <a href="{% url 'index' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Home</div></a>
-              <a href="{% url 'about' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">About</div></a>
-              <a href="{% url 'modules' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Modules</div></a>
-              <a href="{% url 'features' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Features</div></a>
-              <a href="{% url 'pricing' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Pricing</div></a>
-              <a href="{% url 'contact' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Contact</div></a>
+              <a href="{% url 'index' %}" class="footer-link"><div stagger-scroll="letter">Home</div></a>
+              <a href="{% url 'about' %}" class="footer-link"><div stagger-scroll="letter">About</div></a>
+              <a href="{% url 'modules' %}" class="footer-link"><div stagger-scroll="letter">Modules</div></a>
+              <a href="{% url 'features' %}" class="footer-link"><div stagger-scroll="letter">Features</div></a>
+              <a href="{% url 'pricing' %}" class="footer-link"><div stagger-scroll="letter">Pricing</div></a>
+              <a href="{% url 'contact' %}" class="footer-link"><div stagger-scroll="letter">Contact</div></a>
             </div>
            
             <div class="footer-nav-block">
               <div stagger-scroll="word" class="p1 footer-title">Credits</div>
-              <a href="https://helyonex.com" target="_blank" class="footer-link w-nav-brand">
+              <a href="https://helyonex.com" target="_blank" rel="noopener noreferrer" class="footer-link">
                 <div stagger-scroll="letter">Made by HELYONEX</div>
               </a>
-              <a href="{% url 'privacy_policy' %}" class="footer-link w-nav-brand">
+              <a href="{% url 'privacy_policy' %}" class="footer-link">
                 <div stagger-scroll="letter">Privacy Policy</div>
               </a>
-              <a href="{% url 'terms_of_service' %}" class="footer-link w-nav-brand">
+              <a href="{% url 'terms_of_service' %}" class="footer-link">
                 <div stagger-scroll="letter">Terms of Service</div>
               </a>
-              <a href="{% url 'refund_policy' %}" class="footer-link w-nav-brand">
+              <a href="{% url 'refund_policy' %}" class="footer-link">
                 <div stagger-scroll="letter">Refund Policy</div>
               </a>
             </div>

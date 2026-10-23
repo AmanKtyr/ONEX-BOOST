@@ -949,33 +949,325 @@ body.mobile-nav-locked {
   opacity: 0.95;
 }
 
-/* ── Footer Contrast & Aesthetics ───────────────────────────────────────── */
+/* ── Footer Contrast & Premium Aesthetics ───────────────────────────────── */
+.footer.box-padding-t-b {
+  padding: 2.5rem 0 3.5rem !important;
+}
+
 .content.footer {
   background-color: var(--colors--dark-green, #034220) !important;
   color: var(--colors--white, #fef8dd) !important;
   border-radius: var(--padding-radius--borders-radius, 1rem) !important;
   padding: 3.5rem 3rem 2rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 16px 40px rgba(3, 66, 32, 0.22) !important;
 }
 
-.content.footer .footer-title,
-.content.footer .footer-link,
-.content.footer .p1,
-.content.footer .p2,
-.content.footer .paragraph,
-.content.footer div,
-.content.footer span,
-.content.footer a {
+/* Footer 4-Column Grid on Desktop */
+.content.footer .footer-info-container {
+  display: grid !important;
+  grid-template-columns: 1.15fr 1.6fr 0.85fr 0.95fr !important;
+  gap: 3rem 2.2rem !important;
+  align-items: start !important;
+  margin-bottom: 2.5rem !important;
+}
+
+.content.footer .footer-nav-block {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 0.65rem !important;
+}
+
+.content.footer .footer-nav-block.info {
+  order: initial !important;
+  max-width: 480px !important;
+}
+
+/* Titles */
+.content.footer .footer-title {
+  font-family: var(--font--main-font, sans-serif) !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
   color: var(--colors--white, #fef8dd) !important;
+  margin-bottom: 0.75rem !important;
+  text-transform: capitalize !important;
 }
 
-.content.footer .footer-link:hover,
+/* Paragraph in info block */
+.content.footer .footer-nav-block.info .p2 {
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  color: rgba(254, 248, 221, 0.9) !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
+}
+
+/* Footer Links: Crisp readable contrast */
+.content.footer .footer-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  width: fit-content !important;
+  padding: 0.35rem 0.75rem !important;
+  margin-left: -0.75rem !important;
+  border-radius: 999px !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  color: rgba(254, 248, 221, 0.85) !important;
+  text-decoration: none !important;
+  line-height: 1.4 !important;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: none !important;
+  background-color: transparent !important;
+}
+
+.content.footer .footer-link div,
+.content.footer .footer-link span {
+  color: inherit !important;
+  transition: color 0.2s ease !important;
+}
+
+/* Footer Links Hover State: High-contrast soft-yellow pill with dark green text */
+.content.footer .footer-link:hover {
+  background-color: var(--colors--soft-yellow, #eddea6) !important;
+  color: var(--colors--dark-green, #034220) !important;
+  transform: translateX(4px) scale(1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16) !important;
+}
+
 .content.footer .footer-link:hover div,
 .content.footer .footer-link:hover span {
-  color: var(--colors--soft-yellow, #eddea6) !important;
+  color: var(--colors--dark-green, #034220) !important;
+}
+
+/* Buttons Container */
+.content.footer .buttons-footer {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.85rem !important;
+  margin-top: 1.5rem !important;
+}
+
+.content.footer .button-wrapper {
+  overflow: visible !important;
+  border-radius: 999px !important;
+}
+
+/* Social Buttons (Facebook, Instagram) */
+.content.footer .social-button {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  background: rgba(254, 248, 221, 0.1) !important;
+  border: 1.5px solid rgba(254, 248, 221, 0.25) !important;
+  color: #fef8dd !important;
+  text-decoration: none !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.content.footer .social-button .social-icon {
+  width: 20px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: inherit !important;
+}
+
+.content.footer .social-button .social-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  fill: currentColor !important;
+  color: inherit !important;
+}
+
+.content.footer .social-button:hover {
+  background: var(--colors--soft-yellow, #eddea6) !important;
+  border-color: var(--colors--soft-yellow, #eddea6) !important;
+  color: var(--colors--dark-green, #034220) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28) !important;
+}
+
+.content.footer .social-button:hover .social-icon svg {
+  color: var(--colors--dark-green, #034220) !important;
+  fill: var(--colors--dark-green, #034220) !important;
+}
+
+/* "Schedule Demo" CTA Button in Footer */
+.content.footer .b1,
+.content.footer .footer-cta-b1 {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.85rem !important;
+  background-color: var(--colors--soft-yellow, #eddea6) !important;
+  border: 1.5px solid var(--colors--soft-yellow, #eddea6) !important;
+  border-radius: 999px !important;
+  padding: 0.42rem 0.5rem 0.42rem 1.35rem !important;
+  color: var(--colors--dark-green, #034220) !important;
+  text-decoration: none !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+}
+
+.content.footer .b1 .button-text,
+.content.footer .footer-cta-b1 .button-text {
+  height: 1.5rem !important;
+  line-height: 1.5rem !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  white-space: nowrap !important;
+}
+
+.content.footer .b1 .text-track,
+.content.footer .footer-cta-b1 .text-track {
+  display: flex !important;
+  flex-direction: column !important;
+  white-space: nowrap !important;
+}
+
+.content.footer .b1 .text-track div,
+.content.footer .footer-cta-b1 .text-track div {
+  color: var(--colors--dark-green, #034220) !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  white-space: nowrap !important;
+  line-height: 1.5rem !important;
+  height: 1.5rem !important;
+}
+
+/* Arrow Circle Container */
+.content.footer .b1 .arrow-circle,
+.content.footer .footer-cta-b1 .arrow-circle {
+  width: 2.1rem !important;
+  height: 2.1rem !important;
+  min-width: 2.1rem !important;
+  min-height: 2.1rem !important;
+  border-radius: 999px !important;
+  background-color: var(--colors--dark-green, #034220) !important;
+  color: #fef8dd !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.25s ease !important;
+}
+
+.content.footer .b1 .arrow-container,
+.content.footer .b1 .arrow-track,
+.content.footer .b1 .arrow,
+.content.footer .footer-cta-b1 .arrow-container,
+.content.footer .footer-cta-b1 .arrow-track,
+.content.footer .footer-cta-b1 .arrow {
+  width: 1.1rem !important;
+  height: 1.1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+
+.content.footer .b1 .icon-arrow,
+.content.footer .footer-cta-b1 .icon-arrow {
+  width: 13px !important;
+  height: 13px !important;
+  color: #fef8dd !important;
+}
+
+.content.footer .b1 .icon-arrow path,
+.content.footer .footer-cta-b1 .icon-arrow path {
+  fill: #fef8dd !important;
+  color: #fef8dd !important;
+}
+
+/* CTA Button Hover State */
+.content.footer .b1:hover,
+.content.footer .footer-cta-b1:hover {
+  background-color: #fef8dd !important;
+  border-color: #fef8dd !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+.content.footer .b1:hover .arrow-circle,
+.content.footer .footer-cta-b1:hover .arrow-circle {
+  transform: rotate(45deg) !important;
+  background-color: var(--colors--dark-green, #034220) !important;
+}
+
+/* Footer Bottom Marquee Banner */
+.content.footer .footer-bottom {
+  margin-top: 1.5rem !important;
+  padding-top: 1.5rem !important;
+  border-top: 1px solid rgba(254, 248, 221, 0.12) !important;
+}
+
+.content.footer .marquee-wrapper-footer {
+  overflow: hidden !important;
+  width: 100% !important;
+  border-radius: 0.5rem !important;
+}
+
+.content.footer .marquee-component-1 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2rem !important;
+  white-space: nowrap !important;
 }
 
 .content.footer .marquee-component-1 .display-1 {
+  font-family: var(--font--main-font, Impact, sans-serif) !important;
   color: var(--colors--soft-yellow, #eddea6) !important;
+  font-size: clamp(3rem, 7.5vw, 7.5rem) !important;
+  line-height: 0.9 !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+  opacity: 0.9 !important;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 991px) {
+  .content.footer {
+    padding: 3rem 2rem 2rem !important;
+  }
+  .content.footer .footer-info-container {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2.5rem 2rem !important;
+  }
+  .content.footer .footer-nav-block.info {
+    grid-column: 1 / -1 !important;
+    max-width: 100% !important;
+    order: -1 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .content.footer {
+    padding: 2.25rem 1.25rem 1.75rem !important;
+    border-radius: 1.25rem !important;
+  }
+  .content.footer .footer-info-container {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+  .content.footer .buttons-footer {
+    gap: 0.75rem !important;
+  }
+  .content.footer .footer-link {
+    font-size: 0.92rem !important;
+    padding: 0.3rem 0.65rem !important;
+  }
 }
 
 /* ── Global Contrast Utilities ─────────────────────────────────────────── */

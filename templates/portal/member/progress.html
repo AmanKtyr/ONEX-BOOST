@@ -240,7 +240,7 @@
         </div>
 
         <!-- Coach Commentary Alert Box (Matches Theme) -->
-        <div class="mt-3 p-3 rounded-lg d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #2563eb;">
+        <div class="mt-3 p-3 rounded-lg d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #034220;">
           <div class="small text-muted">
             <strong class="text-dark mr-1"><i class="fas {{ goal_stats.pace_icon }} mr-1"></i> Match Analysis:</strong>
             {{ goal_stats.pace_analysis }}
@@ -341,8 +341,8 @@
     }
     .modern-pill-tabs .nav-link.active {
       color: #ffffff !important;
-      background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28) !important;
+      background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%) !important;
+      box-shadow: 0 2px 8px rgba(3, 66, 32, 0.28) !important;
       font-weight: 700 !important;
     }
     .modern-pill-tabs .nav-link.active i {
@@ -441,7 +441,7 @@
                   </div>
 
                   {% if log.notes %}
-                    <div class="p-2 mb-2 rounded bg-light small text-muted font-italic" style="border-left: 3px solid #2563eb;">
+                    <div class="p-2 mb-2 rounded bg-light small text-muted font-italic" style="border-left: 3px solid #034220;">
                       "{{ log.notes }}"
                     </div>
                   {% endif %}
@@ -521,7 +521,7 @@
                     <td class="text-center align-middle">
                       {% if m.photo %}
                         <a href="javascript:void(0);" onclick="openPhotoModal('{{ m.photo.url }}', '{{ m.date|date:"d M Y" }}', '{{ m.weight_kg }} kg', '{{ m.notes|default:""|escapejs }}');" title="View Full Transformation Photo" class="d-inline-block">
-                          <img src="{{ m.photo.url }}" alt="Progress Photo" class="rounded shadow-sm" style="width: 38px; height: 38px; object-fit: cover; border: 2px solid #2563eb; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';">
+                          <img src="{{ m.photo.url }}" alt="Progress Photo" class="rounded shadow-sm" style="width: 38px; height: 38px; object-fit: cover; border: 2px solid #034220; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';">
                         </a>
                       {% else %}
                         <span class="text-muted small" title="No photo recorded"><i class="fas fa-minus text-black-50"></i></span>
@@ -571,7 +571,7 @@
 <div class="modal fade" id="logWorkoutModal" tabindex="-1" role="dialog" aria-labelledby="logWorkoutModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff;">
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%); color: #ffffff;">
         <div class="d-flex align-items-center">
           <div class="d-inline-flex align-items-center justify-content-center mr-2.5 rounded-circle" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.18);">
             <i class="fas fa-dumbbell text-white" style="font-size: 1rem;"></i>
@@ -712,7 +712,7 @@
 <div class="modal fade" id="logMetricsModal" tabindex="-1" role="dialog" aria-labelledby="logMetricsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 520px;">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff;">
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%); color: #ffffff;">
         <div class="d-flex align-items-center">
           <div class="d-inline-flex align-items-center justify-content-center mr-2.5 rounded-circle" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.18);">
             <i class="fas fa-weight-scale text-white" style="font-size: 1rem;"></i>
@@ -830,7 +830,7 @@
 <div class="modal fade" id="setGoalModal" tabindex="-1" role="dialog" aria-labelledby="setGoalModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 520px;">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff;">
+      <div class="modal-header py-3 px-4 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%); color: #ffffff;">
         <div class="d-flex align-items-center">
           <div class="d-inline-flex align-items-center justify-content-center mr-2.5 rounded-circle" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.18);">
             <i class="fas fa-bullseye text-white" style="font-size: 1rem;"></i>

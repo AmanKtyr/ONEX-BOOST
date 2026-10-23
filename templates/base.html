@@ -31,8 +31,8 @@
     {% comment %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
     {% endcomment %}
-    <link rel="stylesheet" href="{% static 'css/customstyle.css' %}?v=3.7" />
-    <link rel="stylesheet" href="{% static 'css/dashboard_modern.css' %}?v=3.0" />
+    <link rel="stylesheet" href="{% static 'css/customstyle.css' %}?v=5.0" />
+    <link rel="stylesheet" href="{% static 'css/dashboard_modern.css' %}?v=5.0" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -79,9 +79,9 @@
       legend.h5 {
         font-size: 0.95rem !important;
         font-weight: 700 !important;
-        color: #1e40af !important;
-        background: #eff6ff !important;
-        border: 1px solid #bfdbfe !important;
+        color: #034220 !important;
+        background: #eaf5ee !important;
+        border: 1px solid #b8e2c8 !important;
         border-radius: 30px !important;
         padding: 0.35rem 1rem !important;
         width: auto !important;
@@ -109,44 +109,62 @@
       }
       .form-control:focus + .input-group-text,
       .input-group-text:focus-within {
-        border-color: #86b7fe !important;
+        border-color: #b8e2c8 !important;
       }
 
-      /* Project-wide Primary Theme Definition (Royal Blue Gradient #1e40af -> #3b82f6) */
+      /* Project-wide Primary Theme Definition (Brunhaus Luxury Dark Green) */
       :root {
-        --primary-color: #1e40af !important;
-        --primary-hover: #1d4ed8 !important;
-        --primary-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
-        --sidebar-gradient: linear-gradient(180deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%) !important;
+        --primary-color: #034220 !important;
+        --primary-hover: #022b15 !important;
+        --primary-light: #eaf5ee !important;
+        --primary-border: #b8e2c8 !important;
+        --primary-gradient: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%) !important;
+        --sidebar-gradient: linear-gradient(180deg, #012411 0%, #034220 50%, #065f2c 100%) !important;
       }
 
-      .bg-primary {
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+      .bg-primary,
+      div.bg-primary,
+      header.bg-primary,
+      .card-header.bg-primary,
+      .card > .card-header.bg-primary,
+      .card-header[class*="bg-primary"] {
+        background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%) !important;
+        background-color: #034220 !important;
+        color: #ffffff !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
       }
       .btn-primary {
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
-        border-color: #1e40af !important;
+        background: linear-gradient(135deg, #034220 0%, #065f2c 100%) !important;
+        border-color: #034220 !important;
+        color: #ffffff !important;
       }
       .btn-primary:hover,
       .btn-primary:focus,
       .btn-primary:active {
-        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
-        border-color: #1d4ed8 !important;
-        box-shadow: 0 4px 14px rgba(30, 64, 175, 0.35) !important;
+        background: linear-gradient(135deg, #022b15 0%, #034220 100%) !important;
+        border-color: #022b15 !important;
+        box-shadow: 0 4px 14px rgba(3, 66, 32, 0.35) !important;
+        color: #ffffff !important;
       }
       .btn-outline-primary {
-        color: #1e40af !important;
-        border-color: #1e40af !important;
+        color: #034220 !important;
+        border-color: #034220 !important;
       }
       .btn-outline-primary:hover {
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+        background: linear-gradient(135deg, #034220 0%, #065f2c 100%) !important;
         color: #ffffff !important;
       }
       .text-primary {
-        color: #1e40af !important;
+        color: #034220 !important;
+      }
+      .text-secondary {
+        color: #475569 !important; /* Deep Slate - crisp and legible */
+      }
+      .text-muted {
+        color: #64748b !important;
       }
       .border-primary {
-        border-color: #2563eb !important;
+        border-color: #034220 !important;
       }
 
       /* SaaS Tables & Micro-Headers */
@@ -238,7 +256,7 @@
         color: #0f172a !important;
       }
       .swal2-confirm {
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+        background: linear-gradient(135deg, #034220 0%, #065f2c 100%) !important;
         border-radius: 30px !important;
         font-weight: 600 !important;
         padding: 0.6rem 1.6rem !important;
@@ -259,7 +277,7 @@
       href="{% static 'images/favicon.png' %}?v=2"
     />
     <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}?v=2" />
-    <meta name="theme-color" content="#0d6efd" />
+    <meta name="theme-color" content="#034220" />
 
     <meta name="google-site-verification" content="WXgpCm7smrPbuCEaiWjSUBw0P5-NHi7MG_IilJc86t4" />
 
@@ -330,8 +348,8 @@
       }
 
       .filter-control:focus {
-        border-color: #2563eb !important;
-        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15) !important;
+        border-color: #034220 !important;
+        box-shadow: 0 0 0 0.2rem rgba(3, 66, 32, 0.18) !important;
         outline: none !important;
       }
 
@@ -383,7 +401,7 @@
         width: 15px !important;
         height: 15px !important;
         border: 2px solid #e2e8f0 !important;
-        border-top-color: #2563eb !important;
+        border-top-color: #034220 !important;
         border-radius: 50% !important;
         animation: filterSpin 0.6s linear infinite !important;
         z-index: 5 !important;

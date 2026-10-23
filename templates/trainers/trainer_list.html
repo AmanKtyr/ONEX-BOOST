@@ -149,7 +149,7 @@ function openResetTrainerPasswordModal(trainerId, trainerName, mobileNumber, tra
         <div class="form-group mb-3">
           <label style="font-weight: 600; color: #334155; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
             <span>New Password</span>
-            <a href="#" onclick="document.getElementById('swal-new-pwd-input').value = '${defaultSuggestion}'; return false;" style="font-size: 0.8rem; color: #2563eb; text-decoration: none;">Suggest Default</a>
+            <a href="#" onclick="document.getElementById('swal-new-pwd-input').value = '${defaultSuggestion}'; return false;" style="font-size: 0.8rem; color: #034220; text-decoration: none;">Suggest Default</a>
           </label>
           <input type="text" id="swal-new-pwd-input" class="form-control" value="${defaultSuggestion}" placeholder="Enter new password" style="border-radius: 8px; font-family: monospace; font-size: 0.95rem; font-weight: 600;">
           <small class="text-muted mt-1 d-block">Leave as suggested or enter a custom password.</small>
@@ -208,7 +208,7 @@ function openResetTrainerPasswordModal(trainerId, trainerName, mobileNumber, tra
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                   <span style="color: #64748b;">Username / ID:</span>
-                  <span style="font-family: monospace; font-weight: 700; color: #2563eb;">${data.username}</span>
+                  <span style="font-family: monospace; font-weight: 700; color: #034220;">${data.username}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                   <span style="color: #64748b;">Mobile:</span>
@@ -220,7 +220,7 @@ function openResetTrainerPasswordModal(trainerId, trainerName, mobileNumber, tra
                 </div>
               </div>
               <div style="display: flex; gap: 10px; margin-top: 16px;">
-                <button type="button" id="copy-trainer-pwd-btn" onclick="copyResetTrainerText('${data.share_text.replace(/'/g, "\\'")}')" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #2563eb; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
+                <button type="button" id="copy-trainer-pwd-btn" onclick="copyResetTrainerText('${data.share_text.replace(/'/g, "\\'")}')" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #034220; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
                   <i class="mdi mdi-content-copy"></i>
                   <span id="copy-trainer-pwd-text">Copy Credentials</span>
                 </button>

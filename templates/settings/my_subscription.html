@@ -7,13 +7,13 @@
 <style>
   /* Hero Subscription Banner */
   .sub-hero-card {
-    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #012411 0%, #034220 55%, #065f2c 100%);
     border-radius: 18px;
     color: #ffffff;
     padding: 2.25rem 2rem;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.18);
+    box-shadow: 0 10px 30px rgba(3, 66, 32, 0.22);
   }
   .sub-hero-card::after {
     content: '';
@@ -99,18 +99,18 @@
     padding: 1.6rem;
   }
   .plan-card-pricing.current-plan {
-    border: 2px solid #2563eb !important;
-    background: linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
-    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.12);
+    border: 2px solid #034220 !important;
+    background: linear-gradient(180deg, #f4faf6 0%, #ffffff 100%);
+    box-shadow: 0 10px 30px rgba(3, 66, 32, 0.12);
   }
   .plan-card-pricing:hover {
-    border-color: #93c5fd;
+    border-color: #b8e2c8;
     transform: translateY(-4px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
   }
   .plan-badge-curr {
-    background: #eff6ff;
-    color: #1d4ed8;
+    background: #eaf5ee;
+    color: #034220;
     font-weight: 700;
     font-size: 0.74rem;
     padding: 3px 12px;
@@ -443,7 +443,7 @@
               {% else %}
                 <button type="button" 
                         class="btn btn-primary btn-block font-weight-bold shadow-sm"
-                        style="border-radius: 9999px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); font-size: 0.84rem; padding: 0.6rem; border: none;"
+                        style="border-radius: 9999px; background: linear-gradient(135deg, #034220 0%, #065f2c 100%); font-size: 0.84rem; padding: 0.6rem; border: none;"
                         onclick="openUpgradeModal('{{ p.id }}', '{{ p.name|escapejs }}', '{{ p.price|floatformat:0 }}')">
                   <i class="fas fa-arrow-alt-circle-up mr-1"></i> Request This Plan
                 </button>
@@ -509,7 +509,7 @@
 <div class="modal fade" id="upgradeRequestModal" tabindex="-1" role="dialog" aria-labelledby="upgradeModalTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
-      <div class="modal-header py-3 px-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff;">
+      <div class="modal-header py-3 px-4" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%); color: #ffffff;">
         <h5 class="modal-title font-weight-bold text-white d-flex align-items-center" id="upgradeModalTitle">
           <i class="fas fa-rocket mr-2 text-warning"></i> Request Plan Upgrade
         </h5>
@@ -559,7 +559,7 @@
 
         <div class="modal-footer bg-light py-3 px-4 border-top">
           <button type="button" class="btn btn-secondary font-weight-bold rounded-pill px-4" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary font-weight-bold rounded-pill px-4 shadow-sm" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border: none;">
+          <button type="submit" class="btn btn-primary font-weight-bold rounded-pill px-4 shadow-sm" style="background: linear-gradient(135deg, #034220 0%, #065f2c 100%); border: none;">
             <i class="fas fa-check-circle mr-1"></i> Submit Request
           </button>
         </div>

@@ -10,8 +10,10 @@
                 <i class="mdi mdi-home-outline mdi-18px"></i> Dashboard
             </a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">
-            <i class="mdi mdi-account-group mdi-18px"></i> Billing
+        <li class="breadcrumb-item">
+            <a href="{% url 'billing:invoices_list' %}" class="text-decoration-none">
+                <i class="mdi mdi-receipt mdi-18px"></i> Billing
+            </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
             <i class="mdi mdi-currency-usd mdi-18px"></i> Due Payment List
@@ -19,12 +21,18 @@
     </ol>
 </nav>
 
-
-<div class="col-md-12 px-0">
-<div class="container">
-    <div class="card">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Due Payment List</h4>
+<div class="col-lg-12 px-0">
+    <div class="card shadow-sm border-0" style="border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0 !important;">
+        <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%) !important; color: #ffffff !important; padding: 1.15rem 1.6rem; border-top-left-radius: 16px; border-top-right-radius: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.12);">
+            <div class="d-flex align-items-center" style="gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; color: #ffffff; flex-shrink: 0;">
+                    <i class="mdi mdi-cash-multiple text-white" style="font-size: 22px;"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0 text-white font-weight-bold" style="font-size: 1.25rem;">Due Payment List</h4>
+                    <span class="text-white-50 small" style="font-size: 0.78rem;">Track pending dues, balances & quick settlements</span>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             {% csrf_token %}
@@ -190,14 +198,14 @@
                                     <span class="text-muted">N/A</span>
                                 {% endif %}
                             </td>
-                            <td data-label="Action" class="text-center">
-                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#followUpModal-{{ member.id }}" title="Update Follow-up">
+                            <td data-label="Action" class="text-center" style="white-space: nowrap;">
+                                <button type="button" class="btn btn-warning btn-sm shadow-sm" data-toggle="modal" data-target="#followUpModal-{{ member.id }}" title="Update Follow-up" style="border-radius: 6px; padding: 6px 10px;">
                                     <i class="mdi mdi-calendar-clock"></i>
                                 </button>
-                                <a href="tel:{{ member.mobile_number }}" class="btn btn-secondary btn-sm" title="Call">
+                                <a href="tel:{{ member.mobile_number }}" class="btn btn-secondary btn-sm shadow-sm" title="Call" style="border-radius: 6px; padding: 6px 10px;">
                                     <i class="mdi mdi-phone"></i>
                                 </a>
-                                <a class="btn btn-primary btn-sm btn-action-text font-weight-bold" href="{% url 'billing:pay_due_payment' member.id %}" title="Pay Due">
+                                <a class="btn btn-primary btn-sm btn-action-text font-weight-bold shadow-sm" href="{% url 'billing:pay_due_payment' member.id %}" title="Pay Due" style="border-radius: 6px; padding: 6px 14px; white-space: nowrap;">
                                     <i class="mdi mdi-cash-multiple mr-1"></i> Pay Due
                                 </a>
                             </td>
@@ -251,8 +259,6 @@
     </div>
 </div>
 {% endfor %}
-</div>
-    
 </div>
 
 

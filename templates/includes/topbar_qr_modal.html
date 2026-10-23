@@ -9,7 +9,7 @@
 
       {% if is_trainer %}
         <!-- ==================== COACH ATTENDANCE PASS ==================== -->
-        <div class="modal-header border-0 p-4 text-white position-relative" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);">
+        <div class="modal-header border-0 p-4 text-white position-relative" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%);">
           <div class="d-flex align-items-center" style="gap: 12px; min-width: 0;">
             <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ffffff;">
               <i class="mdi mdi-qrcode-scan" style="font-size: 22px;"></i>
@@ -31,7 +31,7 @@
                  onerror="this.src='{% static 'images/trainer_dp.png' %}';"
                  alt="{{ current_trainer.name }}" 
                  class="rounded-circle shadow-sm" 
-                 style="width: 52px; height: 52px; object-fit: cover; border: 2px solid #2563eb;">
+                 style="width: 52px; height: 52px; object-fit: cover; border: 2px solid #034220;">
             <div class="text-left" style="min-width: 0;">
               <div class="font-weight-bold text-dark text-truncate" style="font-size: 1.05rem;">Coach {{ current_trainer.name|default:user_display_name }}</div>
               <div class="d-flex align-items-center flex-wrap gap-1 mt-0.5">
@@ -61,8 +61,8 @@
 
           <!-- Active Beacon -->
           <div class="mt-2 mb-1">
-            <span class="badge badge-pill px-3 py-1.5 font-weight-bold" style="background: rgba(37,99,235,0.1); color: #1e40af; border: 1px solid #bfdbfe; font-size: 0.74rem; letter-spacing: 0.03em;">
-              <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #2563eb; margin-right: 5px; vertical-align: middle;"></span>
+            <span class="badge badge-pill px-3 py-1.5 font-weight-bold" style="background: #eaf5ee; color: #034220; border: 1px solid #b8e2c8; font-size: 0.74rem; letter-spacing: 0.03em;">
+              <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #034220; margin-right: 5px; vertical-align: middle;"></span>
               VERIFIED ACTIVE COACH &bull; STAFF PASS
             </span>
           </div>
@@ -77,7 +77,7 @@
 
       {% elif is_member %}
         <!-- ==================== MEMBER ATTENDANCE PASS ==================== -->
-        <div class="modal-header border-0 p-4 text-white position-relative" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);">
+        <div class="modal-header border-0 p-4 text-white position-relative" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%);">
           <div class="d-flex align-items-center" style="gap: 12px; min-width: 0;">
             <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ffffff;">
               <i class="mdi mdi-qrcode-scan" style="font-size: 22px;"></i>
@@ -92,14 +92,14 @@
           </button>
         </div>
 
-        <div class="modal-body p-4 text-center" style="background: #f0f7ff url('{% static 'images/id_card_bg.png' %}') center / cover no-repeat;">
+        <div class="modal-body p-4 text-center" style="background: #f4faf6 url('{% static 'images/id_card_bg.png' %}') center / cover no-repeat;">
           <!-- Member Avatar & Card Header -->
           <div class="d-flex align-items-center justify-content-center mb-3 p-2.5 rounded-16 border shadow-sm" style="background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-color: rgba(255,255,255,0.9); gap: 12px; border-radius: 16px;">
             <img src="{% if current_member.profile_picture %}{{ current_member.profile_picture.url }}{% else %}{% static 'images/member_dp.jpg' %}{% endif %}" 
                  onerror="this.src='{% static 'images/member_dp.jpg' %}';"
                  alt="{{ current_member.name }}" 
                  class="rounded-circle shadow-sm" 
-                 style="width: 52px; height: 52px; object-fit: cover; border: 2px solid #2563eb;">
+                 style="width: 52px; height: 52px; object-fit: cover; border: 2px solid #034220;">
             <div class="text-left" style="min-width: 0;">
               <div class="font-weight-bold text-dark text-truncate" style="font-size: 1.05rem;">{{ current_member.name|default:user_display_name }}</div>
               <div class="d-flex align-items-center flex-wrap gap-1 mt-0.5">
@@ -110,7 +110,7 @@
           </div>
 
           <!-- Central High-Precision QR Code -->
-          <div class="my-3 d-inline-block position-relative p-2.5 rounded-20 border shadow-sm" style="background: #ffffff; border-color: rgba(37, 99, 235, 0.2); border-radius: 16px; box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);">
+          <div class="my-3 d-inline-block position-relative p-2.5 rounded-20 border shadow-sm" style="background: #ffffff; border-color: rgba(3, 66, 32, 0.2); border-radius: 16px; box-shadow: 0 8px 24px rgba(3, 66, 32, 0.12);">
             {% if topbar_qr_data_uri %}
               <img src="{{ topbar_qr_data_uri }}" alt="Member Verification QR" style="width: 175px; height: 175px; display: block; border-radius: 8px;">
             {% else %}
@@ -122,15 +122,15 @@
 
           <!-- Turnstile Instruction Banner -->
           <div class="d-flex align-items-center justify-content-center text-primary font-weight-bold text-uppercase my-2" style="font-size: 0.72rem; letter-spacing: 0.08em; gap: 8px;">
-            <span style="height: 1px; background: rgba(37, 99, 235, 0.2); flex: 1;"></span>
+            <span style="height: 1px; background: rgba(3, 66, 32, 0.2); flex: 1;"></span>
             <span><i class="fas fa-camera mr-1"></i> Scan At Gym Turnstile To Enter</span>
-            <span style="height: 1px; background: rgba(37, 99, 235, 0.2); flex: 1;"></span>
+            <span style="height: 1px; background: rgba(3, 66, 32, 0.2); flex: 1;"></span>
           </div>
 
           <!-- Active Beacon -->
           <div class="mt-2 mb-1">
-            <span class="badge badge-pill px-3 py-1.5 font-weight-bold" style="background: rgba(255,255,255,0.9); color: #1e40af; border: 1px solid #bfdbfe; font-size: 0.74rem; letter-spacing: 0.03em; box-shadow: 0 2px 8px rgba(37,99,235,0.08);">
-              <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #2563eb; margin-right: 5px; vertical-align: middle;"></span>
+            <span class="badge badge-pill px-3 py-1.5 font-weight-bold" style="background: rgba(255,255,255,0.9); color: #034220; border: 1px solid #b8e2c8; font-size: 0.74rem; letter-spacing: 0.03em; box-shadow: 0 2px 8px rgba(3,66,32,0.08);">
+              <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #034220; margin-right: 5px; vertical-align: middle;"></span>
               ACTIVE TURNSTILE PASS
             </span>
           </div>
@@ -145,7 +145,7 @@
 
       {% else %}
         <!-- ==================== GYM ADMIN / STAFF ATTENDANCE HUB ==================== -->
-        <div class="modal-header border-0 p-4 text-white position-relative" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%);">
+        <div class="modal-header border-0 p-4 text-white position-relative" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%);">
           <div class="d-flex align-items-center" style="gap: 12px; min-width: 0;">
             <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ffffff;">
               <i class="mdi mdi-qrcode-scan" style="font-size: 22px;"></i>

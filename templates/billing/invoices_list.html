@@ -17,10 +17,18 @@
 </nav>
 
 <div class="col-lg-12 px-0">
-    <div class="card">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Invoices List</h4>
-            <a href="{% url 'billing:trash_invoices' %}" class="btn btn-danger btn-sm"><i class="mdi mdi-delete-empty"></i> Trash</a>
+    <div class="card shadow-sm border-0" style="border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0 !important;">
+        <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #012411 0%, #034220 50%, #065f2c 100%) !important; color: #ffffff !important; padding: 1.15rem 1.6rem; border-top-left-radius: 16px; border-top-right-radius: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.12);">
+            <div class="d-flex align-items-center" style="gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; color: #ffffff; flex-shrink: 0;">
+                    <i class="mdi mdi-receipt text-white" style="font-size: 22px;"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0 text-white font-weight-bold" style="font-size: 1.25rem;">Invoices List</h4>
+                    <span class="text-white-50 small" style="font-size: 0.78rem;">Tax receipts, membership payments & financial logs</span>
+                </div>
+            </div>
+            <a href="{% url 'billing:trash_invoices' %}" class="btn btn-danger btn-sm font-weight-bold shadow-sm" style="border-radius: 10px; background-color: #dc2626; border-color: #dc2626;"><i class="mdi mdi-delete-empty mr-1"></i> Trash</a>
         </div>
         <div class="card-body">
             <!-- =========================================================================

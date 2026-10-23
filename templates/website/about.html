@@ -1,140 +1,125 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
 
-{% block title %}About ONEX BOOST | Powering Smarter Fitness Businesses by HELYONEX{% endblock %}
+{% block title %}About ONEX BOOST ✸ Built for Gym Founders by HELYONEX{% endblock %}
 
 {% block seo %}
-<meta name="description" content="Learn about ONEX BOOST — India's premier gym management operating system developed by HELYONEX. Discover our mission, engineering philosophy, and commitment to fitness entrepreneurs.">
-<meta name="keywords" content="about ONEX BOOST, OneX Boost, HELYONEX, gym management software company, fitness business operating system, fitness technology India">
+<meta name="description" content="Learn about ONEX BOOST — India's premier gym management operating system developed by HELYONEX in Lucknow. Our mission, engineering philosophy, and fitness tech architecture.">
+<meta name="keywords" content="about ONEX BOOST, OneX Boost, HELYONEX, gym software Lucknow, fitness tech India">
 {% endblock %}
 
 {% block canonical %}
-<link rel="canonical" href="https://ONEX BOOST.com/about/">
+<link rel="canonical" href="https://onexboost.com/about/">
 {% endblock %}
 
 {% block content %}
-<!-- ── HERO ────────────────────────────────────────────────────────────────── -->
-<section class="hero-section" style="padding: 9rem 0 4.5rem;">
-    <div class="hero-glow-orb hero-glow-1"></div>
-    <div class="brand-container">
-        <div class="hero-content">
-            <div class="ox-badge mb-3">
-                <i class="fa-solid fa-flag"></i> Our Mission & Heritage
-            </div>
-            <h1 class="hero-title">
-                We Built ONEX BOOST to Eliminate <br>
-                <span class="gradient-text">Operational Friction for Gym Owners</span>
-            </h1>
-            <p class="hero-subtitle">
-                Backed by HELYONEX, we are building the digital backbone for India's rapidly growing fitness industry — helping passionate trainers and gym entrepreneurs run world-class clubs.
-            </p>
+<!-- ── HERO: ABOUT ─────────────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content home-hero" style="min-height: 52vh; padding-top: 7.5rem; padding-bottom: 2rem;">
+      <div class="h1-center">
+        <h1 stagger-page="letter" class="display-1">ABOUT US</h1>
+      </div>
+      <div class="hero-info-container">
+        <div class="hero-text-container">
+          <div stagger-page="word" class="paragraph center-mobile">
+            We built ONEX BOOST to eliminate operational friction and payment leakage for Indian fitness entrepreneurs.
+          </div>
         </div>
+        <a href="https://maps.google.com" target="_blank" class="nav-link right w-nav-brand">
+          <div stagger-page="word" class="paragraph center-mobile bold-mobile">
+            Tedhi Puliya, Jankipuram,<br />Lucknow, Uttar Pradesh, India
+          </div>
+        </a>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── STORY & FOUNDING ────────────────────────────────────────────────────── -->
-<section class="section-py">
-    <div class="brand-container">
-        <div style="display: grid; grid-template-columns: 1fr 1.15fr; gap: 4rem; align-items: center;">
-            <div>
-                <div class="ox-badge mb-3">
-                    <i class="fa-solid fa-heart-pulse"></i> Why We Started
-                </div>
-                <h2 style="font-size: 2.35rem; margin-bottom: 1.25rem; color: var(--ox-text-primary);">Born on the Gym Floor, Not an Abstract Boardroom</h2>
-                <p style="color: var(--ox-text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.25rem;">
-                    We spent months shadowing gym owners, reception managers, and trainers across Lucknow, Delhi NCR, and tier-1/tier-2 Indian cities. We witnessed passionate fitness coaches buried under WhatsApp chats, paper registers, broken fingerprint machines, and overdue membership disputes.
-                </p>
-                <p style="color: var(--ox-text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
-                    Generic ERPs and overseas software were either clunky, exorbitantly expensive, or completely neglected Indian payment methods, GST compliance, and local WhatsApp workflows. That is why <strong>HELYONEX</strong> engineered ONEX BOOST: a bespoke, razor-sharp operating system built from the ground up for Indian fitness businesses.
-                </p>
-                <div style="display: inline-flex; align-items: center; gap: 0.85rem; padding: 0.75rem 1.25rem; border-radius: 14px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2);">
-                    <img src="{% static 'images/Helyojnex-logo.jpeg' %}" alt="HELYONEX" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;">
-                    <span style="font-size: 0.92rem; color: var(--ox-text-primary);">Proudly Engineered in India by <strong>HELYONEX</strong></span>
-                </div>
-            </div>
-            <div>
-                <div class="bento-card" style="padding: 1.5rem; background: #ffffff;">
-                    <img src="{% static 'images/gymaboutimage.png' %}" alt="ONEX BOOST Gym Floor Experience" style="border-radius: 14px; width: 100%; border: 1px solid var(--ox-border-color);">
-                </div>
-            </div>
-        </div>
+<!-- ── ABOUT BANNER MARQUEE ───────────────────────────────────────────────── -->
+<section class="section box-padding-top">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content">
+      <div class="about-tiles-slider" style="background: var(--colors--dark-green); padding: 3rem 2rem; border-radius: var(--padding-radius--borders-radius); text-align: center;">
+        <h2 class="display-2 soft-yellow center" style="margin-bottom: 1rem; color: var(--colors--soft-yellow);">
+          NOTHING MANUAL. EVERYTHING AUTOMATED.
+        </h2>
+        <p class="p2 white center" style="color: var(--colors--white); max-width: 700px; margin: 0 auto;">
+          From the instant a member taps the turnstile to the moment their WhatsApp GST receipt arrives, ONEX BOOST powers every touchpoint seamlessly.
+        </p>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── CORE VALUES BENTO ───────────────────────────────────────────────────── -->
-<section class="section-py" style="background: #ffffff; border-top: 1px solid var(--ox-border-color); border-bottom: 1px solid var(--ox-border-color);">
-    <div class="brand-container">
-        <div class="section-header">
-            <div class="ox-badge section-eyebrow">
-                <i class="fa-solid fa-compass"></i> Guiding Principles
-            </div>
-            <h2 class="section-title">The Engineering Values Behind ONEX BOOST</h2>
-            <p class="section-description">
-                Every line of code and user interface decision is guided by four uncompromising standards.
-            </p>
-        </div>
-
-        <div class="bento-grid">
-            <div class="bento-card bento-col-6">
-                <div class="bento-icon">
-                    <i class="fa-solid fa-gauge-high"></i>
-                </div>
-                <h3 class="bento-title">Speed Over Clutter</h3>
-                <p class="bento-desc">
-                    Front desks get chaotic during morning and evening rush hours. Every check-in, search, and invoice creation in ONEX BOOST is designed to execute in under 3 clicks and less than 1.5 seconds.
-                </p>
-            </div>
-
-            <div class="bento-card bento-col-6">
-                <div class="bento-icon bento-icon-emerald">
-                    <i class="fa-solid fa-shield-check"></i>
-                </div>
-                <h3 class="bento-title">Uncompromising Security & Reliability</h3>
-                <p class="bento-desc">
-                    Your member contact lists, financial revenue figures, and billing transactions are encrypted with bank-grade protocols and backed up automatically to secure cloud vaults.
-                </p>
-            </div>
-
-            <div class="bento-card bento-col-6">
-                <div class="bento-icon bento-icon-amber">
-                    <i class="fa-solid fa-hand-holding-dollar"></i>
-                </div>
-                <h3 class="bento-title">Honest, Predictable Pricing</h3>
-                <p class="bento-desc">
-                    No deceptive per-member gouging or unexpected invoice fees. We believe in transparent SaaS subscriptions that allow gym owners to grow without being penalized.
-                </p>
-            </div>
-
-            <div class="bento-card bento-col-6">
-                <div class="bento-icon bento-icon-purple">
-                    <i class="fa-solid fa-headset"></i>
-                </div>
-                <h3 class="bento-title">Fanatical Customer Support</h3>
-                <p class="bento-desc">
-                    When you call or WhatsApp our support line, you talk directly to technical specialists in India who know gym operations inside out — not automated overseas chatbots.
-                </p>
-            </div>
-        </div>
+<!-- ── OUR STORY ──────────────────────────────────────────────────────────── -->
+<section class="section box-padding-top">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content about-story" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; align-items: center;">
+      <div class="about-home-info">
+        <h2 stagger-scroll="letter" class="display-2">Our<br />Story</h2>
+      </div>
+      <div class="flex-vertical-left center">
+        <p stagger-scroll="line" class="p2" style="font-size: 1.15rem; line-height: 1.7; color: var(--colors--dark-green);">
+          We spent months on the gym floor across Lucknow, Delhi NCR, and tier-1/tier-2 Indian cities shadowing gym owners, receptionists, and trainers. We witnessed passionate fitness coaches buried under WhatsApp chats, paper registers, broken biometric thumb scanners, and uncollected dues.
+        </p>
+        <p stagger-scroll="line" class="p2" style="font-size: 1.05rem; line-height: 1.7; color: var(--colors--dark-green); margin-top: 1rem;">
+          Generic overseas software was clunky, exorbitant, and completely neglected Indian payment methods, GST compliance, and local WhatsApp workflows. That is why <strong>HELYONEX</strong> engineered ONEX BOOST: a bespoke, razor-sharp operating system built from the ground up for Indian fitness facilities.
+        </p>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ── CTA BANNER ──────────────────────────────────────────────────────────── -->
-<section class="section-py">
-    <div class="brand-container">
-        <div class="cta-banner">
-            <h2 class="cta-banner-title">Join Hundreds of Thriving Gym Owners</h2>
-            <p class="cta-banner-desc">
-                Let us show you how ONEX BOOST can transform your daily facility management. Experience the difference of software built specifically for your business.
-            </p>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                <a href="{% url 'contact' %}" class="btn-ox btn-ox-primary btn-ox-lg">
-                    <i class="fa-solid fa-calendar-check"></i> Schedule 15-Min Live Demo
-                </a>
-                <a href="{% url 'features' %}" class="btn-ox btn-ox-secondary btn-ox-lg">
-                    <i class="fa-solid fa-arrow-right"></i> Explore All Features
-                </a>
-            </div>
+<!-- ── ENGINEERING & ARCHITECTURE ─────────────────────────────────────────── -->
+<section class="section box-padding-top">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content barrista" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: center;">
+      <div class="images-wrapper-about-home" style="min-height: 400px; border-radius: var(--padding-radius--borders-radius); overflow: hidden; background: url('{% static 'images/about_dashboard_features.png' %}') center/cover no-repeat; box-shadow: 0 16px 40px rgba(0,0,0,0.08);">
+      </div>
+
+      <div class="about-home-info">
+        <h2 stagger-scroll="letter" class="display-2">Engineered by<br />HELYONEX</h2>
+        <div class="flex-vertical-left">
+          <p stagger-scroll="line" class="p2" style="font-size: 1.1rem; line-height: 1.7; color: var(--colors--dark-green);">
+            Our software engineers and hardware architects obsess over 99.98% cloud uptime, sub-200ms biometric sync, and rock-solid WhatsApp automation.
+          </p>
+          <div style="margin-top: 1.5rem;">
+            <a href="{% url 'contact' %}" class="contact-button">
+              Schedule Live Demo ✸
+            </a>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- ── SECTION: OPERATIONS STATUS ─────────────────────────────────────────── -->
+<section class="section box-padding-top" style="padding-bottom: 6rem;">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content about-home" style="border-radius: var(--padding-radius--borders-radius); padding: 4rem 2rem; background: var(--colors--dark-green); color: var(--colors--white); text-align: center;">
+      <h2 class="display-2 white center" style="margin-bottom: 1.5rem;">OUR COMMITMENT</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; text-align: left; margin-top: 2rem;">
+        <div style="background: rgba(254, 248, 221, 0.08); padding: 1.75rem; border-radius: 1rem; border: 1px solid rgba(254, 248, 221, 0.15);">
+          <div class="bold" style="color: var(--colors--soft-yellow); font-size: 0.85rem; letter-spacing: 0.05em; margin-bottom: 0.5rem;">RELIABILITY</div>
+          <h3 style="font-size: 1.4rem; font-family: var(--font--main-font); margin: 0 0 0.5rem;">99.98% Cloud SLA</h3>
+          <p style="font-size: 0.9rem; color: #edd; margin: 0;">Redundant cloud architecture with auto-failover and edge turnstile sync.</p>
+        </div>
+
+        <div style="background: rgba(254, 248, 221, 0.08); padding: 1.75rem; border-radius: 1rem; border: 1px solid rgba(254, 248, 221, 0.15);">
+          <div class="bold" style="color: var(--colors--soft-yellow); font-size: 0.85rem; letter-spacing: 0.05em; margin-bottom: 0.5rem;">LOCAL SUPPORT</div>
+          <h3 style="font-size: 1.4rem; font-family: var(--font--main-font); margin: 0 0 0.5rem;">15-Min Response</h3>
+          <p style="font-size: 0.9rem; color: #edd; margin: 0;">Direct WhatsApp and phone assistance available 8:00 AM to 9:00 PM, 6 days a week.</p>
+        </div>
+
+        <div style="background: rgba(254, 248, 221, 0.08); padding: 1.75rem; border-radius: 1rem; border: 1px solid rgba(254, 248, 221, 0.15);">
+          <div class="bold" style="color: var(--colors--soft-yellow); font-size: 0.85rem; letter-spacing: 0.05em; margin-bottom: 0.5rem;">DATA PRIVACY</div>
+          <h3 style="font-size: 1.4rem; font-family: var(--font--main-font); margin: 0 0 0.5rem;">Encrypted &amp; Isolated</h3>
+          <p style="font-size: 0.9rem; color: #edd; margin: 0;">Multi-tenant database schema ensures your member data and financials remain strictly isolated.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 {% endblock %}

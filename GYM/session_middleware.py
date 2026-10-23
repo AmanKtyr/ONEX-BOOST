@@ -57,6 +57,8 @@ _PUBLIC_URL_NAMES = frozenset({
     'features',
     'contact',
     'pricing',
+    'modules',
+    'menu',
     'contact_submission',
     'help',
     'password_reset_page',

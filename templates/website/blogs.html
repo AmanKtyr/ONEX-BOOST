@@ -87,28 +87,104 @@
     margin: 0;
   }
 
-  /* ── Blog Grid Layout ─────────────────────────────────────────────────── */
-  .blog-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin-bottom: 4rem;
+  /* ── Featured Single Blog Layout ────────────────────────────────────────── */
+  .featured-single-wrapper {
+    max-width: 1060px;
+    margin: 1rem auto 4.5rem auto;
+    width: 100%;
   }
 
-  .blog-card {
+  .featured-single-card {
     background: var(--colors--white, #fef8dd);
     border: 2px solid var(--colors--dark-green, #034220);
     border-radius: 1.5rem;
     overflow: hidden;
-    box-shadow: 6px 6px 0px var(--colors--dark-green, #034220);
-    display: flex;
-    flex-direction: column;
+    box-shadow: 8px 8px 0px var(--colors--dark-green, #034220);
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
 
-  .blog-card:hover {
+  .featured-single-card:hover {
     transform: translateY(-4px);
-    box-shadow: 10px 10px 0px var(--colors--dark-green, #034220);
+    box-shadow: 12px 12px 0px var(--colors--dark-green, #034220);
+  }
+
+  .featured-single-media {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    overflow: hidden;
+    background: var(--colors--dark-green, #034220);
+  }
+
+  .featured-single-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .featured-single-card:hover .featured-single-media img {
+    transform: scale(1.05);
+  }
+
+  .featured-single-body {
+    padding: 2.75rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .featured-single-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: clamp(1.85rem, 3.2vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    color: var(--colors--dark-green, #034220);
+    margin: 0.85rem 0 1rem 0;
+  }
+
+  .featured-single-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .featured-single-title a:hover {
+    opacity: 0.85;
+  }
+
+  .featured-single-excerpt {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--colors--dark-green, #034220);
+    opacity: 0.9;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .featured-bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .featured-bullet-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--colors--dark-green, #034220);
+  }
+
+  .featured-bullet-list li i {
+    color: var(--colors--dark-green, #034220);
+    font-size: 1rem;
   }
 
   .blog-card-media {
@@ -263,9 +339,14 @@
       grid-template-columns: 1fr;
       gap: 1.25rem;
     }
-    .blog-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+    .featured-single-card {
+      grid-template-columns: 1fr;
+    }
+    .featured-single-media {
+      min-height: 260px;
+    }
+    .featured-single-body {
+      padding: 2rem 1.5rem;
     }
   }
 
@@ -274,12 +355,11 @@
       padding: 2rem 1.25rem 1.75rem !important;
       min-height: auto !important;
     }
-    .blog-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-    .blog-card-body {
+    .featured-single-body {
       padding: 1.5rem 1.25rem;
+    }
+    .featured-single-title {
+      font-size: 1.65rem;
     }
     .advisory-box {
       padding: 2.5rem 1.25rem;
@@ -356,164 +436,43 @@
   </div>
 </section>
 
-<!-- ── COMPREHENSIVE ARTICLE GRID ─────────────────────────────────────────── -->
+<!-- ── SINGLE FEATURED BLOG ARTICLE ─────────────────────────────────────── -->
 <section class="section">
   <div class="w-layout-blockcontainer page_container w-container">
-    <div class="blog-grid">
+    <div class="featured-single-wrapper">
       
-      <!-- ARTICLE 1: HOW TO START A GYM IN INDIA -->
-      <article class="blog-card">
-        <div class="blog-card-media">
-          <span class="blog-card-badge">Startup Guide</span>
-          <img src="{% static 'images/hero_image_gym.png' %}" alt="How to start a gym in India" loading="lazy">
-        </div>
-        <div class="blog-card-body">
-          <div class="blog-meta-row">
-            <span>Playbook</span>
-            <span class="blog-meta-dot">•</span>
-            <span>12 Min Read</span>
-            <span class="blog-meta-dot">•</span>
-            <span>2026 Edition</span>
-          </div>
-          <h2 class="blog-title">
-            <a href="{% url 'how_to_start_gym' %}">How to Start a Gym in India: Low-Budget Setup Guide &amp; Business Plan</a>
-          </h2>
-          <p class="blog-excerpt">
-            Ground-level financial playbook: ₹6L–₹22L budget options, Meerut &amp; Jalandhar machinery hubs, trade license, GST compliance, and ONEX BOOST software automation.
-          </p>
-          <a href="{% url 'how_to_start_gym' %}" class="blog-cta-btn">
-            Read Full Guide ↗
-          </a>
-        </div>
-      </article>
-
-      <!-- ARTICLE 2: BEST GYM MANAGEMENT SOFTWARE IN LUCKNOW -->
-      <article class="blog-card">
-        <div class="blog-card-media">
+      <article class="featured-single-card">
+        <div class="featured-single-media">
           <span class="blog-card-badge">Local Guide</span>
           <img src="{% static 'images/about_dashboard_features.png' %}" alt="Gym management software in Lucknow" loading="lazy">
         </div>
-        <div class="blog-card-body">
+        <div class="featured-single-body">
           <div class="blog-meta-row">
             <span>Lucknow &amp; UP</span>
             <span class="blog-meta-dot">•</span>
             <span>10 Min Read</span>
             <span class="blog-meta-dot">•</span>
-            <span>2026 Review</span>
+            <span>2026 Edition</span>
           </div>
-          <h2 class="blog-title">
+          <h2 class="featured-single-title">
             <a href="{% url 'gym_software_lucknow' %}">Best Gym Management Software in Lucknow (2026): The Complete Buyer's Guide</a>
           </h2>
-          <p class="blog-excerpt">
-            Everything gym owners in Gomti Nagar, Hazratganj, Aliganj, and Indira Nagar need to know about automated WhatsApp fee reminders, turnstiles, and staff discipline.
+          <p class="featured-single-excerpt">
+            Everything gym and fitness studio owners in Gomti Nagar, Hazratganj, Aliganj, and Indira Nagar need to know about eliminating paper registers, automating WhatsApp fee collections, and syncing biometric turnstiles.
           </p>
-          <a href="{% url 'gym_software_lucknow' %}" class="blog-cta-btn">
-            Read Full Guide ↗
-          </a>
-        </div>
-      </article>
 
-      <!-- ARTICLE 3: RETENTION AUTOMATION -->
-      <article class="blog-card">
-        <div class="blog-card-media">
-          <span class="blog-card-badge">Retention OS</span>
-          <img src="{% static 'images/whatsapp-img.png' %}" alt="Membership retention systems" loading="lazy">
-        </div>
-        <div class="blog-card-body">
-          <div class="blog-meta-row">
-            <span>Member Retention</span>
-            <span class="blog-meta-dot">•</span>
-            <span>8 Min Read</span>
-            <span class="blog-meta-dot">•</span>
-            <span>Systems Architecture</span>
-          </div>
-          <h2 class="blog-title">
-            <a href="{% url 'blog_detail' 1 %}">How Gyms Can Increase Membership Retention Using Automation</a>
-          </h2>
-          <p class="blog-excerpt">
-            A practical roadmap to fee reminder intervals, attendance signals, trainer check-ins, and the operating habits that help members stay consistent and renew.
-          </p>
-          <a href="{% url 'blog_detail' 1 %}" class="blog-cta-btn">
-            Read Full Guide ↗
-          </a>
-        </div>
-      </article>
+          <ul class="featured-bullet-list">
+            <li><i class="fa-solid fa-circle-check"></i> <span>Local Lucknow presence &amp; on-ground staff training</span></li>
+            <li><i class="fa-solid fa-circle-check"></i> <span>Automated Meta WhatsApp fee receipts &amp; reminders</span></li>
+            <li><i class="fa-solid fa-circle-check"></i> <span>Biometric turnstiles with offline edge-sync buffer</span></li>
+          </ul>
 
-      <!-- ARTICLE 4: BILLING DISCIPLINE -->
-      <article class="blog-card">
-        <div class="blog-card-media">
-          <span class="blog-card-badge">Finance &amp; GST</span>
-          <img src="{% static 'images/ecosystem_modern.png' %}" alt="Billing discipline operations" loading="lazy">
-        </div>
-        <div class="blog-card-body">
-          <div class="blog-meta-row">
-            <span>Cash Flow</span>
-            <span class="blog-meta-dot">•</span>
-            <span>6 Min Read</span>
-            <span class="blog-meta-dot">•</span>
-            <span>Executive Brief</span>
+          <div>
+            <a href="{% url 'gym_software_lucknow' %}" class="blog-cta-btn" style="max-width: 260px;">
+              <span>Read Full Guide</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
           </div>
-          <h2 class="blog-title">
-            <a href="{% url 'contact' %}">Why Billing Discipline Shapes Gym Floor Culture &amp; Member Trust</a>
-          </h2>
-          <p class="blog-excerpt">
-            Eliminating cash drawer discrepancies, cashier handover leaks, and manual fee reminders with automated Meta WhatsApp GST receipts and QR reconciliation.
-          </p>
-          <a href="{% url 'contact' %}" class="blog-cta-btn">
-            Book Architecture Walkthrough ↗
-          </a>
-        </div>
-      </article>
-
-      <!-- ARTICLE 5: BIOMETRIC TURNSTILES & ACCESS -->
-      <article class="blog-card">
-        <div class="blog-card-media">
-          <span class="blog-card-badge">Hardware</span>
-          <img src="{% static 'images/gymaboutimage.png' %}" alt="Biometrics and turnstiles hardware guide" loading="lazy">
-        </div>
-        <div class="blog-card-body">
-          <div class="blog-meta-row">
-            <span>Hardware Sync</span>
-            <span class="blog-meta-dot">•</span>
-            <span>7 Min Read</span>
-            <span class="blog-meta-dot">•</span>
-            <span>Engineering</span>
-          </div>
-          <h2 class="blog-title">
-            <a href="{% url 'features' %}#biometrics">AI Face Recognition vs. Optical Fingerprint Scanners for High-Footfall Clubs</a>
-          </h2>
-          <p class="blog-excerpt">
-            Speed, sweaty-finger failure rates, tripod turnstile integration, and edge-sync buffers during internet broadband drops on busy Indian gym floors.
-          </p>
-          <a href="{% url 'features' %}#biometrics" class="blog-cta-btn">
-            Explore Hardware Spec ↗
-          </a>
-        </div>
-      </article>
-
-      <!-- ARTICLE 6: PERSONAL TRAINER COMMISSIONS -->
-      <article class="blog-card">
-        <div class="blog-card-media">
-          <span class="blog-card-badge">Staff CRM</span>
-          <img src="{% static 'images/gym-guy.jpg' %}" alt="Trainer CRM and commissions" loading="lazy">
-        </div>
-        <div class="blog-card-body">
-          <div class="blog-meta-row">
-            <span>Trainer Workflows</span>
-            <span class="blog-meta-dot">•</span>
-            <span>5 Min Read</span>
-            <span class="blog-meta-dot">•</span>
-            <span>Staff Retention</span>
-          </div>
-          <h2 class="blog-title">
-            <a href="{% url 'modules' %}#core">How Transparent PT Commission Tracking Eliminates Trainer Turnover</a>
-          </h2>
-          <p class="blog-excerpt">
-            Automating personal training session logs, client diet assignments, and monthly incentive settlements without end-of-month register disputes.
-          </p>
-          <a href="{% url 'modules' %}#core" class="blog-cta-btn">
-            View Module Details ↗
-          </a>
         </div>
       </article>
 

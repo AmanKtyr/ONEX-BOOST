@@ -57,29 +57,48 @@
 <!-- ── ARTICLE HERO ───────────────────────────────────────────────────────── -->
 <section class="section">
   <div class="w-layout-blockcontainer page_container w-container">
-    <div class="content home-hero blogs-hero">
-      <div class="h1-center">
-        <!-- Eyebrow Pill Badge -->
+    <div class="content article-hero-wrapper">
+      
+      <!-- Breadcrumb Bar -->
+      <div class="article-breadcrumb-bar">
+        <nav class="article-breadcrumb-nav" aria-label="Breadcrumb">
+          <a href="{% url 'index' %}"><i class="fa-solid fa-house" style="font-size: 0.8rem;"></i> Home</a>
+          <span class="article-breadcrumb-sep">/</span>
+          <a href="{% url 'blogs' %}">Blogs &amp; Insights</a>
+          <span class="article-breadcrumb-sep">/</span>
+          <span class="article-breadcrumb-current">Retention Automation</span>
+        </nav>
+        <a href="{% url 'blogs' %}" class="article-back-pill">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Back to all Insights</span>
+        </a>
+      </div>
+
+      <!-- Title & Eyebrow Badge -->
+      <div class="article-hero-title-box">
         <div class="hero-eyebrow-badge">
           <span class="hero-badge-dot"></span>
           <span class="hero-badge-brand">A Product of HELYONEX</span>
           <span class="hero-badge-separator">✦</span>
           <span class="hero-badge-desc">Member Retention &amp; Systems Engineering</span>
         </div>
-        <h1 stagger-page="letter" class="display-1">HOW GYMS INCREASE RETENTION USING AUTOMATION</h1>
+        <h1 class="article-hero-heading">HOW GYMS INCREASE RETENTION USING AUTOMATION</h1>
       </div>
+
+      <!-- Hero Meta Info -->
       <div class="hero-info-container">
         <div class="hero-text-container">
-          <div stagger-page="word" class="paragraph center-mobile">
+          <div class="paragraph center-mobile">
             Retention improves when follow-up becomes consistent. Learn how proactive automation and attendance signals keep members coming back without feeling robotic.
           </div>
         </div>
         <div class="hero-text-container right">
-          <div stagger-page="word" class="paragraph center-mobile bold-mobile">
+          <div class="paragraph center-mobile bold-mobile">
             8 Min Read &bull; Updated for 2026<br />By HELYONEX Systems Engineering Team
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>

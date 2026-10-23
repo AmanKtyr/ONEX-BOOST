@@ -2232,5 +2232,147 @@ html, body {
   }
 }
 
+/* ── Article Dedicated Hero & Breadcrumb Bar ─────────────────────────────── */
+.content.article-hero-wrapper {
+  background-color: var(--colors--soft-yellow-40, #f6f0cb) !important;
+  border-radius: var(--padding-radius--borders-radius, 1rem) !important;
+  padding: 2.25rem 3rem 2.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-height: auto !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
 
+.article-breadcrumb-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 1rem !important;
+  border-bottom: 1.5px solid rgba(3, 66, 32, 0.12) !important;
+  width: 100% !important;
+}
 
+.article-breadcrumb-nav {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  color: var(--colors--dark-green, #034220) !important;
+}
+
+.article-breadcrumb-nav a {
+  color: var(--colors--dark-green, #034220) !important;
+  text-decoration: none !important;
+  opacity: 0.75 !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+}
+
+.article-breadcrumb-nav a:hover {
+  opacity: 1 !important;
+  text-decoration: underline !important;
+}
+
+.article-breadcrumb-sep {
+  opacity: 0.4 !important;
+  font-size: 0.75rem !important;
+}
+
+.article-breadcrumb-current {
+  font-weight: 700 !important;
+  opacity: 0.95 !important;
+  color: var(--colors--dark-green, #034220) !important;
+}
+
+.article-back-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.45rem 1.15rem !important;
+  background: var(--colors--dark-green, #034220) !important;
+  color: #fef8dd !important;
+  border-radius: 999px !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-decoration: none !important;
+  transition: all 0.22s ease !important;
+  box-shadow: 0 4px 12px rgba(3, 66, 32, 0.2) !important;
+}
+
+.article-back-pill:hover {
+  background: #012411 !important;
+  transform: translateX(-3px) !important;
+  box-shadow: 0 6px 18px rgba(3, 66, 32, 0.3) !important;
+}
+
+.article-hero-title-box {
+  text-align: center !important;
+  margin: 0.5rem auto 1.5rem auto !important;
+  max-width: 980px !important;
+  width: 100% !important;
+}
+
+.article-hero-heading {
+  font-family: var(--font--main-font, Impact, sans-serif) !important;
+  font-size: clamp(2.1rem, 4.4vw, 3.6rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.015em !important;
+  text-transform: uppercase !important;
+  color: var(--colors--dark-green, #034220) !important;
+  margin: 0.85rem 0 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+
+.content.article-hero-wrapper .hero-info-container {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  gap: 2rem !important;
+  width: 100% !important;
+  margin-top: 1.25rem !important;
+  padding-top: 1.25rem !important;
+  border-top: 1.5px solid rgba(3, 66, 32, 0.12) !important;
+}
+
+@media (max-width: 991px) {
+  .content.article-hero-wrapper {
+    padding: 1.75rem 1.5rem 2rem !important;
+  }
+  .article-hero-heading {
+    font-size: clamp(1.85rem, 6vw, 2.75rem) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .content.article-hero-wrapper {
+    padding: 1.25rem 1rem 1.75rem !important;
+  }
+  .article-breadcrumb-bar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .article-hero-heading {
+    font-size: clamp(1.65rem, 8vw, 2.35rem) !important;
+    line-height: 1.1 !important;
+  }
+  .content.article-hero-wrapper .hero-info-container {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+    text-align: left !important;
+  }
+}

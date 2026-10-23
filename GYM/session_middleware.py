@@ -36,6 +36,9 @@ _PUBLIC_PREFIXES = (
     '/media/',
     '/whatsapp/webhook/',
     '/attendance/scan-attendance/',
+    '/blogs/',
+    '/gym-management-software-in-lucknow/',
+    '/how-to-start-a-gym-in-india/',
 )
 
 # URL names that are always public (matched after resolve()).
@@ -62,6 +65,8 @@ _PUBLIC_URL_NAMES = frozenset({
     'contact_submission',
     'help',
     'password_reset_page',
+    'legacy_gym_software_lucknow',
+    'legacy_how_to_start_gym',
 })
 
 # Also derive prefixes from settings to stay in sync with STATIC/MEDIA URLs.

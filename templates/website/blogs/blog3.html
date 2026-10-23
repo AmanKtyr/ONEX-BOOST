@@ -11,13 +11,13 @@
 {% endblock %}
 
 {% block canonical %}
-<link rel="canonical" href="https://onexboost.com/how-to-start-a-gym-in-india/">
+<link rel="canonical" href="https://onexboost.com/blogs/how-to-start-a-gym-in-india/">
 {% endblock %}
 
 {% block og_tags %}
 <meta property="og:site_name" content="ONEX BOOST">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://onexboost.com/how-to-start-a-gym-in-india/">
+<meta property="og:url" content="https://onexboost.com/blogs/how-to-start-a-gym-in-india/">
 <meta property="og:title" content="How to Start a Gym in India (2026): Realistic Budget &amp; Business Guide | ONEX BOOST">
 <meta property="og:description" content="Realistic budget breakdown from ₹6 Lakhs to ₹22 Lakhs. Sourcing equipment in India, mandatory licenses, monthly profit models, and ONEX BOOST software setup.">
 <meta property="og:image" content="{% static 'images/hero_image_gym.png' %}">
@@ -48,7 +48,7 @@
   },
   "datePublished": "2026-09-24",
   "dateModified": "2026-10-23",
-  "mainEntityOfPage": "https://onexboost.com/how-to-start-a-gym-in-india/"
+  "mainEntityOfPage": "https://onexboost.com/blogs/how-to-start-a-gym-in-india/"
 }
 </script>
 {% endblock %}
@@ -57,29 +57,48 @@
 <!-- ── ARTICLE HERO ───────────────────────────────────────────────────────── -->
 <section class="section">
   <div class="w-layout-blockcontainer page_container w-container">
-    <div class="content home-hero blogs-hero">
-      <div class="h1-center">
-        <!-- Eyebrow Pill Badge -->
+    <div class="content article-hero-wrapper">
+      
+      <!-- Breadcrumb Bar -->
+      <div class="article-breadcrumb-bar">
+        <nav class="article-breadcrumb-nav" aria-label="Breadcrumb">
+          <a href="{% url 'index' %}"><i class="fa-solid fa-house" style="font-size: 0.8rem;"></i> Home</a>
+          <span class="article-breadcrumb-sep">/</span>
+          <a href="{% url 'blogs' %}">Blogs &amp; Insights</a>
+          <span class="article-breadcrumb-sep">/</span>
+          <span class="article-breadcrumb-current">Start a Gym in India</span>
+        </nav>
+        <a href="{% url 'blogs' %}" class="article-back-pill">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Back to all Insights</span>
+        </a>
+      </div>
+
+      <!-- Title & Eyebrow Badge -->
+      <div class="article-hero-title-box">
         <div class="hero-eyebrow-badge">
           <span class="hero-badge-dot"></span>
           <span class="hero-badge-brand">A Product of HELYONEX</span>
           <span class="hero-badge-separator">✦</span>
           <span class="hero-badge-desc">Fitness Business Blueprint &bull; 2026 Edition</span>
         </div>
-        <h1 stagger-page="letter" class="display-1">HOW TO START A GYM IN INDIA (2026 GUIDE)</h1>
+        <h1 class="article-hero-heading">HOW TO START A GYM IN INDIA (2026 GUIDE)</h1>
       </div>
+
+      <!-- Hero Meta Info -->
       <div class="hero-info-container">
         <div class="hero-text-container">
-          <div stagger-page="word" class="paragraph center-mobile">
+          <div class="paragraph center-mobile">
             Ground-level financial playbook: ₹6L–₹22L setup models, Meerut &amp; Jalandhar manufacturing hubs, legal licenses, and daily automation with ONEX BOOST.
           </div>
         </div>
         <div class="hero-text-container right">
-          <div stagger-page="word" class="paragraph center-mobile bold-mobile">
+          <div class="paragraph center-mobile bold-mobile">
             12 Min Read &bull; 2026 Edition<br />₹6L–₹22L Setup Calculations.
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>

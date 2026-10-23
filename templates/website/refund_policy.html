@@ -4,127 +4,738 @@
 {% block title %}Refund Policy | ONEX BOOST Gym Management Software by HELYONEX{% endblock %}
 
 {% block seo %}
-<meta name="description" content="Understand ONEX BOOST refund and cancellation policy for gym management software subscriptions by HELYONEX. Transparent billing and fair review.">
-<meta name="keywords" content="ONEX BOOST refund policy, HELYONEX, gym software refund, gym management software cancellation policy">
+<meta name="description" content="Read the transparent Refund and Cancellation Policy for ONEX BOOST gym management software by HELYONEX. Clear timelines, fair review criteria, and prompt dispute resolution.">
+<meta name="keywords" content="ONEX BOOST refund policy, HELYONEX gym software refund, gym software cancellation policy India">
 <meta name="author" content="ONEX BOOST by HELYONEX">
 <meta name="robots" content="index, follow">
 {% endblock %}
 
 {% block canonical %}
-<link rel="canonical" href="https://ONEX BOOST.com/refund-policy/">
+<link rel="canonical" href="https://onexboost.com/refund_policy/">
 {% endblock %}
 
 {% block og_tags %}
 <meta property="og:site_name" content="ONEX BOOST">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://ONEX BOOST.com/refund-policy/">
-<meta property="og:title" content="Refund Policy — ONEX BOOST Gym Management Software by HELYONEX">
-<meta property="og:description" content="Transparent refund policy for ONEX BOOST gym software subscriptions by HELYONEX.">
+<meta property="og:url" content="https://onexboost.com/refund_policy/">
+<meta property="og:title" content="Refund Policy ✸ ONEX BOOST by HELYONEX">
+<meta property="og:description" content="Transparent, founder-first refund and cancellation policy for ONEX BOOST gym subscriptions.">
 <meta property="og:locale" content="en_IN">
 {% endblock %}
 
+{% block schema_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Refund Policy",
+  "url": "https://onexboost.com/refund_policy/",
+  "description": "ONEX BOOST refund and cancellation terms outlining eligibility, process, and dispute resolution by HELYONEX.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "ONEX BOOST by HELYONEX"
+  }
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── Legal & Policy Hero ──────────────────────────────────────────────── */
+  .legal-hero {
+    min-height: 44vh !important;
+    padding-top: 6.5rem !important;
+    padding-bottom: 2.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+  }
+
+  .legal-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(3, 66, 32, 0.08);
+    border: 1.5px solid rgba(3, 66, 32, 0.22);
+    border-radius: 999px;
+    padding: 0.45rem 1.15rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--colors--dark-green, #034220);
+    margin: 0 auto 1.5rem auto;
+    width: fit-content;
+  }
+
+  /* ── 3-Pillar Security Banner ─────────────────────────────────────────── */
+  .security-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0 3.5rem 0;
+  }
+
+  .security-card {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    box-shadow: 6px 6px 0px rgba(3, 66, 32, 0.15);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .security-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 8px 8px 0px rgba(3, 66, 32, 0.25);
+  }
+
+  .security-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 0.75rem;
+    background: rgba(254, 248, 221, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #fef8dd;
+    margin-bottom: 0.25rem;
+  }
+
+  .security-card-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--colors--white, #fef8dd);
+    margin: 0;
+  }
+
+  .security-card-desc {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: rgba(254, 248, 221, 0.85);
+    margin: 0;
+  }
+
+  /* ── 2-Column Policy & TOC Layout ─────────────────────────────────────── */
+  .policy-layout {
+    display: grid;
+    grid-template-columns: 290px 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding-bottom: 5rem;
+  }
+
+  /* Sticky Sidebar */
+  .policy-sidebar {
+    position: sticky;
+    top: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .policy-toc-card {
+    background: var(--colors--white, #fef8dd);
+    border: 2px solid var(--colors--dark-green, #034220);
+    border-radius: 1.25rem;
+    padding: 1.5rem 1.25rem;
+    box-shadow: 5px 5px 0px var(--colors--dark-green, #034220);
+  }
+
+  .policy-toc-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--colors--dark-green, #034220);
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.65rem;
+    border-bottom: 1.5px solid rgba(3, 66, 32, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .policy-toc-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .policy-toc-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.65rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--colors--dark-green, #034220);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .policy-toc-link:hover {
+    background: rgba(3, 66, 32, 0.08);
+    transform: translateX(3px);
+  }
+
+  .policy-toc-link.active {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    box-shadow: 0 4px 10px rgba(3, 66, 32, 0.2);
+  }
+
+  .policy-toc-num {
+    font-size: 0.78rem;
+    font-weight: 800;
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .policy-help-card {
+    background: rgba(3, 66, 32, 0.06);
+    border: 1.5px dashed rgba(3, 66, 32, 0.25);
+    border-radius: 1.25rem;
+    padding: 1.25rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .policy-help-card h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--colors--dark-green, #034220);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .policy-help-card p {
+    font-size: 0.85rem;
+    color: var(--colors--dark-green, #034220);
+    opacity: 0.85;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .policy-help-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--colors--dark-green, #034220);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .policy-help-link:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Content Policy Cards ─────────────────────────────────────────────── */
+  .policy-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .policy-section-card {
+    background: var(--colors--white, #fef8dd);
+    border: 2px solid var(--colors--dark-green, #034220);
+    border-radius: 1.5rem;
+    padding: 2.25rem 2rem;
+    box-shadow: 6px 6px 0px var(--colors--dark-green, #034220);
+    scroll-margin-top: 6rem;
+    transition: transform 0.2s ease;
+  }
+
+  .policy-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid rgba(3, 66, 32, 0.12);
+  }
+
+  .policy-num {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--colors--white, #fef8dd);
+    background: var(--colors--dark-green, #034220);
+    width: 44px;
+    height: 44px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(3, 66, 32, 0.2);
+  }
+
+  .policy-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.6rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--colors--dark-green, #034220);
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .policy-body {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--colors--dark-green, #034220);
+  }
+
+  .policy-body p {
+    margin: 0 0 1rem 0;
+  }
+
+  .policy-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .policy-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .policy-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .policy-list-icon {
+    color: var(--colors--dark-green, #034220);
+    font-size: 0.85rem;
+    margin-top: 0.28rem;
+    flex-shrink: 0;
+  }
+
+  .policy-callout {
+    background: rgba(3, 66, 32, 0.05);
+    border-left: 4px solid var(--colors--dark-green, #034220);
+    border-radius: 0.75rem;
+    padding: 1.15rem 1.25rem;
+    margin: 1.25rem 0;
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .policy-callout strong {
+    color: var(--colors--dark-green, #034220);
+  }
+
+  .policy-contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .policy-contact-box {
+    background: rgba(3, 66, 32, 0.04);
+    border: 1.5px solid rgba(3, 66, 32, 0.15);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--colors--dark-green, #034220);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+
+  .policy-contact-box:hover {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(3, 66, 32, 0.18);
+  }
+
+  @media (max-width: 991px) {
+    .legal-hero {
+      padding-top: 3.5rem !important;
+      min-height: auto !important;
+    }
+    .security-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .policy-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .policy-sidebar {
+      position: static;
+    }
+    .policy-section-card {
+      padding: 1.5rem 1.25rem;
+    }
+    .policy-title {
+      font-size: 1.35rem;
+    }
+    .policy-contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="page-hero">
-    <img src="{% static 'images/hero_image_gym.png' %}" alt="ONEX BOOST refund policy" class="page-hero-media">
-    <div class="brand-container page-hero-content">
-        <div class="max-w-4xl site-reveal">
-            <span class="brand-eyebrow brand-eyebrow-dark">
-                <i class="fa-solid fa-receipt"></i>
-                Refund policy
-            </span>
-            <h1 class="brand-heading mt-6">A clear outline of how refund requests are handled.</h1>
-            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
-                Transparency matters. This page describes the general approach ONEX BOOST follows when evaluating refund-related requests.
+<!-- ── HERO: REFUND POLICY ──────────────────────────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="legal-hero">
+      <div style="text-align: center; max-width: 920px; margin: 0 auto; width: 100%;">
+        
+        <div class="legal-badge-pill">
+          <i class="fa-solid fa-receipt" style="font-size: 0.9rem;"></i>
+          <span>Official Billing Policy ✸ HELYONEX</span>
+        </div>
+
+        <h1 class="heading is-display-1" style="margin-bottom: 1.25rem; text-transform: uppercase;">
+          REFUND POLICY
+        </h1>
+
+        <p class="paragraph is-large" style="max-width: 760px; margin: 0 auto; opacity: 0.88; line-height: 1.65;">
+          Transparency and fair business ethics matter. Here is our straightforward, founder-first outline of how subscription cancellations, accidental duplicate charges, and refund requests are evaluated for <strong>ONEX BOOST</strong> customers.
+        </p>
+
+        <!-- Meta Details Row -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 1.75rem; font-size: 0.88rem; font-weight: 700; color: var(--colors--dark-green, #034220); opacity: 0.85;">
+          <span><i class="fa-regular fa-calendar-check" style="margin-right: 0.35rem;"></i> Last Updated: October 2026</span>
+          <span><i class="fa-solid fa-clock-rotate-left" style="margin-right: 0.35rem;"></i> Fast 48h Resolution Window</span>
+          <span><i class="fa-solid fa-indian-rupee-sign" style="margin-right: 0.35rem;"></i> Direct Source Bank Credit</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 3-PILLAR BILLING HIGHLIGHTS ─────────────────────────────────────── -->
+    <div class="security-grid">
+      <div class="security-card">
+        <div class="security-card-icon">
+          <i class="fa-solid fa-shield-heart"></i>
+        </div>
+        <h3 class="security-card-title">7-DAY ONBOARDING PLEDGE</h3>
+        <p class="security-card-desc">
+          If our engineers cannot successfully get your gym branches or turnstile devices connected within the first 7 days, receive a complete full refund.
+        </p>
+      </div>
+
+      <div class="security-card">
+        <div class="security-card-icon">
+          <i class="fa-solid fa-handshake-angle"></i>
+        </div>
+        <h3 class="security-card-title">FAIR REVIEW CRITERIA</h3>
+        <p class="security-card-desc">
+          Duplicate debits, accidental double clicks, or unauthorized renewals are refunded instantly without bureaucratic red tape.
+        </p>
+      </div>
+
+      <div class="security-card">
+        <div class="security-card-icon">
+          <i class="fa-solid fa-receipt"></i>
+        </div>
+        <h3 class="security-card-title">GST CREDIT NOTES</h3>
+        <p class="security-card-desc">
+          Official GST credit notes are generated immediately and sent to your accounting email to ensure perfect input tax credit matching.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── 2-COLUMN POLICY LAYOUT ──────────────────────────────────────────── -->
+    <div class="policy-layout">
+      
+      <!-- Sticky Navigation Sidebar -->
+      <aside class="policy-sidebar">
+        <div class="policy-toc-card">
+          <h3 class="policy-toc-title">
+            <span>Table of Contents</span>
+            <i class="fa-solid fa-list-ul" style="font-size: 0.9rem; opacity: 0.6;"></i>
+          </h3>
+          <nav id="policy-toc" class="policy-toc-nav">
+            <a href="#general-policy" class="policy-toc-link active">
+              <span class="policy-toc-num">01</span>
+              <span>General Philosophy</span>
+            </a>
+            <a href="#eligibility" class="policy-toc-link">
+              <span class="policy-toc-num">02</span>
+              <span>Eligibility & Scenarios</span>
+            </a>
+            <a href="#non-refundable" class="policy-toc-link">
+              <span class="policy-toc-num">03</span>
+              <span>Non-Refundable Items</span>
+            </a>
+            <a href="#refund-process" class="policy-toc-link">
+              <span class="policy-toc-num">04</span>
+              <span>Refund Procedure</span>
+            </a>
+            <a href="#cancellation-contact" class="policy-toc-link">
+              <span class="policy-toc-num">05</span>
+              <span>Cancellations & Contact</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Help Desk Widget -->
+        <div class="policy-help-card">
+          <h4>Billing Support Desk</h4>
+          <p>Have an inquiry about an invoice, charge, or payment gateway status?</p>
+          <a href="mailto:support@helyonex.com" class="policy-help-link">
+            <i class="fa-solid fa-envelope"></i>
+            <span>support@helyonex.com</span>
+          </a>
+          <a href="tel:+919454487893" class="policy-help-link">
+            <i class="fa-solid fa-phone"></i>
+            <span>+91 9454487893</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Policy Content Cards -->
+      <main class="policy-content">
+
+        <!-- 01. General Philosophy -->
+        <article id="general-policy" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">01</div>
+            <h2 class="policy-title">General Policy & Fair Business Commitment</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              At <strong>ONEX BOOST by HELYONEX</strong>, we view gym owners as long-term operating partners rather than one-time transaction accounts. We design our software to deliver immediate operational value from day one.
             </p>
-        </div>
-    </div>
-</section>
-
-<section class="brand-section">
-    <div class="brand-container docs-shell">
-        <aside class="docs-side site-reveal">
-            <div class="brand-card docs-card">
-                <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500 mb-4">Quick navigation</p>
-                <nav id="toc-nav" class="docs-nav">
-                    <a href="#policy">General policy</a>
-                    <a href="#eligibility">Eligibility</a>
-                    <a href="#process">Refund process</a>
-                    <a href="#contact">Contact</a>
-                </nav>
+            <p>
+              If our platform ever fails to deliver the promised features, or if technical hurdles prevent you from deploying our software effectively, we stand behind our work with fair, prompt, and dignified refund policies.
+            </p>
+            <div class="policy-callout">
+              <strong>Our Promise:</strong> We do not trap gym owners with hidden renewal traps, difficult cancellation barriers, or refusal to resolve legitimate transaction issues.
             </div>
-        </aside>
+          </div>
+        </article>
 
-        <div class="docs-content">
-            <section id="policy" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">1</span>General policy</h2>
-                <p>ONEX BOOST aims to handle billing and service concerns fairly and transparently. Refund outcomes may depend on plan type, timing, service status, and the nature of the request.</p>
-                <p>Customers are encouraged to contact ONEX BOOST promptly if there is a billing concern, duplicate charge, or service issue requiring review.</p>
-            </section>
+        <!-- 02. Eligibility & Scenarios -->
+        <article id="eligibility" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">02</div>
+            <h2 class="policy-title">Eligibility Criteria & Common Scenarios</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              Refund requests are categorized and evaluated based on the following transparent criteria:
+            </p>
 
-            <section id="eligibility" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">2</span>Eligibility and review factors</h2>
-                <ul>
-                    <li>How long ago the charge occurred.</li>
-                    <li>Whether the request relates to an initial purchase, renewal, duplicate transaction, or service issue.</li>
-                    <li>Whether meaningful service usage or implementation work has already taken place.</li>
-                    <li>Whether there is a documented technical or operational issue requiring case-by-case review.</li>
-                </ul>
-                <div class="grid sm:grid-cols-2 gap-4 mt-6">
-                    <div class="calculator-stat">
-                        <div class="font-bold">Often reviewed positively</div>
-                        <p class="text-sm mt-2">Duplicate payments, incorrect billing, or unresolved service issues reported quickly.</p>
-                    </div>
-                    <div class="calculator-stat">
-                        <div class="font-bold">Subject to strict review</div>
-                        <p class="text-sm mt-2">Requests made long after purchase or after substantial implementation work has already been completed.</p>
-                    </div>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-circle-check policy-list-icon" style="color: #15803d;"></i>
+                <span><strong>Duplicate Payments:</strong> If technical lag or gateway error causes you to be billed twice for the same billing cycle, the redundant amount is refunded within 24 to 48 hours without question.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check policy-list-icon" style="color: #15803d;"></i>
+                <span><strong>7-Day Onboarding Guarantee:</strong> For new software license subscribers, if our technical engineering team cannot establish compatibility with your turnstile or branch workflow within 7 days of purchase, you are entitled to a full software subscription refund.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check policy-list-icon" style="color: #15803d;"></i>
+                <span><strong>Unauthorized Card / UPI Transactions:</strong> Fraudulent or accidental transactions reported within 7 business days will be frozen and credited upon confirmation.</span>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 03. Non-Refundable Items -->
+        <article id="non-refundable" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">03</div>
+            <h2 class="policy-title">Non-Refundable Services & Components</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              To maintain our competitive pricing for the fitness community, certain specialized third-party and hardware expenses cannot be refunded once delivered:
+            </p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-ban policy-list-icon" style="color: #b91c1c;"></i>
+                <span><strong>Physical Hardware Dispatched:</strong> Biometric turnstiles, RFID smart cards, optical scanners, and power controllers once shipped or unboxed are covered under warranty repair/replacement rather than return refunds.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-ban policy-list-icon" style="color: #b91c1c;"></i>
+                <span><strong>On-Site Technician Travel:</strong> Out-of-station travel and accommodation charges incurred for sending certified field engineers directly to your gym premises.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-ban policy-list-icon" style="color: #b91c1c;"></i>
+                <span><strong>Consumed WhatsApp / SMS Credits:</strong> Prepaid telecom credits dispatched through TRAI telecom gateways for member notifications.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-ban policy-list-icon" style="color: #b91c1c;"></i>
+                <span><strong>Post-Usage Subscriptions:</strong> Requests submitted several months into an active annual subscription where the software has been in regular daily use for gym operations.</span>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 04. Refund Procedure -->
+        <article id="refund-process" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">04</div>
+            <h2 class="policy-title">Step-by-Step Refund Procedure & Timelines</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              We process refunds through official banking channels to maintain compliance with Indian banking and RBI regulations:
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin: 1.5rem 0;">
+              <div style="background: rgba(3, 66, 32, 0.05); padding: 1rem 1.25rem; border-radius: 0.85rem; border: 1px solid rgba(3, 66, 32, 0.12);">
+                <strong style="color: var(--colors--dark-green, #034220);">Step 1: Submit Request</strong>
+                <p style="margin: 0.25rem 0 0 0; font-size: 0.95rem;">Send an email to <code>support@helyonex.com</code> with your registered gym name, invoice number, and brief description of the issue.</p>
+              </div>
+
+              <div style="background: rgba(3, 66, 32, 0.05); padding: 1rem 1.25rem; border-radius: 0.85rem; border: 1px solid rgba(3, 66, 32, 0.12);">
+                <strong style="color: var(--colors--dark-green, #034220);">Step 2: Internal Review (24-48 Hours)</strong>
+                <p style="margin: 0.25rem 0 0 0; font-size: 0.95rem;">Our billing lead verifies transaction timestamps, server error logs, or payment gateway status and approves qualifying requests.</p>
+              </div>
+
+              <div style="background: rgba(3, 66, 32, 0.05); padding: 1rem 1.25rem; border-radius: 0.85rem; border: 1px solid rgba(3, 66, 32, 0.12);">
+                <strong style="color: var(--colors--dark-green, #034220);">Step 3: Direct Reversal (5-7 Banking Days)</strong>
+                <p style="margin: 0.25rem 0 0 0; font-size: 0.95rem;">Funds are credited directly back to the original payment source (UPI VPA, Net Banking, or Credit/Debit Card) via Razorpay/Stripe, accompanied by a formal GST Credit Note.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 05. Cancellations & Contact -->
+        <article id="cancellation-contact" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">05</div>
+            <h2 class="policy-title">Self-Service Cancellation & Billing Inquiries</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              You may pause or terminate future automatic renewals at any moment directly from your gym administration dashboard under <strong>Settings &gt; Subscription & Billing</strong>.
+            </p>
+            <p>
+              For urgent billing questions, duplicate payment reconciliation, or to request a GST credit note, connect directly with our billing team:
+            </p>
+
+            <div class="policy-contact-grid">
+              <a href="mailto:support@helyonex.com" class="policy-contact-box">
+                <i class="fa-solid fa-envelope" style="font-size: 1.25rem;"></i>
+                <div>
+                  <div style="font-size: 0.78rem; text-transform: uppercase; opacity: 0.7;">Billing Mailbox</div>
+                  <div>support@helyonex.com</div>
                 </div>
-            </section>
+              </a>
 
-            <section id="process" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">3</span>Refund process</h2>
-                <ul>
-                    <li>Contact ONEX BOOST support with the billing concern and relevant transaction details.</li>
-                    <li>Our team reviews the request and may ask for supporting context.</li>
-                    <li>If approved, the refund is initiated through the relevant payment channel.</li>
-                    <li>Processing timelines can vary depending on the payment provider.</li>
-                </ul>
-            </section>
+              <a href="tel:+919454487893" class="policy-contact-box">
+                <i class="fa-solid fa-phone" style="font-size: 1.25rem;"></i>
+                <div>
+                  <div style="font-size: 0.78rem; text-transform: uppercase; opacity: 0.7;">Support Line</div>
+                  <div>+91 9454487893</div>
+                </div>
+              </a>
 
-            <section id="contact" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">4</span>Contact</h2>
-                <p>For refund and billing questions, please contact our team directly.</p>
-                <ul>
-                    <li>Email: <a href="mailto:support@helyonex.com">support@helyonex.com</a></li>
-                    <li>Phone: <a href="tel:+916392348731">+91 9454487893</a></li>
-                    <li>WhatsApp: <a href="https://wa.me/916392348731?text=Hello%20ONEX BOOST%2C%20I%20have%20a%20billing%20question.">Chat with support</a></li>
-                </ul>
-            </section>
-        </div>
+              <a href="https://wa.me/919454487893?text=Hello%20ONEX%20BOOST%20Team%2C%20I%20have%20a%20question%20regarding%20Billing%20or%20Refunds." target="_blank" class="policy-contact-box">
+                <i class="fa-brands fa-whatsapp" style="font-size: 1.35rem; color: #25D366;"></i>
+                <div>
+                  <div style="font-size: 0.78rem; text-transform: uppercase; opacity: 0.7;">WhatsApp Direct</div>
+                  <div>Chat With Billing Desk</div>
+                </div>
+              </a>
+
+              <div class="policy-contact-box" style="cursor: default;">
+                <i class="fa-solid fa-building" style="font-size: 1.25rem;"></i>
+                <div>
+                  <div style="font-size: 0.78rem; text-transform: uppercase; opacity: 0.7;">Registered Office</div>
+                  <div>HELYONEX HQ, Lucknow, UP</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </main>
     </div>
+  </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const sections = document.querySelectorAll("section[id]");
-        const navLinks = document.querySelectorAll("#toc-nav a");
+  document.addEventListener("DOMContentLoaded", function () {
+    const sections = document.querySelectorAll(".policy-section-card");
+    const navLinks = document.querySelectorAll("#policy-toc .policy-toc-link");
 
-        function onScroll() {
-            const scrollPos = window.scrollY + 140;
-            sections.forEach((section) => {
-                if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
-                    const id = section.getAttribute("id");
-                    navLinks.forEach((link) => {
-                        link.classList.toggle("toc-active", link.getAttribute("href") === `#${id}`);
-                    });
-                }
-            });
+    if (!sections.length || !navLinks.length) return;
+
+    function highlightActiveToc() {
+      const scrollPos = window.scrollY + 160;
+      let currentSectionId = "";
+
+      sections.forEach((section) => {
+        const top = section.offsetTop;
+        const height = section.offsetHeight;
+        if (scrollPos >= top && scrollPos < top + height) {
+          currentSectionId = section.getAttribute("id");
         }
+      });
 
-        window.addEventListener("scroll", onScroll);
-        onScroll();
+      if (!currentSectionId && sections.length > 0) {
+        if (window.scrollY < sections[0].offsetTop) {
+          currentSectionId = sections[0].getAttribute("id");
+        } else {
+          currentSectionId = sections[sections.length - 1].getAttribute("id");
+        }
+      }
+
+      navLinks.forEach((link) => {
+        const href = link.getAttribute("href").replace("#", "");
+        if (href === currentSectionId) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", highlightActiveToc, { passive: true });
+    highlightActiveToc();
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute("href");
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          window.scrollTo({
+            top: targetEl.offsetTop - 110,
+            behavior: "smooth"
+          });
+        }
+      });
     });
+  });
 </script>
 {% endblock %}

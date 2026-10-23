@@ -4,124 +4,814 @@
 {% block title %}Terms of Service | ONEX BOOST Gym Management Software by HELYONEX{% endblock %}
 
 {% block seo %}
-<meta name="description" content="Read ONEX BOOST Terms of Service by HELYONEX. Understand the usage agreement, intellectual property rights, acceptable use policy, and billing terms.">
-<meta name="keywords" content="ONEX BOOST terms of service, HELYONEX, gym software terms, gym management software agreement, fitness software usage policy">
+<meta name="description" content="Read the official Terms of Service for ONEX BOOST by HELYONEX. Clear, fair agreements governing cloud software access, biometric hardware integrations, GST billing, and data ownership.">
+<meta name="keywords" content="ONEX BOOST terms of service, HELYONEX gym management agreement, fitness SaaS terms India, gym software agreement Lucknow">
 <meta name="author" content="ONEX BOOST by HELYONEX">
 <meta name="robots" content="index, follow">
 {% endblock %}
 
 {% block canonical %}
-<link rel="canonical" href="https://ONEX BOOST.com/terms-of-service/">
+<link rel="canonical" href="https://onexboost.com/terms_of_service/">
 {% endblock %}
 
 {% block og_tags %}
 <meta property="og:site_name" content="ONEX BOOST">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://ONEX BOOST.com/terms-of-service/">
-<meta property="og:title" content="Terms of Service — ONEX BOOST Gym Management Software by HELYONEX">
-<meta property="og:description" content="ONEX BOOST terms of service covering usage agreements, IP rights, billing, and liability by HELYONEX.">
+<meta property="og:url" content="https://onexboost.com/terms_of_service/">
+<meta property="og:title" content="Terms of Service ✸ ONEX BOOST by HELYONEX">
+<meta property="og:description" content="Fair, clear, founder-first terms governing the access, hardware turnstile integrations, and billing of ONEX BOOST.">
 <meta property="og:locale" content="en_IN">
 {% endblock %}
 
+{% block schema_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Terms of Service",
+  "url": "https://onexboost.com/terms_of_service/",
+  "description": "ONEX BOOST terms of service governing software access, hardware integrations, billing, and customer rights by HELYONEX.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "ONEX BOOST by HELYONEX"
+  }
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── Legal & Policy Hero ──────────────────────────────────────────────── */
+  .legal-hero {
+    min-height: 44vh !important;
+    padding-top: 6.5rem !important;
+    padding-bottom: 2.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+  }
+
+  .legal-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(3, 66, 32, 0.08);
+    border: 1.5px solid rgba(3, 66, 32, 0.22);
+    border-radius: 999px;
+    padding: 0.45rem 1.15rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--colors--dark-green, #034220);
+    margin: 0 auto 1.5rem auto;
+    width: fit-content;
+  }
+
+  /* ── 3-Pillar Security Banner ─────────────────────────────────────────── */
+  .security-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0 3.5rem 0;
+  }
+
+  .security-card {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    box-shadow: 6px 6px 0px rgba(3, 66, 32, 0.15);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .security-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 8px 8px 0px rgba(3, 66, 32, 0.25);
+  }
+
+  .security-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 0.75rem;
+    background: rgba(254, 248, 221, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #fef8dd;
+    margin-bottom: 0.25rem;
+  }
+
+  .security-card-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--colors--white, #fef8dd);
+    margin: 0;
+  }
+
+  .security-card-desc {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: rgba(254, 248, 221, 0.85);
+    margin: 0;
+  }
+
+  /* ── 2-Column Policy & TOC Layout ─────────────────────────────────────── */
+  .policy-layout {
+    display: grid;
+    grid-template-columns: 290px 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding-bottom: 5rem;
+  }
+
+  /* Sticky Sidebar */
+  .policy-sidebar {
+    position: sticky;
+    top: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .policy-toc-card {
+    background: var(--colors--white, #fef8dd);
+    border: 2px solid var(--colors--dark-green, #034220);
+    border-radius: 1.25rem;
+    padding: 1.5rem 1.25rem;
+    box-shadow: 5px 5px 0px var(--colors--dark-green, #034220);
+  }
+
+  .policy-toc-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--colors--dark-green, #034220);
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.65rem;
+    border-bottom: 1.5px solid rgba(3, 66, 32, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .policy-toc-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .policy-toc-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.65rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--colors--dark-green, #034220);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .policy-toc-link:hover {
+    background: rgba(3, 66, 32, 0.08);
+    transform: translateX(3px);
+  }
+
+  .policy-toc-link.active {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    box-shadow: 0 4px 10px rgba(3, 66, 32, 0.2);
+  }
+
+  .policy-toc-num {
+    font-size: 0.78rem;
+    font-weight: 800;
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .policy-help-card {
+    background: rgba(3, 66, 32, 0.06);
+    border: 1.5px dashed rgba(3, 66, 32, 0.25);
+    border-radius: 1.25rem;
+    padding: 1.25rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .policy-help-card h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--colors--dark-green, #034220);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .policy-help-card p {
+    font-size: 0.85rem;
+    color: var(--colors--dark-green, #034220);
+    opacity: 0.85;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .policy-help-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--colors--dark-green, #034220);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .policy-help-link:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Content Policy Cards ─────────────────────────────────────────────── */
+  .policy-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .policy-section-card {
+    background: var(--colors--white, #fef8dd);
+    border: 2px solid var(--colors--dark-green, #034220);
+    border-radius: 1.5rem;
+    padding: 2.25rem 2rem;
+    box-shadow: 6px 6px 0px var(--colors--dark-green, #034220);
+    scroll-margin-top: 6rem;
+    transition: transform 0.2s ease;
+  }
+
+  .policy-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid rgba(3, 66, 32, 0.12);
+  }
+
+  .policy-num {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--colors--white, #fef8dd);
+    background: var(--colors--dark-green, #034220);
+    width: 44px;
+    height: 44px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(3, 66, 32, 0.2);
+  }
+
+  .policy-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.6rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--colors--dark-green, #034220);
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .policy-body {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--colors--dark-green, #034220);
+  }
+
+  .policy-body p {
+    margin: 0 0 1rem 0;
+  }
+
+  .policy-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .policy-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .policy-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .policy-list-icon {
+    color: var(--colors--dark-green, #034220);
+    font-size: 0.85rem;
+    margin-top: 0.28rem;
+    flex-shrink: 0;
+  }
+
+  .policy-callout {
+    background: rgba(3, 66, 32, 0.05);
+    border-left: 4px solid var(--colors--dark-green, #034220);
+    border-radius: 0.75rem;
+    padding: 1.15rem 1.25rem;
+    margin: 1.25rem 0;
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .policy-callout strong {
+    color: var(--colors--dark-green, #034220);
+  }
+
+  .policy-contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .policy-contact-box {
+    background: rgba(3, 66, 32, 0.04);
+    border: 1.5px solid rgba(3, 66, 32, 0.15);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--colors--dark-green, #034220);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+
+  .policy-contact-box:hover {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(3, 66, 32, 0.18);
+  }
+
+  @media (max-width: 991px) {
+    .legal-hero {
+      padding-top: 3.5rem !important;
+      min-height: auto !important;
+    }
+    .security-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .policy-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .policy-sidebar {
+      position: static;
+    }
+    .policy-section-card {
+      padding: 1.5rem 1.25rem;
+    }
+    .policy-title {
+      font-size: 1.35rem;
+    }
+    .policy-contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="page-hero">
-    <img src="{% static 'images/hero_image_gym.png' %}" alt="ONEX BOOST terms of service" class="page-hero-media">
-    <div class="brand-container page-hero-content">
-        <div class="max-w-4xl site-reveal">
-            <span class="brand-eyebrow brand-eyebrow-dark">
-                <i class="fa-solid fa-file-contract"></i>
-                Terms of service
-            </span>
-            <h1 class="brand-heading mt-6">The general terms that govern access to ONEX BOOST services.</h1>
-            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
-                Please review these terms carefully. By accessing or using ONEX BOOST, you agree to the general conditions described here.
+<!-- ── HERO: TERMS OF SERVICE ────────────────────────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="legal-hero">
+      <div style="text-align: center; max-width: 920px; margin: 0 auto; width: 100%;">
+        
+        <div class="legal-badge-pill">
+          <i class="fa-solid fa-file-contract" style="font-size: 0.9rem;"></i>
+          <span>Official Service Agreement ✸ HELYONEX</span>
+        </div>
+
+        <h1 class="heading is-display-1" style="margin-bottom: 1.25rem; text-transform: uppercase;">
+          TERMS OF SERVICE
+        </h1>
+
+        <p class="paragraph is-large" style="max-width: 760px; margin: 0 auto; opacity: 0.88; line-height: 1.65;">
+          Clear, founder-first agreements governing access to <strong>ONEX BOOST</strong>. Designed to provide transparent operational clarity, rock-solid uptime guarantees, and 100% intellectual property sovereignty for gym owners across India.
+        </p>
+
+        <!-- Meta Details Row -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 1.75rem; font-size: 0.88rem; font-weight: 700; color: var(--colors--dark-green, #034220); opacity: 0.85;">
+          <span><i class="fa-regular fa-calendar-check" style="margin-right: 0.35rem;"></i> Last Updated: October 2026</span>
+          <span><i class="fa-solid fa-shield-halved" style="margin-right: 0.35rem;"></i> Applicable Globally & In India</span>
+          <span><i class="fa-solid fa-scale-balanced" style="margin-right: 0.35rem;"></i> Governed by Indian IT Act, 2000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 3-PILLAR SERVICE COMMITMENTS ────────────────────────────────────── -->
+    <div class="security-grid">
+      <div class="security-card">
+        <div class="security-card-icon">
+          <i class="fa-solid fa-cloud-bolt"></i>
+        </div>
+        <h3 class="security-card-title">99.9% CLOUD SLA</h3>
+        <p class="security-card-desc">
+          High-performance server infrastructure engineered to handle morning and evening gym rush without slowdowns or offline dropouts.
+        </p>
+      </div>
+
+      <div class="security-card">
+        <div class="security-card-icon">
+          <i class="fa-solid fa-fingerprint"></i>
+        </div>
+        <h3 class="security-card-title">FOUNDER OWNERSHIP</h3>
+        <p class="security-card-desc">
+          Your members, biometric logs, trainer rosters, and revenues remain 100% yours. We never sell, rent, or monetize your gym's data.
+        </p>
+      </div>
+
+      <div class="security-card">
+        <div class="security-card-icon">
+          <i class="fa-solid fa-receipt"></i>
+        </div>
+        <h3 class="security-card-title">TRANSPARENT BILLING</h3>
+        <p class="security-card-desc">
+          Zero hidden costs. Direct GST compliant invoicing, predictable subscription renewal schedules, and dedicated enterprise support.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── 2-COLUMN POLICY LAYOUT ──────────────────────────────────────────── -->
+    <div class="policy-layout">
+      
+      <!-- Sticky Navigation Sidebar -->
+      <aside class="policy-sidebar">
+        <div class="policy-toc-card">
+          <h3 class="policy-toc-title">
+            <span>Table of Contents</span>
+            <i class="fa-solid fa-list-ul" style="font-size: 0.9rem; opacity: 0.6;"></i>
+          </h3>
+          <nav id="policy-toc" class="policy-toc-nav">
+            <a href="#agreement" class="policy-toc-link active">
+              <span class="policy-toc-num">01</span>
+              <span>Agreement & Parties</span>
+            </a>
+            <a href="#intellectual-property" class="policy-toc-link">
+              <span class="policy-toc-num">02</span>
+              <span>Intellectual Property</span>
+            </a>
+            <a href="#acceptable-use" class="policy-toc-link">
+              <span class="policy-toc-num">03</span>
+              <span>Acceptable Use</span>
+            </a>
+            <a href="#hardware-biometrics" class="policy-toc-link">
+              <span class="policy-toc-num">04</span>
+              <span>Hardware & Turnstiles</span>
+            </a>
+            <a href="#billing-subscription" class="policy-toc-link">
+              <span class="policy-toc-num">05</span>
+              <span>Billing & Subscriptions</span>
+            </a>
+            <a href="#uptime-liability" class="policy-toc-link">
+              <span class="policy-toc-num">06</span>
+              <span>Uptime SLA & Liability</span>
+            </a>
+            <a href="#data-termination" class="policy-toc-link">
+              <span class="policy-toc-num">07</span>
+              <span>Termination & Export</span>
+            </a>
+            <a href="#jurisdiction-contact" class="policy-toc-link">
+              <span class="policy-toc-num">08</span>
+              <span>Disputes & Contact</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Help Desk Widget -->
+        <div class="policy-help-card">
+          <h4>Need Legal Assistance?</h4>
+          <p>Have questions regarding commercial contracts, SLA terms, or custom gym chain agreements?</p>
+          <a href="mailto:support@helyonex.com" class="policy-help-link">
+            <i class="fa-solid fa-envelope"></i>
+            <span>support@helyonex.com</span>
+          </a>
+          <a href="tel:+919454487893" class="policy-help-link">
+            <i class="fa-solid fa-phone"></i>
+            <span>+91 9454487893</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Policy Content Cards -->
+      <main class="policy-content">
+
+        <!-- 01. Agreement & Parties -->
+        <article id="agreement" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">01</div>
+            <h2 class="policy-title">Agreement to Terms & Contracting Parties</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              These Terms of Service constitute a legally binding agreement between you (whether individually as a gym proprietor or on behalf of a registered fitness center, chain, or corporate wellness entity) and <strong>HELYONEX HQ</strong>, the creator and operator of <strong>ONEX BOOST</strong>.
             </p>
-        </div>
-    </div>
-</section>
-
-<section class="brand-section">
-    <div class="brand-container docs-shell">
-        <aside class="docs-side site-reveal">
-            <div class="brand-card docs-card">
-                <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500 mb-4">Quick navigation</p>
-                <nav id="toc-nav" class="docs-nav">
-                    <a href="#agreement">Agreement</a>
-                    <a href="#ip">Intellectual property</a>
-                    <a href="#usage">Acceptable use</a>
-                    <a href="#billing">Billing and subscriptions</a>
-                    <a href="#liability">Liability</a>
-                    <a href="#contact">Contact</a>
-                </nav>
+            <p>
+              By creating an account, deploying our software in your gym branches, integrating biometric hardware, or paying subscription fees, you acknowledge that you have read, understood, and agreed to be bound by all of these Terms of Service. If you do not agree, you must immediately discontinue use of the platform.
+            </p>
+            <div class="policy-callout">
+              <strong>Key Takeaway:</strong> You are contracting directly with HELYONEX, Lucknow, Uttar Pradesh, India. All gym branches registered under your workspace must adhere to these unified operational guidelines.
             </div>
-        </aside>
+          </div>
+        </article>
 
-        <div class="docs-content">
-            <section id="agreement" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">1</span>Agreement</h2>
-                <p>These terms apply to the ONEX BOOST platform and related services offered by HELYONEX. By using ONEX BOOST, you agree to comply with these terms and any applicable laws or regulations.</p>
-            </section>
+        <!-- 02. Intellectual Property -->
+        <article id="intellectual-property" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">02</div>
+            <h2 class="policy-title">Intellectual Property & Platform Licensing</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              Except where your customer data is concerned, the ONEX BOOST web platform, native desktop/mobile apps, proprietary turnstile integration middleware, source code, UI/UX designs, trademarks, logos, and algorithmic workflows are the exclusive intellectual property of HELYONEX.
+            </p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-circle-check policy-list-icon"></i>
+                <span><strong>Limited Commercial License:</strong> We grant you a revocable, non-exclusive, non-transferable license to access and use ONEX BOOST solely for operating your gym business during the active term of your subscription.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-ban policy-list-icon" style="color: #b91c1c;"></i>
+                <span><strong>No Reverse Engineering:</strong> You may not disassemble, decompile, reverse-engineer, duplicate, or white-label any portion of the software without prior written consent.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check policy-list-icon"></i>
+                <span><strong>Your Customer Data:</strong> You retain complete, unencumbered ownership of all member names, attendance timestamps, billing records, and gym financial books uploaded into the system.</span>
+              </li>
+            </ul>
+          </div>
+        </article>
 
-            <section id="ip" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">2</span>Intellectual property</h2>
-                <p>ONEX BOOST, including its software, design, branding, documentation, and related materials, is protected by applicable intellectual property laws. Unless explicitly permitted, users may not copy, reverse engineer, distribute, or repurpose protected material outside the allowed service use.</p>
-            </section>
+        <!-- 03. Acceptable Use -->
+        <article id="acceptable-use" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">03</div>
+            <h2 class="policy-title">Acceptable Use & Operational Standards</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              As a condition of using ONEX BOOST, you agree to maintain professional standards and adhere strictly to operational best practices:
+            </p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-shield policy-list-icon"></i>
+                <span><strong>Authorized Operations Only:</strong> Use ONEX BOOST exclusively for legitimate health club, gym, fitness studio, or crossfit facility operations.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-user-lock policy-list-icon"></i>
+                <span><strong>Account Security:</strong> Maintain confidential administrative credentials. Multi-branch gym managers must assign role-scoped logins (Trainer, Receptionist, Accountant) rather than sharing master credentials.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-triangle-exclamation policy-list-icon"></i>
+                <span><strong>Prohibited Conduct:</strong> No automated scraping, DDoS attacks, injection of malicious scripts, or harassment of HELYONEX technical support personnel.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-comment-slash policy-list-icon"></i>
+                <span><strong>Anti-Spam Compliance:</strong> Automated WhatsApp/SMS alerts sent through the system must be legitimate member communications (expiry alerts, payment receipts, workout plans) and comply with Indian TRAI DLT regulations.</span>
+              </li>
+            </ul>
+          </div>
+        </article>
 
-            <section id="usage" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">3</span>Acceptable use</h2>
-                <ul>
-                    <li>Use ONEX BOOST only for lawful business or operational purposes.</li>
-                    <li>Do not interfere with service reliability, security, or availability.</li>
-                    <li>Do not attempt unauthorized access, reverse-engineering, or scraping protected data.</li>
-                    <li>Do not use the platform in a way that harms ONEX BOOST, HELYONEX, its customers, or its staff.</li>
-                </ul>
-            </section>
+        <!-- 04. Hardware & Biometrics -->
+        <article id="hardware-biometrics" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">04</div>
+            <h2 class="policy-title">Biometric Turnstiles & Hardware Integrations</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              ONEX BOOST provides native relay communication protocols and SDK drivers to connect with physical gym infrastructure (biometric turnstiles, RFID flap barriers, face-recognition cameras, and magnetic door strikes).
+            </p>
+            <div class="policy-callout">
+              <strong>Local Hardware Disclaimer:</strong> While ONEX BOOST guarantees the software API dispatch signals, physical turnstile hardware performance depends on your gym's local LAN network stability, uninterrupted power supplies (UPS), and properly calibrated biometric sensors.
+            </div>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-network-wired policy-list-icon"></i>
+                <span>Gym owners must ensure LAN cables and local relay controllers are physically shielded from power surges and moisture.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-id-badge policy-list-icon"></i>
+                <span>Member biometric templates stored on physical devices must be registered with member consent in accordance with local privacy norms.</span>
+              </li>
+            </ul>
+          </div>
+        </article>
 
-            <section id="billing" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">4</span>Billing and subscriptions</h2>
-                <p>Some ONEX BOOST services may be offered under subscription or enterprise commercial terms. Billing structure, plan details, and service scope may vary depending on the agreement made with the customer.</p>
-                <p>Customers are responsible for reviewing commercial terms, renewal expectations, and any plan-specific commitments before purchase.</p>
-            </section>
+        <!-- 05. Billing & Subscriptions -->
+        <article id="billing-subscription" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">05</div>
+            <h2 class="policy-title">Subscriptions, Invoicing & GST Compliance</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              ONEX BOOST is provided as a SaaS subscription with flexible monthly, annual, and multi-year enterprise license plans:
+            </p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-file-invoice-dollar policy-list-icon"></i>
+                <span><strong>GST Invoicing:</strong> Every commercial transaction generates an automated GST-compliant tax invoice containing HELYONEX and customer GSTIN identifiers.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-arrows-rotate policy-list-icon"></i>
+                <span><strong>Renewal Cycles:</strong> Subscriptions renew automatically unless cancelled prior to the renewal date. Renewal reminders are dispatched via email and WhatsApp 14 and 3 days before renewal.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-tag policy-list-icon"></i>
+                <span><strong>Transparent Pricing:</strong> No surprise fees for software patches, security updates, or standard cloud data backups. Hardware installations or custom on-site technician visits are billed separately under written work orders.</span>
+              </li>
+            </ul>
+          </div>
+        </article>
 
-            <section id="liability" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">5</span>Liability and service availability</h2>
-                <p>ONEX BOOST works to provide a reliable and professional service, but no digital platform can guarantee uninterrupted availability in every circumstance. To the extent permitted by law, HELYONEX is not liable for indirect, incidental, or consequential losses arising from service use.</p>
-            </section>
+        <!-- 06. Uptime SLA & Liability -->
+        <article id="uptime-liability" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">06</div>
+            <h2 class="policy-title">Service Availability & Limitation of Liability</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              HELYONEX commits to an industry-leading <strong>99.9% Cloud Uptime SLA</strong> for core membership, check-in validation, and billing services, excluding scheduled maintenance windows announced at least 48 hours in advance during off-peak hours (midnight to 4:00 AM IST).
+            </p>
+            <p>
+              To the maximum extent permitted under applicable law, HELYONEX and its directors, employees, and software engineers shall not be liable for any indirect, punitive, special, or consequential damages (including lost gym revenue, facility downtime caused by local ISP fiber cuts, or hardware manufacturer defects).
+            </p>
+            <div class="policy-callout">
+              <strong>Offline Resiliency:</strong> In the event of a broadband internet outage at your facility, ONEX BOOST edge-sync turnstiles continue to authorize stored biometric tokens, syncing punches once connectivity is restored.
+            </div>
+          </div>
+        </article>
 
-            <section id="contact" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">6</span>Contact</h2>
-                <p>For questions about these terms, please contact our team.</p>
-                <ul>
-                    <li>Email: <a href="mailto:support@helyonex.com">support@helyonex.com</a></li>
-                    <li>Phone: <a href="tel:+916392348731">+91 9454487893</a></li>
-                    <li>Address: HELYONEX HQ, Vishesh Khand, Lucknow, Uttar Pradesh, India</li>
-                </ul>
-            </section>
-        </div>
+        <!-- 07. Termination & Export -->
+        <article id="data-termination" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">07</div>
+            <h2 class="policy-title">Term, Termination & Guaranteed Data Export</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              We believe gym owners should stay with ONEX BOOST because they love our product, not because they are locked in. You have the right to cancel your subscription at any time via your administrative dashboard.
+            </p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-file-excel policy-list-icon"></i>
+                <span><strong>Complete Data Export:</strong> Prior to account closure, you can download all member records, past payment vouchers, trainer attendance sheets, and tax logs in structured Excel / CSV formats with 1 click.</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-trash-can policy-list-icon"></i>
+                <span><strong>Data Purge:</strong> Following account closure, gym member database schemas are preserved for a 30-day grace period in case of accidental cancellation, after which they are irreversibly sanitized from active servers.</span>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 08. Jurisdiction & Contact -->
+        <article id="jurisdiction-contact" class="policy-section-card">
+          <header class="policy-header">
+            <div class="policy-num">08</div>
+            <h2 class="policy-title">Governing Law, Jurisdiction & Contact</h2>
+          </header>
+          <div class="policy-body">
+            <p>
+              These Terms of Service are governed by and construed in accordance with the laws of the Republic of India. Any disputes arising under or in connection with these terms shall be subject to the exclusive jurisdiction of the competent courts in <strong>Lucknow, Uttar Pradesh, India</strong>.
+            </p>
+            <p>
+              For enterprise agreements, customized gym-chain service contracts, or legal notices, contact our corporate office:
+            </p>
+
+            <div class="policy-contact-grid">
+              <a href="mailto:support@helyonex.com" class="policy-contact-box">
+                <i class="fa-solid fa-envelope" style="font-size: 1.25rem;"></i>
+                <div>
+                  <div style="font-size: 0.78rem; text-transform: uppercase; opacity: 0.7;">Legal Inquiries</div>
+                  <div>support@helyonex.com</div>
+                </div>
+              </a>
+
+              <a href="tel:+919454487893" class="policy-contact-box">
+                <i class="fa-solid fa-phone" style="font-size: 1.25rem;"></i>
+                <div>
+                  <div style="font-size: 0.78rem; text-transform: uppercase; opacity: 0.7;">Support Helpline</div>
+                  <div>+91 9454487893</div>
+                </div>
+              </a>
+
+              <a href="https://wa.me/919454487893?text=Hello%20ONEX%20BOOST%20Team%2C%20I%20have%20a%20question%20regarding%20the%20Terms%20of%20Service." target="_blank" class="policy-contact-box">
+                <i class="fa-brands fa-whatsapp" style="font-size: 1.35rem; color: #25D366;"></i>
+                <div>
+                  <div style="font-size: 0.78rem; text-transform: uppercase; opacity: 0.7;">WhatsApp Direct</div>
+                  <div>Chat With Legal Support</div>
+                </div>
+              </a>
+
+              <div class="policy-contact-box" style="cursor: default;">
+                <i class="fa-solid fa-building" style="font-size: 1.25rem;"></i>
+                <div>
+                  <div style="font-size: 0.78rem; text-transform: uppercase; opacity: 0.7;">Corporate Headquarters</div>
+                  <div>HELYONEX, Lucknow, UP, India</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </main>
     </div>
+  </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const sections = document.querySelectorAll("section[id]");
-        const navLinks = document.querySelectorAll("#toc-nav a");
+  document.addEventListener("DOMContentLoaded", function () {
+    const sections = document.querySelectorAll(".policy-section-card");
+    const navLinks = document.querySelectorAll("#policy-toc .policy-toc-link");
 
-        function onScroll() {
-            const scrollPos = window.scrollY + 140;
-            sections.forEach((section) => {
-                if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
-                    const id = section.getAttribute("id");
-                    navLinks.forEach((link) => {
-                        link.classList.toggle("toc-active", link.getAttribute("href") === `#${id}`);
-                    });
-                }
-            });
+    if (!sections.length || !navLinks.length) return;
+
+    function highlightActiveToc() {
+      const scrollPos = window.scrollY + 160;
+      let currentSectionId = "";
+
+      sections.forEach((section) => {
+        const top = section.offsetTop;
+        const height = section.offsetHeight;
+        if (scrollPos >= top && scrollPos < top + height) {
+          currentSectionId = section.getAttribute("id");
         }
+      });
 
-        window.addEventListener("scroll", onScroll);
-        onScroll();
+      if (!currentSectionId && sections.length > 0) {
+        if (window.scrollY < sections[0].offsetTop) {
+          currentSectionId = sections[0].getAttribute("id");
+        } else {
+          currentSectionId = sections[sections.length - 1].getAttribute("id");
+        }
+      }
+
+      navLinks.forEach((link) => {
+        const href = link.getAttribute("href").replace("#", "");
+        if (href === currentSectionId) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", highlightActiveToc, { passive: true });
+    highlightActiveToc();
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute("href");
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          window.scrollTo({
+            top: targetEl.offsetTop - 110,
+            behavior: "smooth"
+          });
+        }
+      });
     });
+  });
 </script>
 {% endblock %}

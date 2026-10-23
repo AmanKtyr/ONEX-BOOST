@@ -47,10 +47,329 @@
   
   <!-- Webflow Theme Stylesheet -->
   <link href="https://cdn.prod.website-files.com/687e58049a40e9feda5d1d64/css/kreme-template.webflow.shared.fcd42b28c.min.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="{% static 'css/brunhaus-theme.css' %}?v=3.3">
+  <link rel="stylesheet" href="{% static 'css/brunhaus-theme.css' %}?v=5.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   
-  <style>
+  <style id="onex-footer-fixes">
+    /* ── Footer Contrast & Premium Aesthetics ── */
+    .footer.box-padding-t-b {
+      padding: 2.5rem 0 3.5rem !important;
+    }
+
+    .content.footer {
+      background-color: var(--colors--dark-green, #034220) !important;
+      color: var(--colors--white, #fef8dd) !important;
+      border-radius: var(--padding-radius--borders-radius, 1rem) !important;
+      padding: 3.5rem 3rem 2rem !important;
+      position: relative !important;
+      overflow: hidden !important;
+      box-shadow: 0 16px 40px rgba(3, 66, 32, 0.22) !important;
+    }
+
+    /* 4-Column Grid on Desktop */
+    .content.footer .footer-info-container {
+      display: grid !important;
+      grid-template-columns: 1.15fr 1.6fr 0.85fr 0.95fr !important;
+      gap: 3rem 2.2rem !important;
+      align-items: start !important;
+      margin-bottom: 2.5rem !important;
+    }
+
+    .content.footer .footer-nav-block {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 0.65rem !important;
+    }
+
+    .content.footer .footer-nav-block.info {
+      order: initial !important;
+      max-width: 480px !important;
+    }
+
+    .content.footer .footer-title {
+      font-family: var(--font--main-font, sans-serif) !important;
+      font-size: 1.25rem !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.01em !important;
+      color: var(--colors--white, #fef8dd) !important;
+      margin-bottom: 0.75rem !important;
+      text-transform: capitalize !important;
+    }
+
+    .content.footer .footer-nav-block.info .p2 {
+      font-size: 1rem !important;
+      line-height: 1.6 !important;
+      color: rgba(254, 248, 221, 0.9) !important;
+      margin: 0 !important;
+      font-weight: 400 !important;
+    }
+
+    /* Links: Default clean state */
+    .content.footer .footer-link {
+      display: inline-flex !important;
+      align-items: center !important;
+      width: fit-content !important;
+      padding: 0.35rem 0.75rem !important;
+      margin-left: -0.75rem !important;
+      border-radius: 999px !important;
+      font-size: 0.95rem !important;
+      font-weight: 500 !important;
+      color: rgba(254, 248, 221, 0.85) !important;
+      text-decoration: none !important;
+      line-height: 1.4 !important;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      transform: none !important;
+      background-color: transparent !important;
+    }
+
+    .content.footer .footer-link div,
+    .content.footer .footer-link span {
+      color: inherit !important;
+      transition: color 0.2s ease !important;
+    }
+
+    /* Links: High-Contrast Interactive Hover State */
+    .content.footer .footer-link:hover {
+      background-color: var(--colors--soft-yellow, #eddea6) !important;
+      color: var(--colors--dark-green, #034220) !important;
+      transform: translateX(4px) scale(1) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16) !important;
+    }
+
+    .content.footer .footer-link:hover div,
+    .content.footer .footer-link:hover span {
+      color: var(--colors--dark-green, #034220) !important;
+    }
+
+    /* Buttons Container */
+    .content.footer .buttons-footer {
+      display: flex !important;
+      align-items: center !important;
+      flex-wrap: wrap !important;
+      gap: 0.85rem !important;
+      margin-top: 1.5rem !important;
+    }
+
+    .content.footer .button-wrapper {
+      overflow: visible !important;
+      border-radius: 999px !important;
+    }
+
+    /* Social Buttons */
+    .content.footer .social-button {
+      width: 44px !important;
+      height: 44px !important;
+      min-width: 44px !important;
+      min-height: 44px !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 999px !important;
+      background: rgba(254, 248, 221, 0.1) !important;
+      border: 1.5px solid rgba(254, 248, 221, 0.25) !important;
+      color: #fef8dd !important;
+      text-decoration: none !important;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .content.footer .social-button .social-icon {
+      width: 20px !important;
+      height: 20px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: inherit !important;
+    }
+
+    .content.footer .social-button .social-icon svg {
+      width: 18px !important;
+      height: 18px !important;
+      fill: currentColor !important;
+      color: inherit !important;
+    }
+
+    .content.footer .social-button:hover {
+      background: var(--colors--soft-yellow, #eddea6) !important;
+      border-color: var(--colors--soft-yellow, #eddea6) !important;
+      color: var(--colors--dark-green, #034220) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28) !important;
+    }
+
+    .content.footer .social-button:hover .social-icon svg {
+      color: var(--colors--dark-green, #034220) !important;
+      fill: var(--colors--dark-green, #034220) !important;
+    }
+
+    /* "Schedule Demo" CTA Button */
+    .content.footer .b1,
+    .content.footer .footer-cta-b1 {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.85rem !important;
+      background-color: var(--colors--soft-yellow, #eddea6) !important;
+      border: 1.5px solid var(--colors--soft-yellow, #eddea6) !important;
+      border-radius: 999px !important;
+      padding: 0.42rem 0.5rem 0.42rem 1.35rem !important;
+      color: var(--colors--dark-green, #034220) !important;
+      text-decoration: none !important;
+      font-weight: 700 !important;
+      font-size: 0.95rem !important;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+    }
+
+    .content.footer .b1 .button-text,
+    .content.footer .footer-cta-b1 .button-text {
+      height: 1.5rem !important;
+      line-height: 1.5rem !important;
+      overflow: hidden !important;
+      display: flex !important;
+      align-items: flex-start !important;
+      white-space: nowrap !important;
+    }
+
+    .content.footer .b1 .text-track,
+    .content.footer .footer-cta-b1 .text-track {
+      display: flex !important;
+      flex-direction: column !important;
+      white-space: nowrap !important;
+    }
+
+    .content.footer .b1 .text-track div,
+    .content.footer .footer-cta-b1 .text-track div {
+      color: var(--colors--dark-green, #034220) !important;
+      font-weight: 700 !important;
+      font-size: 0.95rem !important;
+      white-space: nowrap !important;
+      line-height: 1.5rem !important;
+      height: 1.5rem !important;
+    }
+
+    .content.footer .b1 .arrow-circle,
+    .content.footer .footer-cta-b1 .arrow-circle {
+      width: 2.1rem !important;
+      height: 2.1rem !important;
+      min-width: 2.1rem !important;
+      min-height: 2.1rem !important;
+      border-radius: 999px !important;
+      background-color: var(--colors--dark-green, #034220) !important;
+      color: #fef8dd !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: transform 0.25s ease !important;
+    }
+
+    .content.footer .b1 .arrow-container,
+    .content.footer .b1 .arrow-track,
+    .content.footer .b1 .arrow,
+    .content.footer .footer-cta-b1 .arrow-container,
+    .content.footer .footer-cta-b1 .arrow-track,
+    .content.footer .footer-cta-b1 .arrow {
+      width: 1.1rem !important;
+      height: 1.1rem !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: visible !important;
+    }
+
+    .content.footer .b1 .icon-arrow,
+    .content.footer .footer-cta-b1 .icon-arrow {
+      width: 13px !important;
+      height: 13px !important;
+      color: #fef8dd !important;
+    }
+
+    .content.footer .b1 .icon-arrow path,
+    .content.footer .footer-cta-b1 .icon-arrow path {
+      fill: #fef8dd !important;
+      color: #fef8dd !important;
+    }
+
+    .content.footer .b1:hover,
+    .content.footer .footer-cta-b1:hover {
+      background-color: #fef8dd !important;
+      border-color: #fef8dd !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .content.footer .b1:hover .arrow-circle,
+    .content.footer .footer-cta-b1:hover .arrow-circle {
+      transform: rotate(45deg) !important;
+      background-color: var(--colors--dark-green, #034220) !important;
+    }
+
+    /* Footer Bottom Marquee */
+    .content.footer .footer-bottom {
+      margin-top: 1.5rem !important;
+      padding-top: 1.5rem !important;
+      border-top: 1px solid rgba(254, 248, 221, 0.12) !important;
+    }
+
+    .content.footer .marquee-wrapper-footer {
+      overflow: hidden !important;
+      width: 100% !important;
+      border-radius: 0.5rem !important;
+    }
+
+    .content.footer .marquee-component-1 {
+      display: flex !important;
+      align-items: center !important;
+      gap: 2rem !important;
+      white-space: nowrap !important;
+    }
+
+    .content.footer .marquee-component-1 .display-1 {
+      font-family: var(--font--main-font, Impact, sans-serif) !important;
+      color: var(--colors--soft-yellow, #eddea6) !important;
+      font-size: clamp(3rem, 7.5vw, 7.5rem) !important;
+      line-height: 0.9 !important;
+      text-transform: uppercase !important;
+      margin: 0 !important;
+      opacity: 0.9 !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+      .content.footer {
+        padding: 3rem 2rem 2rem !important;
+      }
+      .content.footer .footer-info-container {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 2.5rem 2rem !important;
+      }
+      .content.footer .footer-nav-block.info {
+        grid-column: 1 / -1 !important;
+        max-width: 100% !important;
+        order: -1 !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .content.footer {
+        padding: 2.25rem 1.25rem 1.75rem !important;
+        border-radius: 1.25rem !important;
+      }
+      .content.footer .footer-info-container {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+      }
+      .content.footer .buttons-footer {
+        gap: 0.75rem !important;
+      }
+      .content.footer .footer-link {
+        font-size: 0.92rem !important;
+        padding: 0.3rem 0.65rem !important;
+      }
+    }
+  </style>
+  
+  <style id="onex-responsive-navbar-styles">
     /* Instant eradication of Webflow badges */
     .w-webflow-badge,
     a.w-webflow-badge,
@@ -65,6 +384,447 @@
       top: -9999px !important;
       width: 0 !important;
       height: 0 !important;
+    }
+
+    /* ── Mobile Body Scroll Lock ── */
+    body.mobile-nav-locked {
+      overflow: hidden !important;
+      touch-action: none !important;
+    }
+
+    /* ── Top Navbar Bar ── */
+    .navbar.w-nav {
+      position: sticky !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      z-index: 1000 !important;
+      padding: 0.75rem 0 !important;
+      background-color: var(--colors--white, #fef8dd) !important;
+      border-bottom: 1.5px solid rgba(3, 66, 32, 0.12) !important;
+      transition: all 0.25s ease !important;
+    }
+
+    .navbar .content.nav {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      width: 100% !important;
+    }
+
+    .navbar .nav_container {
+      max-width: 1320px !important;
+      width: 100% !important;
+      padding: 0 1.5rem !important;
+    }
+
+    /* ── Desktop View (> 991px) ── */
+    @media (min-width: 992px) {
+      .navbar .menu-button-container.w-nav-button,
+      .navbar .w-nav-overlay,
+      .nav-link-arrow,
+      .nav-mobile-bottom-wrap {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+
+      .navbar .content.nav > .nav-menu {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 0.25rem !important;
+        background: rgba(3, 66, 32, 0.05) !important;
+        border: 1px solid rgba(3, 66, 32, 0.08) !important;
+        border-radius: 999px !important;
+        padding: 0.25rem 0.35rem !important;
+        position: static !important;
+        float: none !important;
+        height: auto !important;
+        width: auto !important;
+        max-width: none !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .navbar .content.nav > .nav-menu .nav-link {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.25rem !important;
+        padding: 0.45rem 1.05rem !important;
+        border-radius: 999px !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        color: var(--colors--dark-green, #034220) !important;
+        text-decoration: none !important;
+        background: transparent !important;
+        transition: all 0.2s ease !important;
+      }
+
+      .navbar .content.nav > .nav-menu .nav-link:hover {
+        background: rgba(3, 66, 32, 0.08) !important;
+        color: var(--colors--dark-green, #034220) !important;
+      }
+
+      .navbar .content.nav > .nav-menu .nav-link.w--current {
+        background: var(--colors--dark-green, #034220) !important;
+        color: #fef8dd !important;
+        font-weight: 700 !important;
+      }
+
+      .navbar .nav-login-desktop {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0.45rem 1.25rem !important;
+        border: 1.5px solid var(--colors--dark-green, #034220) !important;
+        border-radius: 999px !important;
+        font-size: 0.92rem !important;
+        font-weight: 700 !important;
+        color: var(--colors--dark-green, #034220) !important;
+        text-decoration: none !important;
+        transition: all 0.2s ease !important;
+      }
+
+      .navbar .nav-login-desktop:hover {
+        background: var(--colors--dark-green, #034220) !important;
+        color: #fef8dd !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(3, 66, 32, 0.15) !important;
+      }
+    }
+
+    /* ── Mobile & Tablet View (<= 991px) ── */
+    @media (max-width: 991px) {
+      .navbar.w-nav {
+        padding: 0.55rem 0 !important;
+      }
+
+      .navbar .nav_container {
+        padding: 0 1.25rem !important;
+      }
+
+      .navbar .nav-brand-logo {
+        height: 34px !important;
+        max-width: 150px !important;
+      }
+
+      /* Hide desktop login in mobile top bar */
+      .navbar .nav-login-desktop {
+        display: none !important;
+      }
+
+      /* Hide nav-menu when closed on mobile */
+      .navbar:not(.menu-is-open) .nav-menu {
+        display: none !important;
+      }
+
+      /* Fullscreen Backdrop Scrim when menu is open */
+      .navbar.menu-is-open::after {
+        content: "";
+        position: fixed;
+        top: 54px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: calc(100dvh - 54px);
+        background-color: rgba(2, 28, 14, 0.78);
+        z-index: 9998;
+        cursor: pointer;
+      }
+
+      /* Webflow's overlay backdrop if injected */
+      html body .navbar .w-nav-overlay {
+        position: fixed !important;
+        top: 54px !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: calc(100dvh - 54px) !important;
+        max-height: calc(100dvh - 54px) !important;
+        background-color: rgba(2, 28, 14, 0.78) !important;
+        z-index: 9998 !important;
+        overflow-y: auto !important;
+        padding: 0 !important;
+      }
+
+      html body .navbar:not(.menu-is-open) .w-nav-overlay {
+        display: none !important;
+      }
+
+      /* Toggle button */
+      .navbar .menu-button-container.w-nav-button {
+        display: block !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        cursor: pointer !important;
+      }
+
+      .navbar .menu-button {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.55rem !important;
+        padding: 0.45rem 0.95rem !important;
+        background: rgba(3, 66, 32, 0.08) !important;
+        border: 1.5px solid rgba(3, 66, 32, 0.22) !important;
+        border-radius: 999px !important;
+        cursor: pointer !important;
+        transition: all 0.25s ease !important;
+        user-select: none !important;
+      }
+
+      .navbar .menu-btn-text {
+        font-size: 0.82rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        color: var(--colors--dark-green, #034220) !important;
+        line-height: 1 !important;
+      }
+
+      .navbar .menu-circle {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 4px !important;
+        width: 18px !important;
+        height: 18px !important;
+      }
+
+      .navbar .menu-line {
+        width: 16px !important;
+        height: 2px !important;
+        background-color: var(--colors--dark-green, #034220) !important;
+        border-radius: 2px !important;
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, background-color 0.25s ease !important;
+        transform-origin: center !important;
+      }
+
+      /* Open button state */
+      .navbar .menu-button-container.w--open .menu-button,
+      .navbar.menu-is-open .menu-button {
+        background: var(--colors--dark-green, #034220) !important;
+        border-color: var(--colors--dark-green, #034220) !important;
+        box-shadow: 0 4px 12px rgba(3, 66, 32, 0.25) !important;
+      }
+
+      .navbar .menu-button-container.w--open .menu-btn-text,
+      .navbar.menu-is-open .menu-btn-text {
+        color: #fef8dd !important;
+      }
+
+      .navbar .menu-button-container.w--open .menu-line,
+      .navbar.menu-is-open .menu-line {
+        background-color: #fef8dd !important;
+      }
+
+      .navbar .menu-button-container.w--open .menu-line._1,
+      .navbar.menu-is-open .menu-line._1 {
+        transform: translateY(3px) rotate(45deg) !important;
+      }
+
+      .navbar .menu-button-container.w--open .menu-line._2,
+      .navbar.menu-is-open .menu-line._2 {
+        transform: translateY(-3px) rotate(-45deg) !important;
+      }
+
+      /* Mobile Drawer Card when Open */
+      .navbar.menu-is-open .nav-menu,
+      .navbar .nav-menu.w--open,
+      .navbar .w-nav-overlay .nav-menu {
+        background-color: #fef8dd !important;
+        border: 2.5px solid #034220 !important;
+        border-radius: 1.5rem !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45), 6px 6px 0px #034220 !important;
+        padding: 1.25rem 1.15rem !important;
+        max-width: 440px !important;
+        width: calc(100% - 2rem) !important;
+        position: fixed !important;
+        top: 66px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        z-index: 10000 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.35rem !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        animation: navMenuPop 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+      }
+
+      /* Navigation Links inside Drawer */
+      .navbar.menu-is-open .nav-menu .nav-link,
+      .navbar .w-nav-overlay .nav-menu .nav-link {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: var(--colors--dark-green, #034220) !important;
+        padding: 0.7rem 1rem !important;
+        border-radius: 0.85rem !important;
+        text-decoration: none !important;
+        background: transparent !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        border: none !important;
+      }
+
+      .navbar.menu-is-open .nav-menu .nav-link:hover,
+      .navbar.menu-is-open .nav-menu .nav-link:active,
+      .navbar .w-nav-overlay .nav-menu .nav-link:hover,
+      .navbar .w-nav-overlay .nav-menu .nav-link:active {
+        background: rgba(3, 66, 32, 0.08) !important;
+        transform: translateX(4px);
+      }
+
+      .navbar.menu-is-open .nav-menu .nav-link.w--current,
+      .navbar .w-nav-overlay .nav-menu .nav-link.w--current {
+        background: var(--colors--dark-green, #034220) !important;
+        color: #fef8dd !important;
+        box-shadow: 0 4px 12px rgba(3, 66, 32, 0.25) !important;
+      }
+
+      .navbar.menu-is-open .nav-menu .nav-link.w--current .nav-link-arrow,
+      .navbar .w-nav-overlay .nav-menu .nav-link.w--current .nav-link-arrow {
+        color: #fef8dd !important;
+        opacity: 0.9 !important;
+      }
+
+      .nav-link-arrow {
+        display: inline-flex !important;
+        align-items: center !important;
+        color: var(--colors--dark-green, #034220) !important;
+        opacity: 0.5 !important;
+        transition: transform 0.2s ease, opacity 0.2s ease !important;
+      }
+
+      .navbar.menu-is-open .nav-menu .nav-link:hover .nav-link-arrow,
+      .navbar .w-nav-overlay .nav-menu .nav-link:hover .nav-link-arrow {
+        opacity: 1 !important;
+        transform: translateX(3px) !important;
+      }
+
+      /* Drawer Bottom Actions */
+      .nav-mobile-bottom-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.65rem !important;
+        margin-top: 0.35rem !important;
+        width: 100% !important;
+      }
+
+      .nav-mobile-divider {
+        display: block !important;
+        height: 1px !important;
+        background: rgba(3, 66, 32, 0.15) !important;
+        width: 100% !important;
+        margin: 0.25rem 0 !important;
+      }
+
+      .nav-mobile-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+      }
+
+      .nav-btn-mobile-login {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.6rem !important;
+        background: var(--colors--dark-green, #034220) !important;
+        color: #fef8dd !important;
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        padding: 0.8rem 1.25rem !important;
+        border-radius: 999px !important;
+        text-decoration: none !important;
+        box-shadow: 0 4px 14px rgba(3, 66, 32, 0.28) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+      }
+
+      .nav-btn-mobile-login:active {
+        transform: scale(0.98);
+      }
+
+      .nav-btn-mobile-demo {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.6rem !important;
+        background: transparent !important;
+        color: var(--colors--dark-green, #034220) !important;
+        border: 2px solid var(--colors--dark-green, #034220) !important;
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        padding: 0.7rem 1.25rem !important;
+        border-radius: 999px !important;
+        text-decoration: none !important;
+        transition: background 0.2s ease !important;
+      }
+
+      .nav-btn-mobile-demo:active {
+        background: rgba(3, 66, 32, 0.08) !important;
+      }
+
+      .nav-mobile-contact {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 0.85rem !important;
+        margin-top: 0.2rem !important;
+        padding-top: 0.6rem !important;
+        border-top: 1px dashed rgba(3, 66, 32, 0.15) !important;
+      }
+
+      .nav-contact-item {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.4rem !important;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        color: rgba(3, 66, 32, 0.75) !important;
+        text-decoration: none !important;
+        transition: color 0.2s ease !important;
+      }
+
+      .nav-contact-item:hover {
+        color: var(--colors--dark-green, #034220) !important;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .navbar .nav_container {
+        padding: 0 0.85rem !important;
+      }
+
+      .navbar .nav-brand-logo {
+        height: 30px !important;
+        max-width: 130px !important;
+      }
+
+      html body .navbar .w-nav-overlay .nav-menu {
+        padding: 1.15rem 1rem !important;
+      }
+    }
+
+    @keyframes navMenuPop {
+      from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
   </style>
 
@@ -89,19 +849,92 @@
         </a>
         
         <nav role="navigation" id="w-node-_98febe1b-824d-1562-da97-664fcff804f9-cff804f3" class="nav-menu w-nav-menu">
-          <a href="{% url 'index' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'index' %}w--current{% endif %}">Home</a>
-          <a href="{% url 'about' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'about' %}w--current{% endif %}">About</a>
-          <a href="{% url 'modules' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'modules' %}w--current{% endif %}">Modules</a>
-          <a href="{% url 'features' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'features' %}w--current{% endif %}">Features</a>
-          <a href="{% url 'pricing' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'pricing' %}w--current{% endif %}">Pricing</a>
-          <a href="{% url 'contact' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'contact' %}w--current{% endif %}">Contact</a>
-          <a href="{% url 'login' %}" class="nav-link w-nav-link nav-link-mobile-login">Sign In / Login ↗</a>
+          <a href="{% url 'index' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'index' %}w--current{% endif %}">
+            <span>Home</span>
+            <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="{% url 'about' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'about' %}w--current{% endif %}">
+            <span>About</span>
+            <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="{% url 'modules' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'modules' %}w--current{% endif %}">
+            <span>Modules</span>
+            <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="{% url 'features' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'features' %}w--current{% endif %}">
+            <span>Features</span>
+            <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="{% url 'pricing' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'pricing' %}w--current{% endif %}">
+            <span>Pricing</span>
+            <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="{% url 'contact' %}" class="nav-link w-nav-link {% if request.resolver_match.url_name == 'contact' %}w--current{% endif %}">
+            <span>Contact</span>
+            <svg class="nav-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          
+          <div class="nav-mobile-bottom-wrap">
+            <div class="nav-mobile-divider"></div>
+            <div class="nav-mobile-actions">
+              <a href="{% url 'login' %}" class="nav-btn-mobile-login">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                  <polyline points="10 17 15 12 10 7"></polyline>
+                  <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+                <span>Sign In to Portal ↗</span>
+              </a>
+              <a href="{% url 'contact' %}" class="nav-btn-mobile-demo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Schedule Free Demo</span>
+              </a>
+            </div>
+            <div class="nav-mobile-contact">
+              <a href="tel:+919454487893" class="nav-contact-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <span>+91 94544 87893</span>
+              </a>
+              <a href="mailto:support@onex-boost.com" class="nav-contact-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                <span>support@onex-boost.com</span>
+              </a>
+            </div>
+          </div>
         </nav>
         
         <div id="w-node-_98febe1b-824d-1562-da97-664fcff80504-cff804f3" class="nav-right">
-          <div class="menu-button-container w-nav-button">
+          <div class="menu-button-container w-nav-button" aria-label="Toggle navigation menu" role="button" tabindex="0">
             <div class="menu-button">
-              <div>Menu</div>
+              <div class="menu-btn-text">Menu</div>
               <div class="menu-circle">
                 <div class="menu-line _1 light-6"></div>
                 <div class="menu-line _2 light-7"></div>
@@ -109,8 +942,8 @@
             </div>
           </div>
           
-          <a href="{% url 'login' %}" class="nav-link w-nav-brand">
-            <div class="paragraph">Login</div>
+          <a href="{% url 'login' %}" class="nav-login-desktop">
+            <span>Login ↗</span>
           </a>
         </div>
       </div>
@@ -128,13 +961,13 @@
           <div class="footer-info-container">
             <div class="footer-nav-block">
               <div stagger-scroll="word" class="p1 footer-title">Informations</div>
-              <a href="tel:+919454487893" class="footer-link w-nav-brand">
+              <a href="tel:+919454487893" class="footer-link">
                 <div stagger-scroll="letter">+91 94544 87893</div>
               </a>
-              <a href="mailto:support@onex-boost.com" class="footer-link w-nav-brand">
+              <a href="mailto:support@onex-boost.com" class="footer-link">
                 <div stagger-scroll="letter">support@onex-boost.com</div>
               </a>
-              <a href="https://maps.google.com" target="_blank" class="footer-link w-nav-brand">
+              <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="footer-link">
                 <div stagger-scroll="word">Tedhi Puliya, Jankipuram, <br />Lucknow, India</div>
               </a>
             </div>
@@ -143,7 +976,7 @@
               <p stagger-scroll="word" class="p2">India's leading gym management OS by HELYONEX &mdash; memberships, biometric turnstiles, automated GST billing &amp; trainer workflows.</p>
               <div class="buttons-footer">
                 <div class="button-wrapper">
-                  <a href="https://facebook.com" target="_blank" class="social-button w-inline-block">
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-button w-inline-block">
                     <div class="social-icon w-embed">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
                         <path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669c1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -152,7 +985,7 @@
                   </a>
                 </div>
                 <div class="button-wrapper">
-                  <a href="https://instagram.com" target="_blank" class="social-button w-inline-block">
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-button w-inline-block">
                     <div class="social-icon w-embed">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20">
                         <path fill="currentColor" d="M8 5.67C6.71 5.67 5.67 6.72 5.67 8S6.72 10.33 8 10.33S10.33 9.28 10.33 8S9.28 5.67 8 5.67ZM15 8c0-.97 0-1.92-.05-2.89c-.05-1.12-.31-2.12-1.13-2.93c-.82-.82-1.81-1.08-2.93-1.13C9.92 1 8.97 1 8 1s-1.92 0-2.89.05c-1.12.05-2.12.31-2.93 1.13C1.36 3 1.1 3.99 1.05 5.11C1 6.08 1 7.03 1 8s0 1.92.05 2.89c.05 1.12.31 2.12 1.13 2.93c.82.82 1.81 1.08 2.93 1.13C6.08 15 7.03 15 8 15s1.92 0 2.89-.05c1.12-.05 2.12-.31 2.93-1.13c.82-.82 1.08-1.81 1.13-2.93c.06-.96.05-1.92.05-2.89Zm-7 3.59c-1.99 0-3.59-1.6-3.59-3.59S6.01 4.41 8 4.41s3.59 1.6 3.59 3.59s-1.6 3.59-3.59 3.59Zm3.74-6.49c-.46 0-.84-.37-.84-.84s.37-.84.84-.84s.84.37.84.84a.8.8 0 0 1-.24.59a.8.8 0 0 1-.59.24Z" />
@@ -161,7 +994,7 @@
                   </a>
                 </div>
                 <div class="button-wrapper">
-                  <a id="w-node-_7d95712f-9708-f7bd-9d1f-6d76b9197794-b9197794" data-wf--button--variant="dark-green" href="{% url 'contact' %}" class="b1 w-inline-block">
+                  <a id="w-node-_7d95712f-9708-f7bd-9d1f-6d76b9197794-b9197794" data-wf--button--variant="dark-green" href="{% url 'contact' %}" class="b1 footer-cta-b1 w-inline-block">
                     <div class="button-text">
                       <div class="text-track">
                         <div>Schedule Demo</div>
@@ -186,24 +1019,27 @@
             
             <div class="footer-nav-block">
               <div stagger-scroll="word" class="p1 footer-title">Navigation</div>
-              <a href="{% url 'index' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Home</div></a>
-              <a href="{% url 'about' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">About</div></a>
-              <a href="{% url 'modules' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Modules</div></a>
-              <a href="{% url 'features' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Features</div></a>
-              <a href="{% url 'pricing' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Pricing</div></a>
-              <a href="{% url 'contact' %}" class="footer-link w-nav-brand"><div stagger-scroll="letter">Contact</div></a>
+              <a href="{% url 'index' %}" class="footer-link"><div stagger-scroll="letter">Home</div></a>
+              <a href="{% url 'about' %}" class="footer-link"><div stagger-scroll="letter">About</div></a>
+              <a href="{% url 'modules' %}" class="footer-link"><div stagger-scroll="letter">Modules</div></a>
+              <a href="{% url 'features' %}" class="footer-link"><div stagger-scroll="letter">Features</div></a>
+              <a href="{% url 'pricing' %}" class="footer-link"><div stagger-scroll="letter">Pricing</div></a>
+              <a href="{% url 'contact' %}" class="footer-link"><div stagger-scroll="letter">Contact</div></a>
             </div>
            
             <div class="footer-nav-block">
               <div stagger-scroll="word" class="p1 footer-title">Credits</div>
-              <a href="https://helyonex.com" target="_blank" class="footer-link w-nav-brand">
+              <a href="https://helyonex.com" target="_blank" rel="noopener noreferrer" class="footer-link">
                 <div stagger-scroll="letter">Made by HELYONEX</div>
               </a>
-              <a href="{% url 'privacy_policy' %}" class="footer-link w-nav-brand">
+              <a href="{% url 'privacy_policy' %}" class="footer-link">
                 <div stagger-scroll="letter">Privacy Policy</div>
               </a>
-              <a href="{% url 'terms_of_service' %}" class="footer-link w-nav-brand">
+              <a href="{% url 'terms_of_service' %}" class="footer-link">
                 <div stagger-scroll="letter">Terms of Service</div>
+              </a>
+              <a href="{% url 'refund_policy' %}" class="footer-link">
+                <div stagger-scroll="letter">Refund Policy</div>
               </a>
             </div>
           </div>
@@ -254,6 +1090,72 @@
       window.addEventListener('DOMContentLoaded', removeWebflowBadge);
       window.addEventListener('load', removeWebflowBadge);
       setInterval(removeWebflowBadge, 250);
+    })();
+
+    // ── Rock-Solid Mobile Navigation Controller ──────────────────────────
+    (function() {
+      document.addEventListener('DOMContentLoaded', function() {
+        var menuBtn = document.querySelector('.menu-button-container');
+        var menuText = document.querySelector('.menu-btn-text');
+        var navbar = document.querySelector('.navbar');
+
+        function updateMenuState() {
+          var isOpen = navbar && navbar.classList.contains('menu-is-open');
+          if (menuText) {
+            menuText.textContent = isOpen ? 'Close' : 'Menu';
+          }
+          if (menuBtn) {
+            menuBtn.classList.toggle('w--open', !!isOpen);
+          }
+          document.body.classList.toggle('mobile-nav-locked', !!isOpen);
+        }
+
+        if (menuBtn) {
+          menuBtn.addEventListener('click', function(e) {
+            if (navbar) {
+              navbar.classList.toggle('menu-is-open');
+              updateMenuState();
+            }
+          });
+        }
+
+        // Tap backdrop / overlay outside nav-menu to close
+        document.addEventListener('click', function(e) {
+          var navMenu = document.querySelector('.nav-menu');
+          if (navbar && navbar.classList.contains('menu-is-open')) {
+            if (navMenu && !navMenu.contains(e.target) && menuBtn && !menuBtn.contains(e.target)) {
+              navbar.classList.remove('menu-is-open');
+              updateMenuState();
+            }
+          }
+        });
+
+        // Close when clicking any nav link
+        document.querySelectorAll('.nav-menu a').forEach(function(link) {
+          link.addEventListener('click', function() {
+            if (navbar && navbar.classList.contains('menu-is-open')) {
+              navbar.classList.remove('menu-is-open');
+              updateMenuState();
+            }
+          });
+        });
+
+        // Escape key to close
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && navbar && navbar.classList.contains('menu-is-open')) {
+            navbar.classList.remove('menu-is-open');
+            updateMenuState();
+          }
+        });
+
+        // Auto close on window resize to desktop
+        window.addEventListener('resize', function() {
+          if (window.innerWidth > 991 && navbar && navbar.classList.contains('menu-is-open')) {
+            navbar.classList.remove('menu-is-open');
+            updateMenuState();
+          }
+        });
+      });
     })();
   </script>
 

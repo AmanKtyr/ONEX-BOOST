@@ -4,22 +4,22 @@
 {% block title %}Privacy Policy | ONEX BOOST Gym Management Software by HELYONEX{% endblock %}
 
 {% block seo %}
-<meta name="description" content="Read ONEX BOOST Privacy Policy by HELYONEX. Understand how we collect, use, and protect your data with bank-grade security.">
-<meta name="keywords" content="ONEX BOOST privacy policy, HELYONEX, gym software data privacy, gym management software data protection">
+<meta name="description" content="Read the official ONEX BOOST Privacy Policy by HELYONEX. Learn how India's premier gym management OS protects your gym data, biometric turnstile tokens, and GST billing with bank-grade security.">
+<meta name="keywords" content="ONEX BOOST privacy policy, HELYONEX gym software data protection, gym software privacy India, biometric gym attendance security">
 <meta name="author" content="ONEX BOOST by HELYONEX">
 <meta name="robots" content="index, follow">
 {% endblock %}
 
 {% block canonical %}
-<link rel="canonical" href="https://ONEX BOOST.com/privacy-policy/">
+<link rel="canonical" href="https://onexboost.com/privacy_policy/">
 {% endblock %}
 
 {% block og_tags %}
 <meta property="og:site_name" content="ONEX BOOST">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://ONEX BOOST.com/privacy-policy/">
-<meta property="og:title" content="Privacy Policy — ONEX BOOST Gym Management Software by HELYONEX">
-<meta property="og:description" content="Understand how ONEX BOOST collects, uses, and protects your data. Your privacy and security are core to how we operate.">
+<meta property="og:url" content="https://onexboost.com/privacy_policy/">
+<meta property="og:title" content="Privacy Policy ✸ ONEX BOOST by HELYONEX">
+<meta property="og:description" content="Understand how ONEX BOOST collects, uses, and safeguards information. Bank-grade encryption and 100% data ownership for gym founders.">
 <meta property="og:locale" content="en_IN">
 {% endblock %}
 
@@ -29,144 +29,752 @@
   "@context": "https://schema.org",
   "@type": "WebPage",
   "name": "Privacy Policy",
-  "url": "https://fitstack.nextgenapplication.com/privacy-policy/",
-  "description": "ONEX BOOST's privacy policy outlining data collection, usage, and security practices.",
+  "url": "https://onexboost.com/privacy_policy/",
+  "description": "ONEX BOOST's privacy policy outlining data collection, usage, and security practices by HELYONEX.",
   "publisher": {
     "@type": "Organization",
-    "name": "ONEX BOOST"
+    "name": "ONEX BOOST by HELYONEX"
   }
 }
 </script>
 {% endblock %}
 
 {% block extra_css %}
-<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    primary: '#0284c7',
-                }
-            }
-        }
+<style>
+  /* ── Legal & Policy Hero ──────────────────────────────────────────────── */
+  .legal-hero {
+    min-height: 44vh !important;
+    padding-top: 6.5rem !important;
+    padding-bottom: 2.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+  }
+
+  .legal-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(3, 66, 32, 0.08);
+    border: 1.5px solid rgba(3, 66, 32, 0.22);
+    border-radius: 999px;
+    padding: 0.45rem 1.15rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--colors--dark-green, #034220);
+    margin: 0 auto 1.5rem auto;
+    width: fit-content;
+  }
+
+  /* ── 3-Pillar Security Banner ─────────────────────────────────────────── */
+  .security-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0 3.5rem 0;
+  }
+
+  .security-card {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    box-shadow: 6px 6px 0px rgba(3, 66, 32, 0.15);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .security-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 8px 8px 0px rgba(3, 66, 32, 0.25);
+  }
+
+  .security-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 0.75rem;
+    background: rgba(254, 248, 221, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #fef8dd;
+    margin-bottom: 0.25rem;
+  }
+
+  .security-card-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--colors--white, #fef8dd);
+    margin: 0;
+  }
+
+  .security-card-desc {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: rgba(254, 248, 221, 0.85);
+    margin: 0;
+  }
+
+  /* ── 2-Column Policy & TOC Layout ─────────────────────────────────────── */
+  .policy-layout {
+    display: grid;
+    grid-template-columns: 290px 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding-bottom: 5rem;
+  }
+
+  /* Sticky Sidebar */
+  .policy-sidebar {
+    position: sticky;
+    top: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .policy-toc-card {
+    background: var(--colors--white, #fef8dd);
+    border: 2px solid var(--colors--dark-green, #034220);
+    border-radius: 1.25rem;
+    padding: 1.5rem 1.25rem;
+    box-shadow: 5px 5px 0px var(--colors--dark-green, #034220);
+  }
+
+  .policy-toc-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--colors--dark-green, #034220);
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.65rem;
+    border-bottom: 1.5px solid rgba(3, 66, 32, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .policy-toc-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .policy-toc-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.65rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--colors--dark-green, #034220);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .policy-toc-link:hover {
+    background: rgba(3, 66, 32, 0.08);
+    transform: translateX(3px);
+  }
+
+  .policy-toc-link.active {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    box-shadow: 0 4px 10px rgba(3, 66, 32, 0.2);
+  }
+
+  .policy-toc-num {
+    font-size: 0.78rem;
+    font-weight: 800;
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .policy-help-card {
+    background: rgba(3, 66, 32, 0.06);
+    border: 1.5px dashed rgba(3, 66, 32, 0.25);
+    border-radius: 1.25rem;
+    padding: 1.25rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .policy-help-card h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--colors--dark-green, #034220);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .policy-help-card p {
+    font-size: 0.85rem;
+    color: var(--colors--dark-green, #034220);
+    opacity: 0.85;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .policy-help-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--colors--dark-green, #034220);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .policy-help-link:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Content Policy Cards ─────────────────────────────────────────────── */
+  .policy-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .policy-section-card {
+    background: var(--colors--white, #fef8dd);
+    border: 2px solid var(--colors--dark-green, #034220);
+    border-radius: 1.5rem;
+    padding: 2.25rem 2rem;
+    box-shadow: 6px 6px 0px var(--colors--dark-green, #034220);
+    scroll-margin-top: 6rem;
+    transition: transform 0.2s ease;
+  }
+
+  .policy-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid rgba(3, 66, 32, 0.12);
+  }
+
+  .policy-num {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--colors--white, #fef8dd);
+    background: var(--colors--dark-green, #034220);
+    width: 44px;
+    height: 44px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(3, 66, 32, 0.2);
+  }
+
+  .policy-title {
+    font-family: var(--font--main-font, Impact, sans-serif);
+    font-size: 1.6rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--colors--dark-green, #034220);
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .policy-body {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--colors--dark-green, #034220);
+  }
+
+  .policy-body p {
+    margin: 0 0 1rem 0;
+  }
+
+  .policy-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .policy-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .policy-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .policy-list-icon {
+    color: var(--colors--dark-green, #034220);
+    font-size: 0.85rem;
+    margin-top: 0.28rem;
+    flex-shrink: 0;
+  }
+
+  .policy-callout {
+    background: rgba(3, 66, 32, 0.05);
+    border-left: 4px solid var(--colors--dark-green, #034220);
+    border-radius: 0.75rem;
+    padding: 1.15rem 1.25rem;
+    margin: 1.25rem 0;
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .policy-callout strong {
+    color: var(--colors--dark-green, #034220);
+  }
+
+  .policy-contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .policy-contact-box {
+    background: rgba(3, 66, 32, 0.04);
+    border: 1.5px solid rgba(3, 66, 32, 0.15);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--colors--dark-green, #034220);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+
+  .policy-contact-box:hover {
+    background: var(--colors--dark-green, #034220);
+    color: var(--colors--white, #fef8dd);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(3, 66, 32, 0.18);
+  }
+
+  @media (max-width: 991px) {
+    .legal-hero {
+      padding-top: 3.5rem !important;
+      min-height: auto !important;
     }
-</script>
+    .security-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .policy-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .policy-sidebar {
+      position: static;
+    }
+    .policy-section-card {
+      padding: 1.5rem 1.25rem;
+    }
+    .policy-title {
+      font-size: 1.35rem;
+    }
+    .policy-contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block content %}
-<section class="page-hero">
-    <img src="{% static 'images/hero_image_gym.png' %}" alt="ONEX BOOST privacy policy" class="page-hero-media">
-    <div class="brand-container page-hero-content">
-        <div class="max-w-4xl site-reveal">
-            <span class="brand-eyebrow brand-eyebrow-dark">
-                <i class="fa-solid fa-shield-halved"></i>
-                Privacy policy
-            </span>
-            <h1 class="brand-heading mt-6">How ONEX BOOST collects, uses, and protects information.</h1>
-            <p class="text-white/72 text-lg leading-8 mt-6 max-w-3xl">
-                This page explains what information may be collected when you use ONEX BOOST and how that information is used to support our services.
-            </p>
+<!-- ── HERO: PRIVACY POLICY ──────────────────────────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content home-hero legal-hero">
+      <div class="legal-badge-pill">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>LEGAL &amp; COMPLIANCE ✸ UPDATED OCTOBER 2026</span>
+      </div>
+      
+      <div class="h1-center">
+        <h1 stagger-page="letter" class="display-1">PRIVACY POLICY</h1>
+      </div>
+      
+      <div class="hero-info-container">
+        <div class="hero-text-container">
+          <div stagger-page="word" class="paragraph center-mobile">
+            How ONEX BOOST by HELYONEX collects, uses, and safeguards data across our fitness club operating system, turnstiles, and mobile apps.
+          </div>
         </div>
+        <div class="nav-link right w-nav-brand">
+          <div stagger-page="word" class="paragraph center-mobile bold-mobile">
+            DPDP Act 2023 Compliant<br />Bank-Grade 256-Bit SSL
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<section class="brand-section">
-    <div class="brand-container docs-shell">
-        <aside class="docs-side site-reveal">
-            <div class="brand-card docs-card">
-                <p class="brand-mono text-xs uppercase tracking-[0.18em] text-slate-500 mb-4">Quick navigation</p>
-                <nav id="toc-nav" class="docs-nav">
-                    <a href="#introduction">Introduction</a>
-                    <a href="#data-collection">Information we collect</a>
-                    <a href="#how-we-use">How we use information</a>
-                    <a href="#security">Security</a>
-                    <a href="#contact">Contact</a>
-                </nav>
-            </div>
-        </aside>
-
-        <div class="docs-content">
-            <section id="introduction" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">1</span>Introduction</h2>
-                <p>Welcome to ONEX BOOST. This Privacy Policy describes how information may be collected, used, stored, and handled when you visit our website or use services connected to the ONEX BOOST platform.</p>
-                <p>By using ONEX BOOST, you agree to the practices described here. If you have questions, please contact us using the details below.</p>
-            </section>
-
-            <section id="data-collection" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">2</span>Information we collect</h2>
-                <ul>
-                    <li>Contact details such as name, email address, phone number, and business information submitted through forms.</li>
-                    <li>Usage details such as device information, browser information, and interaction data needed to improve the service.</li>
-                    <li>Operational information provided by customers while using ONEX BOOST features.</li>
-                </ul>
-                <p>Payment transactions are handled securely by authorized payment processors. ONEX BOOST does not store raw credit/debit card numbers on our servers.</p>
-            </section>
-
-            <section id="how-we-use" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">3</span>How we use information</h2>
-                <ul>
-                    <li>To provide, maintain, and improve the ONEX BOOST platform and related support.</li>
-                    <li>To respond to product, pricing, support, or demo requests.</li>
-                    <li>To manage accounts, service delivery, and business communication.</li>
-                    <li>To improve product quality, reliability, and user experience over time.</li>
-                </ul>
-            </section>
-
-            <section id="security" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">4</span>Security</h2>
-                <p>We take reasonable steps to protect information using appropriate technical and organizational measures. No digital system can guarantee absolute security, but protecting customer trust is a core part of how we operate.</p>
-                <div class="grid sm:grid-cols-3 gap-4 mt-6">
-                    <div class="calculator-stat">
-                        <div class="font-bold">Access control</div>
-                        <p class="text-sm mt-2">Role-aware systems and sensible administrative structure.</p>
-                    </div>
-                    <div class="calculator-stat">
-                        <div class="font-bold">Operational backups</div>
-                        <p class="text-sm mt-2">Processes intended to reduce data loss risk and improve continuity.</p>
-                    </div>
-                    <div class="calculator-stat">
-                        <div class="font-bold">Ongoing improvement</div>
-                        <p class="text-sm mt-2">Security and reliability practices continue to evolve with the product.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="contact" class="brand-card docs-card site-reveal">
-                <h2><span class="docs-index">5</span>Contact</h2>
-                <p>If you have questions about this Privacy Policy or want to contact us regarding your data, reach out using the details below.</p>
-                <ul>
-                    <li>Email: <a href="mailto:support@helyonex.com">support@helyonex.com</a></li>
-                    <li>Phone: <a href="tel:+916392348731">+91 9454487893</a></li>
-                    <li>Address: HELYONEX HQ, Vishesh Khand, Lucknow, Uttar Pradesh, India</li>
-                </ul>
-            </section>
+<!-- ── 3 SECURITY PILLARS ────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content">
+      <div class="security-grid">
+        <div class="security-card">
+          <div class="security-card-icon">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <h3 class="security-card-title">256-Bit Encryption</h3>
+          <p class="security-card-desc">
+            All member profile details, GST invoices, and authentication tokens are encrypted in transit via TLS 1.3 and at rest with AES-256 standards.
+          </p>
         </div>
+
+        <div class="security-card">
+          <div class="security-card-icon">
+            <i class="fa-solid fa-database"></i>
+          </div>
+          <h3 class="security-card-title">100% Data Ownership</h3>
+          <p class="security-card-desc">
+            Gym founders own 100% of their member, trainer, and financial records. Export anytime in Excel or CSV with zero proprietary lock-in.
+          </p>
+        </div>
+
+        <div class="security-card">
+          <div class="security-card-icon">
+            <i class="fa-solid fa-fingerprint"></i>
+          </div>
+          <h3 class="security-card-title">Tokenized Biometrics</h3>
+          <p class="security-card-desc">
+            Biometric turnstile readers sync through mathematical feature hashes. Raw biometric images or fingerprints are never stored on our cloud.
+          </p>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- ── MAIN DOCUMENTATION & TABLE OF CONTENTS ───────────────────────────── -->
+<section class="section">
+  <div class="w-layout-blockcontainer page_container w-container">
+    <div class="content policy-layout">
+      
+      <!-- Sticky Sidebar -->
+      <aside class="policy-sidebar">
+        <div class="policy-toc-card">
+          <div class="policy-toc-title">
+            <span>Navigation</span>
+            <i class="fa-solid fa-list-check" style="font-size: 0.9rem; opacity: 0.6;"></i>
+          </div>
+          <nav id="policy-toc" class="policy-toc-nav">
+            <a href="#introduction" class="policy-toc-link active">
+              <span class="policy-toc-num">01</span>
+              <span>Introduction</span>
+            </a>
+            <a href="#data-collection" class="policy-toc-link">
+              <span class="policy-toc-num">02</span>
+              <span>Data We Collect</span>
+            </a>
+            <a href="#how-we-use" class="policy-toc-link">
+              <span class="policy-toc-num">03</span>
+              <span>How We Use Data</span>
+            </a>
+            <a href="#biometrics" class="policy-toc-link">
+              <span class="policy-toc-num">04</span>
+              <span>Biometric &amp; Access</span>
+            </a>
+            <a href="#payments" class="policy-toc-link">
+              <span class="policy-toc-num">05</span>
+              <span>Billing &amp; Payments</span>
+            </a>
+            <a href="#security" class="policy-toc-link">
+              <span class="policy-toc-num">06</span>
+              <span>Data Protection</span>
+            </a>
+            <a href="#rights" class="policy-toc-link">
+              <span class="policy-toc-num">07</span>
+              <span>Your Rights</span>
+            </a>
+            <a href="#contact" class="policy-toc-link">
+              <span class="policy-toc-num">08</span>
+              <span>Contact &amp; Grievance</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Support Card -->
+        <div class="policy-help-card">
+          <h4>Need Clarification?</h4>
+          <p>Have questions about compliance or your gym's data privacy? Reach our team in Lucknow.</p>
+          <a href="mailto:support@onex-boost.com" class="policy-help-link">
+            <i class="fa-solid fa-envelope"></i>
+            <span>support@onex-boost.com</span>
+          </a>
+          <a href="tel:+919454487893" class="policy-help-link">
+            <i class="fa-solid fa-phone"></i>
+            <span>+91 94544 87893</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Policy Content -->
+      <div class="policy-content">
+
+        <!-- 01. Introduction -->
+        <section id="introduction" class="policy-section-card">
+          <div class="policy-header">
+            <div class="policy-num">01</div>
+            <h2 class="policy-title">Introduction &amp; Scope</h2>
+          </div>
+          <div class="policy-body">
+            <p>
+              Welcome to <strong>ONEX BOOST</strong>, engineered and operated by <strong>HELYONEX</strong> ("we", "us", or "our"). We are committed to protecting the personal data and operational confidentiality of fitness business owners, gym administrators, trainers, and fitness center members.
+            </p>
+            <p>
+              This Privacy Policy applies to our website (<a href="https://onexboost.com" style="color: var(--colors--dark-green); font-weight: 700;">onexboost.com</a>), the ONEX BOOST cloud management application, mobile member portals, and our hardware IoT sync services (including turnstiles and biometric attendance devices).
+            </p>
+            <div class="policy-callout">
+              <strong>Core Privacy Principle:</strong> HELYONEX does not sell, rent, or monetize your gym's member lists or revenue metrics to third-party advertisers or competitors. Your data is exclusively used to operate, automate, and secure your gym.
+            </div>
+          </div>
+        </section>
+
+        <!-- 02. Data We Collect -->
+        <section id="data-collection" class="policy-section-card">
+          <div class="policy-header">
+            <div class="policy-num">02</div>
+            <h2 class="policy-title">Information We Collect</h2>
+          </div>
+          <div class="policy-body">
+            <p>To provide end-to-end gym operating software, we collect information under the following categories:</p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-circle-check policy-list-icon"></i>
+                <div><strong>Gym Profile &amp; Billing Data:</strong> Gym trade name, GSTIN, owner contact details, business bank account or UPI ID for payout settlement, and billing address.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check policy-list-icon"></i>
+                <div><strong>Member &amp; Lead Information:</strong> Names, mobile numbers, email addresses, dates of birth, emergency contacts, subscription dates, assigned trainers, and plan history inputted by your gym staff.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check policy-list-icon"></i>
+                <div><strong>Attendance &amp; Check-In Logs:</strong> Timestamps of member check-ins, check-outs, QR scans, and turnstile gate access events.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-circle-check policy-list-icon"></i>
+                <div><strong>Device &amp; Telemetry Data:</strong> IP address, browser type, operating system version, and system diagnostic logs to ensure zero-downtime performance.</div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 03. How We Use Data -->
+        <section id="how-we-use" class="policy-section-card">
+          <div class="policy-header">
+            <div class="policy-num">03</div>
+            <h2 class="policy-title">How We Use Information</h2>
+          </div>
+          <div class="policy-body">
+            <p>We process information solely to fulfill our contractual service obligations to your fitness business:</p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-arrow-right policy-list-icon"></i>
+                <div>Automating membership expirations, renewal reminders, and GST invoice generation.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-arrow-right policy-list-icon"></i>
+                <div>Dispatching automated WhatsApp notifications for payment receipts, attendance alerts, and promotional announcements configured by the gym administrator.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-arrow-right policy-list-icon"></i>
+                <div>Controlling turnstile locks and biometric gates in sub-second latency based on valid membership status.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-arrow-right policy-list-icon"></i>
+                <div>Providing real-time analytics dashboards (revenue collected, pending dues, member retention rate, and trainer commission logs).</div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 04. Biometric & Access -->
+        <section id="biometrics" class="policy-section-card">
+          <div class="policy-header">
+            <div class="policy-num">04</div>
+            <h2 class="policy-title">Biometric &amp; Hardware Security</h2>
+          </div>
+          <div class="policy-body">
+            <p>
+              ONEX BOOST integrates seamlessly with biometric attendance machines (e.g., eSSL, ZKTeco, Realtime) and facial recognition turnstiles.
+            </p>
+            <div class="policy-callout">
+              <strong>Tokenized Storage Only:</strong> Biometric readers convert biological prints or facial geometry into non-reversible mathematical template strings. These templates are stored strictly in local device firmware and secure encrypted tokens. Raw optical fingerprint scans or unhashed facial images are never transmitted or stored on cloud servers.
+            </div>
+            <p>
+              When a member leaves or cancels their membership, their biometric enrollment token can be automatically wiped from all connected turnstiles with a single click from the ONEX BOOST dashboard.
+            </p>
+          </div>
+        </section>
+
+        <!-- 05. Payments & Billing -->
+        <section id="payments" class="policy-section-card">
+          <div class="policy-header">
+            <div class="policy-num">05</div>
+            <h2 class="policy-title">Billing &amp; Payment Security</h2>
+          </div>
+          <div class="policy-body">
+            <p>
+              All online fee payments (UPI, credit/debit cards, net banking, wallets) initiated through ONEX BOOST are processed via RBI-authorized, PCI-DSS Level 1 certified payment gateways (such as Razorpay, PayU, and Cashfree).
+            </p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-shield-check policy-list-icon"></i>
+                <div>ONEX BOOST servers <strong>never store, inspect, or retain</strong> raw credit/debit card numbers, CVVs, or bank net-banking passwords.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-shield-check policy-list-icon"></i>
+                <div>We store only high-level payment confirmation metadata (Transaction ID, payment mode, amount, date, GST breakdown, and settlement status).</div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 06. Data Protection -->
+        <section id="security" class="policy-section-card">
+          <div class="policy-header">
+            <div class="policy-num">06</div>
+            <h2 class="policy-title">Data Protection &amp; Backups</h2>
+          </div>
+          <div class="policy-body">
+            <p>
+              HELYONEX implements rigorous organizational, physical, and technical controls compliant with the <strong>Digital Personal Data Protection Act, 2023 (DPDP Act)</strong>:
+            </p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-lock policy-list-icon"></i>
+                <div><strong>Transport &amp; Rest Encryption:</strong> TLS 1.3 protocol encryption for all data in flight; AES-256 encrypted database volumes at rest.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-user-shield policy-list-icon"></i>
+                <div><strong>Role-Based Access Control (RBAC):</strong> Gym staff (receptionists, trainers, managers) can only view information relevant to their assigned permissions. Sensitive financial reports can be restricted strictly to gym owners.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-cloud-arrow-up policy-list-icon"></i>
+                <div><strong>Daily Automated Backups:</strong> Automated multi-region encrypted snapshots guarantee rapid recovery against accidental loss or hardware failure.</div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 07. Your Rights -->
+        <section id="rights" class="policy-section-card">
+          <div class="policy-header">
+            <div class="policy-num">07</div>
+            <h2 class="policy-title">Data Ownership &amp; Rights</h2>
+          </div>
+          <div class="policy-body">
+            <p>As a gym founder or authorized administrative account holder, you hold sovereign control over your business data:</p>
+            <ul class="policy-list">
+              <li>
+                <i class="fa-solid fa-file-export policy-list-icon"></i>
+                <div><strong>Right to Export:</strong> Export all member directories, billing history, and attendance records into standard Excel / CSV spreadsheets at any time.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-trash-can policy-list-icon"></i>
+                <div><strong>Right to Erasure (De-registration):</strong> Request permanent deletion of your gym's tenant records upon cancellation of your subscription.</div>
+              </li>
+              <li>
+                <i class="fa-solid fa-pen-to-square policy-list-icon"></i>
+                <div><strong>Right to Rectification:</strong> Edit or correct any inaccurate member profiles directly from the administrative portal.</div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 08. Contact & Grievance -->
+        <section id="contact" class="policy-section-card">
+          <div class="policy-header">
+            <div class="policy-num">08</div>
+            <h2 class="policy-title">Grievance Officer &amp; Contact</h2>
+          </div>
+          <div class="policy-body">
+            <p>
+              In accordance with the Indian Information Technology Act, 2000 and the DPDP Act, 2023, the details of our Data Protection &amp; Grievance Redressal Officer are provided below:
+            </p>
+            <div class="policy-callout">
+              <strong>HELYONEX Data Privacy &amp; Grievance Office</strong><br />
+              Tedhi Puliya, Jankipuram, Lucknow, Uttar Pradesh 226021, India.<br />
+              Official Communication: <strong>legal@onex-boost.com</strong> / <strong>support@onex-boost.com</strong>
+            </div>
+
+            <div class="policy-contact-grid">
+              <a href="mailto:support@onex-boost.com" class="policy-contact-box">
+                <i class="fa-solid fa-envelope" style="font-size: 1.25rem;"></i>
+                <div>
+                  <div style="font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; font-weight: 800;">Email Support</div>
+                  <div>support@onex-boost.com</div>
+                </div>
+              </a>
+
+              <a href="tel:+919454487893" class="policy-contact-box">
+                <i class="fa-solid fa-phone" style="font-size: 1.25rem;"></i>
+                <div>
+                  <div style="font-size: 0.75rem; text-transform: uppercase; opacity: 0.7; font-weight: 800;">Phone Helpdesk</div>
+                  <div>+91 94544 87893</div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const sections = document.querySelectorAll("section[id]");
-        const navLinks = document.querySelectorAll("#toc-nav a");
+  // Smooth scrollspy for Table of Contents
+  document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('.policy-section-card');
+    const tocLinks = document.querySelectorAll('.policy-toc-link');
 
-        function onScroll() {
-            const scrollPos = window.scrollY + 140;
-            sections.forEach((section) => {
-                if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
-                    const id = section.getAttribute("id");
-                    navLinks.forEach((link) => {
-                        link.classList.toggle("toc-active", link.getAttribute("href") === `#${id}`);
-                    });
-                }
-            });
+    function highlightCurrentSection() {
+      const scrollY = window.scrollY + 160;
+      sections.forEach(function(section) {
+        const top = section.offsetTop;
+        const height = section.offsetHeight;
+        const id = section.getAttribute('id');
+        if (scrollY >= top && scrollY < top + height) {
+          tocLinks.forEach(function(link) {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+          });
         }
+      });
+    }
 
-        window.addEventListener("scroll", onScroll);
-        onScroll();
-    });
+    window.addEventListener('scroll', highlightCurrentSection, { passive: true });
+    highlightCurrentSection();
+  });
 </script>
 {% endblock %}

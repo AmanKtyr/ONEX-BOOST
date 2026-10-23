@@ -19,6 +19,7 @@ ls -l /etc/nginx/sites-available/
 sudo nano /etc/nginx/sites-available/gymproject
 
 
+git pull origin aman
 
 sudo systemctl restart gymproject
 

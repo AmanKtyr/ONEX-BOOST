@@ -754,7 +754,11 @@
                     <div class="col-6 pr-2 text-left">
                       <span class="cred-label">MEMBERSHIP PLAN</span>
                       <span class="cred-val text-truncate">
-                        {{ latest_membership.plan.get_duration_display|default:latest_membership.plan.title|default:'1 Month' }}
+                        {% if latest_membership and latest_membership.plan %}
+                          {{ latest_membership.plan.get_duration_display|default:latest_membership.plan.title }}
+                        {% else %}
+                          Standard Plan
+                        {% endif %}
                       </span>
                     </div>
                     <div class="col-6 pl-2 text-left" style="border-left: 1px solid rgba(148, 163, 184, 0.2);">
